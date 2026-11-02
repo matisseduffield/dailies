@@ -73,6 +73,9 @@ test('streaks', () => {
   assert.equal(L.streak([8, 9], 10), 2); // today not played yet
   assert.equal(L.streak([7, 9, 10], 10), 2);
   assert.equal(L.streak([7, 8], 10), 0);
+  assert.equal(L.bestStreak([]), 0);
+  assert.equal(L.bestStreak([9, 3, 4, 5, 8, 10]), 3);
+  assert.equal(L.bestStreak([1, 1, 2]), 2);
 });
 
 test('share text gives nothing away', () => {

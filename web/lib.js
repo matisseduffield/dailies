@@ -140,6 +140,14 @@
     return n;
   }
 
+  // The longest run of days solved in a row, ever.
+  function bestStreak(solvedDays) {
+    const days = [...new Set(solvedDays)].sort((a, b) => a - b);
+    let best = 0, run = 0;
+    days.forEach((d, i) => { run = i && d === days[i - 1] + 1 ? run + 1 : 1; best = Math.max(best, run); });
+    return best;
+  }
+
   // A spoiler-free picture of the climb: one row per change, with the
   // letter that changed filled in.
   function shareText(puzzle, ladder, hints = 0) {
@@ -155,7 +163,7 @@
     return `${title} · ${puzzle.start.toUpperCase()} → ${puzzle.target.toUpperCase()}\n${steps} ${steps === 1 ? 'step' : 'steps'}, par ${puzzle.par}${hints ? `, ${hints} ${hints === 1 ? 'hint' : 'hints'}` : ''}\n${rows.join('\n')}`;
   }
 
-  const lib = { LEN, split, dictionary, neighbours, oneApart, changedAt, distances, shortest, nextStep, rng, pick, dayNumber, parForDay, daily, practice, streak, shareText };
+  const lib = { LEN, split, dictionary, neighbours, oneApart, changedAt, distances, shortest, nextStep, rng, pick, dayNumber, parForDay, daily, practice, streak, bestStreak, shareText };
   if (typeof module === 'object' && module.exports) module.exports = lib;
   else root.LadderLib = lib;
 })(this);

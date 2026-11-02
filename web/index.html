@@ -31,9 +31,12 @@
   --accent: #2C53C4;
   --accent-soft: rgba(44, 83, 196, .09);
   --pos: #1D7548;
+  --pos-soft: rgba(29, 117, 72, .12);
   --neg: #B0392D;
   --on-ink: #F7F8F4;
   --key: #DCE2DA;
+  --key-down: #C6CEC4;
+  --backdrop: rgba(10, 16, 14, .4);
   --font: "Hanken Grotesk", "Segoe UI", Roboto, system-ui, -apple-system, sans-serif;
   color-scheme: light;
 }
@@ -49,9 +52,12 @@
     --accent: #85A2FF;
     --accent-soft: rgba(133, 162, 255, .12);
     --pos: #5FC890;
+    --pos-soft: rgba(95, 200, 144, .14);
     --neg: #F08476;
     --on-ink: #0E1412;
     --key: #222D29;
+    --key-down: #34413C;
+    --backdrop: rgba(0, 0, 0, .6);
     color-scheme: dark;
   }
 }
@@ -66,9 +72,12 @@
   --accent: #85A2FF;
   --accent-soft: rgba(133, 162, 255, .12);
   --pos: #5FC890;
+  --pos-soft: rgba(95, 200, 144, .14);
   --neg: #F08476;
   --on-ink: #0E1412;
   --key: #222D29;
+  --key-down: #34413C;
+  --backdrop: rgba(0, 0, 0, .6);
   color-scheme: dark;
 }
 
@@ -86,37 +95,54 @@ body {
 }
 button { font: inherit; color: inherit; cursor: pointer; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-p { margin: 0; }
+p, h1, h2, h3 { margin: 0; }
 
 .app {
+  position: relative;
   display: flex; flex-direction: column;
   height: 100dvh; max-width: 480px; margin: 0 auto;
-  padding: 14px max(16px, env(safe-area-inset-right, 0px)) max(10px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  padding: 8px max(16px, env(safe-area-inset-right, 0px)) max(10px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
 }
 
-/* Top bar */
-.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; }
-.mark { margin: 0; font-size: 1.2rem; font-weight: 600; letter-spacing: -.01em; }
-.top-right { display: flex; align-items: center; gap: 2px; margin-right: -8px; }
-.version, .top-link { min-height: 44px; padding: 0 8px; background: none; border: 0; font-size: .84rem; color: var(--muted); }
-.version:hover, .top-link:hover { color: var(--ink); }
+/* Top bar: the name, then stats and help */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 48px; }
+.brand { display: flex; align-items: center; gap: 9px; }
+.brand svg { color: var(--accent); }
+.mark { font-size: 1.22rem; font-weight: 600; letter-spacing: -.015em; }
+.top-right { display: flex; align-items: center; margin-right: -10px; }
+.icon-btn {
+  display: grid; place-items: center; width: 44px; height: 44px; padding: 0;
+  background: none; border: 0; border-radius: 50%; color: var(--muted);
+}
+.icon-btn:hover { color: var(--ink); background: var(--key); }
+.version { min-height: 44px; padding: 0 8px; background: none; border: 0; font-size: .8rem; color: var(--muted); }
+.version:hover { color: var(--ink); }
 .version[data-state="available"] { color: var(--accent); font-weight: 600; }
-.top-link { font-weight: 600; color: var(--accent); }
-.top-link:hover { color: var(--accent); opacity: .85; }
-.sub { display: flex; gap: 6px; flex-wrap: wrap; font-size: .88rem; color: var(--muted); }
-.sub b { font-weight: 600; color: var(--ink); }
-.how { margin-top: 4px; font-size: .88rem; color: var(--muted); max-width: 34ch; }
+
+/* Today / Practice, with what's on screen at the right */
+.modes { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--line); }
+.tabs { display: flex; gap: 22px; }
+.tab {
+  position: relative; padding: 10px 0 11px; background: none; border: 0;
+  font-size: .92rem; font-weight: 600; color: var(--muted);
+}
+.tab:hover { color: var(--ink); }
+.tab[aria-selected="true"] { color: var(--ink); }
+.tab[aria-selected="true"]::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; border-radius: 1px; background: var(--ink); }
+.tab .dot { display: inline-block; width: 6px; height: 6px; margin-left: 6px; border-radius: 50%; background: var(--accent); vertical-align: 2px; }
+.meta { padding-bottom: 11px; font-size: .84rem; color: var(--muted); white-space: nowrap; }
+.meta .link { font-size: .84rem; }
 
 /* The ladder: two rails, a rung for every word. Tiles shrink to fit a
    long ladder on screen rather than scrolling. */
-.stage { flex: 1; min-height: 0; display: grid; place-items: safe center; padding: 12px 0; overflow-y: auto; }
+.stage { position: relative; flex: 1; min-height: 0; display: grid; place-items: safe center; padding: 50px 0 14px; overflow-y: auto; }
 .ladder {
   --tile: 54px; --gap: 8px; --rung: 10px;
   position: relative; display: grid; gap: var(--rung);
   padding: 0 22px;
 }
 .ladder::before, .ladder::after {
-  content: ""; position: absolute; top: calc(var(--tile) * -.25); bottom: calc(var(--tile) * -.25);
+  content: ""; position: absolute; top: calc(var(--tile) * -.3); bottom: calc(var(--tile) * -.3);
   width: 3px; border-radius: 2px; background: var(--line-strong);
   transition: background .3s;
 }
@@ -125,71 +151,129 @@ p { margin: 0; }
 .ladder.done::before, .ladder.done::after { background: var(--pos); }
 .row { position: relative; display: grid; grid-template-columns: repeat(4, var(--tile)); gap: var(--gap); }
 /* the rung itself, behind the tiles */
-.row::before { content: ""; position: absolute; left: -22px; right: -22px; top: 50%; height: 3px; margin-top: -1.5px; background: var(--line-strong); opacity: .55; }
+.row::before { content: ""; position: absolute; left: -22px; right: -22px; top: 50%; height: 3px; margin-top: -1.5px; background: var(--line-strong); opacity: .5; }
 .ladder.done .row::before { background: var(--pos); }
 .tile {
   position: relative; display: grid; place-items: center;
   width: var(--tile); height: var(--tile); padding: 0;
-  background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 7px;
   font-size: calc(var(--tile) * .44); font-weight: 600; line-height: 1; text-transform: uppercase;
 }
+button.tile { box-shadow: 0 1px 0 var(--line); }
 button.tile:hover { border-color: var(--line-strong); }
-.row.past .tile { color: var(--muted); }
-.row.past .tile.changed { color: var(--accent); }
 .row.past { cursor: pointer; }
-.row.current .tile.match { color: var(--pos); }
-.row.current .tile[aria-pressed="true"] { border: 2px solid var(--accent); background: var(--accent-soft); color: var(--accent); }
+.row.past .tile { color: var(--muted); }
+.row.past:hover .tile { border-color: var(--line-strong); }
+.row.past .tile.changed { color: var(--accent); }
+.row.current .tile { border-color: var(--line-strong); }
+.row.current .tile.match { color: var(--pos); background: linear-gradient(var(--pos-soft), var(--pos-soft)), var(--surface); border-color: transparent; }
+.row.current .tile[aria-pressed="true"] { border: 2px solid var(--accent); background: linear-gradient(var(--accent-soft), var(--accent-soft)), var(--surface); color: var(--accent); }
 .row.current .tile.hinted:not([aria-pressed="true"]) { border: 2px dashed var(--accent); }
 .row.slot .tile { background: var(--bg); border-style: dashed; }
 .row.goal .tile { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
 .row.bad .tile { color: var(--neg); }
-.row.bad .tile.try { border-color: var(--neg); }
+.row.bad .tile.try { border: 2px solid var(--neg); }
 .row.new { animation: rise .22s ease-out; }
 .row.bad { animation: shake .32s; }
 @keyframes rise { from { opacity: 0; transform: translateY(-8px); } }
 @keyframes shake { 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
 
-/* Message line and hint */
-.bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 40px; }
-.msg { font-size: .9rem; color: var(--muted); }
-.msg.warn { color: var(--neg); }
-.link { position: relative; padding: 6px 0; background: none; border: 0; font-size: .9rem; font-weight: 600; color: var(--accent); white-space: nowrap; }
-.link::after { content: ""; position: absolute; inset: -9px -8px; }
-.link:disabled { color: var(--faint); cursor: default; }
+/* Toolbar: undo and start over, the step count, and a hint */
+.tools { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; min-height: 48px; margin-bottom: 6px; }
+.tools-left { display: flex; gap: 2px; margin-left: -10px; }
+.tools-right { display: flex; justify-content: flex-end; margin-right: -10px; }
+.tool {
+  display: inline-flex; align-items: center; gap: 6px; height: 44px; padding: 0 10px;
+  background: none; border: 0; border-radius: 6px; font-size: .86rem; font-weight: 600; color: var(--muted);
+}
+.tool:hover:not(:disabled) { color: var(--ink); background: var(--key); }
+.tool:disabled { opacity: .4; cursor: default; }
+.tool.hint { color: var(--accent); }
+.tool.hint:hover:not(:disabled) { color: var(--accent); background: var(--accent-soft); }
+.count { font-size: .86rem; color: var(--muted); text-align: center; white-space: nowrap; }
+.count b { font-weight: 600; color: var(--ink); }
+.count.over b { color: var(--neg); }
 
 /* Keyboard */
 .keys { display: grid; gap: 7px; padding-bottom: 4px; user-select: none; -webkit-user-select: none; }
 .krow { display: flex; gap: 5px; justify-content: center; }
 .key {
-  flex: 1 1 0; max-width: 44px; height: 52px; padding: 0;
-  background: var(--key); border: 0; border-radius: 6px;
-  font-size: 1.05rem; font-weight: 600; text-transform: uppercase;
+  flex: 1 1 0; max-width: 44px; height: 54px; padding: 0;
+  background: var(--key); border: 0; border-radius: 7px;
+  font-size: 1.08rem; font-weight: 600; text-transform: uppercase;
   touch-action: manipulation;
 }
-.key:active { background: var(--line-strong); }
-.key.wide { flex-grow: 1.6; max-width: 68px; display: grid; place-items: center; color: var(--muted); }
+.key:active { background: var(--key-down); }
 .krow .spacer { flex: .5 1 0; max-width: 22px; }
 
+/* Messages get a line of their own above the ladder, and fade */
+.toast {
+  position: absolute; top: 8px; left: 0; right: 0;
+  font-size: .88rem; font-weight: 600; color: var(--ink); text-align: center;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity .15s, transform .15s;
+}
+.toast.show { opacity: 1; transform: none; }
+.toast.warn { color: var(--neg); }
+.toast.tip { color: var(--accent); }
+
 /* Result */
-.result { display: grid; gap: 16px; padding: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; animation: rise .25s ease-out; }
-.result-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
-.result-steps { font-size: 1.5rem; font-weight: 600; letter-spacing: -.01em; line-height: 1.2; }
+.result { display: grid; gap: 14px; padding: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; animation: rise .25s ease-out; }
+.result-kicker { font-size: .78rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--pos); }
+.result-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-top: -8px; }
+.result-steps { font-size: 1.6rem; font-weight: 600; letter-spacing: -.015em; line-height: 1.2; }
 .result-par { font-size: .9rem; color: var(--muted); }
 .result-note { font-size: .92rem; color: var(--muted); }
 .result-note b { font-weight: 600; color: var(--ink); letter-spacing: .04em; }
-.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding-top: 14px; border-top: 1px solid var(--line); }
-.stat b { display: block; font-size: 1.2rem; font-weight: 600; line-height: 1.2; }
-.stat span { font-size: .78rem; color: var(--muted); }
+.result-foot { display: flex; justify-content: space-between; gap: 12px; padding-top: 12px; border-top: 1px solid var(--line); font-size: .84rem; color: var(--muted); }
+.result-foot b { font-weight: 600; color: var(--ink); }
 .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.btn { min-height: 46px; padding: 0 16px; border-radius: 6px; font-size: .95rem; font-weight: 600; }
+.btn { min-height: 48px; padding: 0 16px; border-radius: 7px; font-size: .95rem; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
 .btn-primary { background: var(--ink); border: 1px solid var(--ink); color: var(--on-ink); }
 .btn-primary:hover { opacity: .9; }
-.btn-secondary { background: transparent; border: 1px solid var(--line); }
-.btn-secondary:hover { border-color: var(--muted); }
-.next { font-size: .84rem; color: var(--muted); text-align: center; margin-top: 10px; }
+.btn-secondary { background: transparent; border: 1px solid var(--line-strong); }
+.btn-secondary:hover { border-color: var(--ink); }
+.link { position: relative; padding: 0; background: none; border: 0; font-weight: 600; color: var(--accent); }
+.link::after { content: ""; position: absolute; inset: -12px -8px; }
+
+/* Sheets: how to play, stats */
+dialog.sheet {
+  width: 100%; max-width: 480px; max-height: 90dvh; margin: auto auto 0; padding: 0;
+  border: 0; border-radius: 14px 14px 0 0; background: var(--surface); color: var(--ink);
+  overflow: auto; overscroll-behavior: contain;
+}
+dialog.sheet[open] { animation: up .22s ease-out; }
+dialog.sheet::backdrop { background: var(--backdrop); }
+@keyframes up { from { transform: translateY(32px); opacity: .4; } }
+@media (min-width: 560px) { dialog.sheet { margin: auto; border-radius: 14px; } }
+.sheet-head { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between; padding: 10px 10px 0 20px; background: var(--surface); }
+.sheet-head h2 { font-size: 1.1rem; font-weight: 600; }
+.sheet-body { display: grid; gap: 18px; padding: 8px 20px max(22px, env(safe-area-inset-bottom, 0px)); }
+.sheet-body p { font-size: .94rem; line-height: 1.55; }
+.sheet-body .muted { color: var(--muted); }
+.rule { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: start; }
+.rule .n { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--key); font-size: .8rem; font-weight: 600; }
+.rules { display: grid; gap: 14px; }
+.example { display: grid; justify-items: center; padding: 18px 0 16px; background: var(--bg); border-radius: 10px; }
+.example .ladder { --tile: 30px; --gap: 5px; --rung: 6px; padding: 0 14px; }
+.example .row::before { left: -14px; right: -14px; height: 2px; margin-top: -1px; }
+.example .ladder::before, .example .ladder::after { width: 2px; }
+.example .tile { border-radius: 5px; }
+.example-cap { margin-top: 10px; font-size: .8rem; color: var(--muted); text-align: center; }
+
+.numbers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.num b { display: block; font-size: 1.45rem; font-weight: 600; line-height: 1.15; letter-spacing: -.01em; }
+.num span { display: block; font-size: .76rem; line-height: 1.3; color: var(--muted); }
+.dist { display: grid; gap: 7px; }
+.dist-title { font-size: .78rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.bar-row { display: grid; grid-template-columns: 64px 1fr; align-items: center; gap: 10px; font-size: .84rem; }
+.bar-row > span { color: var(--muted); }
+.bar { height: 24px; min-width: 26px; padding: 0 8px; border-radius: 4px; background: var(--key); display: flex; align-items: center; justify-content: flex-end; font-size: .8rem; font-weight: 600; }
+.bar.today { background: var(--accent); color: #fff; }
+.empty { padding: 18px; border: 1px dashed var(--line-strong); border-radius: 10px; text-align: center; color: var(--muted); font-size: .9rem; }
 
 /* App update (Android app only) */
-.update { display: grid; gap: 14px; margin-top: 8px; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.update { display: grid; gap: 14px; margin-top: 8px; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
 .update-title { font-weight: 600; line-height: 1.3; }
 .update-sub, .update-msg { font-size: .84rem; color: var(--muted); }
 .update-notes { margin: 0; padding: 0 0 0 16px; font-size: .88rem; line-height: 1.4; }
@@ -199,8 +283,8 @@ button.tile:hover { border-color: var(--line-strong); }
 .update-pct { min-width: 3.2ch; text-align: right; font-size: .86rem; font-weight: 600; }
 
 @media (prefers-reduced-motion: reduce) {
-  .row.new, .row.bad, .result { animation: none; }
-  .ladder::before, .ladder::after, .update-track span { transition: none; }
+  .row.new, .row.bad, .result, dialog.sheet[open] { animation: none; }
+  .ladder::before, .ladder::after, .update-track span, .toast { transition: none; }
 }
 </style>
 </head>
@@ -208,14 +292,27 @@ button.tile:hover { border-color: var(--line-strong); }
 <div class="app">
   <header>
     <div class="top">
-      <h1 class="mark">Ladder</h1>
+      <div class="brand">
+        <svg width="20" height="22" viewBox="0 0 20 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 1.5v19M16 1.5v19M4 6h12M4 11h12M4 16h12"/></svg>
+        <h1 class="mark">Ladder</h1>
+      </div>
       <div class="top-right">
-        <button class="top-link" id="todayBtn" type="button" hidden>Today’s ladder</button>
         <button class="version" id="version" type="button" title="Check for updates" hidden></button>
+        <button class="icon-btn" id="statsBtn" type="button" aria-label="Stats">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 16.5V11M10 16.5V4M16 16.5V8"/></svg>
+        </button>
+        <button class="icon-btn" id="helpBtn" type="button" aria-label="How to play">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M7.7 7.6a2.4 2.4 0 1 1 3.3 2.2c-.6.3-1 .8-1 1.5v.5"/><circle cx="10" cy="14.6" r=".4" fill="currentColor"/></svg>
+        </button>
       </div>
     </div>
-    <p class="sub" id="sub"></p>
-    <p class="how" id="how" hidden>Change one letter at a time to get to the bottom word. Every step has to be a word.</p>
+    <div class="modes">
+      <div class="tabs" role="tablist" aria-label="Mode">
+        <button class="tab" id="tabToday" role="tab" type="button">Today<span class="dot" id="todayDot" hidden></span></button>
+        <button class="tab" id="tabPractice" role="tab" type="button">Practice</button>
+      </div>
+      <p class="meta" id="meta"></p>
+    </div>
   </header>
 
   <section class="update" id="updateCard" aria-label="App update" hidden>
@@ -236,36 +333,78 @@ button.tile:hover { border-color: var(--line-strong); }
   </section>
 
   <main class="stage" id="stage">
+    <p class="toast" id="toast" role="status"></p>
     <div class="ladder" id="ladder" aria-label="The ladder"></div>
   </main>
 
   <footer>
     <div id="play">
-      <div class="bar">
-        <p class="msg" id="msg" role="status"></p>
-        <button class="link" id="hintBtn" type="button">Hint</button>
+      <div class="tools">
+        <div class="tools-left">
+          <button class="tool" id="undoBtn" type="button" aria-label="Undo a step">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 4 3 7.5 6.5 11"/><path d="M3.5 7.5h7a4.5 4.5 0 0 1 0 9H8"/></svg>Undo
+          </button>
+          <button class="tool" id="restartBtn" type="button" aria-label="Start over">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.2 9a5.8 5.8 0 1 0 1.9-4.3"/><path d="M4.6 1.8v3.4H8"/></svg>Restart
+          </button>
+        </div>
+        <p class="count" id="count"></p>
+        <div class="tools-right">
+          <button class="tool hint" id="hintBtn" type="button">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.6 13.2h4.8M7.3 16h3.4M9 1.8a5 5 0 0 0-2.9 9.1c.4.3.6.8.6 1.3v1h4.6v-1c0-.5.2-1 .6-1.3A5 5 0 0 0 9 1.8z"/></svg>Hint
+          </button>
+        </div>
       </div>
       <div class="keys" id="keys" aria-label="Letters"></div>
     </div>
     <section class="result" id="result" aria-live="polite" hidden>
+      <p class="result-kicker">Solved</p>
       <div class="result-head">
         <p class="result-steps" id="resSteps"></p>
         <p class="result-par" id="resPar"></p>
       </div>
       <p class="result-note" id="resNote"></p>
-      <div class="stats" id="stats">
-        <p class="stat"><b id="stStreak">0</b><span>Day streak</span></p>
-        <p class="stat"><b id="stSolved">0</b><span>Solved</span></p>
-        <p class="stat"><b id="stPar">0</b><span>At or under par</span></p>
-      </div>
       <div class="actions">
         <button class="btn btn-secondary" id="resSecond" type="button"></button>
         <button class="btn btn-primary" id="resFirst" type="button"></button>
       </div>
+      <p class="result-foot" id="resFoot"></p>
     </section>
-    <p class="next" id="next" hidden></p>
   </footer>
 </div>
+
+<dialog class="sheet" id="helpSheet" aria-labelledby="helpTitle">
+  <div class="sheet-head">
+    <h2 id="helpTitle">How to play</h2>
+    <button class="icon-btn" type="button" data-close aria-label="Close">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m4 4 10 10M14 4 4 14"/></svg>
+    </button>
+  </div>
+  <div class="sheet-body">
+    <p>Climb from the top word to the bottom one, changing one letter at a time. Every step has to be a real word.</p>
+    <div class="example">
+      <div class="ladder" id="example" aria-label="Example: COLD, CORD, CARD, WARD, WARM"></div>
+      <p class="example-cap">COLD to WARM in four steps</p>
+    </div>
+    <div class="rules">
+      <div class="rule"><span class="n">1</span><p>Tap a letter in the word, then its new letter on the keyboard.</p></div>
+      <div class="rule"><span class="n">2</span><p><b>Par</b> is the fewest steps it can be done in. Gentle on Monday, longest on Sunday.</p></div>
+      <div class="rule"><span class="n">3</span><p>Green letters are already in place. Stuck? <b>Hint</b> shows the letter to change; tap it again for the word.</p></div>
+      <div class="rule"><span class="n">4</span><p>Tap an earlier word to go back to it. A new ladder arrives every midnight.</p></div>
+    </div>
+    <button class="btn btn-primary" type="button" data-close>Play</button>
+  </div>
+</dialog>
+
+<dialog class="sheet" id="statsSheet" aria-labelledby="statsTitle">
+  <div class="sheet-head">
+    <h2 id="statsTitle">Stats</h2>
+    <button class="icon-btn" type="button" data-close aria-label="Close">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m4 4 10 10M14 4 4 14"/></svg>
+    </button>
+  </div>
+  <div class="sheet-body" id="statsBody"></div>
+</dialog>
 
 <script src="words.js"></script>
 <script src="lib.js"></script>
@@ -313,13 +452,17 @@ button.tile:hover { border-color: var(--line-strong); }
   const current = () => play.ladder[play.ladder.length - 1];
   const steps = () => play.ladder.length - 1;
 
-  // ---- message line ----
-  let msgTimer = 0;
-  function say(text, warn = false, ms = 2200) {
-    clearTimeout(msgTimer);
-    $('msg').textContent = text;
-    $('msg').classList.toggle('warn', warn);
-    if (ms) msgTimer = setTimeout(() => { $('msg').textContent = ''; $('msg').classList.remove('warn'); }, ms);
+  // ---- toast ----
+  let toastTimer = 0;
+  // tone: '' plain, 'warn' for a refused word, 'tip' for hints.
+  function say(text, tone = '', ms = 2200) {
+    clearTimeout(toastTimer);
+    const t = $('toast');
+    t.textContent = text;
+    t.classList.toggle('warn', tone === 'warn');
+    t.classList.toggle('tip', tone === 'tip');
+    t.classList.toggle('show', !!text);
+    if (text && ms) toastTimer = setTimeout(() => t.classList.remove('show'), ms);
   }
 
   // ---- drawing ----
@@ -353,10 +496,12 @@ button.tile:hover { border-color: var(--line-strong); }
       const row = el('div', 'row');
       if (!last) {
         row.classList.add('past');
-        row.dataset.back = i;
-        row.setAttribute('role', 'button');
-        row.setAttribute('aria-label', `Go back to ${w.toUpperCase()}`);
-        row.tabIndex = 0;
+        if (!play.done) {
+          row.dataset.back = i;
+          row.setAttribute('role', 'button');
+          row.setAttribute('aria-label', `Go back to ${w.toUpperCase()}`);
+          row.tabIndex = 0;
+        } else row.style.cursor = 'default';
         tiles(row, w, { changed: i ? L.changedAt(words[i - 1], w) : -1 });
       } else if (bad) {
         row.classList.add('current', 'bad');
@@ -377,15 +522,25 @@ button.tile:hover { border-color: var(--line-strong); }
     box.replaceChildren(...rows);
     box.classList.toggle('done', play.done);
     fresh = false;
+    renderTools();
     fit();
+  }
+
+  function renderTools() {
+    const n = steps(), over = n > puzzle.par;
+    const c = $('count');
+    c.classList.toggle('over', over);
+    c.replaceChildren(el('b', '', `Step ${n}`), ` · Par ${puzzle.par}`);
+    $('undoBtn').disabled = n === 0;
+    $('restartBtn').disabled = n === 0;
   }
 
   // Size the tiles so the whole ladder fits the space it has.
   function fit() {
     const box = $('ladder'), stage = $('stage');
     const n = box.children.length;
-    const h = stage.clientHeight - 24, w = Math.min(stage.clientWidth, 340) - 44;
-    const byH = (h + 0) / (n + (n - 1) * 0.2);
+    const h = stage.clientHeight - 68, w = Math.min(stage.clientWidth, 340) - 44;
+    const byH = h / (n + (n - 1) * 0.2);
     const byW = (w - 3 * 8) / 4;
     const tile = Math.max(30, Math.min(58, Math.floor(Math.min(byH, byW))));
     box.style.setProperty('--tile', tile + 'px');
@@ -394,16 +549,22 @@ button.tile:hover { border-color: var(--line-strong); }
   }
 
   function renderHeader() {
-    const sub = $('sub');
-    if (state.mode === 'practice') {
-      sub.replaceChildren(el('span', '', 'Practice'), el('span', '', '·'), el('span', '', `Par ${puzzle.par}`));
+    const daily = state.mode === 'daily';
+    $('tabToday').setAttribute('aria-selected', String(daily));
+    $('tabPractice').setAttribute('aria-selected', String(!daily));
+    // A dot on Today while today's ladder is still to do.
+    const t = state.days[today];
+    $('todayDot').hidden = daily || !!(t && t.done);
+    const meta = $('meta');
+    if (daily) {
+      const date = new Date().toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' });
+      meta.textContent = `No. ${today} · ${date}`;
     } else {
-      const date = new Date().toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' });
-      const no = el('b', '', `No. ${today}`);
-      sub.replaceChildren(no, el('span', '', '·'), el('span', '', date), el('span', '', '·'), el('span', '', `Par ${puzzle.par}`));
+      const b = el('button', 'link', 'New ladder');
+      b.type = 'button';
+      b.addEventListener('click', startPractice);
+      meta.replaceChildren(b);
     }
-    $('todayBtn').hidden = state.mode !== 'practice';
-    $('how').hidden = !!store.get('played');
   }
 
   function solvedDays() { return Object.keys(state.days).filter(d => state.days[d].done).map(Number); }
@@ -420,29 +581,28 @@ button.tile:hover { border-color: var(--line-strong); }
       note.replaceChildren(`${diff} over par. One way in ${par}: `, el('b', '', way.map(w => w.toUpperCase()).join(' ')));
     }
     const daily = state.mode === 'daily';
-    $('stats').hidden = !daily;
-    if (daily) {
-      const days = solvedDays();
-      $('stStreak').textContent = L.streak(days, today);
-      $('stSolved').textContent = days.length;
-      $('stPar').textContent = days.filter(d => {
-        const p = state.days[d];
-        return p.ladder.length - 1 <= L.daily(d, D, dict).par;
-      }).length;
-    }
-    $('resFirst').textContent = daily ? 'Share' : 'Another one';
+    $('resFirst').textContent = daily ? 'Share' : 'New ladder';
     $('resSecond').textContent = daily ? 'Practice' : 'Share';
     tickNext();
   }
 
   function tickNext() {
-    const show = play.done && state.mode === 'daily';
-    $('next').hidden = !show;
-    if (!show) return;
+    const foot = $('resFoot');
+    if (!play.done) return;
+    if (state.mode !== 'daily') {
+      const t = state.days[today];
+      foot.replaceChildren(el('span', '', t && t.done ? 'Today’s ladder is done' : 'Today’s ladder is still to do'));
+      return;
+    }
     const now = new Date();
     const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
     const mins = Math.max(1, Math.ceil((midnight - now) / 60000));
-    $('next').textContent = `Next ladder in ${mins >= 60 ? `${Math.floor(mins / 60)} h ` : ''}${mins % 60} min`;
+    const s = L.streak(solvedDays(), today);
+    foot.replaceChildren(
+      el('span', '', ''),
+      el('span', '', `Next ladder in ${mins >= 60 ? `${Math.floor(mins / 60)} h ` : ''}${mins % 60} min`),
+    );
+    foot.firstChild.append(el('b', '', String(s)), ` day streak`);
   }
 
   function render() {
@@ -451,10 +611,82 @@ button.tile:hover { border-color: var(--line-strong); }
     $('play').hidden = play.done;
     $('result').hidden = !play.done;
     if (play.done) renderResult();
-    else $('hintBtn').disabled = false;
-    $('next').hidden = !(play.done && state.mode === 'daily');
-    toApp({ type: 'back', enabled: state.mode === 'practice' });
+    tellBack();
   }
+
+  // ---- stats ----
+  function renderStats() {
+    const days = solvedDays();
+    const body = $('statsBody');
+    if (!days.length) {
+      body.replaceChildren(el('p', 'empty', 'Finish a daily ladder to start your stats.'));
+      return;
+    }
+    const diffs = days.map(d => state.days[d].ladder.length - 1 - L.daily(d, D, dict).par);
+    const atPar = diffs.filter(x => x <= 0).length;
+    const nums = el('div', 'numbers');
+    for (const [v, label] of [
+      [days.length, 'Solved'],
+      [L.streak(days, today), 'Streak'],
+      [L.bestStreak(days), 'Best streak'],
+      [Math.round(atPar / days.length * 100) + '%', 'Par or under'],
+    ]) {
+      const n = el('p', 'num');
+      n.append(el('b', '', String(v)), el('span', '', label));
+      nums.append(n);
+    }
+    const buckets = [['Under par', x => x < 0], ['On par', x => x === 0], ['1 over', x => x === 1], ['2 over', x => x === 2], ['3+ over', x => x >= 3]];
+    const counts = buckets.map(([, f]) => diffs.filter(f).length);
+    const max = Math.max(...counts, 1);
+    const todayRec = state.days[today];
+    const todayDiff = todayRec && todayRec.done ? todayRec.ladder.length - 1 - L.daily(today, D, dict).par : null;
+    const dist = el('div', 'dist');
+    dist.append(el('p', 'dist-title', 'Against par'));
+    buckets.forEach(([label, f], i) => {
+      const row = el('div', 'bar-row');
+      const bar = el('div', 'bar', String(counts[i]));
+      bar.style.width = `${Math.max(8, counts[i] / max * 100)}%`;
+      if (todayDiff !== null && f(todayDiff)) bar.classList.add('today');
+      row.append(el('span', '', label), el('div', '', ''));
+      row.lastChild.append(bar);
+      dist.append(row);
+    });
+    body.replaceChildren(nums, dist);
+    if (todayRec && todayRec.done) {
+      const b = el('button', 'btn btn-primary', 'Share today’s ladder');
+      b.type = 'button';
+      b.addEventListener('click', () => share(L.daily(today, D, dict), todayRec));
+      body.append(b);
+    }
+  }
+
+  // ---- sheets ----
+  function openSheet(id) {
+    if (id === 'statsSheet') renderStats();
+    const d = $(id);
+    if (!d.open) d.showModal();
+    tellBack();
+  }
+  for (const d of document.querySelectorAll('dialog.sheet')) {
+    d.addEventListener('click', e => { if (e.target === d || e.target.closest('[data-close]')) d.close(); });
+    d.addEventListener('close', tellBack);
+  }
+  const openDialog = () => document.querySelector('dialog.sheet[open]');
+
+  // The example ladder in How to play.
+  (() => {
+    const words = ['cold', 'cord', 'card', 'ward', 'warm'];
+    $('example').replaceChildren(...words.map((w, i) => {
+      const row = el('div', i === words.length - 1 ? 'row goal' : 'row past');
+      row.style.cursor = 'default';
+      for (let j = 0; j < 4; j++) {
+        const t = el('span', 'tile', w[j]);
+        if (i && i < words.length - 1 && L.changedAt(words[i - 1], w) === j) t.classList.add('changed');
+        row.append(t);
+      }
+      return row;
+    }));
+  })();
 
   // ---- playing ----
   function pick(at) {
@@ -474,7 +706,7 @@ button.tile:hover { border-color: var(--line-strong); }
     haptic();
     play.ladder.push(next);
     sel = null; hint = null; fresh = true;
-    say('', false, 0);
+    say('');
     if (next === puzzle.target) finish();
     save();
     render();
@@ -483,7 +715,7 @@ button.tile:hover { border-color: var(--line-strong); }
   function reject(word, at, text) {
     haptic('tick');
     bad = { word, at };
-    say(text, true);
+    say(text, 'warn');
     renderLadder();
     setTimeout(() => { bad = null; renderLadder(); }, 650);
   }
@@ -492,6 +724,7 @@ button.tile:hover { border-color: var(--line-strong); }
     if (play.done || to < 0 || to >= steps()) return;
     play.ladder.length = to + 1;
     sel = null; hint = null;
+    say('');
     save();
     renderLadder();
   }
@@ -500,17 +733,17 @@ button.tile:hover { border-color: var(--line-strong); }
   function giveHint() {
     if (play.done) return;
     const word = current();
-    if (hint && hint.shown === 'word') return say(`Try ${hint.word.toUpperCase()}`, false, 0);
+    if (hint && hint.shown === 'word') return say(`Try ${hint.word.toUpperCase()}`, 'tip', 5000);
     const next = L.nextStep(word, puzzle.target, dict);
-    if (!next) return say('No way on from here. Go back a step.', true);
+    if (!next) return say('No way on from here. Undo a step.', 'warn');
     play.hints++;
     if (hint && hint.word === next) {
       hint.shown = 'word';
-      say(`Try ${next.toUpperCase()}`, false, 0);
+      say(`Try ${next.toUpperCase()}`, 'tip', 5000);
     } else {
       hint = { word: next, at: L.changedAt(word, next), shown: 'spot' };
       sel = hint.at;
-      say('Change this letter. Tap Hint again for the word.', false, 0);
+      say('Change the blue letter. Hint again for the word.', 'tip', 5000);
     }
     save();
     renderLadder();
@@ -518,21 +751,14 @@ button.tile:hover { border-color: var(--line-strong); }
 
   function finish() {
     play.done = true;
-    store.set('played', true);
     haptic('tick');
   }
 
-  function share() {
-    const text = L.shareText(puzzle, play.ladder, play.hints);
+  function share(p = puzzle, pl = play) {
+    const text = L.shareText(p, pl.ladder, pl.hints);
     if (app) return toApp({ type: 'share', title: 'Ladder', text });
     if (navigator.share) return navigator.share({ text }).catch(() => {});
-    navigator.clipboard.writeText(text).then(() => flash('Copied'), () => {});
-  }
-  // A quick note in the result card, where the message line isn't shown.
-  function flash(text) {
-    const n = $('next'), was = n.textContent, washidden = n.hidden;
-    n.hidden = false; n.textContent = text;
-    setTimeout(() => { n.textContent = was; n.hidden = washidden; tickNext(); }, 1600);
+    navigator.clipboard.writeText(text).then(() => say('Copied to share'), () => {});
   }
 
   function startPractice() {
@@ -540,11 +766,13 @@ button.tile:hover { border-color: var(--line-strong); }
     const p = L.practice(seed, D, dict);
     state.practice = { puzzle: p, ladder: [p.start], hints: 0, done: false };
     state.mode = 'practice';
-    save(); load(); render();
+    save(); load(); say(''); render();
   }
-  function toToday() {
-    state.mode = 'daily';
-    save(); load(); render();
+  function setMode(mode) {
+    if (state.mode === mode) return;
+    if (mode === 'practice' && !state.practice) return startPractice();
+    state.mode = mode;
+    save(); load(); say(''); render();
   }
 
   // ---- keyboard ----
@@ -559,35 +787,26 @@ button.tile:hover { border-color: var(--line-strong); }
       row.append(k);
     }
     if (i === 1) row.append(el('span', 'spacer'));
-    if (i === 2) {
-      const k = el('button', 'key wide');
-      k.type = 'button';
-      k.dataset.key = 'back';
-      k.setAttribute('aria-label', 'Back a step');
-      k.innerHTML = '<svg width="22" height="16" viewBox="0 0 22 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M7 1.5h12.5v13H7L1.5 8z"/><path d="m10.5 5.5 5 5m0-5-5 5" stroke-linecap="round"/></svg>';
-      row.append(k);
-    }
     return row;
   }));
   $('keys').addEventListener('click', e => {
     const k = e.target.closest('.key');
-    if (!k) return;
-    if (k.dataset.key === 'back') back(); else press(k.dataset.key);
+    if (k) press(k.dataset.key);
   });
 
   $('ladder').addEventListener('click', e => {
     const t = e.target.closest('button.tile');
     if (t) return pick(Number(t.dataset.at));
-    const r = e.target.closest('.row.past');
+    const r = e.target.closest('.row.past[data-back]');
     if (r) back(Number(r.dataset.back));
   });
   $('ladder').addEventListener('keydown', e => {
-    const r = e.target.closest('.row.past');
+    const r = e.target.closest('.row.past[data-back]');
     if (r && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); back(Number(r.dataset.back)); }
   });
 
   document.addEventListener('keydown', e => {
-    if (e.ctrlKey || e.metaKey || e.altKey || play.done) return;
+    if (e.ctrlKey || e.metaKey || e.altKey || play.done || openDialog()) return;
     if (/^[a-z]$/i.test(e.key)) { e.preventDefault(); return press(e.key.toLowerCase()); }
     if (e.key === 'Backspace') { e.preventDefault(); return back(); }
     if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
@@ -598,11 +817,25 @@ button.tile:hover { border-color: var(--line-strong); }
     if (e.key === 'Escape' && sel !== null) { sel = null; renderLadder(); }
   });
 
+  $('undoBtn').addEventListener('click', () => back());
+  $('restartBtn').addEventListener('click', () => back(0));
   $('hintBtn').addEventListener('click', giveHint);
   $('resFirst').addEventListener('click', () => state.mode === 'daily' ? share() : startPractice());
-  $('resSecond').addEventListener('click', () => state.mode === 'daily' ? startPractice() : share());
-  $('todayBtn').addEventListener('click', toToday);
-  window.ladderBack = () => { if (state.mode !== 'practice') return false; toToday(); return true; };
+  $('resSecond').addEventListener('click', () => state.mode === 'daily' ? setMode('practice') : share());
+  $('tabToday').addEventListener('click', () => setMode('daily'));
+  $('tabPractice').addEventListener('click', () => setMode('practice'));
+  $('helpBtn').addEventListener('click', () => openSheet('helpSheet'));
+  $('statsBtn').addEventListener('click', () => openSheet('statsSheet'));
+
+  // Android Back: close a sheet, then leave practice.
+  window.ladderBack = () => {
+    const d = openDialog();
+    if (d) { d.close(); return true; }
+    if (state.mode !== 'practice') return false;
+    setMode('daily');
+    return true;
+  };
+  function tellBack() { toApp({ type: 'back', enabled: !!openDialog() || state.mode === 'practice' }); }
 
   addEventListener('resize', fit);
   // A new day while the game sits open (or comes back from the background).
@@ -610,8 +843,9 @@ button.tile:hover { border-color: var(--line-strong); }
     const now = L.dayNumber(new Date(), D.epoch);
     if (now !== today) {
       today = now;
-      if (state.mode === 'daily') { load(); render(); }
-    } else tickNext();
+      if (state.mode === 'daily') load();
+      render();
+    } else if (play.done) tickNext();
   }
   document.addEventListener('visibilitychange', () => { if (!document.hidden) checkDay(); });
   setInterval(() => { if (!document.hidden) checkDay(); }, 30000);
@@ -695,6 +929,8 @@ button.tile:hover { border-color: var(--line-strong); }
   load();
   render();
   toApp({ type: 'hello' });
+  // First visit: how to play, once.
+  if (!store.get('seenHelp')) { store.set('seenHelp', true); openSheet('helpSheet'); }
 })();
 </script>
 </body>

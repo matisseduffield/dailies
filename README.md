@@ -6,14 +6,17 @@ letter at a time, and every step has to be a word. Free, offline, no ads.
 - One ladder a day, the same for everyone, numbered from 3 November 2026.
   Par is the fewest steps possible using everyday words, and it rises through
   the week: 3 on Monday, 7 on Sunday.
-- Tap a letter in the word, then the new letter. Tap an earlier rung (or ⌫)
-  to go back. On a computer, type: arrows pick the letter, Backspace goes back.
+- Tap a letter in the word, then the new letter. Tap an earlier rung, Undo
+  or Restart to go back. On a computer, type: arrows pick the letter,
+  Backspace undoes a step.
 - Letters already in place show green. Hint shows which letter to change;
   asked again on the same rung, it gives the word. Hints count in the result.
-- The result: steps against par, a day streak and totals, a shortest way if
-  you went over, and a spoiler-free picture to share (which letter changed on
-  each step).
-- Practice: random ladders (par 4 to 6) once today's is done.
+- The result: steps against par, the day streak, a shortest way if you went
+  over, and a spoiler-free picture to share (which letter changed on each
+  step). Stats (top bar): solved, streak, best streak, and how often you're
+  on, under or over par.
+- Today / Practice tabs: practice ladders are random (par 4 to 6).
+- How to play (top bar) opens by itself on the first visit.
 - Android app: self-updating from the public `ladder-releases` repo.
 
 ## Words
