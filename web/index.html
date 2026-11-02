@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#E8ECE5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1412" media="(prefers-color-scheme: dark)">
+<meta name="description" content="A daily word ladder. Change one letter at a time to get from one word to another.">
+<title>Ladder</title>
+<style>
+/* Hanken Grotesk ships with the page (fonts/, SIL OFL) so the game looks the same offline. */
+@font-face {
+  font-family: "Hanken Grotesk";
+  src: url("fonts/hanken-grotesk-latin.woff2") format("woff2");
+  font-weight: 400 600;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* The same palette as Bureau and Tally: sage-grey paper, near-black ink,
+   blue for the letter you're changing, green for letters already in place. */
+:root {
+  --bg: #E8ECE5;
+  --surface: #F7F8F4;
+  --ink: #14211C;
+  --muted: #5B6861;
+  --faint: #66736C;
+  --line: #CDD5CC;
+  --line-strong: #8C968F;
+  --accent: #2C53C4;
+  --accent-soft: rgba(44, 83, 196, .09);
+  --pos: #1D7548;
+  --neg: #B0392D;
+  --on-ink: #F7F8F4;
+  --key: #DCE2DA;
+  --font: "Hanken Grotesk", "Segoe UI", Roboto, system-ui, -apple-system, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1412;
+    --surface: #18211E;
+    --ink: #E4EAE5;
+    --muted: #8C9992;
+    --faint: #838F89;
+    --line: #2E3A35;
+    --line-strong: #5F6C66;
+    --accent: #85A2FF;
+    --accent-soft: rgba(133, 162, 255, .12);
+    --pos: #5FC890;
+    --neg: #F08476;
+    --on-ink: #0E1412;
+    --key: #222D29;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1412;
+  --surface: #18211E;
+  --ink: #E4EAE5;
+  --muted: #8C9992;
+  --faint: #838F89;
+  --line: #2E3A35;
+  --line-strong: #5F6C66;
+  --accent: #85A2FF;
+  --accent-soft: rgba(133, 162, 255, .12);
+  --pos: #5FC890;
+  --neg: #F08476;
+  --on-ink: #0E1412;
+  --key: #222D29;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 15px/1.5 var(--font);
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+p { margin: 0; }
+
+.app {
+  display: flex; flex-direction: column;
+  height: 100dvh; max-width: 480px; margin: 0 auto;
+  padding: 14px max(16px, env(safe-area-inset-right, 0px)) max(10px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+}
+
+/* Top bar */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; }
+.mark { margin: 0; font-size: 1.2rem; font-weight: 600; letter-spacing: -.01em; }
+.top-right { display: flex; align-items: center; gap: 2px; margin-right: -8px; }
+.version, .top-link { min-height: 44px; padding: 0 8px; background: none; border: 0; font-size: .84rem; color: var(--muted); }
+.version:hover, .top-link:hover { color: var(--ink); }
+.version[data-state="available"] { color: var(--accent); font-weight: 600; }
+.top-link { font-weight: 600; color: var(--accent); }
+.top-link:hover { color: var(--accent); opacity: .85; }
+.sub { display: flex; gap: 6px; flex-wrap: wrap; font-size: .88rem; color: var(--muted); }
+.sub b { font-weight: 600; color: var(--ink); }
+.how { margin-top: 4px; font-size: .88rem; color: var(--muted); max-width: 34ch; }
+
+/* The ladder: two rails, a rung for every word. Tiles shrink to fit a
+   long ladder on screen rather than scrolling. */
+.stage { flex: 1; min-height: 0; display: grid; place-items: safe center; padding: 12px 0; overflow-y: auto; }
+.ladder {
+  --tile: 54px; --gap: 8px; --rung: 10px;
+  position: relative; display: grid; gap: var(--rung);
+  padding: 0 22px;
+}
+.ladder::before, .ladder::after {
+  content: ""; position: absolute; top: calc(var(--tile) * -.25); bottom: calc(var(--tile) * -.25);
+  width: 3px; border-radius: 2px; background: var(--line-strong);
+  transition: background .3s;
+}
+.ladder::before { left: 0; }
+.ladder::after { right: 0; }
+.ladder.done::before, .ladder.done::after { background: var(--pos); }
+.row { position: relative; display: grid; grid-template-columns: repeat(4, var(--tile)); gap: var(--gap); }
+/* the rung itself, behind the tiles */
+.row::before { content: ""; position: absolute; left: -22px; right: -22px; top: 50%; height: 3px; margin-top: -1.5px; background: var(--line-strong); opacity: .55; }
+.ladder.done .row::before { background: var(--pos); }
+.tile {
+  position: relative; display: grid; place-items: center;
+  width: var(--tile); height: var(--tile); padding: 0;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+  font-size: calc(var(--tile) * .44); font-weight: 600; line-height: 1; text-transform: uppercase;
+}
+button.tile:hover { border-color: var(--line-strong); }
+.row.past .tile { color: var(--muted); }
+.row.past .tile.changed { color: var(--accent); }
+.row.past { cursor: pointer; }
+.row.current .tile.match { color: var(--pos); }
+.row.current .tile[aria-pressed="true"] { border: 2px solid var(--accent); background: var(--accent-soft); color: var(--accent); }
+.row.current .tile.hinted:not([aria-pressed="true"]) { border: 2px dashed var(--accent); }
+.row.slot .tile { background: var(--bg); border-style: dashed; }
+.row.goal .tile { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
+.row.bad .tile { color: var(--neg); }
+.row.bad .tile.try { border-color: var(--neg); }
+.row.new { animation: rise .22s ease-out; }
+.row.bad { animation: shake .32s; }
+@keyframes rise { from { opacity: 0; transform: translateY(-8px); } }
+@keyframes shake { 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
+
+/* Message line and hint */
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 40px; }
+.msg { font-size: .9rem; color: var(--muted); }
+.msg.warn { color: var(--neg); }
+.link { position: relative; padding: 6px 0; background: none; border: 0; font-size: .9rem; font-weight: 600; color: var(--accent); white-space: nowrap; }
+.link::after { content: ""; position: absolute; inset: -9px -8px; }
+.link:disabled { color: var(--faint); cursor: default; }
+
+/* Keyboard */
+.keys { display: grid; gap: 7px; padding-bottom: 4px; user-select: none; -webkit-user-select: none; }
+.krow { display: flex; gap: 5px; justify-content: center; }
+.key {
+  flex: 1 1 0; max-width: 44px; height: 52px; padding: 0;
+  background: var(--key); border: 0; border-radius: 6px;
+  font-size: 1.05rem; font-weight: 600; text-transform: uppercase;
+  touch-action: manipulation;
+}
+.key:active { background: var(--line-strong); }
+.key.wide { flex-grow: 1.6; max-width: 68px; display: grid; place-items: center; color: var(--muted); }
+.krow .spacer { flex: .5 1 0; max-width: 22px; }
+
+/* Result */
+.result { display: grid; gap: 16px; padding: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; animation: rise .25s ease-out; }
+.result-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.result-steps { font-size: 1.5rem; font-weight: 600; letter-spacing: -.01em; line-height: 1.2; }
+.result-par { font-size: .9rem; color: var(--muted); }
+.result-note { font-size: .92rem; color: var(--muted); }
+.result-note b { font-weight: 600; color: var(--ink); letter-spacing: .04em; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding-top: 14px; border-top: 1px solid var(--line); }
+.stat b { display: block; font-size: 1.2rem; font-weight: 600; line-height: 1.2; }
+.stat span { font-size: .78rem; color: var(--muted); }
+.actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.btn { min-height: 46px; padding: 0 16px; border-radius: 6px; font-size: .95rem; font-weight: 600; }
+.btn-primary { background: var(--ink); border: 1px solid var(--ink); color: var(--on-ink); }
+.btn-primary:hover { opacity: .9; }
+.btn-secondary { background: transparent; border: 1px solid var(--line); }
+.btn-secondary:hover { border-color: var(--muted); }
+.next { font-size: .84rem; color: var(--muted); text-align: center; margin-top: 10px; }
+
+/* App update (Android app only) */
+.update { display: grid; gap: 14px; margin-top: 8px; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.update-title { font-weight: 600; line-height: 1.3; }
+.update-sub, .update-msg { font-size: .84rem; color: var(--muted); }
+.update-notes { margin: 0; padding: 0 0 0 16px; font-size: .88rem; line-height: 1.4; }
+.update-progress { display: flex; align-items: center; gap: 12px; min-height: 46px; }
+.update-track { flex: 1; height: 6px; border-radius: 3px; background: var(--accent-soft); overflow: hidden; }
+.update-track span { display: block; height: 100%; width: 0; border-radius: 3px; background: var(--accent); transition: width .2s; }
+.update-pct { min-width: 3.2ch; text-align: right; font-size: .86rem; font-weight: 600; }
+
+@media (prefers-reduced-motion: reduce) {
+  .row.new, .row.bad, .result { animation: none; }
+  .ladder::before, .ladder::after, .update-track span { transition: none; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="top">
+      <h1 class="mark">Ladder</h1>
+      <div class="top-right">
+        <button class="top-link" id="todayBtn" type="button" hidden>Today’s ladder</button>
+        <button class="version" id="version" type="button" title="Check for updates" hidden></button>
+      </div>
+    </div>
+    <p class="sub" id="sub"></p>
+    <p class="how" id="how" hidden>Change one letter at a time to get to the bottom word. Every step has to be a word.</p>
+  </header>
+
+  <section class="update" id="updateCard" aria-label="App update" hidden>
+    <div>
+      <p class="update-title" id="updateTitle">Update available</p>
+      <p class="update-sub" id="updateSub"></p>
+    </div>
+    <ul class="update-notes" id="updateNotes" hidden></ul>
+    <p class="update-msg" id="updateMsg" hidden></p>
+    <div class="update-progress" id="updateProgress" hidden>
+      <div class="update-track"><span id="updateBar"></span></div>
+      <span class="update-pct" id="updatePct">0%</span>
+    </div>
+    <div class="actions" id="updateActions">
+      <button class="btn btn-secondary" id="updateLater" type="button">Not now</button>
+      <button class="btn btn-primary" id="updateGo" type="button">Update</button>
+    </div>
+  </section>
+
+  <main class="stage" id="stage">
+    <div class="ladder" id="ladder" aria-label="The ladder"></div>
+  </main>
+
+  <footer>
+    <div id="play">
+      <div class="bar">
+        <p class="msg" id="msg" role="status"></p>
+        <button class="link" id="hintBtn" type="button">Hint</button>
+      </div>
+      <div class="keys" id="keys" aria-label="Letters"></div>
+    </div>
+    <section class="result" id="result" aria-live="polite" hidden>
+      <div class="result-head">
+        <p class="result-steps" id="resSteps"></p>
+        <p class="result-par" id="resPar"></p>
+      </div>
+      <p class="result-note" id="resNote"></p>
+      <div class="stats" id="stats">
+        <p class="stat"><b id="stStreak">0</b><span>Day streak</span></p>
+        <p class="stat"><b id="stSolved">0</b><span>Solved</span></p>
+        <p class="stat"><b id="stPar">0</b><span>At or under par</span></p>
+      </div>
+      <div class="actions">
+        <button class="btn btn-secondary" id="resSecond" type="button"></button>
+        <button class="btn btn-primary" id="resFirst" type="button"></button>
+      </div>
+    </section>
+    <p class="next" id="next" hidden></p>
+  </footer>
+</div>
+
+<script src="words.js"></script>
+<script src="lib.js"></script>
+<script>
+(() => {
+  const L = window.LadderLib, D = window.LadderWords;
+  const dict = L.dictionary(D);
+  const $ = id => document.getElementById(id);
+  const locale = navigator.language || 'en';
+
+  const store = {
+    get(k) { try { return JSON.parse(localStorage.getItem('ladder.' + k)); } catch { return null; } },
+    set(k, v) { try { localStorage.setItem('ladder.' + k, JSON.stringify(v)); } catch {} },
+  };
+
+  // ---- state ----
+  // days: { [day]: { ladder: [...words], hints, done } }; practice: the
+  // current random ladder, if any; mode: which one is on screen.
+  const saved = store.get('state') || {};
+  const state = {
+    days: saved.days && typeof saved.days === 'object' ? saved.days : {},
+    practice: saved.practice || null,
+    mode: saved.mode === 'practice' && saved.practice ? 'practice' : 'daily',
+  };
+  const save = () => store.set('state', state);
+
+  let today = L.dayNumber(new Date(), D.epoch);
+  let puzzle, play;            // the puzzle on screen and its progress
+  let sel = null;              // which letter of the current word is picked
+  let hint = null;             // { word, at, shown: 'spot' | 'word' } for the current rung
+  let fresh = false;           // animate the newest rung once
+  let bad = null;              // a rejected try, shown briefly
+
+  function load() {
+    if (state.mode === 'practice') {
+      puzzle = state.practice.puzzle;
+      play = state.practice;
+    } else {
+      puzzle = L.daily(today, D, dict);
+      play = state.days[today] || (state.days[today] = { ladder: [puzzle.start], hints: 0, done: false });
+      if (play.ladder[0] !== puzzle.start) Object.assign(play, { ladder: [puzzle.start], hints: 0, done: false });
+    }
+    sel = null; hint = null; bad = null;
+  }
+  const current = () => play.ladder[play.ladder.length - 1];
+  const steps = () => play.ladder.length - 1;
+
+  // ---- message line ----
+  let msgTimer = 0;
+  function say(text, warn = false, ms = 2200) {
+    clearTimeout(msgTimer);
+    $('msg').textContent = text;
+    $('msg').classList.toggle('warn', warn);
+    if (ms) msgTimer = setTimeout(() => { $('msg').textContent = ''; $('msg').classList.remove('warn'); }, ms);
+  }
+
+  // ---- drawing ----
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+
+  function tiles(row, word, opts = {}) {
+    for (let i = 0; i < L.LEN; i++) {
+      const t = el(opts.buttons ? 'button' : 'span', 'tile', word ? word[i] : '');
+      if (opts.buttons) {
+        t.type = 'button';
+        t.dataset.at = i;
+        t.setAttribute('aria-pressed', String(sel === i));
+        t.setAttribute('aria-label', `Change letter ${i + 1}, ${word[i].toUpperCase()}`);
+        if (word[i] === puzzle.target[i]) t.classList.add('match');
+        if (hint && hint.at === i) t.classList.add('hinted');
+      }
+      if (opts.changed === i) t.classList.add('changed');
+      if (opts.tried === i) t.classList.add('try');
+      row.append(t);
+    }
+    return row;
+  }
+
+  function renderLadder() {
+    const box = $('ladder');
+    const rows = [];
+    const words = play.ladder;
+    words.forEach((w, i) => {
+      const last = i === words.length - 1;
+      if (last && play.done) return;
+      const row = el('div', 'row');
+      if (!last) {
+        row.classList.add('past');
+        row.dataset.back = i;
+        row.setAttribute('role', 'button');
+        row.setAttribute('aria-label', `Go back to ${w.toUpperCase()}`);
+        row.tabIndex = 0;
+        tiles(row, w, { changed: i ? L.changedAt(words[i - 1], w) : -1 });
+      } else if (bad) {
+        row.classList.add('current', 'bad');
+        tiles(row, bad.word, { tried: bad.at });
+      } else {
+        row.classList.add('current');
+        tiles(row, w, { buttons: true, changed: -1 });
+      }
+      if (last && fresh && i > 0) row.classList.add('new');
+      rows.push(row);
+    });
+    // Empty rungs up to par, then the word to reach.
+    if (!play.done) for (let i = steps() + 1; i < puzzle.par; i++) rows.push(tiles(el('div', 'row slot'), ''));
+    const goal = tiles(el('div', 'row goal'), puzzle.target);
+    goal.setAttribute('aria-label', `Get to ${puzzle.target.toUpperCase()}`);
+    if (play.done && fresh) goal.classList.add('new');
+    rows.push(goal);
+    box.replaceChildren(...rows);
+    box.classList.toggle('done', play.done);
+    fresh = false;
+    fit();
+  }
+
+  // Size the tiles so the whole ladder fits the space it has.
+  function fit() {
+    const box = $('ladder'), stage = $('stage');
+    const n = box.children.length;
+    const h = stage.clientHeight - 24, w = Math.min(stage.clientWidth, 340) - 44;
+    const byH = (h + 0) / (n + (n - 1) * 0.2);
+    const byW = (w - 3 * 8) / 4;
+    const tile = Math.max(30, Math.min(58, Math.floor(Math.min(byH, byW))));
+    box.style.setProperty('--tile', tile + 'px');
+    box.style.setProperty('--rung', Math.round(tile * 0.2) + 'px');
+    box.style.setProperty('--gap', Math.round(Math.min(8, tile * 0.16)) + 'px');
+  }
+
+  function renderHeader() {
+    const sub = $('sub');
+    if (state.mode === 'practice') {
+      sub.replaceChildren(el('span', '', 'Practice'), el('span', '', '·'), el('span', '', `Par ${puzzle.par}`));
+    } else {
+      const date = new Date().toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' });
+      const no = el('b', '', `No. ${today}`);
+      sub.replaceChildren(no, el('span', '', '·'), el('span', '', date), el('span', '', '·'), el('span', '', `Par ${puzzle.par}`));
+    }
+    $('todayBtn').hidden = state.mode !== 'practice';
+    $('how').hidden = !!store.get('played');
+  }
+
+  function solvedDays() { return Object.keys(state.days).filter(d => state.days[d].done).map(Number); }
+
+  function renderResult() {
+    const n = steps(), par = puzzle.par, diff = n - par;
+    $('resSteps').textContent = `${n} ${n === 1 ? 'step' : 'steps'}`;
+    $('resPar').textContent = `Par ${par}` + (play.hints ? ` · ${play.hints} ${play.hints === 1 ? 'hint' : 'hints'}` : '');
+    const note = $('resNote');
+    if (diff < 0) note.textContent = `${-diff} under par. Better than we managed.`;
+    else if (diff === 0) note.textContent = play.hints ? 'Right on par.' : 'Right on par. Nicely done.';
+    else {
+      const way = L.shortest(puzzle.start, puzzle.target, dict.known) || [];
+      note.replaceChildren(`${diff} over par. One way in ${par}: `, el('b', '', way.map(w => w.toUpperCase()).join(' ')));
+    }
+    const daily = state.mode === 'daily';
+    $('stats').hidden = !daily;
+    if (daily) {
+      const days = solvedDays();
+      $('stStreak').textContent = L.streak(days, today);
+      $('stSolved').textContent = days.length;
+      $('stPar').textContent = days.filter(d => {
+        const p = state.days[d];
+        return p.ladder.length - 1 <= L.daily(d, D, dict).par;
+      }).length;
+    }
+    $('resFirst').textContent = daily ? 'Share' : 'Another one';
+    $('resSecond').textContent = daily ? 'Practice' : 'Share';
+    tickNext();
+  }
+
+  function tickNext() {
+    const show = play.done && state.mode === 'daily';
+    $('next').hidden = !show;
+    if (!show) return;
+    const now = new Date();
+    const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    const mins = Math.max(1, Math.ceil((midnight - now) / 60000));
+    $('next').textContent = `Next ladder in ${mins >= 60 ? `${Math.floor(mins / 60)} h ` : ''}${mins % 60} min`;
+  }
+
+  function render() {
+    renderHeader();
+    renderLadder();
+    $('play').hidden = play.done;
+    $('result').hidden = !play.done;
+    if (play.done) renderResult();
+    else $('hintBtn').disabled = false;
+    $('next').hidden = !(play.done && state.mode === 'daily');
+    toApp({ type: 'back', enabled: state.mode === 'practice' });
+  }
+
+  // ---- playing ----
+  function pick(at) {
+    if (play.done) return;
+    sel = sel === at ? null : at;
+    renderLadder();
+  }
+
+  function press(letter) {
+    if (play.done || bad) return;
+    if (sel === null) return say('Tap a letter in the word first');
+    const word = current();
+    if (word[sel] === letter) return;
+    const next = word.slice(0, sel) + letter + word.slice(sel + 1);
+    if (!dict.all.has(next) && next !== puzzle.target) return reject(next, sel, `${next.toUpperCase()} isn’t in the word list`);
+    if (play.ladder.includes(next)) return reject(next, sel, `${next.toUpperCase()} is already on the ladder`);
+    haptic();
+    play.ladder.push(next);
+    sel = null; hint = null; fresh = true;
+    say('', false, 0);
+    if (next === puzzle.target) finish();
+    save();
+    render();
+  }
+
+  function reject(word, at, text) {
+    haptic('tick');
+    bad = { word, at };
+    say(text, true);
+    renderLadder();
+    setTimeout(() => { bad = null; renderLadder(); }, 650);
+  }
+
+  function back(to = steps() - 1) {
+    if (play.done || to < 0 || to >= steps()) return;
+    play.ladder.length = to + 1;
+    sel = null; hint = null;
+    save();
+    renderLadder();
+  }
+
+  // First the letter to change; asked again on the same rung, the word.
+  function giveHint() {
+    if (play.done) return;
+    const word = current();
+    if (hint && hint.shown === 'word') return say(`Try ${hint.word.toUpperCase()}`, false, 0);
+    const next = L.nextStep(word, puzzle.target, dict);
+    if (!next) return say('No way on from here. Go back a step.', true);
+    play.hints++;
+    if (hint && hint.word === next) {
+      hint.shown = 'word';
+      say(`Try ${next.toUpperCase()}`, false, 0);
+    } else {
+      hint = { word: next, at: L.changedAt(word, next), shown: 'spot' };
+      sel = hint.at;
+      say('Change this letter. Tap Hint again for the word.', false, 0);
+    }
+    save();
+    renderLadder();
+  }
+
+  function finish() {
+    play.done = true;
+    store.set('played', true);
+    haptic('tick');
+  }
+
+  function share() {
+    const text = L.shareText(puzzle, play.ladder, play.hints);
+    if (app) return toApp({ type: 'share', title: 'Ladder', text });
+    if (navigator.share) return navigator.share({ text }).catch(() => {});
+    navigator.clipboard.writeText(text).then(() => flash('Copied'), () => {});
+  }
+  // A quick note in the result card, where the message line isn't shown.
+  function flash(text) {
+    const n = $('next'), was = n.textContent, washidden = n.hidden;
+    n.hidden = false; n.textContent = text;
+    setTimeout(() => { n.textContent = was; n.hidden = washidden; tickNext(); }, 1600);
+  }
+
+  function startPractice() {
+    const seed = (Math.random() * 2 ** 32) >>> 0;
+    const p = L.practice(seed, D, dict);
+    state.practice = { puzzle: p, ladder: [p.start], hints: 0, done: false };
+    state.mode = 'practice';
+    save(); load(); render();
+  }
+  function toToday() {
+    state.mode = 'daily';
+    save(); load(); render();
+  }
+
+  // ---- keyboard ----
+  const ROWS = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'];
+  $('keys').replaceChildren(...ROWS.map((r, i) => {
+    const row = el('div', 'krow');
+    if (i === 1) row.append(el('span', 'spacer'));
+    for (const ch of r) {
+      const k = el('button', 'key', ch);
+      k.type = 'button';
+      k.dataset.key = ch;
+      row.append(k);
+    }
+    if (i === 1) row.append(el('span', 'spacer'));
+    if (i === 2) {
+      const k = el('button', 'key wide');
+      k.type = 'button';
+      k.dataset.key = 'back';
+      k.setAttribute('aria-label', 'Back a step');
+      k.innerHTML = '<svg width="22" height="16" viewBox="0 0 22 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M7 1.5h12.5v13H7L1.5 8z"/><path d="m10.5 5.5 5 5m0-5-5 5" stroke-linecap="round"/></svg>';
+      row.append(k);
+    }
+    return row;
+  }));
+  $('keys').addEventListener('click', e => {
+    const k = e.target.closest('.key');
+    if (!k) return;
+    if (k.dataset.key === 'back') back(); else press(k.dataset.key);
+  });
+
+  $('ladder').addEventListener('click', e => {
+    const t = e.target.closest('button.tile');
+    if (t) return pick(Number(t.dataset.at));
+    const r = e.target.closest('.row.past');
+    if (r) back(Number(r.dataset.back));
+  });
+  $('ladder').addEventListener('keydown', e => {
+    const r = e.target.closest('.row.past');
+    if (r && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); back(Number(r.dataset.back)); }
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey || play.done) return;
+    if (/^[a-z]$/i.test(e.key)) { e.preventDefault(); return press(e.key.toLowerCase()); }
+    if (e.key === 'Backspace') { e.preventDefault(); return back(); }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+      e.preventDefault();
+      sel = sel === null ? (e.key === 'ArrowLeft' ? L.LEN - 1 : 0) : (sel + (e.key === 'ArrowLeft' ? L.LEN - 1 : 1)) % L.LEN;
+      return renderLadder();
+    }
+    if (e.key === 'Escape' && sel !== null) { sel = null; renderLadder(); }
+  });
+
+  $('hintBtn').addEventListener('click', giveHint);
+  $('resFirst').addEventListener('click', () => state.mode === 'daily' ? share() : startPractice());
+  $('resSecond').addEventListener('click', () => state.mode === 'daily' ? startPractice() : share());
+  $('todayBtn').addEventListener('click', toToday);
+  window.ladderBack = () => { if (state.mode !== 'practice') return false; toToday(); return true; };
+
+  addEventListener('resize', fit);
+  // A new day while the game sits open (or comes back from the background).
+  function checkDay() {
+    const now = L.dayNumber(new Date(), D.epoch);
+    if (now !== today) {
+      today = now;
+      if (state.mode === 'daily') { load(); render(); }
+    } else tickNext();
+  }
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) checkDay(); });
+  setInterval(() => { if (!document.hidden) checkDay(); }, 30000);
+
+  // ---- Android app bridge (absent in a browser) ----
+  const app = window.ladderApp || null;
+  function toApp(msg) {
+    if (!app) return;
+    try { app.postMessage(JSON.stringify(msg)); } catch {}
+  }
+  function haptic(kind = 'tap') { toApp({ type: 'haptic', kind }); }
+  let appVersion = '', updateReady = false, versionTimer = 0, updateVersion = '', updateSize = 0;
+  function showVersion(text, st) {
+    clearTimeout(versionTimer);
+    $('version').hidden = false;
+    $('version').textContent = text;
+    $('version').dataset.state = st || '';
+  }
+  function showUpdate(m) {
+    const show = (id, on) => { $(id).hidden = !on; };
+    $('updateCard').hidden = false;
+    if (m.state === 'available') {
+      updateVersion = m.version || updateVersion;
+      updateSize = m.size > 0 ? m.size : updateSize;
+      const notes = Array.isArray(m.notes) ? m.notes.filter(n => typeof n === 'string' && n).slice(0, 5) : [];
+      $('updateNotes').replaceChildren(...notes.map(n => el('li', '', n)));
+      show('updateNotes', notes.length > 0);
+    }
+    const view = {
+      available: { title: 'Update available', msg: '', actions: true, progress: false, go: 'Update' },
+      downloading: { title: 'Downloading update', msg: '', actions: false, progress: true },
+      installing: { title: 'Installing update', actions: false, progress: true, msg: 'Confirm on the next screen. The first time, Android asks you to allow installs from Ladder. Turn it on, then go back.' },
+      failed: { title: "Update didn't finish", msg: m.message || 'Something went wrong. Try again.', actions: true, progress: false, go: 'Try again' },
+    }[m.state];
+    if (!view) return;
+    $('updateTitle').textContent = view.title;
+    $('updateSub').textContent = [`Ladder ${updateVersion}`, updateSize ? `${(updateSize / 1e6).toFixed(1)} MB` : ''].filter(Boolean).join(' · ');
+    $('updateMsg').textContent = view.msg;
+    show('updateMsg', !!view.msg);
+    show('updateActions', view.actions);
+    show('updateProgress', view.progress);
+    if (view.go) $('updateGo').textContent = view.go;
+    if (view.progress) {
+      const p = m.state === 'installing' ? 100 : Math.round(Math.max(0, Math.min(1, m.progress || 0)) * 100);
+      $('updateBar').style.width = p + '%';
+      $('updatePct').textContent = p + '%';
+    }
+    fit();
+  }
+  if (app) {
+    app.onmessage = e => {
+      let m;
+      try { m = JSON.parse(e.data); } catch { return; }
+      if (m.type === 'info') {
+        appVersion = m.version;
+        const seen = store.get('seenVersion');
+        store.set('seenVersion', appVersion);
+        if (!updateReady && seen && seen !== appVersion) {
+          showVersion(`Updated to v${appVersion}`, 'available');
+          versionTimer = setTimeout(() => showVersion(`v${appVersion}`), 4000);
+        } else if (!updateReady) showVersion(`v${appVersion}`);
+      } else if (m.type === 'updateStatus') {
+        if (m.state === 'available') { updateReady = true; return showVersion('Update available', 'available'); }
+        showVersion(m.state === 'latest' ? 'Up to date' : "Couldn't check");
+        versionTimer = setTimeout(() => showVersion(`v${appVersion}`), 2500);
+      } else if (m.type === 'update') {
+        if (m.state === 'available') { updateReady = true; showVersion('Update available', 'available'); }
+        showUpdate(m);
+      }
+    };
+    $('updateGo').addEventListener('click', () => { showUpdate({ state: 'downloading', progress: 0 }); toApp({ type: 'installUpdate' }); });
+    $('updateLater').addEventListener('click', () => { $('updateCard').hidden = true; fit(); });
+    $('version').addEventListener('click', () => {
+      if (updateReady) { $('updateCard').hidden = false; fit(); return; }
+      showVersion('Checking…');
+      toApp({ type: 'checkUpdate' });
+    });
+  }
+
+  // ---- boot ----
+  load();
+  render();
+  toApp({ type: 'hello' });
+})();
+</script>
+</body>
+</html>
