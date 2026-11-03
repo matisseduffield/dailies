@@ -6,16 +6,19 @@ letter at a time, and every step has to be a word. Free, offline, no ads.
 - One ladder a day, the same for everyone, numbered from 3 November 2026.
   Par is the fewest steps possible using everyday words, and it rises through
   the week: 3 on Monday, 7 on Sunday.
-- Tap a letter in the word, then the new letter. Or just type: a letter that
-  fits only one place goes there. Tap an earlier rung, Undo or Restart to go
-  back. On a computer, arrows pick the letter and Backspace undoes a step.
-- Letters already in place show green. Hint shows which letter to change;
-  asked again on the same rung, it gives the word. Hints count in the result.
+- Type the next word and press Enter, as in Wordle (the game's own keyboard
+  or a real one). Letters that differ from the word above show blue as you
+  type. Tap an earlier rung, Undo or Restart to go back.
+- Letters already in place show green. Hint marks which letter to change;
+  asked again on the same rung, it types the word in. Hints count.
+- Past ladders: tap the date to play any day you missed. Late solves count
+  in stats but not the streak.
 - The result: steps against par, the day streak, a shortest way if you went
   over, and a spoiler-free picture to share (which letter changed on each
   step). Stats (top bar): solved, streak, best streak, and how often you're
   on, under or over par.
-- Today / Practice tabs: practice ladders are random (par 4 to 6).
+- Today / Practice tabs: practice ladders are random, short (par 3 to 4),
+  medium (5 to 6) or long (7 to 8); New ladder picks the length.
 - How to play (top bar) opens by itself on the first visit.
 - Android app: self-updating from the public `ladder-releases` repo.
 - In a browser: https://ladder.matisseduffield.workers.dev (shared results

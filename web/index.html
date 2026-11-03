@@ -132,6 +132,11 @@ p, h1, h2, h3 { margin: 0; }
 .tab .dot { display: inline-block; width: 6px; height: 6px; margin-left: 6px; border-radius: 50%; background: var(--accent); vertical-align: 2px; }
 .meta { padding-bottom: 11px; font-size: .84rem; color: var(--muted); white-space: nowrap; }
 .meta .link { font-size: .84rem; }
+/* The date opens past ladders; New ladder opens the lengths */
+.meta-btn { position: relative; display: inline-flex; align-items: center; gap: 5px; padding: 0; background: none; border: 0; font-size: .84rem; color: var(--muted); }
+.meta-btn::after { content: ""; position: absolute; inset: -12px -8px; }
+.meta-btn:hover { color: var(--ink); }
+.meta-btn svg { color: var(--faint); }
 
 /* The ladder: two rails, a rung for every word. Tiles shrink to fit a
    long ladder on screen rather than scrolling. */
@@ -159,20 +164,21 @@ p, h1, h2, h3 { margin: 0; }
   background: var(--surface); border: 1px solid var(--line); border-radius: 7px;
   font-size: calc(var(--tile) * .44); font-weight: 600; line-height: 1; text-transform: uppercase;
 }
-button.tile { box-shadow: 0 1px 0 var(--line); }
-button.tile:hover { border-color: var(--line-strong); }
 .row.past { cursor: pointer; }
 .row.past .tile { color: var(--muted); }
 .row.past:hover .tile { border-color: var(--line-strong); }
 .row.past .tile.changed { color: var(--accent); }
 .row.current .tile { border-color: var(--line-strong); }
 .row.current .tile.match { color: var(--pos); background: linear-gradient(var(--pos-soft), var(--pos-soft)), var(--surface); border-color: transparent; }
-.row.current .tile[aria-pressed="true"] { border: 2px solid var(--accent); background: linear-gradient(var(--accent-soft), var(--accent-soft)), var(--surface); color: var(--accent); }
-.row.current .tile.hinted:not([aria-pressed="true"]) { border: 2px dashed var(--accent); }
+.row.current .tile.hinted { border: 2px dashed var(--accent); color: var(--accent); background: linear-gradient(var(--accent-soft), var(--accent-soft)), var(--surface); }
+/* The next word, as it's typed: a letter that differs from the word above is blue */
+.row.entry .tile { border: 2px solid var(--line); }
+.row.entry .tile.cursor { border-color: var(--ink); }
+.row.entry .tile:not(:empty) { border-color: var(--line-strong); }
+.row.entry .tile.changed { color: var(--accent); }
 .row.slot .tile { background: var(--bg); border-style: dashed; }
 .row.goal .tile { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
-.row.bad .tile { color: var(--neg); }
-.row.bad .tile.try { border: 2px solid var(--neg); }
+.row.bad .tile, .row.bad .tile.changed { color: var(--neg); border-color: var(--neg); }
 .row.new { animation: rise .22s ease-out; }
 /* Solved: each rung turns green in turn, top to bottom */
 .ladder.won .row { animation: hop .36s ease-out both; animation-delay: calc(var(--i) * 70ms); }
@@ -211,6 +217,7 @@ button.tile:hover { border-color: var(--line-strong); }
 }
 .key:active { background: var(--key-down); }
 .krow .spacer { flex: .5 1 0; max-width: 22px; }
+.key.wide { flex: 1.5 1 0; max-width: 66px; display: grid; place-items: center; font-size: .78rem; letter-spacing: .02em; }
 
 /* Messages get a line of their own above the ladder, and fade */
 .toast {
@@ -278,6 +285,28 @@ dialog.sheet::backdrop { background: var(--backdrop); }
 .bar-row > span { color: var(--muted); }
 .bar { height: 24px; min-width: 26px; padding: 0 8px; border-radius: 4px; background: var(--key); display: flex; align-items: center; justify-content: flex-end; font-size: .8rem; font-weight: 600; }
 .bar.today { background: var(--accent); color: #fff; }
+/* Past ladders, newest first, by month */
+.days { display: grid; margin-top: -6px; }
+.month { padding: 16px 0 4px; font-size: .78rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.month:first-child { padding-top: 0; }
+.day { display: grid; grid-template-columns: 58px 1fr auto; align-items: center; gap: 10px; min-height: 52px; padding: 0 8px; margin: 0 -8px; background: none; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; text-align: left; }
+.day:hover { background: var(--bg); }
+.day-no { font-weight: 600; }
+.day-date { font-size: .9rem; color: var(--muted); }
+.day-state { font-size: .86rem; color: var(--faint); }
+.day-state.solved { font-weight: 600; color: var(--pos); }
+.day-state.started { font-weight: 600; color: var(--accent); }
+.day[aria-current="true"] .day-no::after { content: ""; display: inline-block; width: 6px; height: 6px; margin-left: 7px; border-radius: 50%; background: var(--ink); vertical-align: 2px; }
+
+/* Practice lengths: each with a little ladder as tall as it is long */
+.lengths { display: grid; gap: 10px; }
+.length { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; min-height: 64px; padding: 10px 16px; background: var(--bg); border: 2px solid transparent; border-radius: 10px; text-align: left; }
+.length:hover { border-color: var(--line-strong); }
+.length[aria-checked="true"] { border-color: var(--ink); }
+.length b { display: block; font-weight: 600; line-height: 1.3; }
+.length span { display: block; font-size: .86rem; color: var(--muted); }
+.length svg { color: var(--line-strong); }
+.length[aria-checked="true"] svg { color: var(--accent); }
 .empty { padding: 18px; border: 1px dashed var(--line-strong); border-radius: 10px; text-align: center; color: var(--muted); font-size: .9rem; }
 
 /* App update (Android app only) */
@@ -395,10 +424,11 @@ dialog.sheet::backdrop { background: var(--backdrop); }
       <p class="example-cap">COLD to WARM in four steps</p>
     </div>
     <div class="rules">
-      <div class="rule"><span class="n">1</span><p>Tap a letter in the word, then its new letter. Or just type: a letter that fits only one place goes there.</p></div>
+      <div class="rule"><span class="n">1</span><p>Type the next word and press <b>Enter</b>. It has to be the word above with one letter changed.</p></div>
       <div class="rule"><span class="n">2</span><p><b>Par</b> is the fewest steps it can be done in. Gentle on Monday, longest on Sunday.</p></div>
-      <div class="rule"><span class="n">3</span><p>Green letters are already in place. Stuck? <b>Hint</b> shows the letter to change; tap it again for the word.</p></div>
-      <div class="rule"><span class="n">4</span><p>Tap an earlier word to go back to it. A new ladder arrives every midnight.</p></div>
+      <div class="rule"><span class="n">3</span><p>Green letters are already in place. Stuck? <b>Hint</b> marks the letter to change; tap it again for the word.</p></div>
+      <div class="rule"><span class="n">4</span><p>Tap an earlier word to go back to it. A new ladder arrives every midnight; missed one? Tap the date.</p></div>
+      <div class="rule"><span class="n">5</span><p>Want more? <b>Practice</b> deals as many as you like, short, medium or long.</p></div>
     </div>
     <button class="btn btn-primary" type="button" data-close>Play</button>
     <p class="get-app" id="getApp" hidden>On Android? <a class="link" href="/app">Get the app</a>, free and offline.</p>
@@ -415,9 +445,34 @@ dialog.sheet::backdrop { background: var(--backdrop); }
   <div class="sheet-body" id="statsBody"></div>
 </dialog>
 
+<dialog class="sheet" id="pastSheet" aria-labelledby="pastTitle">
+  <div class="sheet-head">
+    <h2 id="pastTitle">Past ladders</h2>
+    <button class="icon-btn" type="button" data-close aria-label="Close">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m4 4 10 10M14 4 4 14"/></svg>
+    </button>
+  </div>
+  <div class="sheet-body">
+    <p class="muted">Play any you missed. They count in your stats but not your streak.</p>
+    <div class="days" id="pastList"></div>
+  </div>
+</dialog>
+
+<dialog class="sheet" id="lengthSheet" aria-labelledby="lengthTitle">
+  <div class="sheet-head">
+    <h2 id="lengthTitle">New ladder</h2>
+    <button class="icon-btn" type="button" data-close aria-label="Close">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m4 4 10 10M14 4 4 14"/></svg>
+    </button>
+  </div>
+  <div class="sheet-body">
+    <div class="lengths" id="lengths" role="radiogroup" aria-label="Length"></div>
+  </div>
+</dialog>
+
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="words.js?v=1"></script>
-<script src="lib.js?v=3"></script>
+<script src="lib.js?v=4"></script>
 <script>
 (() => {
   const L = window.LadderLib, D = window.LadderWords;
@@ -433,19 +488,22 @@ dialog.sheet::backdrop { background: var(--backdrop); }
   };
 
   // ---- state ----
-  // days: { [day]: { ladder: [...words], hints, done } }; practice: the
-  // current random ladder, if any; mode: which one is on screen.
+  // days: { [day]: { ladder: [...words], hints, done, late } } (late: solved
+  // after its day); practice: the current random ladder, if any; length:
+  // how long practice ladders are; mode: which one is on screen.
   const saved = store.get('state') || {};
   const state = {
     days: saved.days && typeof saved.days === 'object' ? saved.days : {},
     practice: saved.practice || null,
+    length: L.LENGTHS[saved.length] ? saved.length : 'medium',
     mode: saved.mode === 'practice' && saved.practice ? 'practice' : 'daily',
   };
   const save = () => store.set('state', state);
 
   let today = L.dayNumber(new Date(), D.epoch);
+  let view = today;            // the daily ladder on screen: today or a past one
   let puzzle, play;            // the puzzle on screen and its progress
-  let sel = null;              // which letter of the current word is picked
+  let typed = '';              // the next word, as far as it's typed
   let hint = null;             // { word, at, shown: 'spot' | 'word' } for the current rung
   let fresh = false;           // animate the newest rung once
   let bad = null;              // a rejected try, shown briefly
@@ -455,11 +513,11 @@ dialog.sheet::backdrop { background: var(--backdrop); }
       puzzle = state.practice.puzzle;
       play = state.practice;
     } else {
-      puzzle = L.daily(today, D, dict);
-      play = state.days[today] || (state.days[today] = { ladder: [puzzle.start], hints: 0, done: false });
+      puzzle = L.daily(view, D, dict);
+      play = state.days[view] || (state.days[view] = { ladder: [puzzle.start], hints: 0, done: false });
       if (play.ladder[0] !== puzzle.start) Object.assign(play, { ladder: [puzzle.start], hints: 0, done: false });
     }
-    sel = null; hint = null; bad = null;
+    typed = ''; hint = null; bad = null;
   }
   const current = () => play.ladder[play.ladder.length - 1];
   const steps = () => play.ladder.length - 1;
@@ -480,19 +538,17 @@ dialog.sheet::backdrop { background: var(--backdrop); }
   // ---- drawing ----
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
 
+  // opts: match (green where it's already the target's letter), changed (the
+  // letter that changed from the rung above), against (mark every letter that
+  // differs from this word), cursor (where the next letter goes), hinted.
   function tiles(row, word, opts = {}) {
     for (let i = 0; i < L.LEN; i++) {
-      const t = el(opts.buttons ? 'button' : 'span', 'tile', word ? word[i] : '');
-      if (opts.buttons) {
-        t.type = 'button';
-        t.dataset.at = i;
-        t.setAttribute('aria-pressed', String(sel === i));
-        t.setAttribute('aria-label', `Change letter ${i + 1}, ${word[i].toUpperCase()}`);
-        if (word[i] === puzzle.target[i]) t.classList.add('match');
-        if (hint && hint.at === i) t.classList.add('hinted');
-      }
+      const t = el('span', 'tile', word ? word[i] || '' : '');
+      if (opts.match && word[i] === puzzle.target[i]) t.classList.add('match');
       if (opts.changed === i) t.classList.add('changed');
-      if (opts.tried === i) t.classList.add('try');
+      if (opts.against && word[i] && word[i] !== opts.against[i]) t.classList.add('changed');
+      if (opts.cursor === i) t.classList.add('cursor');
+      if (opts.hinted && hint && hint.at === i) t.classList.add('hinted');
       row.append(t);
     }
     return row;
@@ -515,19 +571,21 @@ dialog.sheet::backdrop { background: var(--backdrop); }
           row.tabIndex = 0;
         } else row.style.cursor = 'default';
         tiles(row, w, { changed: i ? L.changedAt(words[i - 1], w) : -1 });
-      } else if (bad) {
-        row.classList.add('current', 'bad');
-        tiles(row, bad.word, { tried: bad.at });
       } else {
         row.classList.add('current');
-        tiles(row, w, { buttons: true, changed: -1 });
+        tiles(row, w, { match: true, hinted: true });
       }
       if (last && fresh && i > 0) row.classList.add('new');
       row.style.setProperty('--i', i);
       rows.push(row);
     });
-    // Empty rungs up to par, then the word to reach.
-    if (!play.done) for (let i = steps() + 1; i < puzzle.par; i++) rows.push(tiles(el('div', 'row slot'), ''));
+    // The next word as it's typed, empty rungs up to par, then the word to reach.
+    if (!play.done) {
+      const entry = tiles(el('div', bad ? 'row entry bad' : 'row entry'), typed, { against: current(), cursor: typed.length });
+      entry.setAttribute('aria-label', typed ? `Next word: ${typed.toUpperCase()}` : 'Type the next word');
+      rows.push(entry);
+      for (let i = steps() + 2; i < puzzle.par; i++) rows.push(tiles(el('div', 'row slot'), ''));
+    }
     const goal = tiles(el('div', 'row goal'), puzzle.target);
     goal.setAttribute('aria-label', `Get to ${puzzle.target.toUpperCase()}`);
     goal.style.setProperty('--i', rows.length);
@@ -562,26 +620,38 @@ dialog.sheet::backdrop { background: var(--backdrop); }
     box.style.setProperty('--gap', Math.round(Math.min(8, tile * 0.16)) + 'px');
   }
 
+  const dateOf = day => { const [y, m, d] = D.epoch.split('-').map(Number); return new Date(y, m - 1, d + day - 1); };
+  const shortDate = day => dateOf(day).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' });
+  const svg = (w, h, d, width = 1.6) => {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('width', w); s.setAttribute('height', h); s.setAttribute('viewBox', `0 0 ${w} ${h}`); s.setAttribute('aria-hidden', 'true');
+    s.innerHTML = `<path d="${d}" fill="none" stroke="currentColor" stroke-width="${width}" stroke-linecap="round" stroke-linejoin="round"/>`;
+    return s;
+  };
+
   function renderHeader() {
-    const daily = state.mode === 'daily';
-    $('tabToday').setAttribute('aria-selected', String(daily));
+    const daily = state.mode === 'daily', onToday = daily && view === today;
+    $('tabToday').setAttribute('aria-selected', String(onToday));
     $('tabPractice').setAttribute('aria-selected', String(!daily));
     // A dot on Today while today's ladder is still to do.
-    const t = state.days[today];
-    $('todayDot').hidden = daily || !!(t && t.done);
+    $('todayDot').hidden = onToday || todayDone();
     const meta = $('meta');
-    if (daily) {
-      const date = new Date().toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' });
-      meta.textContent = `No. ${today} · ${date}`;
-    } else {
-      const b = el('button', 'link', 'New ladder');
-      b.type = 'button';
-      b.addEventListener('click', startPractice);
-      meta.replaceChildren(b);
-    }
+    const label = daily ? `No. ${view} · ${shortDate(view)}` : 'New ladder';
+    // Day 1 has nothing before it, so the date only opens past ladders after that.
+    if (daily && today < 2) return meta.replaceChildren(label);
+    const b = el('button', 'meta-btn', label);
+    b.type = 'button';
+    b.setAttribute('aria-haspopup', 'dialog');
+    if (daily) b.setAttribute('aria-label', `${label}. Past ladders`);
+    b.append(svg(10, 10, 'm2 3.5 3 3 3-3'));
+    b.addEventListener('click', () => openSheet(daily ? 'pastSheet' : 'lengthSheet'));
+    meta.replaceChildren(b);
   }
 
-  function solvedDays() { return Object.keys(state.days).filter(d => state.days[d].done).map(Number); }
+  const todayDone = () => !!(state.days[today] && state.days[today].done);
+  const solvedDays = () => Object.keys(state.days).filter(d => state.days[d].done).map(Number);
+  // Only ladders solved on their own day keep a streak going.
+  const streakDays = () => solvedDays().filter(d => !state.days[d].late);
 
   function renderResult() {
     const n = steps(), par = puzzle.par, diff = n - par;
@@ -596,22 +666,19 @@ dialog.sheet::backdrop { background: var(--backdrop); }
     }
     const daily = state.mode === 'daily';
     $('resFirst').textContent = daily ? 'Share' : 'New ladder';
-    $('resSecond').textContent = daily ? 'Practice' : 'Share';
+    $('resSecond').textContent = !daily ? 'Share' : view !== today && !todayDone() ? 'Today’s ladder' : 'Practice';
     tickNext();
   }
 
   function tickNext() {
     const foot = $('resFoot');
     if (!play.done) return;
-    if (state.mode !== 'daily') {
-      const t = state.days[today];
-      foot.replaceChildren(el('span', '', t && t.done ? 'Today’s ladder is done' : 'Today’s ladder is still to do'));
-      return;
-    }
+    if (state.mode !== 'daily') return foot.replaceChildren(el('span', '', todayDone() ? 'Today’s ladder is done' : 'Today’s ladder is still to do'));
+    if (view !== today) return foot.replaceChildren(el('span', '', play.late ? 'Solved late, so it doesn’t change your streak' : 'Solved on the day'));
     const now = new Date();
     const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
     const mins = Math.max(1, Math.ceil((midnight - now) / 60000));
-    const s = L.streak(solvedDays(), today);
+    const s = L.streak(streakDays(), today);
     foot.replaceChildren(
       el('span', '', ''),
       el('span', '', `Next ladder in ${mins >= 60 ? `${Math.floor(mins / 60)} h ` : ''}${mins % 60} min`),
@@ -641,8 +708,8 @@ dialog.sheet::backdrop { background: var(--backdrop); }
     const nums = el('div', 'numbers');
     for (const [v, label] of [
       [days.length, 'Solved'],
-      [L.streak(days, today), 'Streak'],
-      [L.bestStreak(days), 'Best streak'],
+      [L.streak(streakDays(), today), 'Streak'],
+      [L.bestStreak(streakDays()), 'Best streak'],
       [Math.round(atPar / days.length * 100) + '%', 'Par or under'],
     ]) {
       const n = el('p', 'num');
@@ -674,9 +741,71 @@ dialog.sheet::backdrop { background: var(--backdrop); }
     }
   }
 
+  // ---- past ladders ----
+  function renderPast() {
+    const list = [];
+    let month = '';
+    for (let day = today; day >= 1; day--) {
+      const m = dateOf(day).toLocaleDateString(locale, { month: 'long', year: 'numeric' });
+      if (m !== month) { month = m; list.push(el('p', 'month', m)); }
+      const rec = state.days[day], par = L.parForDay(day, D.epoch);
+      const b = el('button', 'day');
+      b.type = 'button';
+      b.dataset.day = day;
+      if (state.mode === 'daily' && day === view) b.setAttribute('aria-current', 'true');
+      let st;
+      if (rec && rec.done) st = el('span', 'day-state solved', `${rec.ladder.length - 1} steps, par ${par}`);
+      else if (rec && rec.ladder.length > 1) st = el('span', 'day-state started', 'Started');
+      else st = el('span', 'day-state', `Par ${par}`);
+      b.append(el('span', 'day-no', `No. ${day}`), el('span', 'day-date', day === today ? 'Today' : shortDate(day)), st);
+      list.push(b);
+    }
+    $('pastList').replaceChildren(...list);
+  }
+  $('pastList').addEventListener('click', e => {
+    const b = e.target.closest('.day');
+    if (!b) return;
+    $('pastSheet').close();
+    showDay(Number(b.dataset.day));
+  });
+  function showDay(day) {
+    state.mode = 'daily';
+    view = day;
+    save(); load(); say(''); render();
+  }
+
+  // ---- practice lengths ----
+  const LENGTH_TEXT = { short: 'Short', medium: 'Medium', long: 'Long' };
+  function renderLengths() {
+    $('lengths').replaceChildren(...Object.entries(L.LENGTHS).map(([key, [lo, hi]]) => {
+      const b = el('button', 'length');
+      b.type = 'button';
+      b.dataset.length = key;
+      b.setAttribute('role', 'radio');
+      b.setAttribute('aria-checked', String(key === state.length));
+      const text = el('div');
+      text.append(el('b', '', LENGTH_TEXT[key]), el('span', '', `${lo} or ${hi} steps`));
+      // A little ladder with as many rungs as the shortest it can be.
+      const h = lo * 6 + 4;
+      let d = `M3 1v${h - 2}M15 1v${h - 2}`;
+      for (let i = 0; i < lo; i++) d += `M3 ${5 + i * 6}h12`;
+      b.append(text, svg(18, h, d, 2));
+      return b;
+    }));
+  }
+  $('lengths').addEventListener('click', e => {
+    const b = e.target.closest('.length');
+    if (!b) return;
+    state.length = b.dataset.length;
+    $('lengthSheet').close();
+    startPractice();
+  });
+
   // ---- sheets ----
   function openSheet(id) {
     if (id === 'statsSheet') renderStats();
+    if (id === 'pastSheet') renderPast();
+    if (id === 'lengthSheet') renderLengths();
     const d = $(id);
     if (!d.open) d.showModal();
     tellBack();
@@ -703,47 +832,48 @@ dialog.sheet::backdrop { background: var(--backdrop); }
   })();
 
   // ---- playing ----
-  function pick(at) {
-    if (play.done) return;
-    sel = sel === at ? null : at;
+  function press(letter) {
+    if (play.done || bad || typed.length >= L.LEN) return;
+    typed += letter;
     renderLadder();
   }
 
-  function press(letter) {
+  function erase() {
+    if (play.done || bad || !typed) return;
+    typed = typed.slice(0, -1);
+    renderLadder();
+  }
+
+  function enter() {
     if (play.done || bad) return;
-    const word = current();
-    // No spot picked: a letter that fits only one place goes there.
-    if (sel === null) {
-      const at = L.placements(word, letter, puzzle.target, dict, play.ladder);
-      if (!at.length) return say(`No new word with ${letter.toUpperCase()} in it`, 'warn');
-      if (at.length > 1) return say(`${letter.toUpperCase()} fits in more than one place. Tap the letter to change.`);
-      sel = at[0];
-    }
-    if (word[sel] === letter) return;
-    const next = word.slice(0, sel) + letter + word.slice(sel + 1);
-    if (!dict.all.has(next) && next !== puzzle.target) return reject(next, sel, `${next.toUpperCase()} isn’t in the word list`);
-    if (play.ladder.includes(next)) return reject(next, sel, `${next.toUpperCase()} is already on the ladder`);
+    const word = current(), next = typed;
+    if (next.length < L.LEN) return say('Type all four letters', 'warn');
+    if (next === word) return reject(`That’s ${word.toUpperCase()} again. Change one letter.`);
+    if (!L.oneApart(word, next)) return reject(`Change just one letter of ${word.toUpperCase()}`);
+    if (!dict.all.has(next) && next !== puzzle.target) return reject(`${next.toUpperCase()} isn’t in the word list`);
+    if (play.ladder.includes(next)) return reject(`${next.toUpperCase()} is already on the ladder`);
     haptic();
     play.ladder.push(next);
-    sel = null; hint = null; fresh = true;
+    typed = ''; hint = null; fresh = true;
     say('');
     if (next === puzzle.target) finish();
     save();
     render();
   }
 
-  function reject(word, at, text) {
+  // The typed word shakes and stays, so it can be fixed rather than retyped.
+  function reject(text) {
     haptic('tick');
-    bad = { word, at };
+    bad = true;
     say(text, 'warn');
     renderLadder();
-    setTimeout(() => { bad = null; renderLadder(); }, 650);
+    setTimeout(() => { bad = false; renderLadder(); }, 650);
   }
 
   function back(to = steps() - 1) {
     if (play.done || to < 0 || to >= steps()) return;
     play.ladder.length = to + 1;
-    sel = null; hint = null;
+    typed = ''; hint = null;
     say('');
     save();
     renderLadder();
@@ -753,17 +883,17 @@ dialog.sheet::backdrop { background: var(--backdrop); }
   function giveHint() {
     if (play.done) return;
     const word = current();
-    if (hint && hint.shown === 'word') return say(`Try ${hint.word.toUpperCase()}`, 'tip', 5000);
+    if (hint && hint.shown === 'word') { typed = hint.word; renderLadder(); return say(`Try ${hint.word.toUpperCase()}. Press Enter.`, 'tip', 5000); }
     const next = L.nextStep(word, puzzle.target, dict);
     if (!next) return say('No way on from here. Undo a step.', 'warn');
     play.hints++;
     if (hint && hint.word === next) {
       hint.shown = 'word';
-      say(`Try ${next.toUpperCase()}`, 'tip', 5000);
+      typed = next;
+      say(`Try ${next.toUpperCase()}. Press Enter.`, 'tip', 5000);
     } else {
       hint = { word: next, at: L.changedAt(word, next), shown: 'spot' };
-      sel = hint.at;
-      say('Change the blue letter. Hint again for the word.', 'tip', 5000);
+      say('Change the marked letter. Hint again for the word.', 'tip', 5000);
     }
     save();
     renderLadder();
@@ -771,6 +901,7 @@ dialog.sheet::backdrop { background: var(--backdrop); }
 
   function finish() {
     play.done = true;
+    if (state.mode === 'daily' && view !== today) play.late = true;
     haptic('tick');
   }
 
@@ -783,15 +914,16 @@ dialog.sheet::backdrop { background: var(--backdrop); }
 
   function startPractice() {
     let p = null;
-    while (!p) p = L.practice((Math.random() * 2 ** 32) >>> 0, D, dict);
+    while (!p) p = L.practice((Math.random() * 2 ** 32) >>> 0, D, dict, state.length);
     state.practice = { puzzle: p, ladder: [p.start], hints: 0, done: false };
     state.mode = 'practice';
     save(); load(); say(''); render();
   }
   function setMode(mode) {
-    if (state.mode === mode) return;
+    if (state.mode === mode && (mode === 'practice' || view === today)) return;
     if (mode === 'practice' && !state.practice) return startPractice();
     state.mode = mode;
+    view = today;
     save(); load(); say(''); render();
   }
 
@@ -807,16 +939,31 @@ dialog.sheet::backdrop { background: var(--backdrop); }
       row.append(k);
     }
     if (i === 1) row.append(el('span', 'spacer'));
+    // Enter and delete either side of the bottom row, as on a phone.
+    if (i === 2) {
+      const go = el('button', 'key wide', 'Enter');
+      go.type = 'button'; go.dataset.key = 'enter';
+      const del = el('button', 'key wide');
+      del.type = 'button'; del.dataset.key = 'erase'; del.setAttribute('aria-label', 'Delete');
+      del.append(svg(22, 18, 'M7.5 3.5h11a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 1-1.5 1.5h-11L2.5 9zM11 6.5l5 5M16 6.5l-5 5'));
+      row.prepend(go);
+      row.append(del);
+    }
     return row;
   }));
   $('keys').addEventListener('click', e => {
     const k = e.target.closest('.key');
-    if (k) press(k.dataset.key);
+    if (!k) return;
+    const key = k.dataset.key;
+    if (key === 'enter') enter();
+    else if (key === 'erase') erase();
+    else press(key);
   });
+  // Keys and tools never take focus, so a real keyboard's Enter always means
+  // "add this word" rather than pressing the last button tapped.
+  for (const id of ['keys', 'play']) $(id).addEventListener('pointerdown', e => { if (e.target.closest('button')) e.preventDefault(); });
 
   $('ladder').addEventListener('click', e => {
-    const t = e.target.closest('button.tile');
-    if (t) return pick(Number(t.dataset.at));
     const r = e.target.closest('.row.past[data-back]');
     if (r) back(Number(r.dataset.back));
   });
@@ -826,42 +973,45 @@ dialog.sheet::backdrop { background: var(--backdrop); }
   });
 
   document.addEventListener('keydown', e => {
-    if (e.ctrlKey || e.metaKey || e.altKey || play.done || openDialog()) return;
+    if (e.ctrlKey || e.metaKey || e.altKey || e.defaultPrevented || play.done || openDialog()) return;
     if (/^[a-z]$/i.test(e.key)) { e.preventDefault(); return press(e.key.toLowerCase()); }
-    if (e.key === 'Backspace') { e.preventDefault(); return back(); }
-    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-      e.preventDefault();
-      sel = sel === null ? (e.key === 'ArrowLeft' ? L.LEN - 1 : 0) : (sel + (e.key === 'ArrowLeft' ? L.LEN - 1 : 1)) % L.LEN;
-      return renderLadder();
-    }
-    if (e.key === 'Escape' && sel !== null) { sel = null; renderLadder(); }
+    if (e.key === 'Backspace') { e.preventDefault(); return erase(); }
+    // Enter on a button reached with Tab still presses that button.
+    if (e.key === 'Enter' && !(e.target instanceof Element && e.target.closest('button, [role="button"]'))) { e.preventDefault(); return enter(); }
   });
 
   $('undoBtn').addEventListener('click', () => back());
   $('restartBtn').addEventListener('click', () => back(0));
   $('hintBtn').addEventListener('click', giveHint);
   $('resFirst').addEventListener('click', () => state.mode === 'daily' ? share() : startPractice());
-  $('resSecond').addEventListener('click', () => state.mode === 'daily' ? setMode('practice') : share());
+  $('resSecond').addEventListener('click', () => {
+    if (state.mode !== 'daily') return share();
+    if (view !== today && !todayDone()) return showDay(today);
+    setMode('practice');
+  });
   $('tabToday').addEventListener('click', () => setMode('daily'));
   $('tabPractice').addEventListener('click', () => setMode('practice'));
   $('helpBtn').addEventListener('click', () => openSheet('helpSheet'));
   $('statsBtn').addEventListener('click', () => openSheet('statsSheet'));
 
-  // Android Back: close a sheet, then leave practice.
+  // Android Back: close a sheet, then leave practice or a past ladder.
+  const awayFromToday = () => state.mode === 'practice' || view !== today;
   window.ladderBack = () => {
     const d = openDialog();
     if (d) { d.close(); return true; }
-    if (state.mode !== 'practice') return false;
+    if (!awayFromToday()) return false;
     setMode('daily');
     return true;
   };
-  function tellBack() { toApp({ type: 'back', enabled: !!openDialog() || state.mode === 'practice' }); }
+  function tellBack() { toApp({ type: 'back', enabled: !!openDialog() || awayFromToday() }); }
 
   addEventListener('resize', fit);
   // A new day while the game sits open (or comes back from the background).
   function checkDay() {
     const now = L.dayNumber(new Date(), D.epoch);
     if (now !== today) {
+      // Whoever was on today's ladder moves on to the new one.
+      if (view === today) view = now;
       today = now;
       if (state.mode === 'daily') load();
       render();

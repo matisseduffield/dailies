@@ -13,18 +13,6 @@ test('words one letter apart', () => {
   assert.deepEqual(L.neighbours('cold', new Set(['cord', 'bold', 'card', 'cold'])).sort(), ['bold', 'cord']);
 });
 
-test('a typed letter goes where it makes a word', () => {
-  const d = { all: new Set(['cold', 'cord', 'bold', 'colt', 'hold']) };
-  assert.deepEqual(L.placements('cold', 'r', 'warm', d), [2]);
-  assert.deepEqual(L.placements('cold', 't', 'warm', d), [3]);
-  assert.deepEqual(L.placements('cold', 'q', 'warm', d), []);
-  // Already on the ladder doesn't count; the target always does.
-  assert.deepEqual(L.placements('cold', 'r', 'warm', d, ['cord']), []);
-  assert.deepEqual(L.placements('wars', 'm', 'warm', d), [3]);
-  // Two places: the player has to choose.
-  assert.deepEqual(L.placements('cold', 'h', 'warm', { all: new Set(['hold', 'colh']) }), [0, 3]);
-});
-
 test('shortest ladder', () => {
   const path = L.shortest('cold', 'warm', dict.known);
   assert.equal(path[0], 'cold');
@@ -75,8 +63,14 @@ test('every daily puzzle is fair and its par matches the weekday', () => {
 test('practice ladders repeat for a seed', () => {
   const a = L.practice(42, D, dict);
   assert.deepEqual(a, L.practice(42, D, dict));
-  assert.ok(a.par >= 4 && a.par <= 6);
+  assert.ok(a.par >= 5 && a.par <= 6);
   assert.equal(L.shortest(a.start, a.target, dict.known).length - 1, a.par);
+  for (const [length, [lo, hi]] of Object.entries(L.LENGTHS)) {
+    for (let seed = 1; seed <= 5; seed++) {
+      const p = L.practice(seed, D, dict, length);
+      assert.ok(p.par >= lo && p.par <= hi, `${length} ${seed}`);
+    }
+  }
 });
 
 test('streaks', () => {
