@@ -4,8 +4,12 @@ A daily word ladder. Get from one four-letter word to another by changing one
 letter at a time, and every step has to be a word. Free, offline, no ads.
 
 - One ladder a day, the same for everyone, numbered from 3 November 2026.
-  Par is the fewest steps possible using everyday words, and it rises through
-  the week: 3 on Monday, 7 on Sunday.
+  All week the ladders climb to the same silly word (FART, BURP, TOOT...),
+  with a new one each Monday. Par is the fewest steps possible using everyday
+  words, and it rises through the week: 3 on Monday, 7 on Sunday.
+- Hard mode (in How to play) hides par and the empty rows until it's solved.
+- Tiles stay one size: past par, older words slide off the top under a fade
+  and the word to reach stays put. Scroll up to see them.
 - Type the next word and press Enter, as in Wordle (the game's own keyboard
   or a real one). Letters that differ from the word above show blue as you
   type. Tap an earlier rung, Undo or Restart to go back.
@@ -28,9 +32,9 @@ letter at a time, and every step has to be a word. Free, offline, no ads.
 
 From SCOWL (http://wordlist.aspell.net; copyright notice in `web/words.js`),
 in every English spelling. Puzzles start and end on very common words (SCOWL
-size 20, no plurals); par and solutions only use common ones (size 35, less a
-few odd ones); anything up to size 70 is accepted as a step, Australian-only
-words included. A short block list keeps slurs and the like out entirely.
+size 20, no plurals), except the week's word, which is always in the common
+list; par and solutions only use common ones (size 35, less a few odd ones);
+anything up to size 70 is accepted as a step, Australian-only words included. A short block list keeps slurs and the like out entirely.
 
 The daily puzzles for ten years are fixed in `web/words.js`, so changing the
 lists later never changes a day's puzzle. Rebuild with

@@ -124,6 +124,13 @@
     return null;
   }
 
+  // A pair `par` apart that ends on `target`.
+  function towards(target, ends, dict, par, random) {
+    const dist = distances(target, dict.known);
+    const from = ends.filter(w => dist.get(w) === par);
+    return from.length ? { start: from[Math.floor(random() * from.length)], target, par } : null;
+  }
+
   // Days count in the player's own calendar, so a new puzzle arrives at
   // their midnight. Day 1 is the epoch.
   function dayNumber(date, epoch) {
@@ -137,6 +144,17 @@
     return PAR_BY_WEEKDAY[new Date(Date.UTC(y, m - 1, d + day - 1)).getUTCDay()];
   };
 
+  // Every daily ladder in a week climbs to the same funny word. Weeks start
+  // on Monday; week 0 is the one the epoch falls in.
+  function weekOf(day, epoch) {
+    const [y, m, d] = epoch.split('-').map(Number);
+    return Math.floor((day - 1 + (new Date(Date.UTC(y, m - 1, d)).getUTCDay() + 6) % 7) / 7);
+  }
+  function weekWord(day, data) {
+    const words = split(data.weekly);
+    return words[weekOf(day, data.epoch) % words.length];
+  }
+
   // The day's puzzle comes from a fixed list, so it stays the same for
   // everyone even after the word lists change. Past the list's end it's
   // made from the day number instead.
@@ -147,7 +165,7 @@
       const start = pairs.slice(at, at + LEN), target = pairs.slice(at + LEN, at + LEN * 2);
       return { day, start, target, par: shortest(start, target, dict.known).length - 1 };
     }
-    return { day, ...pick(split(data.ends), dict, parForDay(day, data.epoch), rng(day * 2654435761)) };
+    return { day, ...towards(weekWord(day, data), split(data.ends), dict, parForDay(day, data.epoch), rng(day * 2654435761)) };
   }
 
   // Practice comes in three lengths, as a range of par.
@@ -190,7 +208,7 @@
     return `${title} · ${puzzle.start.toUpperCase()} → ${puzzle.target.toUpperCase()}\n${steps} ${steps === 1 ? 'step' : 'steps'}, par ${puzzle.par}${hints ? `, ${hints} ${hints === 1 ? 'hint' : 'hints'}` : ''}\n${rows.join('\n')}`;
   }
 
-  const lib = { LEN, split, dictionary, neighbours, oneApart, changedAt, distances, shortest, way, nextStep, rng, pick, dayNumber, parForDay, daily, LENGTHS, practice, streak, bestStreak, shareText };
+  const lib = { LEN, split, dictionary, neighbours, oneApart, changedAt, distances, shortest, way, nextStep, rng, pick, towards, dayNumber, parForDay, weekOf, weekWord, daily, LENGTHS, practice, streak, bestStreak, shareText };
   if (typeof module === 'object' && module.exports) module.exports = lib;
   else root.LadderLib = lib;
 })(this);

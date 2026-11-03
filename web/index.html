@@ -138,55 +138,46 @@ p, h1, h2, h3 { margin: 0; }
 .meta-btn:hover { color: var(--ink); }
 .meta-btn svg { color: var(--faint); }
 
-/* The ladder: two rails, a rung for every word. Tiles shrink to fit a
-   long ladder on screen rather than scrolling. */
+/* The ladder: plain solid tiles, a row for every word. Tiles stay one size
+   for the whole climb: past par, older words slide off the top under a fade,
+   and the word to reach stays where it is. */
 .stage-wrap { position: relative; flex: 1; min-height: 0; display: flex; }
-.stage { flex: 1; min-width: 0; display: grid; place-items: safe center; padding: 50px 0 14px; overflow-y: auto; }
-.ladder {
-  --tile: 54px; --gap: 8px; --rung: 10px;
-  position: relative; display: grid; gap: var(--rung);
-  padding: 0 22px;
+.stage { flex: 1; min-width: 0; display: grid; grid-template-rows: minmax(0, 1fr); justify-items: center; align-items: center; padding: 50px 0 18px; overflow: hidden; }
+.ladder { --tile: 54px; --gap: 8px; --rung: 10px; display: grid; gap: var(--rung); }
+.stage .ladder { display: flex; flex-direction: column; max-height: 100%; }
+.rungs { position: relative; display: grid; gap: var(--rung); min-height: 0; margin: -4px -6px; padding: 4px 6px; overflow: hidden auto; overscroll-behavior: contain; scrollbar-width: none; }
+.rungs::-webkit-scrollbar { display: none; }
+.ladder.cut .rungs {
+  -webkit-mask-image: linear-gradient(transparent, #000 var(--tile));
+  mask-image: linear-gradient(transparent, #000 var(--tile));
 }
-.ladder::before, .ladder::after {
-  content: ""; position: absolute; top: calc(var(--tile) * -.3); bottom: calc(var(--tile) * -.3);
-  width: 3px; border-radius: 2px; background: var(--line-strong);
-  transition: background .3s;
-}
-.ladder::before { left: 0; }
-.ladder::after { right: 0; }
-.ladder.done::before, .ladder.done::after { background: var(--pos); }
-.row { position: relative; display: grid; grid-template-columns: repeat(4, var(--tile)); gap: var(--gap); }
-/* the rung itself, behind the tiles */
-.row::before { content: ""; position: absolute; left: -22px; right: -22px; top: 50%; height: 3px; margin-top: -1.5px; background: var(--line-strong); opacity: .5; }
-.ladder.done .row::before { background: var(--pos); }
+.row { display: grid; grid-template-columns: repeat(4, var(--tile)); gap: var(--gap); }
 .tile {
-  position: relative; display: grid; place-items: center;
+  display: grid; place-items: center;
   width: var(--tile); height: var(--tile); padding: 0;
-  background: var(--surface); border: 1px solid var(--line); border-radius: 7px;
+  background: var(--surface); border-radius: 7px;
   font-size: calc(var(--tile) * .44); font-weight: 600; line-height: 1; text-transform: uppercase;
 }
 .row.past { cursor: pointer; }
 .row.past .tile { color: var(--muted); }
-.row.past:hover .tile { border-color: var(--line-strong); }
+.row.past:hover .tile { background: var(--key); }
 .row.past .tile.changed { color: var(--accent); }
-.row.current .tile { border-color: var(--line-strong); }
-.row.current .tile.match { color: var(--pos); background: linear-gradient(var(--pos-soft), var(--pos-soft)), var(--surface); border-color: transparent; }
-.row.current .tile.hinted { border: 2px dashed var(--accent); color: var(--accent); background: linear-gradient(var(--accent-soft), var(--accent-soft)), var(--surface); }
-/* The next word, as it's typed: a letter that differs from the word above is blue */
-.row.entry .tile { border: 2px solid var(--line); }
-.row.entry .tile.cursor { border-color: var(--ink); }
-.row.entry .tile:not(:empty) { border-color: var(--line-strong); }
+.row.current .tile.match { color: var(--pos); background: linear-gradient(var(--pos-soft), var(--pos-soft)), var(--surface); }
+.row.current .tile.hinted { color: var(--accent); background: linear-gradient(var(--accent-soft), var(--accent-soft)), var(--surface); box-shadow: inset 0 -3px 0 var(--accent); }
+/* The next word, as it's typed: a bar marks where the next letter goes, and a
+   letter that differs from the word above is blue */
+.row.entry .tile { background: var(--key); }
+.row.entry .tile:not(:empty) { background: var(--surface); }
+.row.entry .tile.cursor { box-shadow: inset 0 -3px 0 var(--accent); }
 .row.entry .tile.changed { color: var(--accent); }
-.row.slot .tile { background: var(--bg); border-style: dashed; }
-.row.goal .tile { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
-.row.bad .tile, .row.bad .tile.changed { color: var(--neg); border-color: var(--neg); }
+.row.slot .tile { background: var(--key); opacity: .45; }
+.row.goal .tile { background: var(--accent); color: var(--on-ink); transition: background .3s; }
+.ladder.done .row.goal .tile { background: var(--pos); }
+.row.bad .tile, .row.bad .tile.changed { color: var(--neg); box-shadow: inset 0 -3px 0 var(--neg); }
 .row.new { animation: rise .22s ease-out; }
-/* Solved: each rung turns green in turn, top to bottom */
+/* Solved: each word hops in turn, top to bottom */
 .ladder.won .row { animation: hop .36s ease-out both; animation-delay: calc(var(--i) * 70ms); }
-.ladder.won .row::before { animation: rung .36s ease-out both; animation-delay: calc(var(--i) * 70ms); }
-.ladder.won::before, .ladder.won::after { transition-delay: .1s; }
 @keyframes hop { 40% { transform: translateY(-4px); } }
-@keyframes rung { from { background: var(--line-strong); } }
 .row.bad { animation: shake .32s; }
 @keyframes rise { from { opacity: 0; transform: translateY(-8px); } }
 @keyframes shake { 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
@@ -270,10 +261,15 @@ dialog.sheet::backdrop { background: var(--backdrop); }
 .rule .n { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--key); font-size: .8rem; font-weight: 600; }
 .rules { display: grid; gap: 14px; }
 .example { display: grid; justify-items: center; padding: 18px 0 16px; background: var(--bg); border-radius: 10px; }
-.example .ladder { --tile: 30px; --gap: 5px; --rung: 6px; padding: 0 14px; }
-.example .row::before { left: -14px; right: -14px; height: 2px; margin-top: -1px; }
-.example .ladder::before, .example .ladder::after { width: 2px; }
+.example .ladder { --tile: 30px; --gap: 5px; --rung: 6px; }
 .example .tile { border-radius: 5px; }
+.mode-row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 14px; min-height: 60px; padding: 10px 14px; background: var(--bg); border: 0; border-radius: 10px; text-align: left; }
+.mode-row b { display: block; font-weight: 600; line-height: 1.3; }
+.mode-row small { display: block; font-size: .84rem; line-height: 1.35; color: var(--muted); }
+.switch { position: relative; width: 42px; height: 26px; border-radius: 13px; background: var(--line-strong); transition: background .15s; }
+.switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--surface); transition: transform .15s; }
+.mode-row[aria-checked="true"] .switch { background: var(--accent); }
+.mode-row[aria-checked="true"] .switch::after { transform: translateX(16px); }
 .get-app { margin-top: -6px; text-align: center; font-size: .86rem; color: var(--muted); }
 .get-app .link { font-size: .86rem; text-decoration: none; }
 .example-cap { margin-top: 10px; font-size: .8rem; color: var(--muted); text-align: center; }
@@ -322,8 +318,8 @@ dialog.sheet::backdrop { background: var(--backdrop); }
 .update-pct { min-width: 3.2ch; text-align: right; font-size: .86rem; font-weight: 600; }
 
 @media (prefers-reduced-motion: reduce) {
-  .row.new, .row.bad, .result, dialog.sheet[open], .ladder.won .row, .ladder.won .row::before { animation: none; }
-  .ladder::before, .ladder::after, .update-track span, .toast { transition: none; }
+  .row.new, .row.bad, .result, dialog.sheet[open], .ladder.won .row { animation: none; }
+  .row.goal .tile, .switch, .switch::after, .update-track span, .toast { transition: none; }
 }
 </style>
 </head>
@@ -374,7 +370,10 @@ dialog.sheet::backdrop { background: var(--backdrop); }
   <main class="stage-wrap">
     <p class="toast" id="toast" role="status"></p>
     <div class="stage" id="stage">
-      <div class="ladder" id="ladder" aria-label="The ladder"></div>
+      <div class="ladder" id="ladder" aria-label="The ladder">
+        <div class="rungs" id="rungs"></div>
+        <div class="row goal" id="goal"></div>
+      </div>
     </div>
   </main>
 
@@ -422,7 +421,7 @@ dialog.sheet::backdrop { background: var(--backdrop); }
     </button>
   </div>
   <div class="sheet-body">
-    <p>Climb from the top word to the bottom one, changing one letter at a time. Every step has to be a real word.</p>
+    <p>Climb from the top word to the bottom one, changing one letter at a time. Every step has to be a real word. All week the ladders end on the same silly word, and a new one arrives on Monday.</p>
     <div class="example">
       <div class="ladder" id="example" aria-label="Example: COLD, CORD, CARD, WARD, WARM"></div>
       <p class="example-cap">COLD to WARM in four steps</p>
@@ -434,6 +433,10 @@ dialog.sheet::backdrop { background: var(--backdrop); }
       <div class="rule"><span class="n">4</span><p>Tap an earlier word to go back to it. A new ladder arrives every midnight; missed one? Tap the date.</p></div>
       <div class="rule"><span class="n">5</span><p>Want more? <b>Practice</b> deals as many as you like, short, medium or long.</p></div>
     </div>
+    <button class="mode-row" id="hardBtn" type="button" role="switch" aria-checked="false">
+      <span><b>Hard mode</b><small>Hides par and the empty rows until you’ve solved it.</small></span>
+      <span class="switch" aria-hidden="true"></span>
+    </button>
     <button class="btn btn-primary" type="button" data-close>Play</button>
     <p class="get-app" id="getApp" hidden>On Android? <a class="link" href="/app">Get the app</a>, free and offline.</p>
   </div>
@@ -475,8 +478,8 @@ dialog.sheet::backdrop { background: var(--backdrop); }
 </dialog>
 
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
-<script src="words.js?v=1"></script>
-<script src="lib.js?v=5"></script>
+<script src="words.js?v=2"></script>
+<script src="lib.js?v=6"></script>
 <script>
 (() => {
   const L = window.LadderLib, D = window.LadderWords;
@@ -494,12 +497,14 @@ dialog.sheet::backdrop { background: var(--backdrop); }
   // ---- state ----
   // days: { [day]: { ladder: [...words], hints, done, late } } (late: solved
   // after its day); practice: the current random ladder, if any; length:
-  // how long practice ladders are; mode: which one is on screen.
+  // how long practice ladders are; hard: par stays hidden until solved;
+  // mode: which one is on screen.
   const saved = store.get('state') || {};
   const state = {
     days: saved.days && typeof saved.days === 'object' ? saved.days : {},
     practice: saved.practice || null,
     length: L.LENGTHS[saved.length] ? saved.length : 'medium',
+    hard: !!saved.hard,
     mode: saved.mode === 'practice' && saved.practice ? 'practice' : 'daily',
   };
   const save = () => store.set('state', state);
@@ -589,43 +594,60 @@ dialog.sheet::backdrop { background: var(--backdrop); }
       const entry = tiles(el('div', bad ? 'row entry bad' : 'row entry'), typed, { against: current(), cursor: typed.length });
       entry.setAttribute('aria-label', typed ? `Next word: ${typed.toUpperCase()}` : 'Type the next word');
       rows.push(entry);
-      for (let i = steps() + 2; i < puzzle.par; i++) rows.push(tiles(el('div', 'row slot'), ''));
+      if (!state.hard) for (let i = steps() + 2; i < puzzle.par; i++) rows.push(tiles(el('div', 'row slot'), ''));
     }
-    const goal = tiles(el('div', 'row goal'), puzzle.target);
+    const goal = $('goal');
+    goal.replaceChildren();
+    tiles(goal, puzzle.target);
     goal.setAttribute('aria-label', `Get to ${puzzle.target.toUpperCase()}`);
     goal.style.setProperty('--i', rows.length);
-    rows.push(goal);
-    box.replaceChildren(...rows);
+    const rungs = $('rungs'), top = rungs.scrollTop;
+    rungs.replaceChildren(...rows);
+    rungs.scrollTop = top;
     box.classList.toggle('done', play.done);
     box.classList.toggle('won', play.done && fresh);
-    fresh = false;
     renderTools();
     fit();
+    fresh = false;
   }
 
   function renderTools() {
-    const n = steps(), over = n > puzzle.par;
+    const n = steps(), over = !state.hard && n > puzzle.par;
     const c = $('count');
     c.classList.toggle('over', over);
-    c.replaceChildren(el('b', '', `Step ${n}`), ` · Par ${puzzle.par}`);
+    c.replaceChildren(el('b', '', `Step ${n}`));
+    if (!state.hard) c.append(` · Par ${puzzle.par}`);
     $('undoBtn').disabled = n === 0;
     $('restartBtn').disabled = n === 0;
   }
 
-  // Size the tiles so the whole ladder fits the space it has.
+  // One tile size for the whole climb, set by par: room for the start, every
+  // rung and the word to reach. A longer climb scrolls rather than shrinks.
+  // In hard mode it's always the same size, or the size would give par away.
+  let stageHeight = 0;
   function fit() {
     const box = $('ladder'), stage = $('stage');
-    const n = box.children.length;
-    const h = stage.clientHeight - 68, w = Math.min(stage.clientWidth, 340) - 44;
+    // The result panel isn't the keyboard's height; solving doesn't resize.
+    if (!play.done || !stageHeight) stageHeight = stage.clientHeight;
+    const n = state.hard ? 7 : puzzle.par + 2;
+    const h = stageHeight - 68, w = Math.min(stage.clientWidth, 340);
     const byH = h / (n + (n - 1) * 0.2);
     const byW = (w - 3 * 8) / 4;
-    const tile = Math.max(30, Math.min(58, Math.floor(Math.min(byH, byW))));
+    const tile = Math.max(40, Math.min(60, Math.floor(Math.min(byH, byW))));
     box.style.setProperty('--tile', tile + 'px');
     box.style.setProperty('--rung', Math.round(tile * 0.2) + 'px');
     box.style.setProperty('--gap', Math.round(Math.min(8, tile * 0.16)) + 'px');
-    // Too long to fit even so: keep the end in view, where the typing happens.
-    if (!play.done) stage.scrollTop = stage.scrollHeight;
+    follow();
   }
+
+  // Keep the end of the climb in view: the row being typed, or the last word.
+  const still = matchMedia('(prefers-reduced-motion: reduce)');
+  function follow() {
+    const rungs = $('rungs'), entry = rungs.querySelector('.entry');
+    const end = entry ? entry.offsetTop + entry.offsetHeight + 4 : rungs.scrollHeight;
+    rungs.scrollTo({ top: Math.max(0, end - rungs.clientHeight), behavior: fresh && !still.matches ? 'smooth' : 'auto' });
+  }
+  $('rungs').addEventListener('scroll', e => $('ladder').classList.toggle('cut', e.target.scrollTop > 2), { passive: true });
 
   const dateOf = day => { const [y, m, d] = D.epoch.split('-').map(Number); return new Date(y, m - 1, d + day - 1); };
   const shortDate = day => dateOf(day).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' });
@@ -698,7 +720,7 @@ dialog.sheet::backdrop { background: var(--backdrop); }
     renderLadder();
     $('play').hidden = play.done;
     $('result').hidden = !play.done;
-    if (play.done) renderResult();
+    if (play.done) { renderResult(); follow(); }
     tellBack();
   }
 
@@ -763,7 +785,7 @@ dialog.sheet::backdrop { background: var(--backdrop); }
       let st;
       if (rec && rec.done) st = el('span', 'day-state solved', `${rec.ladder.length - 1} steps, par ${par}`);
       else if (rec && rec.ladder.length > 1) st = el('span', 'day-state started', 'Started');
-      else st = el('span', 'day-state', `Par ${par}`);
+      else st = el('span', 'day-state', state.hard ? '' : `Par ${par}`);
       b.append(el('span', 'day-no', `No. ${day}`), el('span', 'day-date', day === today ? 'Today' : shortDate(day)), st);
       list.push(b);
     }
@@ -780,6 +802,14 @@ dialog.sheet::backdrop { background: var(--backdrop); }
     view = day;
     save(); load(); say(''); render();
   }
+
+  // ---- hard mode ----
+  const showHard = () => $('hardBtn').setAttribute('aria-checked', String(state.hard));
+  $('hardBtn').addEventListener('click', () => {
+    state.hard = !state.hard;
+    showHard();
+    save(); render();
+  });
 
   // ---- practice lengths ----
   const LENGTH_TEXT = { short: 'Short', medium: 'Medium', long: 'Long' };
@@ -969,7 +999,15 @@ dialog.sheet::backdrop { background: var(--backdrop); }
   // Keys act on touch-down: a click waits for the finger to lift, and two
   // thumbs typing fast overlap, which loses letters. A click with no pointer
   // behind it is Tab and Enter, or a screen reader.
-  $('keys').addEventListener('pointerdown', e => { const k = e.target.closest('.key'); if (k) hit(k); });
+  $('keys').addEventListener('pointerdown', e => {
+    const k = e.target.closest('.key');
+    if (!k) return;
+    hit(k);
+    // Holding delete keeps deleting, as on a phone's own keyboard.
+    if (k.dataset.key === 'erase') holding = setTimeout(() => { holding = setInterval(erase, 90); }, 380);
+  });
+  let holding = 0;
+  for (const type of ['pointerup', 'pointercancel']) addEventListener(type, () => clearInterval(holding));
   $('keys').addEventListener('click', e => {
     const k = e.target.closest('.key');
     if (k && (e.detail === 0 || e.pointerType === '')) hit(k);
@@ -1020,7 +1058,7 @@ dialog.sheet::backdrop { background: var(--backdrop); }
   };
   function tellBack() { toApp({ type: 'back', enabled: !!openDialog() || awayFromToday() }); }
 
-  addEventListener('resize', fit);
+  addEventListener('resize', () => { stageHeight = 0; fit(); });
   // A new day while the game sits open (or comes back from the background).
   function checkDay() {
     const now = L.dayNumber(new Date(), D.epoch);
@@ -1114,6 +1152,7 @@ dialog.sheet::backdrop { background: var(--backdrop); }
   // Back on a new day: open on today's ladder, not yesterday's practice.
   if (store.get('lastDay') !== today) { store.set('lastDay', today); state.mode = 'daily'; }
   $('getApp').hidden = !!app || location.origin !== SITE;
+  showHard();
   load();
   render();
   toApp({ type: 'hello' });
