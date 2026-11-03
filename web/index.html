@@ -162,7 +162,7 @@ p, h1, h2, h3 { margin: 0; }
 .row.past .tile { color: var(--muted); }
 .row.past:hover .tile { background: var(--key); }
 .row.past .tile.changed { color: var(--accent); }
-.row.current .tile.match { color: var(--pos); background: linear-gradient(var(--pos-soft), var(--pos-soft)), var(--surface); }
+.row.past .tile.match, .row.current .tile.match { color: var(--pos); background: linear-gradient(var(--pos-soft), var(--pos-soft)), var(--surface); }
 .row.current .tile.hinted { color: var(--accent); background: linear-gradient(var(--accent-soft), var(--accent-soft)), var(--surface); box-shadow: inset 0 -3px 0 var(--accent); }
 /* The next word, as it's typed: a bar marks where the next letter goes, and a
    letter that differs from the word above is blue */
@@ -580,7 +580,7 @@ dialog.sheet::backdrop { background: var(--backdrop); }
           row.setAttribute('aria-label', `Go back to ${w.toUpperCase()}`);
           row.tabIndex = 0;
         } else row.style.cursor = 'default';
-        tiles(row, w, { changed: i ? L.changedAt(words[i - 1], w) : -1 });
+        tiles(row, w, { match: true, changed: i ? L.changedAt(words[i - 1], w) : -1 });
       } else {
         row.classList.add('current');
         tiles(row, w, { match: true, hinted: true });
@@ -870,16 +870,17 @@ dialog.sheet::backdrop { background: var(--backdrop); }
 
   // ---- playing ----
   function press(letter) {
+    settle();
     if (play.done || typed.length >= L.LEN) return;
     typed += letter;
-    bad = false;
     renderLadder();
   }
 
   function erase() {
-    if (play.done || !typed) return;
+    const wiped = bad === 'wipe';
+    settle();
+    if (play.done || !typed && !wiped) return;
     typed = typed.slice(0, -1);
-    bad = false;
     renderLadder();
   }
 
@@ -889,7 +890,7 @@ dialog.sheet::backdrop { background: var(--backdrop); }
     if (next.length < L.LEN) return say('Type all four letters', 'warn');
     if (next === word) return reject(`That’s ${word.toUpperCase()} again. Change one letter.`);
     if (!L.oneApart(word, next)) return reject(`Change just one letter of ${word.toUpperCase()}`);
-    if (!dict.all.has(next) && next !== puzzle.target) return reject(`${next.toUpperCase()} isn’t in the word list`);
+    if (!dict.all.has(next) && next !== puzzle.target) return reject(`${next.toUpperCase()} isn’t a valid word`, 'wipe');
     if (play.ladder.includes(next)) return reject(`${next.toUpperCase()} is already on the ladder`);
     play.ladder.push(next);
     typed = ''; hint = null; fresh = true;
@@ -899,14 +900,20 @@ dialog.sheet::backdrop { background: var(--backdrop); }
     render();
   }
 
-  // The typed word shakes and stays, so it can be fixed rather than retyped.
-  function reject(text) {
+  // A refused try shakes. A word that's one letter out stays to be fixed;
+  // something that isn't a word at all ('wipe') clears for a fresh go.
+  function reject(text, how = true) {
     haptic('tick');
-    bad = true;
+    bad = how;
     say(text, 'warn');
     renderLadder();
     clearTimeout(badTimer);
-    badTimer = setTimeout(() => { bad = false; renderLadder(); }, 650);
+    badTimer = setTimeout(() => { settle(); renderLadder(); }, 450);
+  }
+  function settle() {
+    clearTimeout(badTimer);
+    if (bad === 'wipe') typed = '';
+    bad = false;
   }
 
   function back(to = steps() - 1) {
