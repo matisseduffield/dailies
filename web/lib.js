@@ -1,4 +1,4 @@
-// Ladder's pure logic: the word graph, the daily puzzle, par, hints and the
+// Slugle's pure logic: the word graph, the daily puzzle, par, hints and the
 // shareable result. No DOM and no app state, so the same file runs in the
 // page and under `node --test`.
 //
@@ -204,7 +204,7 @@
       for (let j = 0; j < LEN; j++) row += j === at ? '■' : '□';
       rows.push(row);
     }
-    const title = puzzle.day ? `Ladder ${puzzle.day}` : 'Ladder practice';
+    const title = puzzle.day ? `Slugle ${puzzle.day}` : 'Slugle practice';
     return `${title} · ${puzzle.start.toUpperCase()} → ${puzzle.target.toUpperCase()}\n${steps} ${steps === 1 ? 'step' : 'steps'}, par ${puzzle.par}${hints ? `, ${hints} ${hints === 1 ? 'hint' : 'hints'}` : ''}\n${rows.join('\n')}`;
   }
 

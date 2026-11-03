@@ -300,7 +300,7 @@ class MainActivity : ComponentActivity() {
         updatePromptOpen = true
         AlertDialog.Builder(this)
             .setTitle("Update available")
-            .setMessage("Ladder ${info.versionName} is ready to install. You have ${BuildConfig.VERSION_NAME}.")
+            .setMessage("Slugle ${info.versionName} is ready to install. You have ${BuildConfig.VERSION_NAME}.")
             .setPositiveButton("Update") { _, _ -> runUpdate(info) }
             .setNegativeButton("Later", null)
             .setOnDismissListener { updatePromptOpen = false }

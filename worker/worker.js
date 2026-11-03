@@ -1,4 +1,5 @@
-// Ladder on the web: a Cloudflare Worker named `ladder`, no bindings.
+// Slugle on the web: Cloudflare Workers named `slugle` and `ladder` (the old
+// address, so old links still work) run this same script, no bindings.
 //
 //   GET  /, /index.html, ...   the game, served from the public ladder-releases
 //                              repo, where every release publishes web/
@@ -8,7 +9,7 @@
 // passes files through with the right types. Deployed by hand (see README).
 
 const WEB = 'https://raw.githubusercontent.com/matisseduffield/ladder-releases/main/web/';
-const APK = 'https://raw.githubusercontent.com/matisseduffield/ladder-releases/main/Ladder.apk';
+const APK = 'https://raw.githubusercontent.com/matisseduffield/ladder-releases/main/Slugle.apk';
 const TYPES = { html: 'text/html; charset=utf-8', js: 'text/javascript; charset=utf-8', woff2: 'font/woff2', txt: 'text/plain; charset=utf-8' };
 const HEADERS = { 'Referrer-Policy': 'no-referrer', 'X-Content-Type-Options': 'nosniff' };
 

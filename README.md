@@ -1,4 +1,4 @@
-# Ladder
+# Slugle
 
 A daily word ladder. Get from one four-letter word to another by changing one
 letter at a time, and every step has to be a word. Free, offline, no ads.
@@ -25,7 +25,7 @@ letter at a time, and every step has to be a word. Free, offline, no ads.
   medium (5 to 6) or long (7 to 8); New ladder picks the length.
 - How to play (top bar) opens by itself on the first visit.
 - Android app: self-updating from the public `ladder-releases` repo.
-- In a browser: https://ladder.matisseduffield.workers.dev (shared results
+- In a browser: https://slugle.matisseduffield.workers.dev (shared results
   link here, so friends can play without the app; `/app` gets the APK).
 
 ## Words
@@ -46,7 +46,7 @@ lists later never changes a day's puzzle. Rebuild with
 - `web/lib.js`: pure logic (word graph, par, hints, days, streaks, share
   text), tested by `node --test "tests/*.test.js"`.
 - `web/words.js`: generated word lists and daily puzzles.
-- `worker/worker.js`: the Cloudflare Worker `ladder` that serves the page
+- `worker/worker.js`: the Cloudflare Workers `slugle` and `ladder` (old address) that serve the page
   from `ladder-releases/web/` (every release publishes it there). No
   bindings; deployed by hand when it changes, not on every release.
 - `app/`: Kotlin WebView wrapper (`com.matisseduffield.ladder`) that bundles

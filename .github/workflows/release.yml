@@ -65,8 +65,8 @@ jobs:
         run: |
           VERSION="${GITHUB_REF_NAME}"
           if [[ "$GITHUB_REF" != refs/tags/* ]]; then VERSION="manual-${GITHUB_SHA::7}"; fi
-          cp app/build/outputs/apk/release/app-release.apk "Ladder-${VERSION}.apk"
-          echo "APK_NAME=Ladder-${VERSION}.apk" >> "$GITHUB_ENV"
+          cp app/build/outputs/apk/release/app-release.apk "Slugle-${VERSION}.apk"
+          echo "APK_NAME=Slugle-${VERSION}.apk" >> "$GITHUB_ENV"
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
@@ -105,7 +105,7 @@ jobs:
           if [[ -z "$NOTES" ]]; then NOTES=$(printf '%s\n' "$MESSAGE" | head -1); fi
 
           RAW="https://raw.githubusercontent.com/matisseduffield/ladder-releases/main"
-          mkdir pub && cp "$APK_NAME" pub/ && cp "$APK_NAME" pub/Ladder.apk
+          mkdir pub && cp "$APK_NAME" pub/ && cp "$APK_NAME" pub/Slugle.apk
           # The page and its files, served to browsers by the `ladder` Worker.
           mkdir pub/web && cp -r web/index.html web/lib.js web/words.js web/fonts pub/web/
           cd pub
@@ -119,14 +119,14 @@ jobs:
           cat latest.json
 
           {
-            echo "# Ladder releases"
+            echo "# Slugle releases"
             echo
-            echo "Signed Android builds of Ladder, a daily word ladder: change one letter"
+            echo "Signed Android builds of Slugle, a daily word ladder: change one letter"
             echo "at a time to get from one word to another. Free, offline, no ads."
             echo "Installed copies update themselves from here. In a browser:"
-            echo "https://ladder.matisseduffield.workers.dev"
+            echo "https://slugle.matisseduffield.workers.dev"
             echo
-            echo "**[Download Ladder $VERSION_NAME]($RAW/Ladder.apk)**"
+            echo "**[Download Slugle $VERSION_NAME]($RAW/Slugle.apk)**"
             echo
             echo "On your phone: open the link, then open the downloaded file and allow"
             echo "the install when Android asks. You only do this once; after that the app"
@@ -142,5 +142,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -q -m "Ladder $VERSION_NAME"
+          git commit -q -m "Slugle $VERSION_NAME"
           git push --force git@github.com:matisseduffield/ladder-releases.git main

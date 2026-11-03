@@ -6,8 +6,9 @@
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#E8ECE5" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0E1412" media="(prefers-color-scheme: dark)">
-<meta name="description" content="A daily word ladder. Change one letter at a time to get from one word to another.">
-<title>Ladder</title>
+<meta name="description" content="Slugle: a daily word ladder. Change one letter at a time to reach this week's silly word.">
+<title>Slugle</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22 fill=%22none%22><path d=%22M43 29 38 13M52 28l4-16%22 stroke=%22%23F4C52E%22 stroke-width=%224.5%22 stroke-linecap=%22round%22/><path fill=%22%23F4C52E%22 d=%22M3 53C3 48 12 47 19 45 27 43 30 35 36 30 42 25 54 25 58 33 61 39 60 48 55 52 53 54 50 55 46 55H7C4 55 3 54 3 53Z%22/><g fill=%22%23D99F14%22><circle cx=%2224%22 cy=%2249.5%22 r=%222.4%22/><circle cx=%2233.5%22 cy=%2244%22 r=%223%22/><circle cx=%2214%22 cy=%2251%22 r=%221.7%22/><circle cx=%2237%22 cy=%2251%22 r=%221.6%22/></g><path d=%22M43 39.5Q50 48 57.5 38%22 fill=%22none%22 stroke=%22%2314211C%22 stroke-width=%222.6%22 stroke-linecap=%22round%22/><path fill=%22%23EE6A7C%22 stroke=%22%2314211C%22 stroke-width=%221.6%22 stroke-linejoin=%22round%22 d=%22M47.5 43.6c.3 4.6 1.8 7 4 6.8 2.1-.2 3-3 2.4-7.4%22/><g stroke=%22%2314211C%22 stroke-width=%221.8%22><circle cx=%2238%22 cy=%2211%22 r=%227.4%22 fill=%22%23fff%22/><circle cx=%2256.5%22 cy=%2210%22 r=%227.4%22 fill=%22%23fff%22/></g><circle cx=%2240.4%22 cy=%2213.2%22 r=%223.1%22 fill=%22%2314211C%22/><circle cx=%2254.4%22 cy=%227.8%22 r=%223.1%22 fill=%22%2314211C%22/></svg>">
 <style>
 /* Hanken Grotesk ships with the page (fonts/, SIL OFL) so the game looks the same offline. */
 @font-face {
@@ -106,8 +107,7 @@ p, h1, h2, h3 { margin: 0; }
 
 /* Top bar: the name, then stats and help */
 .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 48px; }
-.brand { display: flex; align-items: center; gap: 9px; }
-.brand svg { color: var(--accent); }
+.brand { display: flex; align-items: center; gap: 7px; }
 .mark { font-size: 1.22rem; font-weight: 600; letter-spacing: -.015em; }
 .top-right { display: flex; align-items: center; margin-right: -10px; }
 .icon-btn {
@@ -328,8 +328,8 @@ dialog.sheet::backdrop { background: var(--backdrop); }
   <header>
     <div class="top">
       <div class="brand">
-        <svg width="20" height="22" viewBox="0 0 20 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 1.5v19M16 1.5v19M4 6h12M4 11h12M4 16h12"/></svg>
-        <h1 class="mark">Ladder</h1>
+        <svg width="34" height="34" viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M43 29 38 13M52 28l4-16" stroke="#F4C52E" stroke-width="4.5" stroke-linecap="round"/><path fill="#F4C52E" d="M3 53C3 48 12 47 19 45 27 43 30 35 36 30 42 25 54 25 58 33 61 39 60 48 55 52 53 54 50 55 46 55H7C4 55 3 54 3 53Z"/><g fill="#D99F14"><circle cx="24" cy="49.5" r="2.4"/><circle cx="33.5" cy="44" r="3"/><circle cx="14" cy="51" r="1.7"/><circle cx="37" cy="51" r="1.6"/></g><path d="M43 39.5Q50 48 57.5 38" fill="none" stroke="#14211C" stroke-width="2.6" stroke-linecap="round"/><path fill="#EE6A7C" stroke="#14211C" stroke-width="1.6" stroke-linejoin="round" d="M47.5 43.6c.3 4.6 1.8 7 4 6.8 2.1-.2 3-3 2.4-7.4"/><g stroke="#14211C" stroke-width="1.8"><circle cx="38" cy="11" r="7.4" fill="#fff"/><circle cx="56.5" cy="10" r="7.4" fill="#fff"/></g><circle cx="40.4" cy="13.2" r="3.1" fill="#14211C"/><circle cx="54.4" cy="7.8" r="3.1" fill="#14211C"/></svg>
+        <h1 class="mark">Slugle</h1>
       </div>
       <div class="top-right">
         <button class="version" id="version" type="button" title="Check for updates" hidden></button>
@@ -479,7 +479,7 @@ dialog.sheet::backdrop { background: var(--backdrop); }
 
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="words.js?v=2"></script>
-<script src="lib.js?v=6"></script>
+<script src="lib.js?v=7"></script>
 <script>
 (() => {
   const L = window.LadderLib, D = window.LadderWords;
@@ -487,7 +487,7 @@ dialog.sheet::backdrop { background: var(--backdrop); }
   const $ = id => document.getElementById(id);
   const locale = navigator.language || 'en';
   // Where the game lives on the web; shared results link here.
-  const SITE = 'https://ladder.matisseduffield.workers.dev';
+  const SITE = 'https://slugle.matisseduffield.workers.dev';
 
   const store = {
     get(k) { try { return JSON.parse(localStorage.getItem('ladder.' + k)); } catch { return null; } },
@@ -946,7 +946,7 @@ dialog.sheet::backdrop { background: var(--backdrop); }
 
   function share(p = puzzle, pl = play) {
     const text = `${L.shareText(p, pl.ladder, pl.hints)}\n${SITE}`;
-    if (app) return toApp({ type: 'share', title: 'Ladder', text });
+    if (app) return toApp({ type: 'share', title: 'Slugle', text });
     if (navigator.share) return navigator.share({ text }).catch(() => {});
     navigator.clipboard.writeText(text).then(() => say('Copied to share'), () => {});
   }
@@ -1100,12 +1100,12 @@ dialog.sheet::backdrop { background: var(--backdrop); }
     const view = {
       available: { title: 'Update available', msg: '', actions: true, progress: false, go: 'Update' },
       downloading: { title: 'Downloading update', msg: '', actions: false, progress: true },
-      installing: { title: 'Installing update', actions: false, progress: true, msg: 'Confirm on the next screen. The first time, Android asks you to allow installs from Ladder. Turn it on, then go back.' },
+      installing: { title: 'Installing update', actions: false, progress: true, msg: 'Confirm on the next screen. The first time, Android asks you to allow installs from Slugle. Turn it on, then go back.' },
       failed: { title: "Update didn't finish", msg: m.message || 'Something went wrong. Try again.', actions: true, progress: false, go: 'Try again' },
     }[m.state];
     if (!view) return;
     $('updateTitle').textContent = view.title;
-    $('updateSub').textContent = [`Ladder ${updateVersion}`, updateSize ? `${(updateSize / 1e6).toFixed(1)} MB` : ''].filter(Boolean).join(' · ');
+    $('updateSub').textContent = [`Slugle ${updateVersion}`, updateSize ? `${(updateSize / 1e6).toFixed(1)} MB` : ''].filter(Boolean).join(' · ');
     $('updateMsg').textContent = view.msg;
     show('updateMsg', !!view.msg);
     show('updateActions', view.actions);

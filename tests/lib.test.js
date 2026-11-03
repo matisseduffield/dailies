@@ -118,6 +118,6 @@ test('streaks', () => {
 
 test('share text gives nothing away', () => {
   const text = L.shareText({ day: 3, start: 'cold', target: 'warm', par: 4 }, ['cold', 'cord', 'card', 'ward', 'warm']);
-  assert.equal(text, 'Ladder 3 · COLD → WARM\n4 steps, par 4\n□□■□\n□■□□\n■□□□\n□□□■');
-  assert.match(L.shareText({ start: 'cold', target: 'cord', par: 1 }, ['cold', 'cord'], 1), /^Ladder practice · COLD → CORD\n1 step, par 1, 1 hint\n/);
+  assert.equal(text, 'Slugle 3 · COLD → WARM\n4 steps, par 4\n□□■□\n□■□□\n■□□□\n□□□■');
+  assert.match(L.shareText({ start: 'cold', target: 'cord', par: 1 }, ['cold', 'cord'], 1), /^Slugle practice · COLD → CORD\n1 step, par 1, 1 hint\n/);
 });
