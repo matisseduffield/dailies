@@ -11,9 +11,10 @@ letter at a time, and every step has to be a word. Free, offline, no ads.
 - Tiles stay one size: past par, older words slide off the top under a fade
   and the word to reach stays put. Scroll up to see them.
 - Type the next word and press Enter, as in Wordle (the game's own keyboard
-  or a real one). Letters that differ from the word above show blue as you
-  type. Tap an earlier rung, Undo or Restart to go back.
-- Letters already in place show green. Hint marks which letter to change;
+  or a real one). Something that isn't a word clears itself. Tap an earlier
+  rung, Undo or Restart to go back.
+- Letters already in place show green, on every row, and nothing else is
+  highlighted. Hint marks which letter to change;
   asked again on the same rung, it types the word in. Hints count.
 - Past ladders: tap the date to play any day you missed. Late solves count
   in stats but not the streak.

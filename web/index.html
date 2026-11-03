@@ -164,16 +164,14 @@ p, h1, h2, h3 { margin: 0; }
 .row.past .tile.changed { color: var(--accent); }
 .row.past .tile.match, .row.current .tile.match { color: var(--pos); background: linear-gradient(var(--pos-soft), var(--pos-soft)), var(--surface); }
 .row.current .tile.hinted { color: var(--accent); background: linear-gradient(var(--accent-soft), var(--accent-soft)), var(--surface); box-shadow: inset 0 -3px 0 var(--accent); }
-/* The next word, as it's typed: a bar marks where the next letter goes, and a
-   letter that differs from the word above is blue */
+/* The next word, as it's typed: a bar marks where the next letter goes */
 .row.entry .tile { background: var(--key); }
 .row.entry .tile:not(:empty) { background: var(--surface); }
 .row.entry .tile.cursor { box-shadow: inset 0 -3px 0 var(--accent); }
-.row.entry .tile.changed { color: var(--accent); }
 .row.slot .tile { background: var(--key); opacity: .45; }
 .row.goal .tile { background: var(--accent); color: var(--on-ink); transition: background .3s; }
 .ladder.done .row.goal .tile { background: var(--pos); }
-.row.bad .tile, .row.bad .tile.changed { color: var(--neg); box-shadow: inset 0 -3px 0 var(--neg); }
+.row.bad .tile { color: var(--neg); box-shadow: inset 0 -3px 0 var(--neg); }
 .row.new { animation: rise .22s ease-out; }
 /* Solved: each word hops in turn, top to bottom */
 .ladder.won .row { animation: hop .36s ease-out both; animation-delay: calc(var(--i) * 70ms); }
@@ -548,15 +546,12 @@ dialog.sheet::backdrop { background: var(--backdrop); }
   // ---- drawing ----
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
 
-  // opts: match (green where it's already the target's letter), changed (the
-  // letter that changed from the rung above), against (mark every letter that
-  // differs from this word), cursor (where the next letter goes), hinted.
+  // opts: match (green where it's already the target's letter), cursor (where
+  // the next letter goes), hinted.
   function tiles(row, word, opts = {}) {
     for (let i = 0; i < L.LEN; i++) {
       const t = el('span', 'tile', word ? word[i] || '' : '');
       if (opts.match && word[i] === puzzle.target[i]) t.classList.add('match');
-      if (opts.changed === i) t.classList.add('changed');
-      if (opts.against && word[i] && word[i] !== opts.against[i]) t.classList.add('changed');
       if (opts.cursor === i) t.classList.add('cursor');
       if (opts.hinted && hint && hint.at === i) t.classList.add('hinted');
       row.append(t);
@@ -580,7 +575,7 @@ dialog.sheet::backdrop { background: var(--backdrop); }
           row.setAttribute('aria-label', `Go back to ${w.toUpperCase()}`);
           row.tabIndex = 0;
         } else row.style.cursor = 'default';
-        tiles(row, w, { match: true, changed: i ? L.changedAt(words[i - 1], w) : -1 });
+        tiles(row, w, { match: true });
       } else {
         row.classList.add('current');
         tiles(row, w, { match: true, hinted: true });
@@ -591,7 +586,7 @@ dialog.sheet::backdrop { background: var(--backdrop); }
     });
     // The next word as it's typed, empty rungs up to par, then the word to reach.
     if (!play.done) {
-      const entry = tiles(el('div', bad ? 'row entry bad' : 'row entry'), typed, { against: current(), cursor: typed.length });
+      const entry = tiles(el('div', bad ? 'row entry bad' : 'row entry'), typed, { cursor: typed.length });
       entry.setAttribute('aria-label', typed ? `Next word: ${typed.toUpperCase()}` : 'Type the next word');
       rows.push(entry);
       if (!state.hard) for (let i = steps() + 2; i < puzzle.par; i++) rows.push(tiles(el('div', 'row slot'), ''));
