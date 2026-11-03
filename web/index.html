@@ -174,6 +174,12 @@ button.tile:hover { border-color: var(--line-strong); }
 .row.bad .tile { color: var(--neg); }
 .row.bad .tile.try { border: 2px solid var(--neg); }
 .row.new { animation: rise .22s ease-out; }
+/* Solved: each rung turns green in turn, top to bottom */
+.ladder.won .row { animation: hop .36s ease-out both; animation-delay: calc(var(--i) * 70ms); }
+.ladder.won .row::before { animation: rung .36s ease-out both; animation-delay: calc(var(--i) * 70ms); }
+.ladder.won::before, .ladder.won::after { transition-delay: .1s; }
+@keyframes hop { 40% { transform: translateY(-4px); } }
+@keyframes rung { from { background: var(--line-strong); } }
 .row.bad { animation: shake .32s; }
 @keyframes rise { from { opacity: 0; transform: translateY(-8px); } }
 @keyframes shake { 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
@@ -259,6 +265,8 @@ dialog.sheet::backdrop { background: var(--backdrop); }
 .example .row::before { left: -14px; right: -14px; height: 2px; margin-top: -1px; }
 .example .ladder::before, .example .ladder::after { width: 2px; }
 .example .tile { border-radius: 5px; }
+.get-app { margin-top: -6px; text-align: center; font-size: .86rem; color: var(--muted); }
+.get-app .link { font-size: .86rem; text-decoration: none; }
 .example-cap { margin-top: 10px; font-size: .8rem; color: var(--muted); text-align: center; }
 
 .numbers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
@@ -283,7 +291,7 @@ dialog.sheet::backdrop { background: var(--backdrop); }
 .update-pct { min-width: 3.2ch; text-align: right; font-size: .86rem; font-weight: 600; }
 
 @media (prefers-reduced-motion: reduce) {
-  .row.new, .row.bad, .result, dialog.sheet[open] { animation: none; }
+  .row.new, .row.bad, .result, dialog.sheet[open], .ladder.won .row, .ladder.won .row::before { animation: none; }
   .ladder::before, .ladder::after, .update-track span, .toast { transition: none; }
 }
 </style>
@@ -387,12 +395,13 @@ dialog.sheet::backdrop { background: var(--backdrop); }
       <p class="example-cap">COLD to WARM in four steps</p>
     </div>
     <div class="rules">
-      <div class="rule"><span class="n">1</span><p>Tap a letter in the word, then its new letter on the keyboard.</p></div>
+      <div class="rule"><span class="n">1</span><p>Tap a letter in the word, then its new letter. Or just type: a letter that fits only one place goes there.</p></div>
       <div class="rule"><span class="n">2</span><p><b>Par</b> is the fewest steps it can be done in. Gentle on Monday, longest on Sunday.</p></div>
       <div class="rule"><span class="n">3</span><p>Green letters are already in place. Stuck? <b>Hint</b> shows the letter to change; tap it again for the word.</p></div>
       <div class="rule"><span class="n">4</span><p>Tap an earlier word to go back to it. A new ladder arrives every midnight.</p></div>
     </div>
     <button class="btn btn-primary" type="button" data-close>Play</button>
+    <p class="get-app" id="getApp" hidden>On Android? <a class="link" href="/app">Get the app</a>, free and offline.</p>
   </div>
 </dialog>
 
@@ -406,14 +415,17 @@ dialog.sheet::backdrop { background: var(--backdrop); }
   <div class="sheet-body" id="statsBody"></div>
 </dialog>
 
-<script src="words.js"></script>
-<script src="lib.js"></script>
+<!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
+<script src="words.js?v=1"></script>
+<script src="lib.js?v=3"></script>
 <script>
 (() => {
   const L = window.LadderLib, D = window.LadderWords;
   const dict = L.dictionary(D);
   const $ = id => document.getElementById(id);
   const locale = navigator.language || 'en';
+  // Where the game lives on the web; shared results link here.
+  const SITE = 'https://ladder.matisseduffield.workers.dev';
 
   const store = {
     get(k) { try { return JSON.parse(localStorage.getItem('ladder.' + k)); } catch { return null; } },
@@ -511,16 +523,18 @@ dialog.sheet::backdrop { background: var(--backdrop); }
         tiles(row, w, { buttons: true, changed: -1 });
       }
       if (last && fresh && i > 0) row.classList.add('new');
+      row.style.setProperty('--i', i);
       rows.push(row);
     });
     // Empty rungs up to par, then the word to reach.
     if (!play.done) for (let i = steps() + 1; i < puzzle.par; i++) rows.push(tiles(el('div', 'row slot'), ''));
     const goal = tiles(el('div', 'row goal'), puzzle.target);
     goal.setAttribute('aria-label', `Get to ${puzzle.target.toUpperCase()}`);
-    if (play.done && fresh) goal.classList.add('new');
+    goal.style.setProperty('--i', rows.length);
     rows.push(goal);
     box.replaceChildren(...rows);
     box.classList.toggle('done', play.done);
+    box.classList.toggle('won', play.done && fresh);
     fresh = false;
     renderTools();
     fit();
@@ -697,8 +711,14 @@ dialog.sheet::backdrop { background: var(--backdrop); }
 
   function press(letter) {
     if (play.done || bad) return;
-    if (sel === null) return say('Tap a letter in the word first');
     const word = current();
+    // No spot picked: a letter that fits only one place goes there.
+    if (sel === null) {
+      const at = L.placements(word, letter, puzzle.target, dict, play.ladder);
+      if (!at.length) return say(`No new word with ${letter.toUpperCase()} in it`, 'warn');
+      if (at.length > 1) return say(`${letter.toUpperCase()} fits in more than one place. Tap the letter to change.`);
+      sel = at[0];
+    }
     if (word[sel] === letter) return;
     const next = word.slice(0, sel) + letter + word.slice(sel + 1);
     if (!dict.all.has(next) && next !== puzzle.target) return reject(next, sel, `${next.toUpperCase()} isn’t in the word list`);
@@ -755,15 +775,15 @@ dialog.sheet::backdrop { background: var(--backdrop); }
   }
 
   function share(p = puzzle, pl = play) {
-    const text = L.shareText(p, pl.ladder, pl.hints);
+    const text = `${L.shareText(p, pl.ladder, pl.hints)}\n${SITE}`;
     if (app) return toApp({ type: 'share', title: 'Ladder', text });
     if (navigator.share) return navigator.share({ text }).catch(() => {});
     navigator.clipboard.writeText(text).then(() => say('Copied to share'), () => {});
   }
 
   function startPractice() {
-    const seed = (Math.random() * 2 ** 32) >>> 0;
-    const p = L.practice(seed, D, dict);
+    let p = null;
+    while (!p) p = L.practice((Math.random() * 2 ** 32) >>> 0, D, dict);
     state.practice = { puzzle: p, ladder: [p.start], hints: 0, done: false };
     state.mode = 'practice';
     save(); load(); say(''); render();
@@ -926,6 +946,9 @@ dialog.sheet::backdrop { background: var(--backdrop); }
   }
 
   // ---- boot ----
+  // Back on a new day: open on today's ladder, not yesterday's practice.
+  if (store.get('lastDay') !== today) { store.set('lastDay', today); state.mode = 'daily'; }
+  $('getApp').hidden = !!app || location.origin !== SITE;
   load();
   render();
   toApp({ type: 'hello' });

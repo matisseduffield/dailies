@@ -6,9 +6,9 @@ letter at a time, and every step has to be a word. Free, offline, no ads.
 - One ladder a day, the same for everyone, numbered from 3 November 2026.
   Par is the fewest steps possible using everyday words, and it rises through
   the week: 3 on Monday, 7 on Sunday.
-- Tap a letter in the word, then the new letter. Tap an earlier rung, Undo
-  or Restart to go back. On a computer, type: arrows pick the letter,
-  Backspace undoes a step.
+- Tap a letter in the word, then the new letter. Or just type: a letter that
+  fits only one place goes there. Tap an earlier rung, Undo or Restart to go
+  back. On a computer, arrows pick the letter and Backspace undoes a step.
 - Letters already in place show green. Hint shows which letter to change;
   asked again on the same rung, it gives the word. Hints count in the result.
 - The result: steps against par, the day streak, a shortest way if you went
@@ -18,6 +18,8 @@ letter at a time, and every step has to be a word. Free, offline, no ads.
 - Today / Practice tabs: practice ladders are random (par 4 to 6).
 - How to play (top bar) opens by itself on the first visit.
 - Android app: self-updating from the public `ladder-releases` repo.
+- In a browser: https://ladder.matisseduffield.workers.dev (shared results
+  link here, so friends can play without the app; `/app` gets the APK).
 
 ## Words
 
@@ -37,6 +39,9 @@ lists later never changes a day's puzzle. Rebuild with
 - `web/lib.js`: pure logic (word graph, par, hints, days, streaks, share
   text), tested by `node --test "tests/*.test.js"`.
 - `web/words.js`: generated word lists and daily puzzles.
+- `worker/worker.js`: the Cloudflare Worker `ladder` that serves the page
+  from `ladder-releases/web/` (every release publishes it there). No
+  bindings; deployed by hand when it changes, not on every release.
 - `app/`: Kotlin WebView wrapper (`com.matisseduffield.ladder`) that bundles
   `web/` as assets, with the self-updater from Tally and Bureau.
 
@@ -44,4 +49,5 @@ lists later never changes a day's puzzle. Rebuild with
 
 Commit, then push an annotated `v*` tag. Actions builds a signed APK and
 publishes it with `latest.json` to `ladder-releases`; the tag message's `- `
-lines become the "What's new" notes in the app.
+lines become the "What's new" notes in the app. When `lib.js` or `words.js`
+changes, bump its `?v=` in `index.html` so browsers don't mix old and new.

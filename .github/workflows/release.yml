@@ -3,7 +3,8 @@ name: Build & Release APK
 # Pushing a v* tag builds a signed APK, attaches it to a release here, and
 # publishes it with latest.json to the public ladder-releases repo, which is
 # where installed apps look for updates (this repo is private, so phones
-# can't read its releases).
+# can't read its releases). The page (web/) goes there too: the `ladder`
+# Worker serves the browser version from it.
 on:
   push:
     tags: ["v*"]
@@ -105,6 +106,8 @@ jobs:
 
           RAW="https://raw.githubusercontent.com/matisseduffield/ladder-releases/main"
           mkdir pub && cp "$APK_NAME" pub/ && cp "$APK_NAME" pub/Ladder.apk
+          # The page and its files, served to browsers by the `ladder` Worker.
+          mkdir pub/web && cp -r web/index.html web/lib.js web/words.js web/fonts pub/web/
           cd pub
           SHA=$(sha256sum "$APK_NAME" | cut -d' ' -f1)
           SIZE=$(stat -c%s "$APK_NAME")
@@ -120,7 +123,8 @@ jobs:
             echo
             echo "Signed Android builds of Ladder, a daily word ladder: change one letter"
             echo "at a time to get from one word to another. Free, offline, no ads."
-            echo "Installed copies update themselves from here."
+            echo "Installed copies update themselves from here. In a browser:"
+            echo "https://ladder.matisseduffield.workers.dev"
             echo
             echo "**[Download Ladder $VERSION_NAME]($RAW/Ladder.apk)**"
             echo

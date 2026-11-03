@@ -38,6 +38,18 @@
   };
   const changedAt = (a, b) => { for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return i; return -1; };
 
+  // Where `letter` could go in `word` to make a new rung: a word (or the
+  // target) that isn't already on the ladder. Lets a player just type.
+  function placements(word, letter, target, dict, used = []) {
+    const out = [];
+    for (let i = 0; i < word.length; i++) {
+      if (word[i] === letter) continue;
+      const w = word.slice(0, i) + letter + word.slice(i + 1);
+      if ((dict.all.has(w) || w === target) && !used.includes(w)) out.push(i);
+    }
+    return out;
+  }
+
   // Breadth-first: how far every word is from `from`.
   function distances(from, set) {
     const dist = new Map([[from, 0]]);
@@ -163,7 +175,7 @@
     return `${title} · ${puzzle.start.toUpperCase()} → ${puzzle.target.toUpperCase()}\n${steps} ${steps === 1 ? 'step' : 'steps'}, par ${puzzle.par}${hints ? `, ${hints} ${hints === 1 ? 'hint' : 'hints'}` : ''}\n${rows.join('\n')}`;
   }
 
-  const lib = { LEN, split, dictionary, neighbours, oneApart, changedAt, distances, shortest, nextStep, rng, pick, dayNumber, parForDay, daily, practice, streak, bestStreak, shareText };
+  const lib = { LEN, split, dictionary, neighbours, oneApart, changedAt, placements, distances, shortest, nextStep, rng, pick, dayNumber, parForDay, daily, practice, streak, bestStreak, shareText };
   if (typeof module === 'object' && module.exports) module.exports = lib;
   else root.LadderLib = lib;
 })(this);

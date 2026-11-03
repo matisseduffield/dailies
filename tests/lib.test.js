@@ -13,6 +13,18 @@ test('words one letter apart', () => {
   assert.deepEqual(L.neighbours('cold', new Set(['cord', 'bold', 'card', 'cold'])).sort(), ['bold', 'cord']);
 });
 
+test('a typed letter goes where it makes a word', () => {
+  const d = { all: new Set(['cold', 'cord', 'bold', 'colt', 'hold']) };
+  assert.deepEqual(L.placements('cold', 'r', 'warm', d), [2]);
+  assert.deepEqual(L.placements('cold', 't', 'warm', d), [3]);
+  assert.deepEqual(L.placements('cold', 'q', 'warm', d), []);
+  // Already on the ladder doesn't count; the target always does.
+  assert.deepEqual(L.placements('cold', 'r', 'warm', d, ['cord']), []);
+  assert.deepEqual(L.placements('wars', 'm', 'warm', d), [3]);
+  // Two places: the player has to choose.
+  assert.deepEqual(L.placements('cold', 'h', 'warm', { all: new Set(['hold', 'colh']) }), [0, 3]);
+});
+
 test('shortest ladder', () => {
   const path = L.shortest('cold', 'warm', dict.known);
   assert.equal(path[0], 'cold');
