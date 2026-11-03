@@ -14,7 +14,7 @@
     const known = new Set(split(data.known));
     const all = new Set(known);
     for (const w of split(data.extra)) all.add(w);
-    return { known, all };
+    return { known, all, common: new Set(split(data.ends)) };
   }
 
   function neighbours(word, set) {
@@ -71,9 +71,33 @@
     return null;
   }
 
-  // The next rung on a shortest way from `word` to `target`, for hints.
+  // The ladder to show a player: as short as any, and of those the one with
+  // the most everyday words. Through known words if it can be, else any.
+  function way(a, b, dict) {
+    for (const words of [dict.known, dict.all]) {
+      const set = new Set([...words, a, b]);
+      const dist = distances(b, set);
+      if (!dist.has(a)) continue;
+      const best = new Map([[b, { score: 0, path: [b] }]]);
+      const walk = w => {
+        if (best.has(w)) return best.get(w);
+        let top = null;
+        for (const n of neighbours(w, set)) {
+          if (dist.get(n) !== dist.get(w) - 1) continue;
+          const next = walk(n), score = next.score + (dict.common.has(n) ? 1 : 0);
+          if (!top || score > top.score) top = { score, path: [w, ...next.path] };
+        }
+        best.set(w, top);
+        return top;
+      };
+      return walk(a).path;
+    }
+    return null;
+  }
+
+  // The next rung from `word` towards `target`, for hints.
   function nextStep(word, target, dict) {
-    const path = shortest(word, target, dict.known) || shortest(word, target, dict.all);
+    const path = way(word, target, dict);
     return path && path.length > 1 ? path[1] : null;
   }
 
@@ -166,7 +190,7 @@
     return `${title} · ${puzzle.start.toUpperCase()} → ${puzzle.target.toUpperCase()}\n${steps} ${steps === 1 ? 'step' : 'steps'}, par ${puzzle.par}${hints ? `, ${hints} ${hints === 1 ? 'hint' : 'hints'}` : ''}\n${rows.join('\n')}`;
   }
 
-  const lib = { LEN, split, dictionary, neighbours, oneApart, changedAt, distances, shortest, nextStep, rng, pick, dayNumber, parForDay, daily, LENGTHS, practice, streak, bestStreak, shareText };
+  const lib = { LEN, split, dictionary, neighbours, oneApart, changedAt, distances, shortest, way, nextStep, rng, pick, dayNumber, parForDay, daily, LENGTHS, practice, streak, bestStreak, shareText };
   if (typeof module === 'object' && module.exports) module.exports = lib;
   else root.LadderLib = lib;
 })(this);

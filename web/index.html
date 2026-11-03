@@ -140,7 +140,8 @@ p, h1, h2, h3 { margin: 0; }
 
 /* The ladder: two rails, a rung for every word. Tiles shrink to fit a
    long ladder on screen rather than scrolling. */
-.stage { position: relative; flex: 1; min-height: 0; display: grid; place-items: safe center; padding: 50px 0 14px; overflow-y: auto; }
+.stage-wrap { position: relative; flex: 1; min-height: 0; display: flex; }
+.stage { flex: 1; min-width: 0; display: grid; place-items: safe center; padding: 50px 0 14px; overflow-y: auto; }
 .ladder {
   --tile: 54px; --gap: 8px; --rung: 10px;
   position: relative; display: grid; gap: var(--rung);
@@ -221,7 +222,8 @@ p, h1, h2, h3 { margin: 0; }
 
 /* Messages get a line of their own above the ladder, and fade */
 .toast {
-  position: absolute; top: 8px; left: 0; right: 0;
+  position: absolute; z-index: 1; top: 6px; left: 0; right: 0; padding: 2px 0;
+  background: var(--bg);
   font-size: .88rem; font-weight: 600; color: var(--ink); text-align: center;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity .15s, transform .15s;
@@ -369,9 +371,11 @@ dialog.sheet::backdrop { background: var(--backdrop); }
     </div>
   </section>
 
-  <main class="stage" id="stage">
+  <main class="stage-wrap">
     <p class="toast" id="toast" role="status"></p>
-    <div class="ladder" id="ladder" aria-label="The ladder"></div>
+    <div class="stage" id="stage">
+      <div class="ladder" id="ladder" aria-label="The ladder"></div>
+    </div>
   </main>
 
   <footer>
@@ -472,7 +476,7 @@ dialog.sheet::backdrop { background: var(--backdrop); }
 
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="words.js?v=1"></script>
-<script src="lib.js?v=4"></script>
+<script src="lib.js?v=5"></script>
 <script>
 (() => {
   const L = window.LadderLib, D = window.LadderWords;
@@ -507,6 +511,7 @@ dialog.sheet::backdrop { background: var(--backdrop); }
   let hint = null;             // { word, at, shown: 'spot' | 'word' } for the current rung
   let fresh = false;           // animate the newest rung once
   let bad = null;              // a rejected try, shown briefly
+  let badTimer = 0;
 
   function load() {
     if (state.mode === 'practice') {
@@ -618,6 +623,8 @@ dialog.sheet::backdrop { background: var(--backdrop); }
     box.style.setProperty('--tile', tile + 'px');
     box.style.setProperty('--rung', Math.round(tile * 0.2) + 'px');
     box.style.setProperty('--gap', Math.round(Math.min(8, tile * 0.16)) + 'px');
+    // Too long to fit even so: keep the end in view, where the typing happens.
+    if (!play.done) stage.scrollTop = stage.scrollHeight;
   }
 
   const dateOf = day => { const [y, m, d] = D.epoch.split('-').map(Number); return new Date(y, m - 1, d + day - 1); };
@@ -661,7 +668,7 @@ dialog.sheet::backdrop { background: var(--backdrop); }
     if (diff < 0) note.textContent = `${-diff} under par. Better than we managed.`;
     else if (diff === 0) note.textContent = play.hints ? 'Right on par.' : 'Right on par. Nicely done.';
     else {
-      const way = L.shortest(puzzle.start, puzzle.target, dict.known) || [];
+      const way = L.way(puzzle.start, puzzle.target, dict) || [];
       note.replaceChildren(`${diff} over par. One way in ${par}: `, el('b', '', way.map(w => w.toUpperCase()).join(' ')));
     }
     const daily = state.mode === 'daily';
@@ -833,14 +840,16 @@ dialog.sheet::backdrop { background: var(--backdrop); }
 
   // ---- playing ----
   function press(letter) {
-    if (play.done || bad || typed.length >= L.LEN) return;
+    if (play.done || typed.length >= L.LEN) return;
     typed += letter;
+    bad = false;
     renderLadder();
   }
 
   function erase() {
-    if (play.done || bad || !typed) return;
+    if (play.done || !typed) return;
     typed = typed.slice(0, -1);
+    bad = false;
     renderLadder();
   }
 
@@ -852,7 +861,6 @@ dialog.sheet::backdrop { background: var(--backdrop); }
     if (!L.oneApart(word, next)) return reject(`Change just one letter of ${word.toUpperCase()}`);
     if (!dict.all.has(next) && next !== puzzle.target) return reject(`${next.toUpperCase()} isn’t in the word list`);
     if (play.ladder.includes(next)) return reject(`${next.toUpperCase()} is already on the ladder`);
-    haptic();
     play.ladder.push(next);
     typed = ''; hint = null; fresh = true;
     say('');
@@ -867,7 +875,8 @@ dialog.sheet::backdrop { background: var(--backdrop); }
     bad = true;
     say(text, 'warn');
     renderLadder();
-    setTimeout(() => { bad = false; renderLadder(); }, 650);
+    clearTimeout(badTimer);
+    badTimer = setTimeout(() => { bad = false; renderLadder(); }, 650);
   }
 
   function back(to = steps() - 1) {
@@ -951,17 +960,23 @@ dialog.sheet::backdrop { background: var(--backdrop); }
     }
     return row;
   }));
+  function hit(k) {
+    haptic();
+    if (k.dataset.key === 'enter') enter();
+    else if (k.dataset.key === 'erase') erase();
+    else press(k.dataset.key);
+  }
+  // Keys act on touch-down: a click waits for the finger to lift, and two
+  // thumbs typing fast overlap, which loses letters. A click with no pointer
+  // behind it is Tab and Enter, or a screen reader.
+  $('keys').addEventListener('pointerdown', e => { const k = e.target.closest('.key'); if (k) hit(k); });
   $('keys').addEventListener('click', e => {
     const k = e.target.closest('.key');
-    if (!k) return;
-    const key = k.dataset.key;
-    if (key === 'enter') enter();
-    else if (key === 'erase') erase();
-    else press(key);
+    if (k && (e.detail === 0 || e.pointerType === '')) hit(k);
   });
   // Keys and tools never take focus, so a real keyboard's Enter always means
   // "add this word" rather than pressing the last button tapped.
-  for (const id of ['keys', 'play']) $(id).addEventListener('pointerdown', e => { if (e.target.closest('button')) e.preventDefault(); });
+  $('play').addEventListener('pointerdown', e => { if (e.target.closest('button')) e.preventDefault(); });
 
   $('ladder').addEventListener('click', e => {
     const r = e.target.closest('.row.past[data-back]');

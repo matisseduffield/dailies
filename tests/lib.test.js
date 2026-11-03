@@ -25,6 +25,23 @@ test('shortest ladder', () => {
   assert.deepEqual(L.shortest('rort', 'fort', dict.known), ['rort', 'fort']);
 });
 
+test('the ladder shown is short and uses everyday words', () => {
+  const d = { known: new Set(['cold', 'cord', 'colt', 'cart', 'card', 'warm']), all: new Set(), common: new Set(['card', 'cord']) };
+  // cold-cord-card and cold-colt-cart-card aren't equal; only the short one counts.
+  assert.deepEqual(L.way('cold', 'card', d), ['cold', 'cord', 'card']);
+  const e = { known: new Set(['aa', 'ab', 'bb', 'ba']), all: new Set(), common: new Set(['ba']) };
+  assert.deepEqual(L.way('aa', 'bb', e), ['aa', 'ba', 'bb']);
+  assert.deepEqual(L.way('cold', 'cold', dict), ['cold']);
+  assert.equal(L.way('cold', 'zzzz', { known: new Set(), all: new Set(), common: new Set() }), null);
+  // As short as the plain shortest, for every kind of day.
+  for (const day of [1, 2, 3, 4, 5, 6, 7]) {
+    const p = L.daily(day, D, dict);
+    assert.equal(L.way(p.start, p.target, dict).length - 1, p.par);
+  }
+  // A player's own rung off the common list can still reach the target.
+  assert.deepEqual(L.way('rort', 'fort', dict), ['rort', 'fort']);
+});
+
 test('hints step towards the target', () => {
   const next = L.nextStep('cold', 'warm', dict);
   assert.ok(L.oneApart('cold', next));
