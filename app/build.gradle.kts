@@ -20,7 +20,7 @@ android {
         versionName = System.getenv("VERSION_NAME") ?: "1.0.0"
     }
 
-    // The game itself is the web page in ../web, bundled as app assets so
+    // The hub and its games are the web pages in ../web, bundled as app assets so
     // the browser preview and the phone app always run the same file.
     sourceSets["main"].assets.srcDirs("../web")
 

@@ -1,4 +1,4 @@
-// Builds web/words.js from SCOWL (http://wordlist.aspell.net), which isn't
+// Builds web/slugle/words.js from SCOWL (http://wordlist.aspell.net), which isn't
 // kept in the repo. Unpack scowl-2020.12.07.tar.gz somewhere, then:
 //
 //   node scripts/build-words.mjs path/to/scowl-2020.12.07
@@ -13,7 +13,7 @@
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
-const L = require('../web/lib.js');
+const L = require('../web/slugle/lib.js');
 
 const EPOCH = '2026-11-03';
 const YEARS = 10;
@@ -92,5 +92,5 @@ ${notice}
 var LadderWords = ${JSON.stringify({ epoch: EPOCH, ends: ends.join(''), known: [...known].sort().join(''), extra: extra.join(''), goal: GOAL, starts: starts.join(''), days }, null, 1)};
 if (typeof module === 'object' && module.exports) module.exports = LadderWords;
 `;
-writeFileSync(new URL('../web/words.js', import.meta.url), out);
+writeFileSync(new URL('../web/slugle/words.js', import.meta.url), out);
 console.log(`starts ${starts.length}, ends ${ends.length}, known ${known.size}, extra ${extra.length}, days ${total}, ${(out.length / 1024).toFixed(1)} KB`);

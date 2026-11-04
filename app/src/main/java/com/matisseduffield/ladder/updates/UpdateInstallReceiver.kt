@@ -24,7 +24,7 @@ class UpdateInstallReceiver : BroadcastReceiver() {
                 val confirm = intent.getParcelableExtra<Intent>(Intent.EXTRA_INTENT) ?: return
                 confirm.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 runCatching { context.startActivity(confirm) }
-                    .onFailure { UpdateManager.installError.value = "Open Slugle again to finish updating" }
+                    .onFailure { UpdateManager.installError.value = "Open Dailies again to finish updating" }
             }
             PackageInstaller.STATUS_SUCCESS -> {
                 // App process is about to be replaced; nothing to do.

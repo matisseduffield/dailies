@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.HapticFeedbackConstants
 import android.webkit.RenderProcessGoneDetail
@@ -34,10 +35,11 @@ import org.json.JSONObject
 import java.io.File
 
 /**
- * Hosts web/index.html (bundled as assets) in a WebView. The asset loader
- * serves it from a real https origin, so localStorage behaves exactly as it
- * does in a browser. A message bridge, limited to that origin, lets the page
- * drive Back, sharing, haptics and update checks.
+ * Hosts web/index.html, the hub, and the games in the folders beside it
+ * (bundled as assets) in a WebView. The asset loader serves them from a real
+ * https origin, so localStorage behaves exactly as it does in a browser. A
+ * message bridge, limited to that origin, lets a page drive Back, sharing,
+ * haptics and update checks.
  */
 class MainActivity : ComponentActivity() {
     private companion object {
@@ -47,8 +49,8 @@ class MainActivity : ComponentActivity() {
         const val BRIDGE_NAME = "ladderApp"
         const val CHECK_INTERVAL_MS = 6 * 60 * 60 * 1000L
 
-        // The page's ladderBack() leaves practice for today's ladder, and
-        // says whether it did anything.
+        // A game's ladderBack() closes a sheet or leaves practice, and says
+        // whether it did anything. If not, Back goes to the page before it.
         const val BACK_JS = "(() => typeof ladderBack === 'function' && ladderBack() === true)()"
     }
 
@@ -56,17 +58,24 @@ class MainActivity : ComponentActivity() {
     private var lastUpdateCheck = 0L
     private var updatePromptOpen = false
     private var page: JavaScriptReplyProxy? = null
+    private var pageWantsBack = false
     private val bridgeSupported by lazy { WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER) }
     private var pendingUpdate: UpdateManager.UpdateInfo? = null
     private var installing = false
 
-    // With the bridge, Back is only intercepted while the page has somewhere
-    // to go back to (practice; its "back" message), so the system's
-    // predictive back gesture works on today's ladder.
+    // With the bridge, Back is only intercepted while there's somewhere to go
+    // back to (a game's "back" message, or the hub behind a game), so the
+    // system's predictive back gesture works on the hub.
     private val pageBack = object : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
-            web.evaluateJavascript(BACK_JS, null)
+            web.evaluateJavascript(BACK_JS) { handled ->
+                if (handled != "true" && web.canGoBack()) web.goBack()
+            }
         }
+    }
+
+    private fun updateBack() {
+        pageBack.isEnabled = pageWantsBack || web.canGoBack()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,6 +106,21 @@ class MainActivity : ComponentActivity() {
                     view: WebView,
                     request: WebResourceRequest,
                 ): WebResourceResponse? = assets.shouldInterceptRequest(request.url)
+
+                override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
+                    pageWantsBack = false
+                }
+
+                // The hub is the bottom of the stack, however it was reached,
+                // so Back there leaves the app.
+                override fun onPageFinished(view: WebView, url: String) {
+                    if (url == START_URL) view.clearHistory()
+                    updateBack()
+                }
+
+                override fun doUpdateVisitedHistory(view: WebView, url: String, isReload: Boolean) {
+                    updateBack()
+                }
 
                 // If Android ends the page's renderer (low memory), start the
                 // screen again rather than letting the whole app crash.
@@ -137,7 +161,8 @@ class MainActivity : ComponentActivity() {
             onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     web.evaluateJavascript(BACK_JS) { handled ->
-                        if (handled != "true") moveTaskToBack(true)
+                        if (handled == "true") return@evaluateJavascript
+                        if (web.canGoBack()) web.goBack() else moveTaskToBack(true)
                     }
                 }
             })
@@ -192,7 +217,10 @@ class MainActivity : ComponentActivity() {
                 send(JSONObject().put("type", "info").put("version", BuildConfig.VERSION_NAME))
                 pendingUpdate?.let { sendUpdateCard(it) }
             }
-            "back" -> pageBack.isEnabled = msg.optBoolean("enabled")
+            "back" -> {
+                pageWantsBack = msg.optBoolean("enabled")
+                updateBack()
+            }
             "share" -> runCatching {
                 val send = Intent(Intent.ACTION_SEND)
                     .setType("text/plain")
@@ -300,7 +328,7 @@ class MainActivity : ComponentActivity() {
         updatePromptOpen = true
         AlertDialog.Builder(this)
             .setTitle("Update available")
-            .setMessage("Slugle ${info.versionName} is ready to install. You have ${BuildConfig.VERSION_NAME}.")
+            .setMessage("Dailies ${info.versionName} is ready to install. You have ${BuildConfig.VERSION_NAME}.")
             .setPositiveButton("Update") { _, _ -> runUpdate(info) }
             .setNegativeButton("Later", null)
             .setOnDismissListener { updatePromptOpen = false }

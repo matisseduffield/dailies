@@ -3,8 +3,8 @@ name: Build & Release APK
 # Pushing a v* tag builds a signed APK, attaches it to a release here, and
 # publishes it with latest.json to the public ladder-releases repo, which is
 # where installed apps look for updates (this repo is private, so phones
-# can't read its releases). The page (web/) goes there too: the `ladder`
-# Worker serves the browser version from it.
+# can't read its releases). The pages (web/) go there too: the `dailies`
+# Worker serves the browser version from them.
 on:
   push:
     tags: ["v*"]
@@ -65,8 +65,8 @@ jobs:
         run: |
           VERSION="${GITHUB_REF_NAME}"
           if [[ "$GITHUB_REF" != refs/tags/* ]]; then VERSION="manual-${GITHUB_SHA::7}"; fi
-          cp app/build/outputs/apk/release/app-release.apk "Slugle-${VERSION}.apk"
-          echo "APK_NAME=Slugle-${VERSION}.apk" >> "$GITHUB_ENV"
+          cp app/build/outputs/apk/release/app-release.apk "Dailies-${VERSION}.apk"
+          echo "APK_NAME=Dailies-${VERSION}.apk" >> "$GITHUB_ENV"
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
@@ -105,9 +105,9 @@ jobs:
           if [[ -z "$NOTES" ]]; then NOTES=$(printf '%s\n' "$MESSAGE" | head -1); fi
 
           RAW="https://raw.githubusercontent.com/matisseduffield/ladder-releases/main"
-          mkdir pub && cp "$APK_NAME" pub/ && cp "$APK_NAME" pub/Slugle.apk
-          # The page and its files, served to browsers by the `ladder` Worker.
-          mkdir pub/web && cp -r web/index.html web/lib.js web/words.js web/fonts pub/web/
+          mkdir pub && cp "$APK_NAME" pub/ && cp "$APK_NAME" pub/Dailies.apk
+          # The pages and their files, served to browsers by the `dailies` Worker.
+          cp -r web pub/web
           cd pub
           SHA=$(sha256sum "$APK_NAME" | cut -d' ' -f1)
           SIZE=$(stat -c%s "$APK_NAME")
@@ -119,14 +119,14 @@ jobs:
           cat latest.json
 
           {
-            echo "# Slugle releases"
+            echo "# Dailies releases"
             echo
-            echo "Signed Android builds of Slugle, a daily word ladder: change one letter"
-            echo "at a time to get from one word to another. Free, offline, no ads."
+            echo "Signed Android builds of Dailies, a few small word games, new every day."
+            echo "Free, offline, no ads."
             echo "Installed copies update themselves from here. In a browser:"
-            echo "https://slugle.matisseduffield.workers.dev"
+            echo "https://dailies.matisseduffield.workers.dev"
             echo
-            echo "**[Download Slugle $VERSION_NAME]($RAW/Slugle.apk)**"
+            echo "**[Download Dailies $VERSION_NAME]($RAW/Dailies.apk)**"
             echo
             echo "On your phone: open the link, then open the downloaded file and allow"
             echo "the install when Android asks. You only do this once; after that the app"
@@ -142,5 +142,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -q -m "Slugle $VERSION_NAME"
+          git commit -q -m "Dailies $VERSION_NAME"
           git push --force git@github.com:matisseduffield/ladder-releases.git main

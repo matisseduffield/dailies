@@ -1,8 +1,8 @@
 // Run with: node --test "tests/*.test.js"
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const L = require('../web/lib.js');
-const D = require('../web/words.js');
+const L = require('../web/slugle/lib.js');
+const D = require('../web/slugle/words.js');
 const dict = L.dictionary(D);
 
 test('words one letter apart', () => {
