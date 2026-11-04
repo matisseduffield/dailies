@@ -19,7 +19,6 @@ const EPOCH = '2026-11-03';
 const YEARS = 10;
 const GAP = 330; // days before a start word can come back
 const GOAL = 'slug';
-const PLAYED = 'facemold'; // day 1, from before every ladder ended on the goal: never changes
 
 const scowl = process.argv[2];
 if (!scowl) { console.error('usage: node scripts/build-words.mjs <scowl dir>'); process.exit(1); }
@@ -62,18 +61,20 @@ const stems = level(35, L.LEN - 1);
 const plural = w => w.endsWith('s') && !w.endsWith('ss') && stems.has(w.slice(0, -1));
 const ends = [...level(20)].filter(w => known.has(w) && !plural(w) && L.neighbours(w, known).length).sort();
 
-// Three to eight steps from the goal covers every par, practice included.
+// A start has no letter already in place, so all four have to change, which
+// makes four steps the shortest ladder. Up to nine covers practice's longest.
 const reach = L.distances(GOAL, known);
-const starts = [...known].filter(w => !plural(w) && reach.get(w) >= 3 && reach.get(w) <= 8).sort();
+const clean = w => [...w].every((c, i) => c !== GOAL[i]);
+const starts = [...known].filter(w => !plural(w) && clean(w) && reach.get(w) >= 4 && reach.get(w) <= 9).sort();
 
 // Ten years of days, from a fixed seed so a rebuild gives the same list.
 // If every start at a day's par has been used lately, the longest unused
 // one comes back.
 const random = L.rng(20261104);
-const lastUsed = new Map([[PLAYED.slice(0, L.LEN), 1]]);
-let days = PLAYED;
+const lastUsed = new Map();
+let days = '';
 const total = Math.round(YEARS * 365.25);
-for (let day = PLAYED.length / (L.LEN * 2) + 1; day <= total; day++) {
+for (let day = 1; day <= total; day++) {
   const par = L.parForDay(day, EPOCH);
   const from = starts.filter(w => reach.get(w) === par);
   const fresh = from.filter(w => !(day - (lastUsed.get(w) ?? -Infinity) < GAP));

@@ -106,7 +106,7 @@
     return Math.round((Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(y, m - 1, d)) / 864e5) + 1;
   }
   // Monday is gentle and Sunday is long. 0 = Sunday, as Date.getDay().
-  const PAR_BY_WEEKDAY = [7, 3, 4, 4, 5, 5, 6];
+  const PAR_BY_WEEKDAY = [8, 5, 5, 6, 6, 7, 7];
   const parForDay = (day, epoch) => {
     const [y, m, d] = epoch.split('-').map(Number);
     return PAR_BY_WEEKDAY[new Date(Date.UTC(y, m - 1, d + day - 1)).getUTCDay()];
@@ -127,7 +127,7 @@
   }
 
   // Practice comes in three lengths, as a range of par.
-  const LENGTHS = { short: [3, 4], medium: [5, 6], long: [7, 8] };
+  const LENGTHS = { short: [4, 5], medium: [6, 7], long: [8, 9] };
   function practice(seed, data, dict, length = 'medium') {
     const random = rng(seed);
     const [lo, hi] = LENGTHS[length] || LENGTHS.medium;

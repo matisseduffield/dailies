@@ -54,8 +54,8 @@ test('days follow the calendar', () => {
   assert.equal(L.dayNumber(new Date(2027, 10, 3), D.epoch), 366);
   // Across a daylight-saving change
   assert.equal(L.dayNumber(new Date(2027, 3, 5), D.epoch) - L.dayNumber(new Date(2027, 3, 3), D.epoch), 2);
-  assert.equal(L.parForDay(1, D.epoch), 4); // a Tuesday
-  assert.equal(L.parForDay(6, D.epoch), 7); // a Sunday
+  assert.equal(L.parForDay(1, D.epoch), 5); // a Tuesday
+  assert.equal(L.parForDay(6, D.epoch), 8); // a Sunday
 });
 
 test('every daily puzzle is fair, ends on the goal and its par matches the weekday', () => {
@@ -64,14 +64,11 @@ test('every daily puzzle is fair, ends on the goal and its par matches the weekd
   const reach = new Map();
   const total = D.days.length / 8;
   assert.equal(D.goal, 'slug');
-  // Played before every ladder ended on the goal, so it never changes.
-  assert.deepEqual(['start', 'target'].map(k => L.daily(1, D, dict)[k]), ['face', 'mold']);
   for (let day = 1; day <= total; day++) {
     const p = L.daily(day, D, dict);
-    if (day > 1) {
-      assert.ok(starts.has(p.start), `day ${day}`);
-      assert.equal(p.target, D.goal, `day ${day}`);
-    }
+    assert.ok(starts.has(p.start), `day ${day}`);
+    assert.equal(p.target, D.goal, `day ${day}`);
+    assert.ok([...p.start].every((c, i) => c !== D.goal[i]), `day ${day} has a letter in place`);
     assert.equal(p.par, L.parForDay(day, D.epoch), `day ${day}`);
     // Par is a promise: this really is the fewest steps through everyday words.
     if (!reach.has(p.target)) reach.set(p.target, L.distances(p.target, dict.known));
@@ -89,13 +86,14 @@ test('every daily puzzle is fair, ends on the goal and its par matches the weekd
 test('practice ladders repeat for a seed', () => {
   const a = L.practice(42, D, dict);
   assert.deepEqual(a, L.practice(42, D, dict));
-  assert.ok(a.par >= 5 && a.par <= 6);
+  assert.ok(a.par >= 6 && a.par <= 7);
   assert.equal(L.distances(a.start, dict.known).get(a.target), a.par);
   for (const [length, [lo, hi]] of Object.entries(L.LENGTHS)) {
     for (let seed = 1; seed <= 5; seed++) {
       const p = L.practice(seed, D, dict, length);
       assert.ok(p.par >= lo && p.par <= hi, `${length} ${seed}`);
       assert.equal(p.target, D.goal);
+      assert.ok([...p.start].every((c, i) => c !== D.goal[i]), p.start);
     }
   }
 });

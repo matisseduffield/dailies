@@ -6,8 +6,8 @@ letter at a time, and every step has to be a word. Free, offline, no ads.
 - One ladder a day, the same for everyone, numbered from 3 November 2026.
   Every ladder, Practice included, ends on SLUG, which isn't shown until it's
   solved. Par is the fewest steps possible using everyday words, and it rises
-  through the week: 3 on Monday, 7 on Sunday.
-- Hard mode (in How to play) hides par and the empty rows until it's solved.
+  through the week: 5 on Monday, 8 on Sunday.
+- Hard mode (in How to play) hides par until it's solved.
 - Tiles stay one size: past par, older words slide off the top under a fade
   and the newest stay in view. Scroll up to see them.
 - Type the next word and press Enter, as in Wordle (the game's own keyboard
@@ -33,7 +33,8 @@ letter at a time, and every step has to be a word. Free, offline, no ads.
 
 From SCOWL (http://wordlist.aspell.net; copyright notice in `web/words.js`),
 in every English spelling. Puzzles start on common words (size 35, no plurals,
-3 to 8 steps from SLUG), and a start word comes back about once a year at most;
+no letter already where it is in SLUG), and a start word comes back about once
+a year at most;
 par and solutions only use common ones (size 35, less a few odd ones);
 anything up to size 70 is accepted as a step, Australian-only words included. A short block list keeps slurs and the like out entirely.
 
