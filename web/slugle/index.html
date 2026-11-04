@@ -171,10 +171,9 @@
       <div class="keys" id="keys" aria-label="Letters"></div>
     </div>
     <section class="result" id="result" aria-live="polite" hidden>
-      <p class="result-kicker">Solved</p>
       <div class="result-head">
-        <p class="result-steps" id="resSteps"></p>
-        <p class="result-par" id="resPar"></p>
+        <p class="result-title" id="resTitle"></p>
+        <p class="result-tag" id="resTag"></p>
       </div>
       <p class="result-note" id="resNote"></p>
       <div class="actions">
@@ -467,14 +466,16 @@
 
   function renderResult() {
     const n = steps(), par = puzzle.par, diff = n - par;
-    $('resSteps').textContent = `${n} ${n === 1 ? 'step' : 'steps'}`;
-    $('resPar').textContent = `Par ${par}` + (play.hints ? ` · ${play.hints} ${play.hints === 1 ? 'hint' : 'hints'}` : '');
-    const note = $('resNote');
-    if (diff < 0) note.textContent = `${-diff} under par. Better than we managed.`;
-    else if (diff === 0) note.textContent = play.hints ? 'Right on par.' : 'Right on par. Nicely done.';
+    $('resTitle').textContent = `Solved in ${n}`;
+    const tag = $('resTag');
+    tag.textContent = diff === 0 ? 'On par' : `${Math.abs(diff)} ${diff < 0 ? 'under' : 'over'} par`;
+    tag.classList.toggle('good', diff <= 0);
+    const note = $('resNote'), hints = play.hints ? `${play.hints} ${play.hints === 1 ? 'hint' : 'hints'}. ` : '';
+    if (diff < 0) note.textContent = `${hints}Better than we managed.`;
+    else if (diff === 0) note.textContent = hints ? `With ${hints}` : 'Nicely done.';
     else {
       const way = L.way(puzzle.start, puzzle.target, dict) || [];
-      note.replaceChildren(`${diff} over par. One way in ${par}: `, el('b', '', way.map(w => w.toUpperCase()).join(' ')));
+      note.replaceChildren(`${hints}One way in ${par}: `, el('b', '', way.map(w => w.toUpperCase()).join(' ')));
     }
     const daily = state.mode === 'daily';
     $('resFirst').textContent = daily ? 'Share' : 'New ladder';
@@ -485,17 +486,15 @@
   function tickNext() {
     const foot = $('resFoot');
     if (!play.done) return;
-    if (state.mode !== 'daily') return foot.replaceChildren(el('span', '', todayDone() ? 'Today’s ladder is done' : 'Today’s ladder is still to do'));
-    if (view !== today) return foot.replaceChildren(el('span', '', play.late ? 'Solved late, so it doesn’t change your streak' : 'Solved on the day'));
+    if (view !== today && state.mode === 'daily') return foot.replaceChildren(el('span', '', play.late ? 'Solved late, so it doesn’t change your streak' : 'Solved on the day'));
+    if (!todayDone()) return foot.replaceChildren(el('span', '', 'Today’s ladder is still to do'));
     const now = new Date();
     const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
     const mins = Math.max(1, Math.ceil((midnight - now) / 60000));
     const s = L.streak(streakDays(), today);
-    foot.replaceChildren(
-      el('span', '', ''),
-      el('span', '', `Next ladder in ${mins >= 60 ? `${Math.floor(mins / 60)} h ` : ''}${mins % 60} min`),
-    );
-    foot.firstChild.append(el('b', '', String(s)), ` day streak`);
+    const left = el('span');
+    left.append(el('b', '', String(s)), ` day streak`);
+    foot.replaceChildren(left, el('span', '', `Next ladder in ${mins >= 60 ? `${Math.floor(mins / 60)} h ` : ''}${mins % 60} min`));
   }
 
   function render() {

@@ -101,10 +101,11 @@
       <div class="keys" id="keys" aria-label="Letters"></div>
     </div>
     <section class="result" id="result" aria-live="polite" hidden>
-      <p class="result-kicker" id="resKicker"></p>
       <div class="result-head">
-        <p class="result-steps" id="resHead"></p>
+        <p class="result-title" id="resTitle"></p>
+        <p class="result-tag" id="resTag"></p>
       </div>
+      <p class="result-note" id="resNote"></p>
       <div class="actions">
         <button class="btn btn-secondary" id="resSecond" type="button"></button>
         <button class="btn btn-primary" id="resFirst" type="button"></button>
@@ -268,11 +269,15 @@
 
   const wonDays = () => Object.keys(state.days).filter(d => state.days[d].won).map(Number);
 
+  const VERDICTS = ['First try. Suspicious.', 'Barely needed the clues.', 'Sharp.', 'Solid.', 'You got there.', 'That was close.'];
   function renderResult() {
     const n = play.guesses.length, daily = state.mode === 'daily';
-    $('resKicker').textContent = play.won ? 'Got it' : 'Out of tries';
-    $('resKicker').style.color = play.won ? '' : 'var(--neg)';
-    $('resHead').textContent = play.won ? `${n} of ${L.TRIES}` : answer.toUpperCase();
+    $('resTitle').textContent = play.won ? `Got it in ${n}` : `It was ${answer.toUpperCase()}`;
+    const tag = $('resTag');
+    tag.textContent = play.won ? `${n} of ${L.TRIES}` : 'Out of tries';
+    tag.classList.toggle('good', play.won);
+    tag.classList.toggle('bad', !play.won);
+    $('resNote').textContent = play.won ? VERDICTS[n - 1] : daily ? 'A new word arrives at midnight.' : 'Plenty more where that came from.';
     $('resFirst').textContent = daily ? 'Share' : 'New word';
     $('resSecond').textContent = daily ? 'Practice' : 'Share';
     tickNext();
@@ -281,10 +286,8 @@
   function tickNext() {
     const foot = $('resFoot');
     if (!play.done) return;
-    if (state.mode !== 'daily') {
-      const rec = state.days[today];
-      return foot.replaceChildren(el('span', '', rec && rec.done ? 'Today’s word is done' : 'Today’s word is still to do'));
-    }
+    const rec = state.days[today];
+    if (!rec || !rec.done) return foot.replaceChildren(el('span', '', 'Today’s word is still to do'));
     const now = new Date();
     const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
     const mins = Math.max(1, Math.ceil((midnight - now) / 60000));
