@@ -49,30 +49,9 @@
     return dist;
   }
 
-  // One shortest ladder from a to b through `set` (both ends included), or
-  // null. The ends needn't be in the set: a player's own rung may not be.
-  function shortest(a, b, set) {
-    if (a === b) return [a];
-    const through = set.has(b) ? set : new Set([...set, b]);
-    const prev = new Map([[a, null]]);
-    const queue = [a];
-    for (let i = 0; i < queue.length; i++) {
-      for (const n of neighbours(queue[i], through)) {
-        if (prev.has(n)) continue;
-        prev.set(n, queue[i]);
-        if (n === b) {
-          const path = [b];
-          for (let p = queue[i]; p !== null; p = prev.get(p)) path.push(p);
-          return path.reverse();
-        }
-        queue.push(n);
-      }
-    }
-    return null;
-  }
-
   // The ladder to show a player: as short as any, and of those the one with
-  // the most everyday words. Through known words if it can be, else any.
+  // the most everyday words. Through known words if it can be, else any. The
+  // ends needn't be in the lists: a player's own rung may not be.
   function way(a, b, dict) {
     for (const words of [dict.known, dict.all]) {
       const set = new Set([...words, a, b]);
@@ -156,14 +135,15 @@
   }
 
   // The day's puzzle comes from a fixed list, so it stays the same for
-  // everyone even after the word lists change. Past the list's end it's
-  // made from the day number instead.
+  // everyone even after the word lists change. Every day on it is exactly
+  // its weekday's par apart (the tests check), so nothing needs searching.
+  // Past the list's end it's made from the day number instead.
   function daily(day, data, dict) {
     const pairs = data.days;
     const at = (day - 1) * LEN * 2;
     if (day >= 1 && at + LEN * 2 <= pairs.length) {
       const start = pairs.slice(at, at + LEN), target = pairs.slice(at + LEN, at + LEN * 2);
-      return { day, start, target, par: shortest(start, target, dict.known).length - 1 };
+      return { day, start, target, par: parForDay(day, data.epoch) };
     }
     return { day, ...towards(weekWord(day, data), split(data.ends), dict, parForDay(day, data.epoch), rng(day * 2654435761)) };
   }
@@ -208,7 +188,7 @@
     return `${title} · ${puzzle.start.toUpperCase()} → ${puzzle.target.toUpperCase()}\n${steps} ${steps === 1 ? 'step' : 'steps'}, par ${puzzle.par}${hints ? `, ${hints} ${hints === 1 ? 'hint' : 'hints'}` : ''}\n${rows.join('\n')}`;
   }
 
-  const lib = { LEN, split, dictionary, neighbours, oneApart, changedAt, distances, shortest, way, nextStep, rng, pick, towards, dayNumber, parForDay, weekOf, weekWord, daily, LENGTHS, practice, streak, bestStreak, shareText };
+  const lib = { LEN, split, dictionary, neighbours, oneApart, changedAt, distances, way, nextStep, rng, pick, towards, dayNumber, parForDay, weekOf, weekWord, daily, LENGTHS, practice, streak, bestStreak, shareText };
   if (typeof module === 'object' && module.exports) module.exports = lib;
   else root.LadderLib = lib;
 })(this);

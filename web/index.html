@@ -8,6 +8,7 @@
 <meta name="theme-color" content="#0E1412" media="(prefers-color-scheme: dark)">
 <meta name="description" content="Slugle: a daily word ladder. Change one letter at a time to reach this week's silly word.">
 <title>Slugle</title>
+<link rel="preload" href="fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22 fill=%22none%22><path d=%22M43 29 38 13M52 28l4-16%22 stroke=%22%23F4C52E%22 stroke-width=%224.5%22 stroke-linecap=%22round%22/><path fill=%22%23F4C52E%22 d=%22M3 53C3 48 12 47 19 45 27 43 30 35 36 30 42 25 54 25 58 33 61 39 60 48 55 52 53 54 50 55 46 55H7C4 55 3 54 3 53Z%22/><g fill=%22%23D99F14%22><circle cx=%2224%22 cy=%2249.5%22 r=%222.4%22/><circle cx=%2233.5%22 cy=%2244%22 r=%223%22/><circle cx=%2214%22 cy=%2251%22 r=%221.7%22/><circle cx=%2237%22 cy=%2251%22 r=%221.6%22/></g><path d=%22M43 39.5Q50 48 57.5 38%22 fill=%22none%22 stroke=%22%2314211C%22 stroke-width=%222.6%22 stroke-linecap=%22round%22/><path fill=%22%23EE6A7C%22 stroke=%22%2314211C%22 stroke-width=%221.6%22 stroke-linejoin=%22round%22 d=%22M47.5 43.6c.3 4.6 1.8 7 4 6.8 2.1-.2 3-3 2.4-7.4%22/><g stroke=%22%2314211C%22 stroke-width=%221.8%22><circle cx=%2238%22 cy=%2211%22 r=%227.4%22 fill=%22%23fff%22/><circle cx=%2256.5%22 cy=%2210%22 r=%227.4%22 fill=%22%23fff%22/></g><circle cx=%2240.4%22 cy=%2213.2%22 r=%223.1%22 fill=%22%2314211C%22/><circle cx=%2254.4%22 cy=%227.8%22 r=%223.1%22 fill=%22%2314211C%22/></svg>">
 <style>
 /* Hanken Grotesk ships with the page (fonts/, SIL OFL) so the game looks the same offline. */
@@ -477,7 +478,7 @@ dialog.sheet::backdrop { background: var(--backdrop); }
 
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="words.js?v=2"></script>
-<script src="lib.js?v=7"></script>
+<script src="lib.js?v=8"></script>
 <script>
 (() => {
   const L = window.LadderLib, D = window.LadderWords;
@@ -559,8 +560,23 @@ dialog.sheet::backdrop { background: var(--backdrop); }
     return row;
   }
 
+  // The row being typed. A keypress redraws only this, not the whole ladder.
+  function drawEntry(row) {
+    row.className = bad ? 'row entry bad' : 'row entry';
+    row.replaceChildren();
+    tiles(row, typed, { cursor: typed.length });
+    row.setAttribute('aria-label', typed ? `Next word: ${typed.toUpperCase()}` : 'Type the next word');
+    return row;
+  }
+  function renderEntry() {
+    const row = $('rungs').querySelector('.entry');
+    if (!row) return;
+    drawEntry(row);
+    follow();
+  }
+
   function renderLadder() {
-    const box = $('ladder');
+    const box = $('ladder'), rungs = $('rungs'), top = rungs.scrollTop;
     const rows = [];
     const words = play.ladder;
     words.forEach((w, i) => {
@@ -586,9 +602,7 @@ dialog.sheet::backdrop { background: var(--backdrop); }
     });
     // The next word as it's typed, empty rungs up to par, then the word to reach.
     if (!play.done) {
-      const entry = tiles(el('div', bad ? 'row entry bad' : 'row entry'), typed, { cursor: typed.length });
-      entry.setAttribute('aria-label', typed ? `Next word: ${typed.toUpperCase()}` : 'Type the next word');
-      rows.push(entry);
+      rows.push(drawEntry(el('div')));
       if (!state.hard) for (let i = steps() + 2; i < puzzle.par; i++) rows.push(tiles(el('div', 'row slot'), ''));
     }
     const goal = $('goal');
@@ -596,7 +610,6 @@ dialog.sheet::backdrop { background: var(--backdrop); }
     tiles(goal, puzzle.target);
     goal.setAttribute('aria-label', `Get to ${puzzle.target.toUpperCase()}`);
     goal.style.setProperty('--i', rows.length);
-    const rungs = $('rungs'), top = rungs.scrollTop;
     rungs.replaceChildren(...rows);
     rungs.scrollTop = top;
     box.classList.toggle('done', play.done);
@@ -645,7 +658,11 @@ dialog.sheet::backdrop { background: var(--backdrop); }
   $('rungs').addEventListener('scroll', e => $('ladder').classList.toggle('cut', e.target.scrollTop > 2), { passive: true });
 
   const dateOf = day => { const [y, m, d] = D.epoch.split('-').map(Number); return new Date(y, m - 1, d + day - 1); };
-  const shortDate = day => dateOf(day).toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' });
+  // Made once: building a formatter costs far more than using one, and the
+  // past ladders list formats every day there's been.
+  const dayFormat = new Intl.DateTimeFormat(locale, { weekday: 'short', day: 'numeric', month: 'short' });
+  const monthFormat = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' });
+  const shortDate = day => dayFormat.format(dateOf(day));
   const svg = (w, h, d, width = 1.6) => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     s.setAttribute('width', w); s.setAttribute('height', h); s.setAttribute('viewBox', `0 0 ${w} ${h}`); s.setAttribute('aria-hidden', 'true');
@@ -727,7 +744,7 @@ dialog.sheet::backdrop { background: var(--backdrop); }
       body.replaceChildren(el('p', 'empty', 'Finish a daily ladder to start your stats.'));
       return;
     }
-    const diffs = days.map(d => state.days[d].ladder.length - 1 - L.daily(d, D, dict).par);
+    const diffs = days.map(d => state.days[d].ladder.length - 1 - L.parForDay(d, D.epoch));
     const atPar = diffs.filter(x => x <= 0).length;
     const nums = el('div', 'numbers');
     for (const [v, label] of [
@@ -744,7 +761,7 @@ dialog.sheet::backdrop { background: var(--backdrop); }
     const counts = buckets.map(([, f]) => diffs.filter(f).length);
     const max = Math.max(...counts, 1);
     const todayRec = state.days[today];
-    const todayDiff = todayRec && todayRec.done ? todayRec.ladder.length - 1 - L.daily(today, D, dict).par : null;
+    const todayDiff = todayRec && todayRec.done ? todayRec.ladder.length - 1 - L.parForDay(today, D.epoch) : null;
     const dist = el('div', 'dist');
     dist.append(el('p', 'dist-title', 'Against par'));
     buckets.forEach(([label, f], i) => {
@@ -770,7 +787,7 @@ dialog.sheet::backdrop { background: var(--backdrop); }
     const list = [];
     let month = '';
     for (let day = today; day >= 1; day--) {
-      const m = dateOf(day).toLocaleDateString(locale, { month: 'long', year: 'numeric' });
+      const m = monthFormat.format(dateOf(day));
       if (m !== month) { month = m; list.push(el('p', 'month', m)); }
       const rec = state.days[day], par = L.parForDay(day, D.epoch);
       const b = el('button', 'day');
@@ -866,17 +883,14 @@ dialog.sheet::backdrop { background: var(--backdrop); }
   // ---- playing ----
   function press(letter) {
     settle();
-    if (play.done || typed.length >= L.LEN) return;
-    typed += letter;
-    renderLadder();
+    if (typed.length < L.LEN) typed += letter;
+    renderEntry();
   }
 
   function erase() {
-    const wiped = bad === 'wipe';
     settle();
-    if (play.done || !typed && !wiped) return;
     typed = typed.slice(0, -1);
-    renderLadder();
+    renderEntry();
   }
 
   function enter() {
@@ -901,9 +915,9 @@ dialog.sheet::backdrop { background: var(--backdrop); }
     haptic('tick');
     bad = how;
     say(text, 'warn');
-    renderLadder();
+    renderEntry();
     clearTimeout(badTimer);
-    badTimer = setTimeout(() => { settle(); renderLadder(); }, 450);
+    badTimer = setTimeout(() => { settle(); renderEntry(); }, 450);
   }
   function settle() {
     clearTimeout(badTimer);

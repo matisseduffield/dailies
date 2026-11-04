@@ -13,16 +13,11 @@ test('words one letter apart', () => {
   assert.deepEqual(L.neighbours('cold', new Set(['cord', 'bold', 'card', 'cold'])).sort(), ['bold', 'cord']);
 });
 
-test('shortest ladder', () => {
-  const path = L.shortest('cold', 'warm', dict.known);
-  assert.equal(path[0], 'cold');
-  assert.equal(path.at(-1), 'warm');
-  for (let i = 1; i < path.length; i++) assert.ok(L.oneApart(path[i - 1], path[i]));
-  assert.equal(path.length - 1, 4);
-  assert.deepEqual(L.shortest('cold', 'cold', dict.known), ['cold']);
-  assert.equal(L.shortest('cold', 'qqqq', new Set(['cold'])), null);
-  // A start outside the list still works: it's where the player is.
-  assert.deepEqual(L.shortest('rort', 'fort', dict.known), ['rort', 'fort']);
+test('distances count the steps between words', () => {
+  const dist = L.distances('cold', dict.known);
+  assert.equal(dist.get('cold'), 0);
+  assert.equal(dist.get('warm'), 4);
+  assert.equal(dist.get('qqqq'), undefined);
 });
 
 test('the ladder shown is short and uses everyday words', () => {
@@ -31,9 +26,12 @@ test('the ladder shown is short and uses everyday words', () => {
   assert.deepEqual(L.way('cold', 'card', d), ['cold', 'cord', 'card']);
   const e = { known: new Set(['aa', 'ab', 'bb', 'ba']), all: new Set(), common: new Set(['ba']) };
   assert.deepEqual(L.way('aa', 'bb', e), ['aa', 'ba', 'bb']);
+  const path = L.way('cold', 'warm', dict);
+  assert.equal(path.length - 1, 4);
+  for (let i = 1; i < path.length; i++) assert.ok(L.oneApart(path[i - 1], path[i]));
   assert.deepEqual(L.way('cold', 'cold', dict), ['cold']);
   assert.equal(L.way('cold', 'zzzz', { known: new Set(), all: new Set(), common: new Set() }), null);
-  // As short as the plain shortest, for every kind of day.
+  // As short as par, for every kind of day.
   for (const day of [1, 2, 3, 4, 5, 6, 7]) {
     const p = L.daily(day, D, dict);
     assert.equal(L.way(p.start, p.target, dict).length - 1, p.par);
@@ -45,7 +43,7 @@ test('the ladder shown is short and uses everyday words', () => {
 test('hints step towards the target', () => {
   const next = L.nextStep('cold', 'warm', dict);
   assert.ok(L.oneApart('cold', next));
-  assert.equal(L.shortest(next, 'warm', dict.known).length, 4);
+  assert.equal(L.distances('warm', dict.known).get(next), 3);
   assert.equal(L.nextStep('warm', 'warm', dict), null);
 });
 
@@ -72,6 +70,7 @@ test('weeks run Monday to Sunday and share a word', () => {
 test('every daily puzzle is fair and its par matches the weekday', () => {
   const ends = new Set(L.split(D.ends));
   const seen = new Map();
+  const reach = new Map();
   const total = D.days.length / 8;
   // Played before weekly words came in, so these never change.
   assert.deepEqual(['start', 'target'].map(k => L.daily(1, D, dict)[k]), ['face', 'mold']);
@@ -81,6 +80,9 @@ test('every daily puzzle is fair and its par matches the weekday', () => {
     assert.ok(ends.has(p.start), `day ${day}`);
     if (day > 2) assert.equal(p.target, L.weekWord(day, D), `day ${day}`);
     assert.equal(p.par, L.parForDay(day, D.epoch), `day ${day}`);
+    // Par is a promise: this really is the fewest steps through everyday words.
+    if (!reach.has(p.target)) reach.set(p.target, L.distances(p.target, dict.known));
+    assert.equal(reach.get(p.target).get(p.start), p.par, `day ${day}`);
     const key = p.start + p.target;
     assert.ok(!seen.has(key) || day - seen.get(key) > 365, `day ${day} repeats ${key}`);
     seen.set(key, day);
@@ -96,7 +98,7 @@ test('practice ladders repeat for a seed', () => {
   const a = L.practice(42, D, dict);
   assert.deepEqual(a, L.practice(42, D, dict));
   assert.ok(a.par >= 5 && a.par <= 6);
-  assert.equal(L.shortest(a.start, a.target, dict.known).length - 1, a.par);
+  assert.equal(L.distances(a.start, dict.known).get(a.target), a.par);
   for (const [length, [lo, hi]] of Object.entries(L.LENGTHS)) {
     for (let seed = 1; seed <= 5; seed++) {
       const p = L.practice(seed, D, dict, length);

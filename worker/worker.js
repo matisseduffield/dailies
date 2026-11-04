@@ -20,9 +20,12 @@ export default {
     if (url.pathname === '/app') return new Response(null, { status: 302, headers: { Location: APK, 'Cache-Control': 'no-store', ...HEADERS } });
     let file = url.pathname.replace(/^\/+/, '') || 'index.html';
     if (!/^[a-z0-9-]+(\/[a-zA-Z0-9.-]+)*\.(html|js|woff2|txt)$/.test(file)) return new Response('Not found', { status: 404, headers: HEADERS });
-    const res = await fetch(WEB + file, { cf: { cacheTtl: 300, cacheEverything: true } });
+    // A ?v= file never changes, so it can sit in the browser for a week. The
+    // version goes upstream too, or an old edge copy could be kept under it.
+    const version = /^\?v=\d+$/.test(url.search) ? url.search : '';
+    const res = await fetch(WEB + file + version, { cf: { cacheTtl: 300, cacheEverything: true } });
     if (!res.ok) return new Response('Not found', { status: 404, headers: HEADERS });
-    const cache = file.endsWith('.woff2') ? 'public, max-age=604800' : 'public, max-age=60';
+    const cache = version || file.endsWith('.woff2') ? 'public, max-age=604800' : 'public, max-age=60';
     return new Response(res.body, { headers: { 'Content-Type': TYPES[file.split('.').pop()], 'Cache-Control': cache, ...HEADERS } });
   },
 };
