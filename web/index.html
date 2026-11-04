@@ -6,7 +6,7 @@
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#E8ECE5" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0E1412" media="(prefers-color-scheme: dark)">
-<meta name="description" content="Slugle: a daily word ladder. Change one letter at a time to reach this week's silly word.">
+<meta name="description" content="Slugle: a daily word ladder. Turn a new word into SLUG, one letter at a time.">
 <title>Slugle</title>
 <link rel="preload" href="fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22 fill=%22none%22><path d=%22M43 29 38 13M52 28l4-16%22 stroke=%22%23F4C52E%22 stroke-width=%224.5%22 stroke-linecap=%22round%22/><path fill=%22%23F4C52E%22 d=%22M3 53C3 48 12 47 19 45 27 43 30 35 36 30 42 25 54 25 58 33 61 39 60 48 55 52 53 54 50 55 46 55H7C4 55 3 54 3 53Z%22/><g fill=%22%23D99F14%22><circle cx=%2224%22 cy=%2249.5%22 r=%222.4%22/><circle cx=%2233.5%22 cy=%2244%22 r=%223%22/><circle cx=%2214%22 cy=%2251%22 r=%221.7%22/><circle cx=%2237%22 cy=%2251%22 r=%221.6%22/></g><path d=%22M43 39.5Q50 48 57.5 38%22 fill=%22none%22 stroke=%22%2314211C%22 stroke-width=%222.6%22 stroke-linecap=%22round%22/><path fill=%22%23EE6A7C%22 stroke=%22%2314211C%22 stroke-width=%221.6%22 stroke-linejoin=%22round%22 d=%22M47.5 43.6c.3 4.6 1.8 7 4 6.8 2.1-.2 3-3 2.4-7.4%22/><g stroke=%22%2314211C%22 stroke-width=%221.8%22><circle cx=%2238%22 cy=%2211%22 r=%227.4%22 fill=%22%23fff%22/><circle cx=%2256.5%22 cy=%2210%22 r=%227.4%22 fill=%22%23fff%22/></g><circle cx=%2240.4%22 cy=%2213.2%22 r=%223.1%22 fill=%22%2314211C%22/><circle cx=%2254.4%22 cy=%227.8%22 r=%223.1%22 fill=%22%2314211C%22/></svg>">
@@ -420,15 +420,15 @@ dialog.sheet::backdrop { background: var(--backdrop); }
     </button>
   </div>
   <div class="sheet-body">
-    <p>Climb from the top word to the bottom one, changing one letter at a time. Every step has to be a real word. All week the ladders end on the same silly word, and a new one arrives on Monday.</p>
+    <p>Every day there’s a new word to start from, and every ladder ends on <b>SLUG</b>. Change one letter at a time, and make every step a real word.</p>
     <div class="example">
-      <div class="ladder" id="example" aria-label="Example: COLD, CORD, CARD, WARD, WARM"></div>
-      <p class="example-cap">COLD to WARM in four steps</p>
+      <div class="ladder" id="example" aria-label="Example: FROG, FLOG, SLOG, SLUG"></div>
+      <p class="example-cap">FROG to SLUG in three steps</p>
     </div>
     <div class="rules">
       <div class="rule"><span class="n">1</span><p>Type the next word and press <b>Enter</b>. It has to be the word above with one letter changed.</p></div>
       <div class="rule"><span class="n">2</span><p><b>Par</b> is the fewest steps it can be done in. Gentle on Monday, longest on Sunday.</p></div>
-      <div class="rule"><span class="n">3</span><p>Green letters are already in place. Stuck? <b>Hint</b> marks the letter to change; tap it again for the word.</p></div>
+      <div class="rule"><span class="n">3</span><p>Green letters are already where they are in SLUG. Stuck? <b>Hint</b> marks the letter to change; tap it again for the word.</p></div>
       <div class="rule"><span class="n">4</span><p>Tap an earlier word to go back to it. A new ladder arrives every midnight; missed one? Tap the date.</p></div>
       <div class="rule"><span class="n">5</span><p>Want more? <b>Practice</b> deals as many as you like, short, medium or long.</p></div>
     </div>
@@ -477,8 +477,8 @@ dialog.sheet::backdrop { background: var(--backdrop); }
 </dialog>
 
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
-<script src="words.js?v=2"></script>
-<script src="lib.js?v=8"></script>
+<script src="words.js?v=3"></script>
+<script src="lib.js?v=9"></script>
 <script>
 (() => {
   const L = window.LadderLib, D = window.LadderWords;
@@ -499,6 +499,8 @@ dialog.sheet::backdrop { background: var(--backdrop); }
   // how long practice ladders are; hard: par stays hidden until solved;
   // mode: which one is on screen.
   const saved = store.get('state') || {};
+  // A practice ladder from before they all ended on the goal is dropped.
+  if (saved.practice && saved.practice.puzzle.target !== D.goal) saved.practice = null;
   const state = {
     days: saved.days && typeof saved.days === 'object' ? saved.days : {},
     practice: saved.practice || null,
@@ -600,12 +602,16 @@ dialog.sheet::backdrop { background: var(--backdrop); }
       row.style.setProperty('--i', i);
       rows.push(row);
     });
+    // Everyone knows a ladder ends on the goal, so it only appears once solved
+    // and an empty rung stands in. No. 1 came before that and still shows its own.
+    const unseen = !play.done && puzzle.target === D.goal;
     // The next word as it's typed, empty rungs up to par, then the word to reach.
     if (!play.done) {
       rows.push(drawEntry(el('div')));
-      if (!state.hard) for (let i = steps() + 2; i < puzzle.par; i++) rows.push(tiles(el('div', 'row slot'), ''));
+      if (!state.hard) for (let i = steps() + 2; i < puzzle.par + (unseen ? 1 : 0); i++) rows.push(tiles(el('div', 'row slot'), ''));
     }
     const goal = $('goal');
+    goal.hidden = unseen;
     goal.replaceChildren();
     tiles(goal, puzzle.target);
     goal.setAttribute('aria-label', `Get to ${puzzle.target.toUpperCase()}`);
@@ -867,7 +873,7 @@ dialog.sheet::backdrop { background: var(--backdrop); }
 
   // The example ladder in How to play.
   (() => {
-    const words = ['cold', 'cord', 'card', 'ward', 'warm'];
+    const words = ['frog', 'flog', 'slog', 'slug'];
     $('example').replaceChildren(...words.map((w, i) => {
       const row = el('div', i === words.length - 1 ? 'row goal' : 'row past');
       row.style.cursor = 'default';
@@ -968,8 +974,7 @@ dialog.sheet::backdrop { background: var(--backdrop); }
   }
 
   function startPractice() {
-    let p = null;
-    while (!p) p = L.practice((Math.random() * 2 ** 32) >>> 0, D, dict, state.length);
+    const p = L.practice((Math.random() * 2 ** 32) >>> 0, D, dict, state.length);
     state.practice = { puzzle: p, ladder: [p.start], hints: 0, done: false };
     state.mode = 'practice';
     save(); load(); say(''); render();

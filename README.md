@@ -1,15 +1,15 @@
 # Slugle
 
-A daily word ladder. Get from one four-letter word to another by changing one
+A daily word ladder. Turn a new four-letter word into SLUG by changing one
 letter at a time, and every step has to be a word. Free, offline, no ads.
 
 - One ladder a day, the same for everyone, numbered from 3 November 2026.
-  All week the ladders climb to the same silly word (FART, BURP, TOOT...),
-  with a new one each Monday. Par is the fewest steps possible using everyday
-  words, and it rises through the week: 3 on Monday, 7 on Sunday.
+  Every ladder, Practice included, ends on SLUG, which isn't shown until it's
+  solved. Par is the fewest steps possible using everyday words, and it rises
+  through the week: 3 on Monday, 7 on Sunday.
 - Hard mode (in How to play) hides par and the empty rows until it's solved.
 - Tiles stay one size: past par, older words slide off the top under a fade
-  and the word to reach stays put. Scroll up to see them.
+  and the newest stay in view. Scroll up to see them.
 - Type the next word and press Enter, as in Wordle (the game's own keyboard
   or a real one). Something that isn't a word clears itself. Tap an earlier
   rung, Undo or Restart to go back.
@@ -32,9 +32,9 @@ letter at a time, and every step has to be a word. Free, offline, no ads.
 ## Words
 
 From SCOWL (http://wordlist.aspell.net; copyright notice in `web/words.js`),
-in every English spelling. Puzzles start and end on very common words (SCOWL
-size 20, no plurals), except the week's word, which is always in the common
-list; par and solutions only use common ones (size 35, less a few odd ones);
+in every English spelling. Puzzles start on common words (size 35, no plurals,
+3 to 8 steps from SLUG), and a start word comes back about once a year at most;
+par and solutions only use common ones (size 35, less a few odd ones);
 anything up to size 70 is accepted as a step, Australian-only words included. A short block list keeps slurs and the like out entirely.
 
 The daily puzzles for ten years are fixed in `web/words.js`, so changing the

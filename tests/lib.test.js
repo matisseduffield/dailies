@@ -58,40 +58,32 @@ test('days follow the calendar', () => {
   assert.equal(L.parForDay(6, D.epoch), 7); // a Sunday
 });
 
-test('weeks run Monday to Sunday and share a word', () => {
-  assert.equal(L.weekOf(1, D.epoch), 0); // Tuesday 3 November
-  assert.equal(L.weekOf(6, D.epoch), 0); // Sunday
-  assert.equal(L.weekOf(7, D.epoch), 1); // Monday
-  assert.equal(L.weekWord(3, D), 'fart');
-  assert.equal(L.weekWord(7, D), 'burp');
-  for (let day = 7; day <= 13; day++) assert.equal(L.daily(day, D, dict).target, 'burp');
-});
-
-test('every daily puzzle is fair and its par matches the weekday', () => {
-  const ends = new Set(L.split(D.ends));
+test('every daily puzzle is fair, ends on the goal and its par matches the weekday', () => {
+  const starts = new Set(L.split(D.starts));
   const seen = new Map();
   const reach = new Map();
   const total = D.days.length / 8;
-  // Played before weekly words came in, so these never change.
+  assert.equal(D.goal, 'slug');
+  // Played before every ladder ended on the goal, so it never changes.
   assert.deepEqual(['start', 'target'].map(k => L.daily(1, D, dict)[k]), ['face', 'mold']);
-  assert.deepEqual(['start', 'target'].map(k => L.daily(2, D, dict)[k]), ['slip', 'plan']);
   for (let day = 1; day <= total; day++) {
     const p = L.daily(day, D, dict);
-    assert.ok(ends.has(p.start), `day ${day}`);
-    if (day > 2) assert.equal(p.target, L.weekWord(day, D), `day ${day}`);
+    if (day > 1) {
+      assert.ok(starts.has(p.start), `day ${day}`);
+      assert.equal(p.target, D.goal, `day ${day}`);
+    }
     assert.equal(p.par, L.parForDay(day, D.epoch), `day ${day}`);
     // Par is a promise: this really is the fewest steps through everyday words.
     if (!reach.has(p.target)) reach.set(p.target, L.distances(p.target, dict.known));
     assert.equal(reach.get(p.target).get(p.start), p.par, `day ${day}`);
-    const key = p.start + p.target;
-    assert.ok(!seen.has(key) || day - seen.get(key) > 365, `day ${day} repeats ${key}`);
-    seen.set(key, day);
+    assert.ok(!seen.has(p.start) || day - seen.get(p.start) >= 330, `day ${day} repeats ${p.start}`);
+    seen.set(p.start, day);
   }
   // Past the fixed list, puzzles are still made, the same each time.
   const later = L.daily(total + 10, D, dict);
   assert.deepEqual(later, L.daily(total + 10, D, dict));
   assert.equal(later.par, L.parForDay(total + 10, D.epoch));
-  assert.equal(later.target, L.weekWord(total + 10, D));
+  assert.equal(later.target, D.goal);
 });
 
 test('practice ladders repeat for a seed', () => {
@@ -103,6 +95,7 @@ test('practice ladders repeat for a seed', () => {
     for (let seed = 1; seed <= 5; seed++) {
       const p = L.practice(seed, D, dict, length);
       assert.ok(p.par >= lo && p.par <= hi, `${length} ${seed}`);
+      assert.equal(p.target, D.goal);
     }
   }
 });
