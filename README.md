@@ -1,6 +1,6 @@
 # Dailies
 
-A few small word games, new every day, on one home screen. Free, offline, no
+A few small daily games, new every day, on one home screen. Free, offline, no
 ads. The home screen shows today's date and which games are done.
 
 ## Hunch
@@ -24,6 +24,19 @@ The puzzles are plain text in `web/sorted/puzzles.js`, a line for each group,
 easiest first. Add new ones at the end; a puzzle's place in the list is its
 day, so moving one changes what's on that day. The list goes round when it runs
 out, with a different deal.
+
+## Reach
+
+Six numbers and a target. Tap a number, an operator and a second number, and
+the answer takes their place. Numbers stay whole and above zero. Par is the
+fewest moves possible, proven by searching every shorter way, so it can be
+matched but never beaten: 3 on Monday and Tuesday, 4 midweek, 5 at the weekend.
+Over par, a button swaps your moves for the best way. Give up shows it too,
+and doesn't count towards the streak. Plus unlimited Practice.
+
+`web/reach/days.js` holds ten years of seeds, one small number a day, so the
+page only re-deals a puzzle and never has to search. Rebuild with
+`node scripts/build-reach.mjs`, which gives the same days.
 
 ## Slugle
 
@@ -81,9 +94,9 @@ save `{ date: new Date().toDateString(), text }` to localStorage as
 - `web/index.html`: the hub's home screen, and its update card. `GAMES` at the
   top of its script lists the games.
 - `web/shared.css`: the palette, keyboard, sheets and so on that every page uses.
-- `web/slugle/`, `web/hunch/`, `web/sorted/`: a game each. `index.html` is the whole game (no
+- `web/slugle/`, `web/hunch/`, `web/sorted/`, `web/reach/`: a game each. `index.html` is the whole game (no
   build step), `lib.js` its pure logic, tested by `node --test "tests/*.test.js"`,
-  and `words.js` or `puzzles.js` its data.
+  and `words.js`, `puzzles.js` or `days.js` its data.
 - `worker/worker.js`: the Cloudflare Workers `dailies`, `slugle` and `ladder`
   (old addresses) that serve the pages from `ladder-releases/web/` (every
   release publishes it there). No bindings; deployed by hand when it changes,
