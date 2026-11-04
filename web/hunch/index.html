@@ -130,6 +130,10 @@
       <div class="legend"><span class="tile miss">a</span><p>Not in the word.</p></div>
     </div>
     <p class="muted">A new word arrives every midnight. Want more? <b>Practice</b> deals as many as you like.</p>
+    <button class="mode-row" id="hardBtn" type="button" role="switch" aria-checked="false">
+      <span><b>Hard mode</b><small id="hardNote"></small></span>
+      <span class="switch" aria-hidden="true"></span>
+    </button>
     <button class="btn btn-primary" type="button" data-close>Play</button>
   </div>
 </dialog>
@@ -146,7 +150,7 @@
 
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="words.js?v=1"></script>
-<script src="lib.js?v=1"></script>
+<script src="lib.js?v=2"></script>
 <script>
 (() => {
   const L = window.HunchLib, D = window.HunchWords;
@@ -162,12 +166,14 @@
   };
 
   // ---- state ----
-  // days: { [day]: { guesses: [...words], done, won } }; practice: the same
-  // plus its answer, if there is one; mode: which is on screen.
+  // days: { [day]: { guesses: [...words], done, won, hard } }, hard if it was
+  // played that way throughout; practice: the same plus its answer, if there
+  // is one; hard: every clue has to be used; mode: which is on screen.
   const saved = store.get('state') || {};
   const state = {
     days: saved.days && typeof saved.days === 'object' ? saved.days : {},
     practice: saved.practice || null,
+    hard: !!saved.hard,
     mode: saved.mode === 'practice' && saved.practice ? 'practice' : 'daily',
   };
   const save = () => store.set('state', state);
@@ -274,7 +280,7 @@
     const n = play.guesses.length, daily = state.mode === 'daily';
     $('resTitle').textContent = play.won ? `Got it in ${n}` : `It was ${answer.toUpperCase()}`;
     const tag = $('resTag');
-    tag.textContent = play.won ? `${n} of ${L.TRIES}` : 'Out of tries';
+    tag.textContent = (play.won ? `${n} of ${L.TRIES}` : 'Out of tries') + (play.hard ? ' · Hard' : '');
     tag.classList.toggle('good', play.won);
     tag.classList.toggle('bad', !play.won);
     $('resNote').textContent = play.won ? VERDICTS[n - 1] : daily ? 'A new word arrives at midnight.' : 'Plenty more where that came from.';
@@ -304,6 +310,7 @@
     $('play').hidden = play.done;
     $('result').hidden = !play.done;
     if (play.done) renderResult();
+    showHard();
     tellBack();
   }
 
@@ -342,6 +349,20 @@
     body.replaceChildren(nums, dist);
   }
 
+  // ---- hard mode ----
+  // It can be turned off at any time, but only on before a first guess.
+  function showHard() {
+    const locked = !state.hard && play.guesses.length > 0 && !play.done;
+    $('hardBtn').setAttribute('aria-checked', String(state.hard));
+    $('hardBtn').disabled = locked;
+    $('hardNote').textContent = locked ? 'Can only be turned on before your first guess.' : 'Every clue you find has to be used in your next guesses.';
+  }
+  $('hardBtn').addEventListener('click', () => {
+    state.hard = !state.hard;
+    if (!state.hard) play.hard = false;
+    save(); showHard();
+  });
+
   // ---- sheets ----
   function openSheet(id) {
     if (id === 'statsSheet') renderStats();
@@ -374,6 +395,9 @@
     if (next.length < L.LEN) return say('Type all five letters', 'warn');
     if (!dict.all.has(next)) return reject(`${next.toUpperCase()} isn’t a valid word`, 'wipe');
     if (play.guesses.includes(next)) return reject(`You’ve already tried ${next.toUpperCase()}`, 'wipe');
+    const missed = state.hard && L.missedClue(next, play.guesses, answer);
+    if (missed) return reject(missed);
+    if (!play.guesses.length) play.hard = state.hard;
     play.guesses.push(next);
     typed = ''; fresh = true;
     say('');
@@ -382,8 +406,9 @@
     render();
   }
 
-  // A refused try shakes, then clears for a fresh go.
-  function reject(text, how) {
+  // A refused try shakes. Something that isn't a word, or a repeat ('wipe'),
+  // clears for a fresh go; a word that misses a clue stays to be fixed.
+  function reject(text, how = true) {
     haptic('tick');
     bad = how;
     say(text, 'warn');
@@ -413,7 +438,7 @@
   }
 
   function share() {
-    const text = `${L.shareText(state.mode === 'daily' ? today : 0, play.guesses, answer)}\n${SITE}`;
+    const text = `${L.shareText(state.mode === 'daily' ? today : 0, play.guesses, answer, play.hard)}\n${SITE}`;
     if (app) return toApp({ type: 'share', title: 'Hunch', text });
     if (navigator.share) return navigator.share({ text }).catch(() => {});
     navigator.clipboard.writeText(text).then(() => say('Copied to share'), () => {});

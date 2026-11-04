@@ -8,7 +8,9 @@ ads. The home screen shows today's date and which games are done.
 A hidden five-letter word and six tries. Green letters are in place, yellow
 ones are elsewhere in the word and grey ones aren't in it. Something that
 isn't a word clears itself. One word a day from a fixed shuffled list, plus
-unlimited Practice.
+unlimited Practice. Hard mode (in How to play) makes every clue found count:
+letters in place stay there and letters found have to be used. It can only be
+turned on before a first guess.
 
 ## Slugle
 
@@ -30,8 +32,8 @@ letter at a time, and every step has to be a word.
   asked again on the same rung, it types the word in. Hints count.
 - Past ladders: tap the date to play any day you missed. Late solves count
   in stats but not the streak.
-- The result: steps against par, the day streak, a shortest way if you went
-  over, and a spoiler-free picture to share (which letter changed on each
+- The result: steps against par, the day streak, a button to swap your ladder
+  for the best one if you went over, and a spoiler-free picture to share (which letter changed on each
   step). Stats (top bar): solved, streak, best streak, and how often you're
   on, under or over par.
 - Today / Practice tabs: practice ladders are random, short (par 3 to 4),

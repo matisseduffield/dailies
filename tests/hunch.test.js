@@ -26,6 +26,24 @@ test('the keyboard keeps the best that is known of a letter', () => {
   assert.equal(known.z, undefined);
 });
 
+test('hard mode holds a guess to the clues so far', () => {
+  const none = L.missedClue('crate', [], 'crane');
+  assert.equal(none, null);
+  // CRATE leaves C, R and A in place, and E at the end.
+  assert.equal(L.missedClue('blame', ['crate'], 'crane'), 'Keep C in spot 1');
+  assert.equal(L.missedClue('crane', ['crate'], 'crane'), null);
+  assert.equal(L.missedClue('craze', ['crate'], 'crane'), null);
+  // NACRE finds every letter elsewhere but the E: they must all come back.
+  assert.equal(L.missedClue('dance', ['nacre'], 'crane'), 'Use the R you found');
+  assert.equal(L.missedClue('caner', ['nacre'], 'crane'), 'Keep E in spot 5');
+  assert.equal(L.missedClue('rance', ['nacre'], 'crane'), null);
+  // A letter found twice has to be used twice.
+  assert.equal(L.missedClue('sweat', ['geese'], 'eerie'), 'Keep E in spot 2');
+  assert.equal(L.missedClue('lemon', ['llama'], 'hello'), 'Use 2 Ls');
+  // Every earlier guess counts, not just the last.
+  assert.equal(L.missedClue('crepe', ['noble', 'crypt'], 'crane'), 'Use the N you found');
+});
+
 test('days follow the calendar', () => {
   assert.equal(L.dayNumber(new Date(2026, 10, 4), D.epoch), 1);
   assert.equal(L.dayNumber(new Date(2027, 10, 4), D.epoch), 366);
@@ -56,4 +74,5 @@ test('share text gives nothing away', () => {
   const text = L.shareText(3, ['nacre', 'crane'], 'crane');
   assert.equal(text, 'Hunch 3 · 2/6\n▣▣▣▣■\n■■■■■');
   assert.match(L.shareText(0, ['moldy'], 'crane'), /^Hunch practice · X\/6\n□□□□□$/);
+  assert.match(L.shareText(3, ['crane'], 'crane', true), /^Hunch 3 · 1\/6 · Hard\n/);
 });

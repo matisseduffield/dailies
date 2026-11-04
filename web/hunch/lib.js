@@ -39,6 +39,25 @@
     return known;
   }
 
+  // Hard mode: what a guess leaves out of the clues so far, or null. Letters
+  // in place have to stay there, and every letter found has to be used, as
+  // many times as it's been found in one guess.
+  function missedClue(guess, guesses, answer) {
+    const big = c => c.toUpperCase();
+    for (const g of guesses) {
+      const m = marks(g, answer);
+      for (let i = 0; i < LEN; i++) {
+        if (m[i] === 'hit' && guess[i] !== g[i]) return `Keep ${big(g[i])} in spot ${i + 1}`;
+      }
+      const found = {};
+      for (let i = 0; i < LEN; i++) if (m[i] !== 'miss') found[g[i]] = (found[g[i]] || 0) + 1;
+      for (const [c, n] of Object.entries(found)) {
+        if ([...guess].filter(x => x === c).length < n) return n > 1 ? `Use ${n} ${big(c)}s` : `Use the ${big(c)} you found`;
+      }
+    }
+    return null;
+  }
+
   // Seeded randomness, for the fixed order of the answers.
   function rng(seed) {
     let a = seed >>> 0;
@@ -77,14 +96,14 @@
   }
 
   // A spoiler-free picture of the game, a row for each guess.
-  function shareText(day, guesses, answer) {
+  function shareText(day, guesses, answer, hard = false) {
     const mark = { hit: '■', near: '▣', miss: '□' };
     const won = guesses[guesses.length - 1] === answer;
     const rows = guesses.map(g => marks(g, answer).map(m => mark[m]).join(''));
-    return `${day ? `Hunch ${day}` : 'Hunch practice'} · ${won ? guesses.length : 'X'}/${TRIES}\n${rows.join('\n')}`;
+    return `${day ? `Hunch ${day}` : 'Hunch practice'} · ${won ? guesses.length : 'X'}/${TRIES}${hard ? ' · Hard' : ''}\n${rows.join('\n')}`;
   }
 
-  const lib = { LEN, TRIES, split, dictionary, marks, letters, rng, dayNumber, daily, streak, bestStreak, shareText };
+  const lib = { LEN, TRIES, split, dictionary, marks, letters, missedClue, rng, dayNumber, daily, streak, bestStreak, shareText };
   if (typeof module === 'object' && module.exports) module.exports = lib;
   else root.HunchLib = lib;
 })(this);
