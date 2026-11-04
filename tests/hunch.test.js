@@ -44,6 +44,20 @@ test('hard mode holds a guess to the clues so far', () => {
   assert.equal(L.missedClue('crepe', ['noble', 'crypt'], 'crane'), 'Use the N you found');
 });
 
+test('the daily words never move', () => {
+  // Rebuilding the lists must leave the answers as they were: one word out
+  // shifts every day after it.
+  const answers = L.split(D.answers);
+  assert.equal(answers.length, 2066);
+  assert.equal(answers[0], 'lager');
+  assert.equal(require('node:crypto').createHash('sha256').update(D.answers).digest('hex').slice(0, 16), '0152fe62b493bd70');
+});
+
+test('rare openers are accepted, and nonsense is not', () => {
+  for (const w of ['salet', 'soare', 'roate', 'reast', 'tares']) assert.ok(dict.all.has(w), w);
+  for (const w of ['zzzzz', 'qwert', 'aaaaa']) assert.ok(!dict.all.has(w), w);
+});
+
 test('days follow the calendar', () => {
   assert.equal(L.dayNumber(new Date(2026, 10, 4), D.epoch), 1);
   assert.equal(L.dayNumber(new Date(2027, 10, 4), D.epoch), 366);
