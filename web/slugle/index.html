@@ -69,6 +69,8 @@
 .tool:hover:not(:disabled) { color: var(--ink); background: var(--key); }
 .tool:disabled { opacity: .4; cursor: default; }
 .tool.hint { color: var(--accent); }
+/* Small phones: Undo and Restart go down to their icons, so Hint stays on screen */
+@media (max-width: 350px) { .tools-left .tool { font-size: 0; gap: 0; } }
 .tool.hint:hover:not(:disabled) { color: var(--accent); background: var(--accent-soft); }
 .count { font-size: .86rem; color: var(--muted); text-align: center; white-space: nowrap; }
 .count b { font-weight: 600; color: var(--ink); }
@@ -179,6 +181,7 @@
         <button class="btn btn-secondary" id="resSecond" type="button"></button>
         <button class="btn btn-primary" id="resFirst" type="button"></button>
       </div>
+      <a class="next" id="resNext" hidden></a>
       <p class="result-foot" id="resFoot"></p>
     </section>
   </footer>
@@ -250,6 +253,7 @@
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="words.js?v=4"></script>
 <script src="lib.js?v=10"></script>
+<script src="../next.js?v=1"></script>
 <script>
 (() => {
   const L = window.LadderLib, D = window.LadderWords;
@@ -474,8 +478,7 @@
     tag.textContent = best ? `Par ${par}` : diff === 0 ? 'On par' : `${Math.abs(diff)} ${diff < 0 ? 'under' : 'over'} par`;
     tag.classList.toggle('good', best || diff <= 0);
     const note = $('resNote'), hints = play.hints ? `${play.hints} ${play.hints === 1 ? 'hint' : 'hints'}. ` : '';
-    if (diff < 0) note.textContent = `${hints}Better than we managed.`;
-    else if (diff === 0) note.textContent = hints ? `With ${hints}` : 'Nicely done.';
+    if (diff <= 0) note.textContent = hints;
     else {
       const b = el('button', 'reveal', best ? 'Back to your ladder' : 'Show the best way');
       b.type = 'button';
@@ -486,6 +489,7 @@
     const daily = state.mode === 'daily';
     $('resFirst').textContent = daily ? 'Share' : 'New ladder';
     $('resSecond').textContent = !daily ? 'Share' : view !== today && !todayDone() ? 'Today’s ladder' : 'Practice';
+    showNext($('resNext'), 'slugle', state.mode === 'daily' && view === today);
     tickNext();
   }
 

@@ -12,6 +12,19 @@ unlimited Practice. Hard mode (in How to play) makes every clue found count:
 letters in place stay there and letters found have to be used. It can only be
 turned on before a first guess.
 
+## Sorted
+
+Sixteen words hide four groups of four. Tap four and press Check: a right group
+is set aside, a wrong one costs one of four mistakes, and three out of four
+says One away. A group's colour says how hard it was: yellow, green, blue, then purple. One
+puzzle a day and no Practice, because every puzzle is hand-written and a spare
+one is a day used up.
+
+The puzzles are plain text in `web/sorted/puzzles.js`, a line for each group,
+easiest first. Add new ones at the end; a puzzle's place in the list is its
+day, so moving one changes what's on that day. The list goes round when it runs
+out, with a different deal.
+
 ## Slugle
 
 A daily word ladder. Turn a new four-letter word into SLUG by changing one
@@ -59,17 +72,18 @@ lists later never changes a day's puzzle. Rebuild with
 ## Adding a game
 
 Give it a folder in `web/` with an `index.html` that links `../shared.css`, add
-it to `GAMES` in `web/index.html`, and when today's game ends save
-`{ date: new Date().toDateString(), text }` to localStorage as `hub.<folder>`.
+it to `GAMES` in `web/index.html` and `web/next.js`, and when today's game ends
+save `{ date: new Date().toDateString(), text }` to localStorage as
+`hub.<folder>`. Call `showNext()` from its result for the link to the next game.
 
 ## Layout
 
 - `web/index.html`: the hub's home screen, and its update card. `GAMES` at the
   top of its script lists the games.
 - `web/shared.css`: the palette, keyboard, sheets and so on that every page uses.
-- `web/slugle/`, `web/hunch/`: a game each. `index.html` is the whole game (no
+- `web/slugle/`, `web/hunch/`, `web/sorted/`: a game each. `index.html` is the whole game (no
   build step), `lib.js` its pure logic, tested by `node --test "tests/*.test.js"`,
-  and `words.js` its generated word lists.
+  and `words.js` or `puzzles.js` its data.
 - `worker/worker.js`: the Cloudflare Workers `dailies`, `slugle` and `ladder`
   (old addresses) that serve the pages from `ladder-releases/web/` (every
   release publishes it there). No bindings; deployed by hand when it changes,
@@ -81,5 +95,5 @@ it to `GAMES` in `web/index.html`, and when today's game ends save
 
 Commit, then push an annotated `v*` tag. Actions builds a signed APK and
 publishes it with `latest.json` to `ladder-releases`; the tag message's `- `
-lines become the "What's new" notes in the app. When `lib.js` or `words.js`
+lines become the "What's new" notes in the app. When `lib.js` or a game's data
 changes, bump its `?v=` in `index.html` so browsers don't mix old and new.

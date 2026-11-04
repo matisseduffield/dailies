@@ -14,7 +14,7 @@
 <style>
 /* Green is in place, yellow is elsewhere in the word, grey isn't in it. The
    yellow is the slug's. */
-:root { --hit: #1D7548; --on-hit: #F7F8F4; --near: #F4C52E; --on-near: #14211C; --miss: #8C968F; --on-miss: #F7F8F4; }
+:root { --hit: #1D7548; --on-hit: #F7F8F4; --near: #F4C52E; --on-near: #14211C; --miss: #6C7670; --on-miss: #F7F8F4; }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) { --hit: #3E9E6C; --on-hit: #0E1412; --miss: #3B4742; --on-miss: #E4EAE5; }
 }
@@ -105,11 +105,11 @@
         <p class="result-title" id="resTitle"></p>
         <p class="result-tag" id="resTag"></p>
       </div>
-      <p class="result-note" id="resNote"></p>
       <div class="actions">
         <button class="btn btn-secondary" id="resSecond" type="button"></button>
         <button class="btn btn-primary" id="resFirst" type="button"></button>
       </div>
+      <a class="next" id="resNext" hidden></a>
       <p class="result-foot" id="resFoot"></p>
     </section>
   </footer>
@@ -151,6 +151,7 @@
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="words.js?v=1"></script>
 <script src="lib.js?v=2"></script>
+<script src="../next.js?v=1"></script>
 <script>
 (() => {
   const L = window.HunchLib, D = window.HunchWords;
@@ -275,7 +276,6 @@
 
   const wonDays = () => Object.keys(state.days).filter(d => state.days[d].won).map(Number);
 
-  const VERDICTS = ['First try. Suspicious.', 'Barely needed the clues.', 'Sharp.', 'Solid.', 'You got there.', 'That was close.'];
   function renderResult() {
     const n = play.guesses.length, daily = state.mode === 'daily';
     $('resTitle').textContent = play.won ? `Got it in ${n}` : `It was ${answer.toUpperCase()}`;
@@ -283,9 +283,9 @@
     tag.textContent = (play.won ? `${n} of ${L.TRIES}` : 'Out of tries') + (play.hard ? ' · Hard' : '');
     tag.classList.toggle('good', play.won);
     tag.classList.toggle('bad', !play.won);
-    $('resNote').textContent = play.won ? VERDICTS[n - 1] : daily ? 'A new word arrives at midnight.' : 'Plenty more where that came from.';
     $('resFirst').textContent = daily ? 'Share' : 'New word';
     $('resSecond').textContent = daily ? 'Practice' : 'Share';
+    showNext($('resNext'), 'hunch', daily);
     tickNext();
   }
 
