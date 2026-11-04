@@ -50,7 +50,8 @@
 
 .key.hit { background: var(--hit); color: var(--on-hit); }
 .key.near { background: var(--near); color: var(--on-near); }
-.key.miss { background: var(--miss); color: var(--on-miss); opacity: .55; }
+/* A letter ruled out loses its key, so what's left to try stands out */
+.key.miss { background: none; color: var(--line-strong); }
 
 .rules { display: grid; gap: 14px; }
 .legend { display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: center; }
