@@ -8,7 +8,7 @@ money 1 n What tap and go makes too easy to spend
 odds 1 c Never tell me the ___: Han Solo
 day 1 p It breaks at dawn?
 saga 1 d Norse yarn
-has 1 d Sports, as a mullet
+has 1 d Owns, like a mate with a trailer
 
 day 103
 two 1 n ___-factor: that code you get by text
@@ -17,13 +17,13 @@ chide 1 d Give a bit of a serve
 ours 1 d Yours and mine, like a joint account
 odd 1 d Like the last sock in the wash
 third 1 d Lucky time, so they say
-weds 1 x Ties the knot, or hump day for short
+weds 1 x Marries, or midweek on the rota
 one 1 c The loneliest number
 thud 1 n Sound of your phone hitting your face in bed
 coo 1 p Pigeon's pillow talk?
 
 day 111
-asks 1 n Pops the question to Alexa
+asks 1 n Puts a question to Siri
 spun 1 d Told, as a yarn
 hides 2 x Birdwatchers' huts, or cows' coats
 coal 1 c Santa's gift for brats
@@ -39,7 +39,7 @@ shot 2 p Short black?
 papa 2 c Bear whose porridge was too hot
 sober 2 x Serious, or signed up for Dry July
 akin 2 d Cut from the same cloth
-gets 2 d Twigs
+gets 2 d Catches, as the 7:42 to Central
 spoke 2 b Put a ___ in someone's wheel
 habit 2 n Doomscrolling, or what a nun wears
 opens 2 d Cracks, as a tinnie
@@ -51,9 +51,9 @@ clef 2 p Bass sign?
 hide 2 d Do the Easter bunny's job
 timid 2 c Like the lion in Oz
 omit 2 d Leave out, accidentally on purpose
-nets 2 d Takes home, after tax
+nets 2 d Bags, as a tidy profit
 chime 2 n Ring, like a smart doorbell
-limit 2 d The sky, proverbially
+limit 2 d Credit card ceiling
 edits 2 c Wikipedia's lifeblood
 fed 1 b ___ up to the back teeth
 ton 1 d Batter's hundred
@@ -80,7 +80,7 @@ how 3 d Magician's most dreaded question
 ute 3 p Holden's old pick-up line?
 awaits 3 n Expects, once the three dots appear
 nerve 3 x Cheek, or what a dentist hits
-grey 3 c Kind of nomad in a caravan
+grey 3 c Gandalf, before the upgrade
 tin 2 b Does what it says on the ___
 astute 3 d Sharp, but not out of tune
 sorts 3 x Classifies types
@@ -96,7 +96,7 @@ fore 1 d Golfer's shout, usually too late
 furry 2 d Like your tongue after a big night
 nova 1 p Super star?
 drop 1 b Just a ___ of milk, thanks
-off 1 d Like prawns left in the sun
+off 1 d Cancelled, as a wedding
 wound 2 x Coiled, or cut
 error 2 c 404, for one
 servo 2 n Stop that electric car owners skip

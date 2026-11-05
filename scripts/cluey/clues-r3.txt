@@ -9,7 +9,7 @@ oxen 3 x Steers pulling their weight
 pane 3 w It's clearly been framed
 star 3 c Uber driver's currency
 minus 3 d How July mornings start in Canberra
-unite 3 d Make one from many
+unite 3 d What the world's workers were urged to do
 gym 2 d Place you pay monthly to feel guilty about
 alexa 3 c Amazon who does as she's told
 laden 3 x Loaded, though not cashed up
@@ -17,7 +17,7 @@ gene 3 p Pool player?
 cop 2 n Beverly Hills ___: Axel F
 
 day 132
-jams 1 x Scone toppers, or peak-hour woes
+jams 1 x Gets stuck, or plays with the band
 icon 1 c Kylie, to most Australians
 grain 2 d What's kept behind the silo art
 info 1 b Too much ___: reply to an oversharer
@@ -29,7 +29,7 @@ sniff 2 d Wine snob's opening move
 not 1 b ___ on your nelly!
 
 day 133
-coy 1 d Shy on purpose
+coy 1 d Like someone playing hard to get
 drama 2 n Shogun, or bedtime with a four-year-old
 rider 2 c Clause banning brown M&Ms, famously
 upend 2 d Do what a southerly does to a wheelie bin
@@ -59,7 +59,7 @@ back 3 d Second, at a committee meeting
 ill 2 d Allegedly, on a sickie
 
 day 147
-fast 2 n ___ X: Vin Diesel's tenth lap
+fast 2 n ___ X: tenth lap of Vin Diesel's franchise
 itch 2 d Mozzie's parting gift
 gooey 2 d Like a brownie done right
 more 2 c Oliver Twist's big ask
@@ -77,9 +77,9 @@ scarf 3 d Wrap not sold at the kebab shop
 phase 3 d Goth years, according to Mum
 rite 3 c Schoolies, to an anthropologist
 ones 3 p Far-right column?
-vacate 3 d Clear out before the bond inspection
+vacate 3 d Give up, as a seat on the tram
 erases 3 d Rubs out, the peaceful way
-tire 2 d Flag late in a marathon
+tire 2 d Wear out, as toddlers never seem to
 oaf 2 d Big galah
 shin 2 d Coffee table's favourite target
 pro 2 b Quid ___ quo: you scratch my back
@@ -95,8 +95,8 @@ eaten 3 d Had for breakfast
 text 3 d Prescribed reading
 clip 3 x Haircut at a fair speed
 aura 3 c Something read at Nimbin markets
-prance 3 d Walk like a show pony
-sit 2 c Pose for the Archibald
+prance 3 d Put on airs, on all fours
+sit 2 c Be in session, as the Senate
 delete 3 w Key to forgetting an ex
 apex 3 n Turning point in F1: The Movie
 bent 3 x Crooked, either way you look at it
@@ -104,10 +104,10 @@ rat 3 c Hamelin evacuee
 
 day 153
 bug 1 x Balmain seafood, or a glitch in the code
-chose 2 d Swiped right on
+chose 2 d Went with the fish over the chicken
 lager 2 d Schooner's cargo
 alarm 2 d Thing hit at 6am, and again at 6:09
-don 1 n We ___'t Talk About Bruno: Encanto hit
+don 1 n Put on, as a hi-vis vest
 bogan 2 x Flanno fan, or a NSW river
 user 1 b ___ error: IT's favourite diagnosis
 germ 1 p Sneeze passenger?

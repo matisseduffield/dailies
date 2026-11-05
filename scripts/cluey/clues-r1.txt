@@ -3,7 +3,7 @@ mast 1 d Crow's nest support
 optic 2 p Spirit guide at the pub?
 spore 2 d Fern's answer to a seed
 taken 2 c Thriller with a very particular set of skills
-lest 2 b Judge not, ___ ye be judged
+lest 2 b ___ we forget, said every Anzac Day
 most 1 n Emma McKeon: Australia's ___ decorated Olympian
 appal 2 d Prompt a strongly worded letter
 stoke 2 c Feed Thomas the Tank Engine
@@ -22,7 +22,7 @@ woe 2 b ___ betide anyone who parks here
 foresaw 3 d Called it, well in advance
 our 3 c Whose home is girt by sea?
 erudite 3 d Lettered, though not by a signwriter
-sore 3 d Tender sort of loser
+sore 3 d Tender, but not for a contract
 cad 3 d Loonie, at the currency exchange
 puss 3 x Mug or moggy
 toe 3 d Part of the boot kicking Sicily
@@ -45,7 +45,7 @@ barb 2 x Point on a wire, or a pointed remark
 alarm 2 d Burnt toast can set it off
 today 2 c Sunrise rival on Nine
 hoist 2 d Run up the Jolly Roger
-fish 1 n Star of Sydney's new harbourside market
+fish 1 n Star of Sydney's harbourside market
 bath 1 n Ice ___, where footballers and biohackers shiver
 aloof 2 d Distant, on purpose
 radii 2 d Spokes, to a maths teacher
@@ -54,9 +54,9 @@ myth 2 d Drop bear, for one
 
 day 85
 twee 2 c Like Wes Anderson, to his critics
-ahead 2 n Where Gout Gout tends to finish
+ahead 2 n Where Gout Gout likes to finish
 cargo 3 p Goods on hold?
-trill 3 d Shake at the opera
+trill 3 d Flutter at the Opera House, not the TAB
 feel 2 b ___ the burn, says your personal trainer
 tact 2 d Missing from 'You're wearing that?'
 wharf 2 c Where Ferry McFerryface tied up
@@ -101,12 +101,12 @@ loader 3 d Bobcat, on a building site
 lug 3 p Ear that's a drag?
 con 2 b Oz Comic-___, cosplay's big weekend
 decade 3 x Ten beads on a rosary, or the Noughties
-sales 3 c Boxing Day fixture, away from the MCG
+sales 3 c They never seem to end at Harvey Norman
 blot 3 d Copybook spoiler
 wall 3 d Runners hit it about 30 km in
 aloud 3 d How not to think in a meeting
 stages 3 d Puts on, as a comeback
-pad 3 d Bulk up a CV
+pad 3 d Bachelor's place, nothing to do with uni
 recall 3 p Remember the dodgy toasters?
 rodeo 3 d Not your first, if you know the ropes
 nest 3 n Penguin Bloom's birthplace

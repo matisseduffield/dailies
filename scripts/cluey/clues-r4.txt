@@ -16,7 +16,7 @@ guest 2 d Person who gets the good towels
 oscar 2 c Bin-dwelling grouch
 share 2 n Our small plates are designed to ___
 pie 1 d Lava in a pastry case at the footy
-egos 1 d They're bruised by critics and inflated by mums
+egos 1 d They grow with every like
 rush 1 c Gold ___ that put Bendigo on the map
 recap 2 p Put the lid back on?
 sari 1 d Diwali drape
@@ -66,7 +66,7 @@ elm 1 d Tree with a Dutch disease
 
 day 168
 spar 2 d Boom, for one
-nana 2 b Do your ___: crack it
+nana 2 b ___ knows best, says the mug from the grandkids
 dingy 2 d Like a share-house bathroom
 adds 2 p Puts two and two together?
 meat 2 n Plant-based burgers fake it
@@ -77,10 +77,10 @@ ray 1 x Manta, or Charles
 dam 1 d Where farm kids catch yabbies
 
 day 174
-bag 1 n Bum ___, back in fashion
+bag 1 n Bum ___: Gen Z's crossbody, once a tourist's wallet
 sauce 2 p Cheek on a sausage roll?
 eight 2 d Huntsman's leg count
-edges 2 c Nicks to the keeper
+edges 2 c Pips at the post
 key 1 d Spare under the pot plant
 buggy 2 n Like Cyberpunk 2077 at launch
 ache 1 d Leg day leftover

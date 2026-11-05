@@ -224,9 +224,9 @@
 74 duo | Royel Otis, who only sound like one bloke | Sydney indie pop duo of Royel Maddell and Otis Pavlovic, formed 2019, name joins their first names | https://en.wikipedia.org/wiki/Royel_Otis
 78 gab | Yapping, before Gen Z rebranded it | Yap and yapping mean talking at length, in wide Gen Z use | https://www.dailydot.com/news/yapping-meaning-explained
 78 glum | Like Swans fans after the 2024 grand final | Brisbane Lions beat Sydney 18.12 (120) to 9.6 (60) at the MCG, 28 September 2024 | https://www.irishtimes.com/sport/2024/09/28/conor-mckenna-secures-grand-final-winners-medal-as-brisbane-hammer-sydney-by-60-points
-84 fish | Star of Sydney's new harbourside market | New Sydney Fish Market opened on the harbour at Blackwattle Bay on 19 January 2026 | https://www.edenmagnet.com.au/story/9156131/new-sydney-fish-market-opens-at-sydney-harbour
+84 fish | Star of Sydney's harbourside market | New Sydney Fish Market opened on the harbour at Blackwattle Bay on 19 January 2026 | https://www.edenmagnet.com.au/story/9156131/new-sydney-fish-market-opens-at-sydney-harbour
 84 bath | Ice ___, where footballers and biohackers shiver | Collingwood's sports science director says players go into ice baths straight after games. The biohacking link rests only on a cold-plunge retailer's blog (crocpad.com), so it is the weaker half | https://www.afl.com.au/news/535067/preparation-imperative-for-pies
-85 ahead | Where Gout Gout tends to finish | Australian sprinter, won the 2026 national 200m title in 19.67, a U20 world record | https://www.ibtimes.co.uk/gout-gout-breaks-world-u20-200m-record-1791594
+85 ahead | Where Gout Gout likes to finish | Australian sprinter, won the 2026 national 200m title in 19.67, a U20 world record | https://www.ibtimes.co.uk/gout-gout-breaks-world-u20-200m-record-1791594
 87 snoop | 2024 Olympic torchbearer who'd read your diary | Snoop Dogg carried the Olympic torch in Saint-Denis before the Paris opening ceremony, 26 July 2024 | https://www.pbs.org/newshour/amp/world/snoop-dogg-carries-olympic-torch-ahead-of-opening-ceremony-in-paris
 87 tartar | Blanchett film, shown twice at the dentist | Tar (2022), written and directed by Todd Field, Cate Blanchett in the title role | https://en.wikipedia.org/wiki/T%C3%A1r
 92 moss | Elisabeth who couldn't see The Invisible Man | The Invisible Man (2020), Leigh Whannell, stars Elisabeth Moss, filmed in Sydney | https://www.dreadcentral.com/news/297383/filming-begins-on-blumhouses-invisible-man-remake-in-sydney/
@@ -235,7 +235,7 @@
 96 money | What tap and go makes too easy to spend | Tap and go is the everyday Australian term; contactless cards and phones have displaced cash at the till | https://www.rba.gov.au/publications/rdp/2023/2023-08/non-technical-summary.html
 103 two | ___-factor: that code you get by text | Two-factor authentication by a six-digit SMS code is standard, including on myGov | https://my.gov.au/en/about/help/mygov-website/sign-in-to-mygov/use-a-code-sent-by-sms
 103 thud | Sound of your phone hitting your face in bed | Finder survey: 21% of Australians had dropped a phone on their face in bed, the top phone fail | https://www.finder.com.au/press-release-feb-2018-phone-fails-2200-aussies-drop-a-smartphone-on-their-face-every-night
-111 asks | Pops the question to Alexa | Alexa has been in Australia since 2018 and answers questions; Alexa+ launched here in August 2026 | https://www.thenewdaily.com.au/life/tech/2026/08/06/aussie-alexa-areboot
+111 asks | Puts a question to Siri | Siri is the voice assistant on iPhones | plain common knowledge
 111 kudos | Strava's answer to a like | Kudos is Strava's built-in appreciation button on an activity | https://support.strava.com/en-us/articles/15402054-what-is-kudos
 112 habit | Doomscrolling, or what a nun wears | Doomscrolling is a dictionary word for compulsive scrolling of bad news; Macquarie's 2020 Committee's Choice | https://en.wikipedia.org/wiki/Doomscrolling
 119 chime | Ring, like a smart doorbell | Ring sells smart doorbells in Australia, and a linked Chime sounds when the button is pressed | https://ring.com/au/en/support/articles/l3fb7/linking-chime-to-your-ring-camera-or-doorbell-to-hear-alerts
@@ -248,11 +248,11 @@
 133 drama | Shogun, or bedtime with a four-year-old | Shogun won Outstanding Drama Series at the 76th Emmys, September 2024 | https://www.k99online.com/entertainment/76th-emmys-shgun/GMEZHI5CLTDXN2RYWFI3CDRQOY
 133 cadet | Starfleet Academy newbie | Star Trek: Starfleet Academy premiered 15 January 2026 and follows young cadets | https://theplaylist.net/star-trek-starfleet-academy-reveals-official-trailer-january-15-premiere-on-paramount-20251012/
 143 macho | Like Ken's Dreamhouse makeover | Ken takes over Barbie's Dreamhouse and rebrands it the Mojo Dojo Casa House, a macho bachelor pad, in Barbie (2023) | https://knowyourmeme.com/memes/mojo-dojo-casa-house
-147 fast | ___ X: Vin Diesel's tenth lap | Fast X (2023) stars Vin Diesel and is also known as Fast & Furious 10 | https://kiwix.lema.org/wikipedia_en_all_mini_2024-02/A/Fast_X
+147 fast | ___ X: tenth lap of Vin Diesel's franchise | Fast X (2023) stars Vin Diesel and is also known as Fast & Furious 10 | https://kiwix.lema.org/wikipedia_en_all_mini_2024-02/A/Fast_X
 147 atoms | Oppenheimer's splitting headaches? | Oppenheimer (2023), Nolan's film about the father of the atomic bomb | https://gulfnews.com/entertainment/tv/cinemacon-2023-excitement-builds-for-christopher-nolans-oppenheimer-1.95380244
 149 aria | Showstopper inside Maria, the 2024 Jolie biopic | Maria (2024), Pablo Larrain's film with Angelina Jolie as opera singer Maria Callas, includes singing | https://www.screendaily.com/reviews/maria-venice-review/5196606.article
 150 apex | Turning point in F1: The Movie | F1 (listed as F1: The Movie), Brad Pitt racing film of June 2025, working title Apex; the apex is the inside point of a corner | https://www.hagerty.co.uk/articles/brad-pitts-f1-flick-gets-title-trailer-and-release-date/
-153 don | We ___'t Talk About Bruno: Encanto hit | We Don't Talk About Bruno, from Encanto (2021), reached number one on the Billboard Hot 100 | https://www.npr.org/2022/02/01/1077306715/encanto-bruno-billboard-no-1
+153 don | Put on, as a hi-vis vest | We Don't Talk About Bruno, from Encanto (2021), reached number one on the Billboard Hot 100 | https://www.npr.org/2022/02/01/1077306715/encanto-bruno-billboard-no-1
 154 delve | Chatbot's favourite way to dig | "delve" is a documented overused word in ChatGPT output (FSU study, PubMed abstract analysis) | https://arxiv.org/html/2412.11385v1
 160 share | Our small plates are designed to ___ | Australian restaurants routinely describe small plates as designed to share | https://www.weekendnotes.com/perth-top-share-plate-dining-restaurant/
 162 puss | Cat in boots, down to his last life | Puss in Boots: The Last Wish (2022): Puss has burned through eight of his nine lives | https://thewrap.com/puss-in-boots-the-last-wish-trailer
@@ -260,7 +260,7 @@
 164 era | Y2K, to anyone selling low-rise jeans | Low-rise jeans returned with the Y2K fashion revival of the 2020s | https://www.whowhatwear.com/2000s-denim-trends
 167 urge | Itch to add to cart | Studies of online impulse buying name the sudden urge to buy as a main factor | https://igi-global.com/dictionary/sudden-urge-to-buy/75955
 168 meat | Plant-based burgers fake it | Beyond and Impossible burgers are built to mimic beef's texture and flavour | https://geneticliteracyproject.org/2020/03/05/vegan-burgers-how-impossible-foods-beyond-meat-mimic-the-texture-appearance-and-flavor-of-beef/
-174 bag | Bum ___, back in fashion | Bum bags returned as belt bags worn crossbody, still current in January 2026 | https://sneakerspirit.courir.com/en/?p=28582
+174 bag | Bum ___: Gen Z's crossbody, once a tourist's wallet | Bum bags returned as belt bags worn crossbody, still current in January 2026 | https://sneakerspirit.courir.com/en/?p=28582
 174 buggy | Like Cyberpunk 2077 at launch | Cyberpunk 2077 launched 10 December 2020 with severe bugs; Sony pulled it from the PlayStation Store | https://www.bloombergquint.com/onweb/futuristic-cyberpunk-gets-stuck-in-2020-as-bugs-derail-launch
 179 thaw | Recover from a cold plunge | Cold plunges and ice baths boomed as recreation and recovery in Australia | https://www.unsw.edu.au/newsroom/news/2025/07/ice-baths-booming-in-popularity-but-come-with-health-risks
 179 tea | Gossip that gets spilled | "Tea" is slang for gossip, as in spill the tea | https://www.dictionary.com/culture/slang/tea
@@ -270,7 +270,7 @@
 183 bars | Spat by Kendrick, propped up by regulars | Bars are rap lyrics and rappers spit them; Rap Dictionary entry for bars cites Kendrick Lamar's King Kunta | https://www.rhymebook.com/dictionary/bars
 187 free | ___-to-play: costs nothing, until it does | Free-to-play games cost nothing upfront and earn from in-game purchases; sometimes called free-to-start | https://www.doc.surf/wiki/free-to-play
 204 photo | Dump you share with all your followers | Photo dump: casual Instagram carousel of camera roll shots, a trend since 2020 | https://www.stylist.co.uk/life/instagram-trend-2021-photo-dumping/530695
-205 ski | ___bidi: word that baffles parents of Gen Alpha | Skibidi added to Cambridge Dictionary, August 2025, as Gen Alpha slang, sometimes with no real meaning | https://www.thenationalnews.com/arts-culture/pop-culture/2025/08/18/skibidi-delulu-and-tradwife-among-new-words-added-to-cambridge-dictionary
+205 ski | Do what Aussies fly to Niseko for | Skibidi added to Cambridge Dictionary, August 2025, as Gen Alpha slang, sometimes with no real meaning | https://www.thenationalnews.com/arts-culture/pop-culture/2025/08/18/skibidi-delulu-and-tradwife-among-new-words-added-to-cambridge-dictionary
 205 minion | Kevin, Stuart or Bob | The three lead Minions in Minions (2015) and Minions: The Rise of Gru (2022) | https://www.illumination.com/?p=405
 207 pest | Reply guy, to anyone he replies to | Merriam-Webster slang entry: habitual, often annoying commenter on social media posts | https://merriam-webster.com/slang/reply-guy
-207 best | Goated, as your parents would say | Goated: being the greatest of all time, the best | https://en.wiktionary.com/wiki/goated
+207 best | Goated, in your parents' words | Goated: being the greatest of all time, the best | https://en.wiktionary.com/wiki/goated
