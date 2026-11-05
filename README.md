@@ -99,6 +99,13 @@ a puzzle's place is its day, so the list isn't for changing lightly.
 
 To take a word out of Mend before its day arrives, use `node scripts/mend-swap-days.cjs word word`, which trades boards with Practice. A rebuild would reassign every day.
 
+## Dated
+
+Place events in order without seeing the years, with three lives. The events
+live in `scripts/dated/*.txt`, and `node scripts/build-dated.mjs` deals the days
+into `web/dated/days.js`. Any change to the events reassigns every day, so after
+launch fix wording in both the source and `days.js` by hand.
+
 ## Slugle
 
 A daily word ladder. Turn a new four-letter word into SLUG by changing one
@@ -157,7 +164,7 @@ save `{ date: new Date().toDateString(), text }` to localStorage as
 - `web/clock.js`: the time every game goes by, from our server rather than the
   phone, so `Clock.now()` replaces `new Date()` for anything to do with the day.
 - `web/shared.css`: the palette, keyboard, sheets and so on that every page uses.
-- `web/slugle/`, `web/hunch/`, `web/sorted/`, `web/reach/`, `web/cluey/`, `web/mend/`: a game each. `index.html` is the whole game (no
+- `web/slugle/`, `web/hunch/`, `web/sorted/`, `web/reach/`, `web/cluey/`, `web/mend/`, `web/dated/`: a game each. `index.html` is the whole game (no
   build step), `lib.js` its pure logic, tested by `node --test "tests/*.test.js"`,
   and `words.js`, `puzzles.js` or `days.js` its data.
 - `worker/worker.js`: the Cloudflare Workers `dailies`, `slugle` and `ladder`
