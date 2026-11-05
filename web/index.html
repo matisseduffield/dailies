@@ -87,6 +87,7 @@
   <p class="get-app" id="getApp" hidden>On Android? <a class="link" href="/app">Get the app</a>, free and offline.</p>
 </div>
 
+<script src="clock.js?v=1"></script>
 <script>
 (() => {
   // Every game in the hub: its folder, its name and a line about it. A game
@@ -112,7 +113,7 @@
   const dateFormat = new Intl.DateTimeFormat(navigator.language || 'en', { weekday: 'long', day: 'numeric', month: 'long' });
 
   function render() {
-    const now = new Date(), day = now.toDateString();
+    const now = Clock.now(), day = now.toDateString();
     let done = 0;
     $('date').textContent = dateFormat.format(now);
     $('games').replaceChildren(...GAMES.map(g => {
@@ -132,6 +133,7 @@
   // Coming back from a game, or back to the app on a new day.
   addEventListener('pageshow', render);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) render(); });
+  addEventListener('clock', render);
 
   // ---- Android app bridge (absent in a browser) ----
   const app = window.ladderApp || null;

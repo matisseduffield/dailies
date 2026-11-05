@@ -253,7 +253,8 @@
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="words.js?v=4"></script>
 <script src="lib.js?v=10"></script>
-<script src="../next.js?v=2"></script>
+<script src="../clock.js?v=1"></script>
+<script src="../next.js?v=3"></script>
 <script>
 (() => {
   const L = window.LadderLib, D = window.LadderWords;
@@ -285,7 +286,7 @@
   };
   const save = () => store.set('state', state);
 
-  let today = L.dayNumber(new Date(), D.epoch);
+  let today = L.dayNumber(Clock.now(), D.epoch);
   let view = today;            // the daily ladder on screen: today or a past one
   let puzzle, play;            // the puzzle on screen and its progress
   let typed = '';              // the next word, as far as it's typed
@@ -498,7 +499,7 @@
     if (!play.done) return;
     if (view !== today && state.mode === 'daily') return foot.replaceChildren(el('span', '', play.late ? 'Solved late, so it doesn’t change your streak' : 'Solved on the day'));
     if (!todayDone()) return foot.replaceChildren(el('span', '', 'Today’s ladder is still to do'));
-    const now = new Date();
+    const now = Clock.now();
     const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
     const mins = Math.max(1, Math.ceil((midnight - now) / 60000));
     const s = L.streak(streakDays(), today);
@@ -746,7 +747,7 @@
     const rec = state.days[today];
     if (!rec || !rec.done) return;
     const text = `Solved in ${rec.ladder.length - 1}, par ${L.parForDay(today, D.epoch)}`;
-    try { localStorage.setItem('hub.slugle', JSON.stringify({ date: new Date().toDateString(), text })); } catch {}
+    try { localStorage.setItem('hub.slugle', JSON.stringify({ date: Clock.now().toDateString(), text })); } catch {}
   }
 
   function share(p = puzzle, pl = play) {
@@ -865,7 +866,7 @@
   addEventListener('resize', () => { stageHeight = 0; fit(); });
   // A new day while the game sits open (or comes back from the background).
   function checkDay() {
-    const now = L.dayNumber(new Date(), D.epoch);
+    const now = L.dayNumber(Clock.now(), D.epoch);
     if (now !== today) {
       // Whoever was on today's ladder moves on to the new one.
       if (view === today) view = now;
@@ -875,6 +876,7 @@
     } else if (play.done) tickNext();
   }
   document.addEventListener('visibilitychange', () => { if (!document.hidden) checkDay(); });
+  addEventListener('clock', checkDay);
   setInterval(() => { if (!document.hidden) checkDay(); }, 30000);
 
   // ---- Android app bridge (absent in a browser) ----

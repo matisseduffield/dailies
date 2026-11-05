@@ -6,7 +6,7 @@
   function played(id) {
     try {
       const result = JSON.parse(localStorage.getItem('hub.' + id));
-      return !!result && result.date === new Date().toDateString();
+      return !!result && result.date === Clock.now().toDateString();
     } catch { return false; }
   }
 

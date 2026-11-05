@@ -152,7 +152,8 @@
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="words.js?v=2"></script>
 <script src="lib.js?v=3"></script>
-<script src="../next.js?v=2"></script>
+<script src="../clock.js?v=1"></script>
+<script src="../next.js?v=3"></script>
 <script>
 (() => {
   const L = window.HunchLib, D = window.HunchWords;
@@ -180,7 +181,7 @@
   };
   const save = () => store.set('state', state);
 
-  let today = L.dayNumber(new Date(), D.epoch);
+  let today = L.dayNumber(Clock.now(), D.epoch);
   let answer, play;            // the word on screen and its progress
   let typed = '';              // the next guess, as far as it's typed
   let fresh = false;           // reveal the newest guess once
@@ -295,7 +296,7 @@
     if (!play.done) return;
     const rec = state.days[today];
     if (!rec || !rec.done) return foot.replaceChildren(el('span', '', 'Today’s word is still to do'));
-    const now = new Date();
+    const now = Clock.now();
     const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
     const mins = Math.max(1, Math.ceil((midnight - now) / 60000));
     const left = el('span');
@@ -435,7 +436,7 @@
     const rec = state.days[today];
     if (!rec || !rec.done) return;
     const text = rec.won ? `Got it in ${rec.guesses.length}` : `It was ${L.daily(today, dict).toUpperCase()}`;
-    try { localStorage.setItem('hub.hunch', JSON.stringify({ date: new Date().toDateString(), text })); } catch {}
+    try { localStorage.setItem('hub.hunch', JSON.stringify({ date: Clock.now().toDateString(), text })); } catch {}
   }
 
   function share() {
@@ -537,7 +538,7 @@
   addEventListener('resize', () => { $('guesses').style.removeProperty('--tile'); fit(); });
   // A new day while the game sits open (or comes back from the background).
   function checkDay() {
-    const now = L.dayNumber(new Date(), D.epoch);
+    const now = L.dayNumber(Clock.now(), D.epoch);
     if (now !== today) {
       today = now;
       if (state.mode === 'daily') load();
@@ -545,6 +546,7 @@
     } else if (play.done) tickNext();
   }
   document.addEventListener('visibilitychange', () => { if (!document.hidden) checkDay(); });
+  addEventListener('clock', checkDay);
   setInterval(() => { if (!document.hidden) checkDay(); }, 30000);
 
   // ---- Android app bridge (absent in a browser) ----

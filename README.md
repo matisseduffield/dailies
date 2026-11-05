@@ -97,13 +97,15 @@ save `{ date: new Date().toDateString(), text }` to localStorage as
 
 - `web/index.html`: the hub's home screen, and its update card. `GAMES` at the
   top of its script lists the games.
+- `web/clock.js`: the time every game goes by, from our server rather than the
+  phone, so `Clock.now()` replaces `new Date()` for anything to do with the day.
 - `web/shared.css`: the palette, keyboard, sheets and so on that every page uses.
 - `web/slugle/`, `web/hunch/`, `web/sorted/`, `web/reach/`: a game each. `index.html` is the whole game (no
   build step), `lib.js` its pure logic, tested by `node --test "tests/*.test.js"`,
   and `words.js`, `puzzles.js` or `days.js` its data.
 - `worker/worker.js`: the Cloudflare Workers `dailies`, `slugle` and `ladder`
   (old addresses) that serve the pages from `ladder-releases/web/` (every
-  release publishes it there). No bindings; deployed by hand when it changes,
+  release publishes it there) and tell the time at `/now`. No bindings; deployed by hand when it changes,
   not on every release.
 - `app/`: Kotlin WebView wrapper (`com.matisseduffield.ladder`) that bundles
   `web/` as assets, with the self-updater from Tally and Bureau.

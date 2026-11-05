@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.HapticFeedbackConstants
 import android.webkit.RenderProcessGoneDetail
 import android.webkit.WebResourceRequest
@@ -48,6 +49,8 @@ class MainActivity : ComponentActivity() {
         const val START_URL = "$APP_ORIGIN/assets/index.html"
         const val BRIDGE_NAME = "ladderApp"
         const val CHECK_INTERVAL_MS = 6 * 60 * 60 * 1000L
+        const val CLOCK_NAME = "ladderClock"
+        const val CLOCK_INTERVAL_MS = 15 * 60 * 1000L
 
         // A game's ladderBack() closes a sheet or leaves practice, and says
         // whether it did anything. If not, Back goes to the page before it.
@@ -55,6 +58,8 @@ class MainActivity : ComponentActivity() {
     }
 
     private lateinit var web: WebView
+    private val clock by lazy { TrustedClock(this) }
+    private var lastClockCheck = 0L
     private var lastUpdateCheck = 0L
     private var updatePromptOpen = false
     private var page: JavaScriptReplyProxy? = null
@@ -167,6 +172,7 @@ class MainActivity : ComponentActivity() {
                 }
             })
         }
+        web.addJavascriptInterface(clock, CLOCK_NAME)
         web.loadUrl(START_URL)
 
         // A downloaded update has done its job once the new version is running.
@@ -195,6 +201,7 @@ class MainActivity : ComponentActivity() {
         super.onResume()
         web.onResume()
         web.resumeTimers()
+        maybeCheckClock()
         maybeCheckForUpdate()
     }
 
@@ -207,6 +214,19 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         web.destroy()
         super.onDestroy()
+    }
+
+    // Time since boot carries the reading between checks, so these are only for a
+    // restart or a new time zone. A failed check tries again on the next open.
+    private fun maybeCheckClock() {
+        val sinceBoot = SystemClock.elapsedRealtime()
+        if (lastClockCheck != 0L && sinceBoot - lastClockCheck < CLOCK_INTERVAL_MS) return
+        lifecycleScope.launch {
+            if (clock.check()) {
+                lastClockCheck = SystemClock.elapsedRealtime()
+                web.evaluateJavascript("dispatchEvent(new Event('clock'))", null)
+            }
+        }
     }
 
     private fun onPageMessage(message: WebMessageCompat, reply: JavaScriptReplyProxy) {
