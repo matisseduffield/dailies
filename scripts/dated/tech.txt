@@ -1,0 +1,81 @@
+# Inventions and technology. year|level|text|where to check it
+1804|3|Richard Trevithick's steam locomotive first runs on rails|Wikipedia: Richard Trevithick
+1823|3|Charles Macintosh patents his waterproof fabric|Wikipedia: Charles Macintosh
+1825|2|Stockton and Darlington Railway opens|Wikipedia: Stockton and Darlington Railway
+1827|3|John Walker sells the first friction matches|Wikipedia: John Walker (inventor)
+1830|3|Edwin Budding patents the lawn mower|Wikipedia: Edwin Beard Budding
+1839|2|Daguerre's photography process is made public|Wikipedia: Daguerreotype
+1843|3|Alexander Bain patents a fax machine|Wikipedia: Fax
+1844|2|Samuel Morse sends "What hath God wrought" by telegraph|Wikipedia: Samuel Morse
+1849|3|Walter Hunt patents the safety pin|Wikipedia: Safety pin
+1854|3|Elisha Otis shows off his safety lift in New York|Wikipedia: Elisha Otis
+1863|2|London's first Underground line opens|Wikipedia: Metropolitan Railway
+1866|3|First lasting transatlantic telegraph cable is completed|Wikipedia: Transatlantic telegraph cable
+1867|2|Alfred Nobel patents dynamite|Wikipedia: Dynamite
+1868|3|London puts a gas-lit traffic signal outside Parliament|Wikipedia: Traffic light
+1874|3|Joseph Glidden patents barbed wire|Wikipedia: Joseph Glidden
+1876|1|Alexander Graham Bell patents the telephone|Wikipedia: Alexander Graham Bell
+1877|2|Thomas Edison first shows off his phonograph|Wikipedia: Phonograph
+1879|1|Edison's light bulb passes its first long test|Wikipedia: Incandescent light bulb
+1886|2|Karl Benz patents his motor car|Wikipedia: Benz Patent-Motorwagen
+1888|3|John Loud patents a ballpoint pen|Wikipedia: Ballpoint pen
+1888|3|John Dunlop patents an air-filled bicycle tyre|Wikipedia: John Boyd Dunlop
+1896|3|Walter Arnold gets the first speeding fine, in Kent|Wikipedia: Walter Arnold (motorist)
+1900|2|Kodak's Box Brownie camera goes on sale|Wikipedia: Brownie (camera)
+1901|2|Marconi sends a radio signal across the Atlantic|Wikipedia: Guglielmo Marconi
+1902|3|Willis Carrier air-conditions a Brooklyn printing plant|Wikipedia: Willis Carrier
+1903|1|Wright brothers make their first powered flight|Wikipedia: Wright Flyer
+1903|3|Mary Anderson patents the windscreen wiper|Wikipedia: Mary Anderson (inventor)
+1908|1|Ford Model T goes on sale|Wikipedia: Ford Model T
+1913|2|Henry Ford starts his moving assembly line|Wikipedia: Assembly line
+1917|3|Gideon Sundback patents the modern zip|Wikipedia: Zipper
+1926|2|John Logie Baird demonstrates television in London|Wikipedia: John Logie Baird
+1930|3|Frank Whittle patents a turbojet engine|Wikipedia: Frank Whittle
+1934|3|Percy Shaw patents the cat's eye road stud|Wikipedia: Cat's eye (road)
+1935|3|The world's first parking meter goes in, in Oklahoma City|Wikipedia: Parking meter
+1937|3|Sylvan Goldman introduces the shopping trolley|Wikipedia: Shopping cart
+1938|3|László Bíró patents his ballpoint pen|Wikipedia: László Bíró
+1938|3|Chester Carlson makes the first photocopy|Wikipedia: Chester Carlson
+1938|3|Teflon is discovered by accident at DuPont|Wikipedia: Polytetrafluoroethylene
+1940|2|Nylon stockings go on sale across America|Wikipedia: Nylon
+1945|3|Percy Spencer files a patent for microwave cooking|Wikipedia: Percy Spencer
+1946|2|ENIAC computer is unveiled in Philadelphia|Wikipedia: ENIAC
+1947|2|The transistor is first demonstrated at Bell Labs|Wikipedia: History of the transistor
+1948|2|Polaroid's first instant camera goes on sale|Wikipedia: Polaroid Corporation
+1952|3|A barcode patent is granted in the US|Wikipedia: Barcode
+1955|3|George de Mestral patents Velcro|Wikipedia: Velcro
+1955|3|Zenith sells a wireless TV remote|Wikipedia: Remote control
+1958|3|Jack Kilby demonstrates an integrated circuit|Wikipedia: Jack Kilby
+1959|2|Volvo makes the three-point seat belt standard|Wikipedia: Nils Bohlin
+1960|2|First working laser is switched on in California|Wikipedia: Theodore Maiman
+1967|3|Barclays in Enfield opens a cash machine|Wikipedia: Automated teller machine
+1968|3|Douglas Engelbart shows the computer mouse in public|Wikipedia: The Mother of All Demos
+1969|2|Boeing 747 makes its first flight|Wikipedia: Boeing 747
+1971|2|Intel's 4004 microprocessor goes on sale|Wikipedia: Intel 4004
+1973|3|Martin Cooper makes a handheld mobile call in New York|Wikipedia: Martin Cooper (inventor)
+1974|3|Wrigley's gum becomes the first item scanned at a till|Wikipedia: Universal Product Code
+1975|3|Steven Sasson builds a digital camera at Kodak|Wikipedia: Steven Sasson
+1976|2|VHS video recorders go on sale in Japan|Wikipedia: VHS
+1977|2|Apple II goes on sale|Wikipedia: Apple II
+1979|1|Sony Walkman goes on sale in Japan|Wikipedia: Walkman
+1981|1|The IBM PC launches|Wikipedia: IBM Personal Computer
+1982|2|First CD player goes on sale, in Japan|Wikipedia: Compact disc
+1984|1|Apple Macintosh goes on sale|Wikipedia: Macintosh 128K
+1985|2|Microsoft Windows is first released|Wikipedia: Windows 1.0
+1990|2|Photoshop is first released|Wikipedia: Adobe Photoshop
+1991|2|Linus Torvalds releases Linux|Wikipedia: Linux
+1992|3|First text message is sent: "Merry Christmas"|Wikipedia: SMS
+1994|3|Denso Wave invents the QR code in Japan|Wikipedia: QR code
+1994|3|IBM Simon touchscreen phone goes on sale|Wikipedia: IBM Simon
+1997|3|Toyota Prius goes on sale in Japan|Wikipedia: Toyota Prius
+1998|3|Apple's see-through iMac goes on sale|Wikipedia: iMac G3
+2001|1|Apple launches the iPod|Wikipedia: iPod
+2002|3|Roomba robot vacuum goes on sale|Wikipedia: Roomba
+2007|1|The first iPhone goes on sale|Wikipedia: iPhone (1st generation)
+2007|3|Amazon's first Kindle goes on sale|Wikipedia: Amazon Kindle
+2008|2|First Android phone goes on sale|Wikipedia: HTC Dream
+2008|3|Tesla delivers its first Roadster|Wikipedia: Tesla Roadster (first generation)
+2010|1|Apple launches the iPad|Wikipedia: iPad (1st generation)
+2012|3|The Raspberry Pi goes on sale|Wikipedia: Raspberry Pi
+2015|1|Apple Watch goes on sale|Wikipedia: Apple Watch
+2022|1|ChatGPT is released to the public|Wikipedia: ChatGPT

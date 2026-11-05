@@ -1,0 +1,66 @@
+# Film. year|level|text|where to check it
+1895|2|Lumière brothers hold their first paying film show in Paris|Wikipedia: Auguste and Louis Lumière
+1902|2|Georges Méliès releases A Trip to the Moon|Wikipedia: A Trip to the Moon
+1914|2|Charlie Chaplin first plays the Tramp on film|Wikipedia: The Tramp
+1922|2|Nosferatu has its premiere in Berlin|Wikipedia: Nosferatu
+1923|2|The Hollywoodland sign goes up in Los Angeles|Wikipedia: Hollywood Sign
+1927|1|The Jazz Singer brings talking to the movies|Wikipedia: The Jazz Singer
+1928|1|Mickey Mouse stars in Steamboat Willie|Wikipedia: Steamboat Willie
+1929|1|The first Academy Awards are held|Wikipedia: 1st Academy Awards
+1933|1|King Kong is released|Wikipedia: King Kong (1933 film)
+1933|3|The first drive-in cinema opens, in New Jersey|Wikipedia: Drive-in theater
+1937|1|Disney releases Snow White and the Seven Dwarfs|Wikipedia: Snow White and the Seven Dwarfs (1937 film)
+1939|1|The Wizard of Oz is released|Wikipedia: The Wizard of Oz (1939 film)
+1939|1|Gone with the Wind has its premiere in Atlanta|Wikipedia: Gone with the Wind (film)
+1940|2|Tom and Jerry make their first cartoon|Wikipedia: Puss Gets the Boot
+1940|2|Bugs Bunny debuts in A Wild Hare|Wikipedia: A Wild Hare
+1940|3|Hattie McDaniel is the first Black actor to win an Oscar|Wikipedia: Hattie McDaniel
+1941|1|Orson Welles releases Citizen Kane|Wikipedia: Citizen Kane
+1942|1|Casablanca has its premiere in New York|Wikipedia: Casablanca (film)
+1946|1|It's a Wonderful Life is released|Wikipedia: It's a Wonderful Life
+1954|2|The first Godzilla film comes out in Japan|Wikipedia: Godzilla (1954 film)
+1955|1|Disneyland opens in California|Wikipedia: Disneyland
+1960|1|Alfred Hitchcock releases Psycho|Wikipedia: Psycho (1960 film)
+1962|1|The first James Bond film, Dr. No, is released|Wikipedia: Dr. No (film)
+1964|1|Disney releases Mary Poppins|Wikipedia: Mary Poppins (film)
+1965|1|The Sound of Music is released|Wikipedia: The Sound of Music (film)
+1970|3|The first IMAX film is shown, at Expo 70 in Osaka|Wikipedia: IMAX
+1971|2|Willy Wonka & the Chocolate Factory is released|Wikipedia: Willy Wonka & the Chocolate Factory
+1972|1|The Godfather is released|Wikipedia: The Godfather
+1975|1|Steven Spielberg releases Jaws|Wikipedia: Jaws (film)
+1976|1|Sylvester Stallone stars in Rocky|Wikipedia: Rocky
+1977|1|The first Star Wars film is released|Wikipedia: Star Wars (film)
+1978|1|Grease is released|Wikipedia: Grease (film)
+1981|1|Raiders of the Lost Ark is released|Wikipedia: Raiders of the Lost Ark
+1982|1|E.T. the Extra-Terrestrial is released|Wikipedia: E.T. the Extra-Terrestrial
+1984|1|Ghostbusters is released|Wikipedia: Ghostbusters
+1985|1|Back to the Future is released|Wikipedia: Back to the Future
+1985|3|The first Blockbuster video store opens, in Dallas|Wikipedia: Blockbuster (retailer)
+1986|1|Top Gun is released|Wikipedia: Top Gun
+1986|3|Steve Jobs buys the studio that becomes Pixar|Wikipedia: Pixar
+1987|1|Dirty Dancing is released|Wikipedia: Dirty Dancing
+1988|1|Die Hard is released|Wikipedia: Die Hard
+1990|1|Home Alone is released|Wikipedia: Home Alone
+1993|1|Jurassic Park is released|Wikipedia: Jurassic Park (film)
+1994|1|Forrest Gump is released|Wikipedia: Forrest Gump
+1994|1|Disney releases The Lion King|Wikipedia: The Lion King
+1994|1|Quentin Tarantino releases Pulp Fiction|Wikipedia: Pulp Fiction
+1995|1|Toy Story is released|Wikipedia: Toy Story
+1997|1|James Cameron releases Titanic|Wikipedia: Titanic (1997 film)
+1999|1|The Matrix is released|Wikipedia: The Matrix
+2000|1|Ridley Scott's Gladiator is released|Wikipedia: Gladiator (2000 film)
+2001|1|Shrek is released|Wikipedia: Shrek
+2001|1|The first Harry Potter film is released|Wikipedia: Harry Potter and the Philosopher's Stone (film)
+2001|1|The first Lord of the Rings film is released|Wikipedia: The Lord of the Rings: The Fellowship of the Ring
+2003|1|Finding Nemo is released|Wikipedia: Finding Nemo
+2003|1|Love Actually is released|Wikipedia: Love Actually
+2004|1|Mean Girls is released|Wikipedia: Mean Girls
+2008|1|Robert Downey Jr. stars in Iron Man|Wikipedia: Iron Man (2008 film)
+2009|1|James Cameron's Avatar is released|Wikipedia: Avatar (2009 film)
+2010|1|Christopher Nolan releases Inception|Wikipedia: Inception
+2010|3|Kathryn Bigelow is the first woman to win Best Director|Wikipedia: Kathryn Bigelow
+2012|1|Marvel's first Avengers film is released|Wikipedia: The Avengers (2012 film)
+2013|1|Disney releases Frozen|Wikipedia: Frozen (2013 film)
+2019|1|Avengers: Endgame is released|Wikipedia: Avengers: Endgame
+2020|2|Parasite wins the Oscar for Best Picture|Wikipedia: 92nd Academy Awards
+2023|1|Greta Gerwig's Barbie is released|Wikipedia: Barbie (film)

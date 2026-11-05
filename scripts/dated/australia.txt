@@ -1,0 +1,147 @@
+# Australian life. year|level|text|where to check it
+1770|1|James Cook's Endeavour reaches Botany Bay|Wikipedia: James Cook
+1788|1|The First Fleet arrives at Sydney Cove|Wikipedia: First Fleet
+1838|2|David Jones opens its shop in Sydney|Wikipedia: David Jones (department store)
+1851|2|Edward Hargraves finds gold near Bathurst|Wikipedia: Edward Hargraves
+1858|2|Australian football's first recorded game is played|Wikipedia: Origins of Australian rules football
+1861|1|The Melbourne Cup is first run|Wikipedia: Melbourne Cup
+1868|3|The last convict ship reaches Western Australia|Wikipedia: Hougoumont (ship)
+1868|3|An Aboriginal cricket team tours England|Wikipedia: Aboriginal cricket team in England in 1868
+1872|2|The Overland Telegraph links Adelaide to Darwin|Wikipedia: Australian Overland Telegraph Line
+1877|2|Australia and England play the first Test, at the MCG|Wikipedia: Australian cricket team in 1876-77
+1880|1|Ned Kelly is captured at Glenrowan|Wikipedia: Ned Kelly
+1882|2|The Ashes get their name from a mock obituary|Wikipedia: The Ashes
+1888|2|The Foster brothers brew their lager in Melbourne|Wikipedia: Foster's Lager
+1890|2|Banjo Paterson publishes The Man from Snowy River|Wikipedia: The Man from Snowy River (poem)
+1894|2|South Australian women win the vote|Wikipedia: Women's suffrage in Australia
+1895|2|Banjo Paterson writes Waltzing Matilda|Wikipedia: Waltzing Matilda
+1901|1|The Australian colonies federate|Wikipedia: Federation of Australia
+1902|2|Australian women win the vote in federal elections|Wikipedia: Commonwealth Franchise Act 1902
+1902|3|William Gocher defies the daylight swimming ban at Manly|Wikipedia: William Gocher
+1905|2|The Australian Open is first played, in Melbourne|Wikipedia: 1905 Australasian Championships
+1906|2|The Story of the Kelly Gang, an early feature film, opens|Wikipedia: The Story of the Kelly Gang
+1907|2|Bondi Surf Bathers' Life Saving Club is founded|Wikipedia: Bondi Surf Bathers' Life Saving Club
+1908|2|Dorothea Mackellar's poem My Country is published|Wikipedia: My Country (poem)
+1912|2|Walter Burley Griffin wins the design contest for Canberra|Wikipedia: Walter Burley Griffin
+1913|1|Canberra gets its name|Wikipedia: Canberra
+1913|3|Hoadley's Violet Crumble goes on sale|Wikipedia: Violet Crumble
+1914|2|G. J. Coles opens a shop in Collingwood|Wikipedia: Coles Supermarkets
+1918|2|Norman Lindsay publishes The Magic Pudding|Wikipedia: The Magic Pudding
+1918|3|May Gibbs publishes Snugglepot and Cuddlepie|Wikipedia: Snugglepot and Cuddlepie
+1920|1|Qantas is founded in Winton, Queensland|Wikipedia: Qantas
+1922|3|Minties are first made, in Sydney|Wikipedia: Minties
+1923|1|Vegemite first goes on sale|Wikipedia: Vegemite
+1924|2|MacRobertson's Cherry Ripe goes on sale|Wikipedia: Cherry Ripe (chocolate bar)
+1924|2|Woolworths opens in a Sydney basement arcade|Wikipedia: Woolworths Supermarkets
+1928|1|Charles Kingsford Smith flies across the Pacific|Wikipedia: Charles Kingsford Smith
+1928|2|The Flying Doctor makes its first flight|Wikipedia: Royal Flying Doctor Service
+1928|2|Don Bradman plays his first Test|Wikipedia: Donald Bradman
+1929|2|The Ghan train first runs to Alice Springs|Wikipedia: The Ghan
+1930|1|Phar Lap wins the Melbourne Cup|Wikipedia: Phar Lap
+1930|2|MacRobertson's Freddo Frog goes on sale|Wikipedia: Freddo
+1932|1|Sydney Harbour Bridge opens|Wikipedia: Sydney Harbour Bridge
+1932|2|The ABC goes on air|Wikipedia: Australian Broadcasting Corporation
+1932|2|The Great Ocean Road opens|Wikipedia: Great Ocean Road
+1934|2|Thomas Mayne launches Milo at the Sydney Royal Easter Show|Wikipedia: Milo (drink)
+1945|1|Lance Hill starts making the Hills Hoist in Adelaide|Wikipedia: Hills Hoist
+1945|2|The Sydney to Hobart yacht race is first sailed|Wikipedia: Sydney to Hobart Yacht Race
+1947|3|Four'N Twenty pies go on sale in Bendigo|Wikipedia: Four'N Twenty
+1948|1|The first Holden rolls off the line|Wikipedia: Holden 48-215
+1948|2|Don Bradman finishes on a Test average of 99.94|Wikipedia: Donald Bradman
+1949|2|Work starts on the Snowy Mountains Scheme|Wikipedia: Snowy Mountains Scheme
+1951|3|Frank McEncroe sells the first Chiko Roll|Wikipedia: Chiko Roll
+1951|3|The School of the Air starts in Alice Springs|Wikipedia: School of the Air
+1951|3|Max Schubert makes his first Penfolds Grange|Wikipedia: Penfolds Grange
+1952|3|Mervyn Richardson starts making Victa mowers|Wikipedia: Victa
+1953|3|Streets launches the Paddle Pop|Wikipedia: Paddle Pop
+1956|1|Australian television begins, with Bruce Gyngell|Wikipedia: Television in Australia
+1956|1|The Olympics open in Melbourne|Wikipedia: 1956 Summer Olympics
+1957|3|Slim Dusty records A Pub with No Beer|Wikipedia: A Pub with No Beer
+1957|2|Jørn Utzon wins the Sydney Opera House contest|Wikipedia: Jørn Utzon
+1958|3|David Warren builds a flight recorder prototype|Wikipedia: David Warren (inventor)
+1959|1|Streets launches the Gaytime ice cream|Wikipedia: Golden Gaytime
+1959|3|Mr Squiggle first airs on the ABC|Wikipedia: Mr. Squiggle
+1961|3|Triple Zero starts in Sydney and Melbourne|Wikipedia: Triple Zero
+1964|1|Arnott's Tim Tam goes on sale|Wikipedia: Tim Tam
+1964|1|The Big Banana opens at Coffs Harbour|Wikipedia: Big Banana
+1964|2|Dawn Fraser wins her third straight Olympic 100 metres|Wikipedia: Dawn Fraser
+1965|3|Thomas Angove patents the wine cask|Wikipedia: Box wine
+1966|1|Australia switches to decimal currency|Wikipedia: Decimal Day (Australia)
+1966|1|Play School first airs on the ABC|Wikipedia: Play School (Australian TV series)
+1966|2|Jack Brabham wins Formula One in his own car|Wikipedia: Jack Brabham
+1967|1|Australians vote yes in the Aboriginal referendum|Wikipedia: 1967 Australian referendum (Aboriginals)
+1967|3|Australia launches its first satellite, WRESAT|Wikipedia: WRESAT
+1967|3|Australia brings in postcodes|Wikipedia: Postcodes in Australia
+1970|2|Victoria is first in the world to make seat belts compulsory|Wikipedia: Seat belt laws
+1971|1|Daddy Cool release Eagle Rock|Wikipedia: Eagle Rock (song)
+1971|1|Hey Hey It's Saturday first airs|Wikipedia: Hey Hey It's Saturday
+1971|2|The Aboriginal flag is first flown, in Adelaide|Wikipedia: Australian Aboriginal flag
+1971|2|McDonald's opens in Australia, at Yagoona|Wikipedia: McDonald's Australia
+1971|3|Hungry Jack's opens in Perth|Wikipedia: Hungry Jack's
+1971|2|Evonne Goolagong wins her first Wimbledon|Wikipedia: Evonne Goolagong Cawley
+1971|3|The Big Pineapple opens on the Sunshine Coast|Wikipedia: Big Pineapple
+1973|1|Sydney Opera House opens|Wikipedia: Sydney Opera House
+1973|1|AC/DC form in Sydney|Wikipedia: AC/DC
+1974|1|Countdown first airs on the ABC|Wikipedia: Countdown (Australian TV series)
+1975|1|Australian TV switches to colour|Wikipedia: Television in Australia
+1978|3|Graeme Clark's bionic ear is first implanted|Wikipedia: Graeme Clark (doctor)
+1979|1|Mad Max reaches cinemas|Wikipedia: Mad Max (1979 film)
+1980|1|AC/DC release Back in Black|Wikipedia: Back in Black
+1980|1|State of Origin is first played|Wikipedia: State of Origin series
+1981|1|Trevor Chappell bowls underarm against New Zealand|Wikipedia: Underarm bowling incident of 1981
+1981|1|Sid the Seagull starts telling us to Slip, Slop, Slap|Wikipedia: Slip-Slop-Slap
+1981|1|Men at Work's Down Under tops the Australian chart|Wikipedia: Down Under (song)
+1981|3|Dreamworld opens on the Gold Coast|Wikipedia: Dreamworld (Australia)
+1982|3|Streets launches Bubble O'Bill|Wikipedia: Bubble O'Bill
+1983|1|Australia II wins the America's Cup|Wikipedia: 1983 America's Cup
+1984|3|Advance Australia Fair becomes the national anthem|Wikipedia: Advance Australia Fair
+1984|3|Barry Marshall drinks bacteria to prove how ulcers start|Wikipedia: Barry Marshall
+1985|1|Neighbours first airs|Wikipedia: Neighbours
+1985|2|Uluru is handed back to its traditional owners|Wikipedia: Uluru
+1986|1|Crocodile Dundee reaches cinemas|Wikipedia: Crocodile Dundee
+1986|1|John Farnham releases You're the Voice|Wikipedia: You're the Voice
+1987|1|Kylie Minogue releases The Loco-Motion|Wikipedia: The Loco-Motion
+1987|1|Midnight Oil release Beds Are Burning|Wikipedia: Beds Are Burning
+1988|1|Expo 88 opens in Brisbane|Wikipedia: World Expo 88
+1988|1|Home and Away first airs|Wikipedia: Home and Away
+1988|1|Australia issues its first plastic banknote|Wikipedia: Banknotes of the Australian dollar
+1988|2|The new Parliament House opens in Canberra|Wikipedia: Parliament House, Canberra
+1991|1|The Wiggles release their first album|Wikipedia: The Wiggles
+1991|1|Yothu Yindi release Treaty|Wikipedia: Treaty (song)
+1991|1|The Wallabies win the Rugby World Cup at Twickenham|Wikipedia: 1991 Rugby World Cup final
+1992|3|Bananas in Pyjamas first airs|Wikipedia: Bananas in Pyjamas
+1992|3|Australia withdraws its 1c and 2c coins|Wikipedia: Australian one-cent coin
+1993|3|Shane Warne bowls the Ball of the Century|Wikipedia: Ball of the Century
+1994|2|The Adventures of Priscilla, Queen of the Desert is released|Wikipedia: The Adventures of Priscilla, Queen of the Desert
+1994|2|Muriel's Wedding is released|Wikipedia: Muriel's Wedding
+1995|1|Silverchair release Frogstomp|Wikipedia: Frogstomp
+1997|1|The Castle reaches cinemas|Wikipedia: The Castle (1997 Australian film)
+2000|1|The Olympics open in Sydney|Wikipedia: 2000 Summer Olympics
+2000|1|Cathy Freeman wins the 400 metres in Sydney|Wikipedia: Cathy Freeman
+2000|1|Australia brings in the GST|Wikipedia: Goods and Services Tax (Australia)
+2000|3|Starbucks opens its first Australian shop, in Sydney|Wikipedia: Starbucks in Australia
+2001|1|Kylie Minogue releases Can't Get You Out of My Head|Wikipedia: Can't Get You Out of My Head
+2001|3|Aldi opens its first Australian stores|Wikipedia: Aldi
+2002|1|Steven Bradbury wins gold as everyone else falls|Wikipedia: Steven Bradbury
+2002|1|Kath & Kim first airs|Wikipedia: Kath & Kim
+2002|2|Lleyton Hewitt wins Wimbledon|Wikipedia: Lleyton Hewitt
+2003|1|Australian Idol first airs|Wikipedia: Australian Idol
+2004|2|The Ghan reaches Darwin|Wikipedia: Adelaide–Darwin railway
+2005|1|John Aloisi's penalty sends the Socceroos to a World Cup|Wikipedia: John Aloisi
+2005|1|Makybe Diva wins her third Melbourne Cup|Wikipedia: Makybe Diva
+2008|1|Kevin Rudd makes the apology to the Stolen Generations|Wikipedia: Apology to Australia's Indigenous peoples
+2009|1|MasterChef Australia first airs|Wikipedia: MasterChef Australia
+2011|1|Cadel Evans wins the Tour de France|Wikipedia: Cadel Evans
+2011|1|Gotye releases Somebody That I Used to Know|Wikipedia: Somebody That I Used to Know
+2013|1|Canva launches|Wikipedia: Canva
+2013|1|Adam Scott wins the Masters|Wikipedia: Adam Scott (golfer)
+2015|1|Michelle Payne is the first woman to win the Melbourne Cup|Wikipedia: Michelle Payne
+2017|1|Holden builds its last car in Australia|Wikipedia: Holden
+2017|1|The AFL Women's competition begins|Wikipedia: AFL Women's
+2018|1|Bluey first airs on ABC Kids|Wikipedia: Bluey (TV series)
+2019|1|Tones and I releases Dance Monkey|Wikipedia: Dance Monkey
+2019|2|Climbing Uluru is banned|Wikipedia: Uluru
+2021|1|Ash Barty wins Wimbledon|Wikipedia: Ash Barty
+2021|2|Brisbane is named a future Olympic host|Wikipedia: 2032 Summer Olympics
+2022|1|Ash Barty wins the Australian Open|Wikipedia: Ash Barty
+2023|1|The Matildas reach a home World Cup semi-final|Wikipedia: Australia at the FIFA Women's World Cup

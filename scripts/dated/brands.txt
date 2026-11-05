@@ -1,0 +1,56 @@
+# Brands and companies. year|level|text|where to check it
+1850|3|American Express is founded, as a delivery firm|Wikipedia: American Express
+1865|3|Nokia starts out as a paper mill in Finland|Wikipedia: Nokia
+1873|2|Levi Strauss patents riveted jeans|Wikipedia: Levi Strauss
+1888|2|George Eastman's first Kodak camera goes on sale|Wikipedia: Kodak
+1891|3|Karl Elsener supplies the Swiss Army with its first knives|Wikipedia: Victorinox
+1903|2|Harley-Davidson is founded in Milwaukee|Wikipedia: Harley-Davidson
+1903|2|Ford Motor Company is founded|Wikipedia: Ford Motor Company
+1903|3|King Gillette's safety razor goes on sale|Wikipedia: Gillette
+1916|3|Piggly Wiggly opens the first self-service supermarket|Wikipedia: Piggly Wiggly
+1917|2|Converse launches the All Star basketball shoe|Wikipedia: Chuck Taylor All-Stars
+1921|2|Coco Chanel launches Chanel No. 5|Wikipedia: Chanel No. 5
+1923|1|Walt and Roy Disney found their studio|Wikipedia: The Walt Disney Company
+1924|2|Kleenex tissues go on sale|Wikipedia: Kleenex
+1924|3|Computing-Tabulating-Recording renames itself IBM|Wikipedia: IBM
+1937|2|Toyota Motor Co. is founded|Wikipedia: Toyota
+1937|3|Ray-Ban sells its first aviator sunglasses|Wikipedia: Ray-Ban Aviator
+1938|3|Samsung starts out trading dried fish and noodles|Wikipedia: Samsung
+1940|2|The McDonald brothers open a restaurant in San Bernardino|Wikipedia: McDonald's
+1943|2|Ingvar Kamprad founds IKEA, aged seventeen|Wikipedia: IKEA
+1946|3|Earl Tupper starts selling Tupperware|Wikipedia: Tupperware Brands
+1946|3|Tokyo Tsushin Kogyo, later Sony, is founded|Wikipedia: Sony
+1947|3|The first Ferrari-badged car leaves the factory|Wikipedia: Ferrari 125 S
+1947|3|H&M opens its first shop in Sweden|Wikipedia: H&M
+1948|3|Ferruccio Lamborghini founds his tractor company|Wikipedia: Lamborghini Trattori
+1948|3|Rudolf Dassler founds Puma|Wikipedia: Puma (brand)
+1949|2|Adi Dassler registers Adidas|Wikipedia: Adidas
+1950|3|Diners Club launches its charge card|Wikipedia: Diners Club International
+1950|3|Bic Cristal pen goes on sale in France|Wikipedia: Bic Cristal
+1952|2|Harland Sanders sells his first KFC franchise|Wikipedia: KFC
+1955|2|Ray Kroc opens his first McDonald's in Illinois|Wikipedia: Ray Kroc
+1957|3|Burger King introduces the Whopper|Wikipedia: Whopper
+1958|3|Pizza Hut opens in Wichita, Kansas|Wikipedia: Pizza Hut
+1959|3|The original Mini goes on sale|Wikipedia: Mini
+1960|3|Dr. Martens boots go on sale in Britain|Wikipedia: Dr. Martens
+1962|3|Sam Walton opens the first Walmart|Wikipedia: Walmart
+1964|1|The Ford Mustang goes on sale|Wikipedia: Ford Mustang
+1965|3|Fred DeLuca, seventeen, opens what becomes Subway|Wikipedia: Subway (restaurant)
+1968|2|McDonald's Big Mac goes on sale across the US|Wikipedia: Big Mac
+1971|1|Starbucks opens in Seattle|Wikipedia: Starbucks
+1971|3|Carolyn Davidson designs the Nike swoosh|Wikipedia: Swoosh
+1972|3|Atari is founded|Wikipedia: Atari
+1975|1|Bill Gates and Paul Allen found Microsoft|Wikipedia: Microsoft
+1975|3|Zara opens its first shop in Spain|Wikipedia: Zara (retailer)
+1976|1|Steve Jobs and Steve Wozniak found Apple|Wikipedia: Apple Inc.
+1978|3|Ben & Jerry's opens in a Vermont petrol station|Wikipedia: Ben & Jerry's
+1979|3|McDonald's launches the Happy Meal|Wikipedia: Happy Meal
+1979|3|IKEA launches the Billy bookcase|Wikipedia: Billy (bookcase)
+1980|3|Post-it Notes go on sale across the US|Wikipedia: Post-it Note
+1983|3|The first Costco opens, in Seattle|Wikipedia: Costco
+1984|3|Uniqlo opens its first shop, in Hiroshima|Wikipedia: Uniqlo
+1987|3|Nando's opens in Johannesburg|Wikipedia: Nando's
+1993|3|Dyson's first bagless vacuum goes on sale|Wikipedia: Dyson (company)
+1998|3|Lululemon opens in Vancouver|Wikipedia: Lululemon Athletica
+2002|3|Crocs shoes go on sale|Wikipedia: Crocs
+2003|2|Tesla Motors is founded|Wikipedia: Tesla, Inc.
