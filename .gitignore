@@ -8,3 +8,6 @@ local.properties
 # local builds from these untracked files.
 *.keystore
 keystore.properties
+
+# Agent worktrees
+.claude/
