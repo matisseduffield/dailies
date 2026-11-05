@@ -64,7 +64,7 @@
 .dots i.gone { background: var(--key-down); }
 .controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding-bottom: 4px; }
 .controls .btn-secondary { background: var(--key); border-color: transparent; }
-.controls .btn-secondary:hover { background: var(--key-down); }
+@media (hover: hover) { .controls .btn-secondary:hover { background: var(--key-down); } }
 .controls .btn:disabled { opacity: .45; cursor: default; }
 
 .scale { display: grid; gap: 6px; }

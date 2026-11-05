@@ -34,7 +34,7 @@
 }
 .row.past { cursor: pointer; }
 .row.past .tile { color: var(--muted); }
-.row.past:hover .tile { background: var(--key); }
+@media (hover: hover) { .row.past:hover .tile { background: var(--key); } }
 .row.past .tile.changed { color: var(--accent); }
 .row.past .tile.match, .row.current .tile.match { color: var(--pos); background: linear-gradient(var(--pos-soft), var(--pos-soft)), var(--surface); }
 .row.current .tile.hinted { color: var(--accent); background: linear-gradient(var(--accent-soft), var(--accent-soft)), var(--surface); }
@@ -66,12 +66,12 @@
   display: inline-flex; align-items: center; gap: 6px; height: 44px; padding: 0 10px;
   background: none; border: 0; border-radius: 6px; font-size: .86rem; font-weight: 600; color: var(--muted);
 }
-.tool:hover:not(:disabled) { color: var(--ink); background: var(--key); }
+@media (hover: hover) { .tool:hover:not(:disabled) { color: var(--ink); background: var(--key); } }
 .tool:disabled { opacity: .4; cursor: default; }
 .tool.hint { color: var(--accent); }
 /* Small phones: Undo and Restart go down to their icons, so Hint stays on screen */
 @media (max-width: 350px) { .tools-left .tool { font-size: 0; gap: 0; } }
-.tool.hint:hover:not(:disabled) { color: var(--accent); background: var(--accent-soft); }
+@media (hover: hover) { .tool.hint:hover:not(:disabled) { color: var(--accent); background: var(--accent-soft); } }
 .count { font-size: .86rem; color: var(--muted); text-align: center; white-space: nowrap; }
 .count b { font-weight: 600; color: var(--ink); }
 .count.over b { color: var(--neg); }
@@ -89,7 +89,7 @@
 .month { padding: 16px 0 4px; font-size: .78rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 .month:first-child { padding-top: 0; }
 .day { display: grid; grid-template-columns: 58px 1fr auto; align-items: center; gap: 10px; min-height: 52px; padding: 0 8px; margin: 0 -8px; background: none; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; text-align: left; }
-.day:hover { background: var(--bg); }
+@media (hover: hover) { .day:hover { background: var(--bg); } }
 .day-no { font-weight: 600; }
 .day-date { font-size: .9rem; color: var(--muted); }
 .day-state { font-size: .86rem; color: var(--faint); }
@@ -100,7 +100,7 @@
 /* Practice lengths: each with a little ladder as tall as it is long */
 .lengths { display: grid; gap: 10px; }
 .length { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; min-height: 64px; padding: 10px 16px; background: var(--bg); border: 2px solid transparent; border-radius: 10px; text-align: left; }
-.length:hover { border-color: var(--line-strong); }
+@media (hover: hover) { .length:hover { border-color: var(--line-strong); } }
 .length[aria-checked="true"] { border-color: var(--ink); }
 .length b { display: block; font-weight: 600; line-height: 1.3; }
 .length span { display: block; font-size: .86rem; color: var(--muted); }

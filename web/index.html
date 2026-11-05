@@ -38,6 +38,7 @@
 .update-title { font-weight: 600; line-height: 1.3; }
 .update-sub, .update-msg { font-size: .84rem; color: var(--muted); }
 .update-notes { margin: 0; padding: 0 0 0 16px; font-size: .88rem; line-height: 1.4; }
+.share-all { width: 100%; margin-top: 14px; }
 .update-progress { display: flex; align-items: center; gap: 12px; min-height: 46px; }
 .update-track { flex: 1; height: 6px; border-radius: 3px; background: var(--accent-soft); overflow: hidden; }
 .update-track span { display: block; height: 100%; width: 0; border-radius: 3px; background: var(--accent); transition: width .2s; }
@@ -82,6 +83,7 @@
       <p id="progress"></p>
     </div>
     <nav class="games" id="games" aria-label="Today's games"></nav>
+    <button class="btn btn-primary share-all" id="shareAll" type="button" hidden>Share today</button>
   </main>
 
   <p class="get-app" id="getApp" hidden>On Android? <a class="link" href="/app">Get the app</a>, free and offline.</p>
@@ -135,7 +137,21 @@
       return a;
     }));
     $('progress').textContent = done === GAMES.length ? 'All done. See you tomorrow.' : `${done} of ${GAMES.length} played today`;
+    $('shareAll').hidden = done !== GAMES.length;
   }
+  // Every result in one message, once the day's games are done.
+  function shareAll() {
+    const lines = GAMES.map(g => `${g.name}: ${(store.get(g.id) || {}).text || ''}`);
+    const text = [`Dailies, ${dateFormat.format(Clock.now())}`, ...lines, SITE].join('\n');
+    if (window.ladderApp) return toApp({ type: 'share', title: 'Dailies', text });
+    if (navigator.share) return navigator.share({ text }).catch(() => {});
+    navigator.clipboard.writeText(text).then(() => {
+      $('shareAll').textContent = 'Copied';
+      setTimeout(() => { $('shareAll').textContent = 'Share today'; }, 1600);
+    }, () => {});
+  }
+  $('shareAll').addEventListener('click', shareAll);
+
   // Coming back from a game, or back to the app on a new day.
   addEventListener('pageshow', render);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) render(); });

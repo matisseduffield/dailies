@@ -42,7 +42,7 @@
 .tools-left { display: flex; gap: 2px; margin-left: -10px; }
 .tools-right { display: flex; justify-content: flex-end; margin-right: -10px; }
 .tool { display: inline-flex; align-items: center; gap: 6px; height: 44px; padding: 0 10px; background: none; border: 0; border-radius: 6px; font-size: .86rem; font-weight: 600; color: var(--muted); }
-.tool:hover:not(:disabled) { color: var(--ink); background: var(--key); }
+@media (hover: hover) { .tool:hover:not(:disabled) { color: var(--ink); background: var(--key); } }
 .tool:disabled { opacity: .4; cursor: default; }
 .tool.sure { color: var(--neg); }
 @media (max-width: 350px) { .tools-left .tool { font-size: 0; gap: 0; } }

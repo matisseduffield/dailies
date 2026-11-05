@@ -104,9 +104,9 @@ a.brand > svg:first-child { color: var(--muted); }
   display: grid; place-items: center; width: 44px; height: 44px; padding: 0;
   background: none; border: 0; border-radius: 50%; color: var(--muted);
 }
-.icon-btn:hover { color: var(--ink); background: var(--key); }
+@media (hover: hover) { .icon-btn:hover { color: var(--ink); background: var(--key); } }
 .version { min-height: 44px; padding: 0 8px; background: none; border: 0; font-size: .8rem; color: var(--muted); }
-.version:hover { color: var(--ink); }
+@media (hover: hover) { .version:hover { color: var(--ink); } }
 .version[data-state="available"] { color: var(--accent); font-weight: 600; }
 
 /* Today / Practice, with what's on screen at the right */
@@ -116,7 +116,7 @@ a.brand > svg:first-child { color: var(--muted); }
   position: relative; padding: 10px 0 11px; background: none; border: 0;
   font-size: .92rem; font-weight: 600; color: var(--muted);
 }
-.tab:hover { color: var(--ink); }
+@media (hover: hover) { .tab:hover { color: var(--ink); } }
 .tab[aria-selected="true"] { color: var(--ink); }
 .tab[aria-selected="true"]::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; border-radius: 1px; background: var(--ink); }
 .tab .dot { display: inline-block; width: 6px; height: 6px; margin-left: 6px; border-radius: 50%; background: var(--accent); vertical-align: 2px; }
@@ -125,7 +125,7 @@ a.brand > svg:first-child { color: var(--muted); }
 /* The date opens past ladders; New ladder opens the lengths */
 .meta-btn { position: relative; display: inline-flex; align-items: center; gap: 5px; padding: 0; background: none; border: 0; font-size: .84rem; color: var(--muted); }
 .meta-btn::after { content: ""; position: absolute; inset: -12px -8px; }
-.meta-btn:hover { color: var(--ink); }
+@media (hover: hover) { .meta-btn:hover { color: var(--ink); } }
 .meta-btn svg { color: var(--faint); }
 
 /* Keyboard */
@@ -164,18 +164,20 @@ a.brand > svg:first-child { color: var(--muted); }
 .result-note:empty { display: none; }
 .result-note b { font-weight: 600; color: var(--ink); letter-spacing: .04em; }
 .result .btn-secondary { background: var(--key); border-color: transparent; }
-.result .btn-secondary:hover { background: var(--key-down); }
+@media (hover: hover) { .result .btn-secondary:hover { background: var(--key-down); } }
 .result-foot { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 6px; font-size: .84rem; color: var(--muted); }
 .result-foot span + span::before { content: "·"; margin-right: 6px; }
 .result-foot b { font-weight: 600; color: var(--ink); }
 .next { justify-self: center; display: inline-flex; align-items: center; min-height: 32px; font-size: .92rem; font-weight: 600; color: var(--accent); text-decoration: none; }
+.next { position: relative; }
+.next::before { content: ""; position: absolute; inset: -8px -12px; }
 .next::after { content: ""; width: 7px; height: 7px; margin-left: 7px; border: solid currentColor; border-width: 2px 2px 0 0; transform: rotate(45deg); }
 .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .btn { min-height: 48px; padding: 0 16px; border-radius: 7px; font-size: .95rem; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
 .btn-primary { background: var(--ink); border: 1px solid var(--ink); color: var(--on-ink); }
-.btn-primary:hover { opacity: .9; }
+@media (hover: hover) { .btn-primary:hover { opacity: .9; } }
 .btn-secondary { background: transparent; border: 1px solid var(--line-strong); }
-.btn-secondary:hover { border-color: var(--ink); }
+@media (hover: hover) { .btn-secondary:hover { border-color: var(--ink); } }
 .link { position: relative; padding: 0; background: none; border: 0; font-weight: 600; color: var(--accent); }
 .link::after { content: ""; position: absolute; inset: -12px -8px; }
 
