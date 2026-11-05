@@ -88,3 +88,8 @@ test('sharing shows the shape of the game and no words', () => {
   const lost = L.shareText(3, [fruit, wrong, close, ['Mango', 'Plum', 'Olive', 'Jade'], ['Peach', 'Plum', 'Olive', 'Mint']], sample);
   assert.match(lost, /^Sorted 3 · 1 of 4\n/);
 });
+
+test('a clock set before the first day still gets a puzzle', () => {
+  assert.ok(L.daily(0, puzzles));
+  assert.ok(L.daily(-400, puzzles));
+});

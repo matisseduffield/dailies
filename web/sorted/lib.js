@@ -69,7 +69,7 @@
     return Math.round((Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(y, m - 1, d)) / 864e5) + 1;
   }
   // Each day takes the next puzzle, going round again at the end of the list.
-  const daily = (day, puzzles) => puzzles[(day - 1) % puzzles.length];
+  const daily = (day, puzzles) => { const n = puzzles.length; return puzzles[(((day - 1) % n) + n) % n]; };
   // The day sets the deal, so everyone starts from the same board.
   const deal = (day, puzzle) => shuffled(wordsOf(puzzle), rng(day * 7919));
 

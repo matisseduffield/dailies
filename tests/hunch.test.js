@@ -90,3 +90,8 @@ test('share text gives nothing away', () => {
   assert.match(L.shareText(0, ['moldy'], 'crane'), /^Hunch practice · X\/6\n□□□□□$/);
   assert.match(L.shareText(3, ['crane'], 'crane', true), /^Hunch 3 · 1\/6 · Hard\n/);
 });
+
+test('a clock set before the first day still gets a word', () => {
+  assert.ok(L.daily(0, dict));
+  assert.ok(L.daily(-400, dict));
+});

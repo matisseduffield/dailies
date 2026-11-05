@@ -151,7 +151,7 @@
 
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="words.js?v=2"></script>
-<script src="lib.js?v=2"></script>
+<script src="lib.js?v=3"></script>
 <script src="../next.js?v=2"></script>
 <script>
 (() => {
@@ -453,7 +453,7 @@
   }
   function setMode(mode) {
     if (state.mode === mode) return;
-    if (mode === 'practice' && !state.practice) return startPractice();
+    if (mode === 'practice' && (!state.practice || state.practice.done)) return startPractice();
     state.mode = mode;
     save(); load(); say(''); render();
   }

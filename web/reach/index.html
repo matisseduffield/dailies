@@ -18,8 +18,9 @@
 
 /* The target, then the moves so far */
 .stage-wrap { position: relative; flex: 1; min-height: 0; display: flex; }
-.stage { flex: 1; min-width: 0; display: grid; align-content: start; justify-items: center; gap: 14px; padding: 18px 0 48px; overflow: hidden auto; }
-.goal { position: sticky; top: 0; z-index: 1; justify-self: stretch; display: grid; justify-items: center; padding-bottom: 6px; background: var(--bg); }
+.stage { flex: 1; min-width: 0; display: grid; align-content: start; justify-items: center; gap: 14px; padding: 0 0 48px; overflow: hidden auto; scrollbar-width: none; }
+.stage.done { padding-bottom: 12px; }
+.goal { position: sticky; top: 0; z-index: 1; justify-self: stretch; display: grid; justify-items: center; padding: 18px 0 6px; background: var(--bg); }
 .goal span { font-size: .84rem; color: var(--muted); }
 .goal b { font-size: 4rem; font-weight: 600; line-height: 1.05; letter-spacing: -.02em; }
 .goal.hit b { color: var(--pos); }
@@ -51,20 +52,22 @@
 
 /* The numbers, then the four operators */
 .slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+.slots, .ops { user-select: none; -webkit-user-select: none; }
 .slot {
-  height: 62px; padding: 0; background: var(--surface); border: 0; border-radius: 8px;
-  font-size: 1.6rem; font-weight: 600; touch-action: manipulation;
+  height: clamp(62px, 8.6dvh, 76px); padding: 0; background: var(--surface); border: 0; border-radius: 8px;
+  font-size: 1.65rem; font-weight: 600; touch-action: manipulation;
   transition: background .12s, color .12s, transform .12s;
 }
 .slot:active:not(:disabled) { transform: scale(.96); }
 .slot:disabled { background: var(--key); opacity: .35; cursor: default; }
 .slot[aria-pressed="true"] { background: var(--pick); color: var(--on-pick); }
+.slot.long { font-size: 1.15rem; }
 .slot.new { animation: pop .22s ease-out; }
 .slot.bad { animation: shake .32s; }
 @keyframes pop { from { transform: scale(.88); } }
 @keyframes shake { 20%, 60% { transform: translateX(-4px); } 40%, 80% { transform: translateX(4px); } }
 .ops { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; margin-top: 7px; padding-bottom: 4px; }
-.op { height: 54px; padding: 0; background: var(--key); border: 0; border-radius: 8px; font-size: 1.7rem; font-weight: 600; line-height: 1; touch-action: manipulation; }
+.op { height: clamp(54px, 7.2dvh, 64px); padding: 0; background: var(--key); border: 0; border-radius: 8px; font-size: 1.7rem; font-weight: 600; line-height: 1; touch-action: manipulation; }
 .op:active { background: var(--key-down); }
 .op[aria-pressed="true"] { background: var(--op); color: var(--on-op); }
 
@@ -74,9 +77,11 @@
 
 /* Short phones: a smaller target and keys leave room for the moves */
 @media (max-height: 640px) {
-  .stage { padding-top: 6px; gap: 8px; }
+  .stage { gap: 8px; }
+  .goal { padding-top: 6px; }
   .goal b { font-size: 2.6rem; }
   .slot { height: 50px; font-size: 1.35rem; }
+  .slot.long { font-size: 1.1rem; }
   .op { height: 44px; }
 }
 
@@ -138,8 +143,8 @@
         <p class="count" id="count"></p>
         <div class="tools-right"><button class="tool" id="giveUpBtn" type="button">Give up</button></div>
       </div>
-      <div class="slots" id="slots" aria-label="Numbers"></div>
-      <div class="ops" id="ops" aria-label="Operators"></div>
+      <div class="slots" id="slots" role="group" aria-label="Numbers"></div>
+      <div class="ops" id="ops" role="group" aria-label="Operators"></div>
     </div>
     <section class="result" id="result" aria-live="polite" hidden>
       <div class="result-head">
@@ -167,8 +172,8 @@
   <div class="sheet-body">
     <p>Make the target from the six numbers. Tap a number, an operator, then a second number, and the answer takes their place. You don’t have to use them all.</p>
     <div class="example"><span>Tap <b>7</b>, <b>+</b>, <b>6</b> and you have a <b>13</b> to use next.</span></div>
-    <p>Numbers stay whole and above zero, so 7 ÷ 2 and 3 − 5 won’t work.</p>
-    <p><b>Par</b> is the fewest moves it can possibly be done in, so it can be matched but never beaten. It rises through the week: 3 on Monday, 5 at the weekend.</p>
+    <p>Numbers stay whole and above zero, so 7 ÷ 2 and 5 − 5 won’t work. Tap the two in either order: the bigger one goes first.</p>
+    <p><b>Par</b> is the fewest moves it can possibly be done in, so it can be matched but never beaten. It’s 3 on Monday and Tuesday, then 4. The weekend is hardest, with very few ways to match it.</p>
     <p class="muted">A new puzzle arrives every midnight. Want more? <b>Practice</b> deals as many as you like.</p>
     <button class="btn btn-primary" type="button" data-close>Play</button>
   </div>
@@ -185,8 +190,8 @@
 </dialog>
 
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
-<script src="days.js?v=1"></script>
-<script src="lib.js?v=1"></script>
+<script src="days.js?v=2"></script>
+<script src="lib.js?v=2"></script>
 <script src="../next.js?v=2"></script>
 <script>
 (() => {
@@ -204,11 +209,16 @@
   // ---- state ----
   // days: { [day]: { moves: [[from, op, to]...], done, won, gaveUp } };
   // practice: the same plus the day it was dealt from; mode: what's on screen.
+  // dealt: which build of the puzzles a practice game came from. Moves only
+  // make sense against the numbers they were played on.
+  const DEALT = 2;
   const saved = store.get('state') || {};
+  const practice = saved.dealt === DEALT && saved.practice || null;
   const state = {
+    dealt: DEALT,
     days: saved.days && typeof saved.days === 'object' ? saved.days : {},
-    practice: saved.practice || null,
-    mode: saved.mode === 'practice' && saved.practice ? 'practice' : 'daily',
+    practice,
+    mode: saved.mode === 'practice' && practice ? 'practice' : 'daily',
   };
   const save = () => store.set('state', state);
 
@@ -244,7 +254,6 @@
 
   // ---- drawing ----
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
-  const sign = o => (o === '-' ? '−' : o);
   const svg = (w, h, d) => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     s.setAttribute('width', w); s.setAttribute('height', h); s.setAttribute('viewBox', `0 0 ${w} ${h}`);
@@ -264,23 +273,27 @@
       const hit = s.value === puzzle.target;
       const row = el('li', `step${hit ? ' hit' : ''}${!swapped && fresh !== null && i === list.length - 1 ? ' new' : ''}`);
       row.style.setProperty('--i', i);
-      row.append(el('span', '', `${s.a} ${sign(s.op)} ${s.b}`), el('b', '', `= ${s.value}`));
+      row.append(el('span', '', `${s.a} ${L.sign(s.op)} ${s.b}`), el('b', '', `= ${s.value}`));
       return row;
     }));
     swapped = false;
-    $('stage').scrollTop = $('stage').scrollHeight;
   }
 
+  // After everything's drawn: the result panel takes room from the moves, and
+  // the last move has to stay in sight.
+  const toEnd = () => { $('stage').scrollTop = $('stage').scrollHeight; };
+
   function renderSlots() {
-    const { slots } = now();
-    $('slots').replaceChildren(...slots.map((v, i) => {
-      const b = el('button', i === fresh ? 'slot new' : 'slot', v == null ? '' : String(v));
-      b.type = 'button';
-      b.dataset.slot = i;
+    now().slots.forEach((v, i) => {
+      const b = $('slots').children[i];
+      b.textContent = v == null ? '' : v;
       b.disabled = v == null;
+      b.classList.toggle('long', String(v).length > 5);
       b.setAttribute('aria-pressed', String(i === picked));
-      return b;
-    }));
+      if (v == null) b.setAttribute('aria-label', 'Used'); else b.removeAttribute('aria-label');
+      b.classList.remove('new');
+      if (i === fresh) { void b.offsetWidth; b.classList.add('new'); }
+    });
     fresh = null;
   }
 
@@ -327,7 +340,7 @@
       const b = el('button', 'reveal', best ? 'Back to your moves' : 'Show the best way');
       b.type = 'button';
       b.prepend(best ? svg(14, 14, 'M5 3 2 6l3 3M2.5 6H9a3 3 0 0 1 0 6H6') : svg(14, 14, 'M1 7s2.2-4 6-4 6 4 6 4-2.2 4-6 4-6-4-6-4zM7 8.6a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2z'));
-      b.addEventListener('click', () => { best = !best; swapped = true; renderSteps(); renderResult(); });
+      b.addEventListener('click', () => { best = !best; swapped = true; renderSteps(); renderResult(); toEnd(); });
       note.append(b);
     }
     $('resFirst').textContent = daily ? 'Share' : 'New puzzle';
@@ -360,7 +373,9 @@
     resetGiveUp();
     $('play').hidden = play.done;
     $('result').hidden = !play.done;
+    $('stage').classList.toggle('done', play.done);
     if (play.done) renderResult();
+    toEnd();
     tellBack();
   }
 
@@ -382,8 +397,8 @@
       nums.append(n);
     }
     // How each game went: moves over par, or given up.
-    const LABELS = ['On par', '+1', '+2', '+3 or more', 'Gave up'];
-    const slot = d => (state.days[d].won ? Math.min(3, state.days[d].moves.length - L.parForDay(((d - 1) % D.offsets.length) + 1, D.epoch)) : 4);
+    const LABELS = ['On par', '+1', '+2', 'Gave up'];
+    const slot = d => (state.days[d].won ? state.days[d].moves.length - L.daily(d, D).par : 3);
     const counts = Array(LABELS.length).fill(0);
     for (const d of days) counts[slot(d)]++;
     const max = Math.max(...counts, 1);
@@ -496,6 +511,7 @@
     }
     play.gaveUp = true;
     best = true; swapped = true;
+    say('');
     finish(false);
     save(); render();
   }
@@ -523,16 +539,24 @@
   }
   function setMode(mode) {
     if (state.mode === mode) return;
-    if (mode === 'practice' && !state.practice) return startPractice();
+    if (mode === 'practice' && (!state.practice || state.practice.done)) return startPractice();
     state.mode = mode;
     save(); load(); say(''); render();
   }
 
   // ---- controls ----
+  const OP_NAMES = { '+': 'Plus', '-': 'Minus', '×': 'Times', '÷': 'Divided by' };
+  $('slots').replaceChildren(...Array.from({ length: 6 }, (_, i) => {
+    const b = el('button', 'slot');
+    b.type = 'button';
+    b.dataset.slot = i;
+    return b;
+  }));
   $('ops').replaceChildren(...L.OPS.map(o => {
-    const b = el('button', 'op', sign(o));
+    const b = el('button', 'op', L.sign(o));
     b.type = 'button';
     b.dataset.op = o;
+    b.setAttribute('aria-label', OP_NAMES[o]);
     b.setAttribute('aria-pressed', 'false');
     return b;
   }));
@@ -571,6 +595,7 @@
     if (day !== today) {
       today = day;
       if (state.mode === 'daily') load();
+      say('');
       render();
     } else if (play.done) tickNext();
   }

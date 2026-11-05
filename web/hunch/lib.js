@@ -77,7 +77,7 @@
     return Math.round((Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(y, m - 1, d)) / 864e5) + 1;
   }
   // Each day takes the next word in the list, going round again at its end.
-  const daily = (day, dict) => dict.answers[(day - 1) % dict.answers.length];
+  const daily = (day, dict) => { const n = dict.answers.length; return dict.answers[(((day - 1) % n) + n) % n]; };
 
   // Days won in a row, up to today (or yesterday, if today isn't done yet).
   function streak(wonDays, today) {

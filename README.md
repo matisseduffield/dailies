@@ -27,16 +27,20 @@ out, with a different deal.
 
 ## Reach
 
-Six numbers and a target. Tap a number, an operator and a second number, and
-the answer takes their place. Numbers stay whole and above zero. Par is the
-fewest moves possible, proven by searching every shorter way, so it can be
-matched but never beaten: 3 on Monday and Tuesday, 4 midweek, 5 at the weekend.
+Six numbers and a target. Tap a number, an operator and a second number, in
+either order, and the answer takes their place. Numbers stay whole and above
+zero. Par is the fewest moves possible, proven by searching every shorter way,
+so it can be matched but never beaten: 3 on Monday and Tuesday, 4 otherwise.
+Six numbers allow five moves, so every day leaves room to finish over par.
 Over par, a button swaps your moves for the best way. Give up shows it too,
 and doesn't count towards the streak. Plus unlimited Practice.
 
 `web/reach/days.js` holds ten years of seeds, one small number a day, so the
-page only re-deals a puzzle and never has to search. Rebuild with
-`node scripts/build-reach.mjs`, which gives the same days.
+page only re-deals a puzzle and never has to search. `scripts/reach-rules.cjs`
+says what's fair: how many ways may match par by weekday (few at the weekend,
+which is what makes it hard), a best way that stays under 1,500, and at least
+20 ways one move over par. Rebuild with `node scripts/build-reach.mjs` (8 min),
+which gives the same days.
 
 ## Slugle
 

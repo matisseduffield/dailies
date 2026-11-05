@@ -9,8 +9,10 @@
   const OPS = ['+', '-', '×', '÷'];
   const BIG = [15, 20, 25, 30, 40, 50, 60, 75, 80, 100];
   const SMALL = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-  // Sunday to Saturday: it builds through the week, as Slugle does.
-  const PAR_BY_WEEKDAY = [5, 3, 3, 4, 4, 4, 5];
+  // Sunday to Saturday. Six numbers allow five moves at most, so par stops at
+  // four and every day leaves a slower way home. The weekend is hardest because
+  // few ways match par (see scripts/reach-rules.cjs).
+  const PAR_BY_WEEKDAY = [4, 3, 3, 4, 4, 4, 4];
 
   function rng(seed) {
     let a = seed >>> 0;
@@ -32,8 +34,15 @@
     return out;
   }
 
+  const sign = op => (op === '-' ? '−' : op);
+
+  // Taking away and dividing start from the bigger number, so the two can be
+  // tapped in either order.
+  const inOrder = (a, op, b) => ((op === '-' || op === '÷') && a < b ? [b, a] : [a, b]);
+
   // The answer to a move, or why it can't be made.
-  function apply(a, op, b) {
+  function apply(first, op, second) {
+    const [a, b] = inOrder(first, op, second);
     if (op === '+') return { value: a + b };
     if (op === '×') return { value: a * b };
     if (op === '-') return a > b ? { value: a - b } : { refused: 'It has to stay above zero' };
@@ -45,41 +54,13 @@
   function replay(numbers, moves) {
     const slots = [...numbers];
     const steps = moves.map(([from, op, to]) => {
-      const a = slots[from], b = slots[to];
+      const [a, b] = inOrder(slots[from], op, slots[to]);
       const { value } = apply(a, op, b);
       slots[from] = null;
       slots[to] = value;
       return { a, op, b, value };
     });
     return { slots, steps };
-  }
-
-  // Can `target` be made from `numbers` in `depth` moves or fewer? Every pair
-  // in both orders is tried, so a false here proves par can't be beaten.
-  function reachable(numbers, target, depth) {
-    if (numbers.includes(target)) return true;
-    if (depth === 0) return false;
-    const seen = new Set();
-    function search(list, left) {
-      const key = list.join() + '|' + left;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      for (let i = 0; i < list.length; i++) {
-        for (let j = i + 1; j < list.length; j++) {
-          const a = Math.max(list[i], list[j]), b = Math.min(list[i], list[j]);
-          const rest = list.filter((_, k) => k !== i && k !== j);
-          const made = [a + b, a * b];
-          if (a > b) made.push(a - b);
-          if (a % b === 0) made.push(a / b);
-          for (const v of made) {
-            if (v === target) return true;
-            if (left > 1 && search([...rest, v].sort((x, y) => x - y), left - 1)) return true;
-          }
-        }
-      }
-      return false;
-    }
-    return search([...numbers].sort((x, y) => x - y), depth);
   }
 
   // A puzzle from a seed: six numbers, then `par` moves made at random, each
@@ -112,10 +93,11 @@
     const [y, m, d] = epoch.split('-').map(Number);
     return Math.round((Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(y, m - 1, d)) / 864e5) + 1;
   }
-  function parForDay(day, epoch) {
+  function weekdayOf(day, epoch) {
     const [y, m, d] = epoch.split('-').map(Number);
-    return PAR_BY_WEEKDAY[new Date(Date.UTC(y, m - 1, d + day - 1)).getUTCDay()];
+    return new Date(Date.UTC(y, m - 1, d + day - 1)).getUTCDay();
   }
+  const parForDay = (day, epoch) => PAR_BY_WEEKDAY[weekdayOf(day, epoch)];
   const seedFor = (day, offset) => day * 4096 + offset;
 
   // Each day's offset is the first seed the builder could prove. The list goes
@@ -123,7 +105,7 @@
   // so a repeat uses the day it was built for.
   function daily(day, data) {
     const n = data.offsets.length;
-    const at = ((day - 1) % n) + 1;
+    const at = (((day - 1) % n) + n) % n + 1;   // a clock set before the epoch still gets a puzzle
     return deal(seedFor(at, data.offsets[at - 1]), parForDay(at, data.epoch));
   }
 
@@ -147,10 +129,10 @@
   function shareText(day, steps, par, gaveUp = false) {
     const head = day ? `Reach ${day}` : 'Reach practice';
     if (gaveUp) return `${head} · Gave up, par ${par}`;
-    return `${head} · ${steps.length} ${steps.length === 1 ? 'move' : 'moves'}, par ${par}\n${steps.map(s => s.op).join(' ')}`;
+    return `${head} · ${steps.length} ${steps.length === 1 ? 'move' : 'moves'}, par ${par}\n${steps.map(s => sign(s.op)).join(' ')}`;
   }
 
-  const lib = { OPS, PAR_BY_WEEKDAY, rng, apply, replay, reachable, deal, dayNumber, parForDay, seedFor, daily, streak, bestStreak, shareText };
+  const lib = { OPS, PAR_BY_WEEKDAY, rng, sign, apply, replay, deal, dayNumber, weekdayOf, parForDay, seedFor, daily, streak, bestStreak, shareText };
   if (typeof module === 'object' && module.exports) module.exports = lib;
   else root.ReachLib = lib;
 })(this);

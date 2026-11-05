@@ -1,6 +1,6 @@
 // Builds web/reach/days.js: ten years of daily puzzles. Each day keeps the first
-// seed whose target really needs par moves, proven by searching every shorter
-// way. The page only re-deals from the seed, so it never has to search.
+// seed that's proven fair (scripts/reach-rules.cjs), so the page only re-deals
+// and never has to search.
 //
 //   node scripts/build-reach.mjs
 //
@@ -9,6 +9,7 @@ import { writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const L = require('../web/reach/lib.js');
+const { fair } = require('./reach-rules.cjs');
 
 const EPOCH = '2026-11-05';
 const DAYS = 3653;
@@ -17,10 +18,11 @@ const offsets = [];
 const started = Date.now();
 for (let day = 1; day <= DAYS; day++) {
   const par = L.parForDay(day, EPOCH);
+  const weekday = L.weekdayOf(day, EPOCH);
   for (let offset = 0; ; offset++) {
     if (offset >= 4096) throw new Error(`no puzzle for day ${day}`);
     const p = L.deal(L.seedFor(day, offset), par);
-    if (p && !L.reachable(p.numbers, p.target, par - 1)) { offsets.push(offset); break; }
+    if (p && fair(p, weekday)) { offsets.push(offset); break; }
   }
   if (day % 250 === 0) console.log(`day ${day}, ${Math.round((Date.now() - started) / 1000)} s`);
 }
