@@ -3,7 +3,7 @@
 
     <!-- Only for update checks; the game itself works offline. -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- Self-updates install APKs downloaded from the public ladder-releases repo. -->
+    <!-- Self-updates install APKs downloaded from the public dailies-releases repo. -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application

@@ -1,7 +1,7 @@
 // Dailies on the web: Cloudflare Workers named `dailies`, `slugle` and `ladder`
 // (the old addresses, so old links still work) run this same script, no bindings.
 //
-//   GET  /, /slugle/, ...      the pages, served from the public ladder-releases
+//   GET  /, /slugle/, ...      the pages, served from the public dailies-releases
 //                              repo, where every release publishes web/
 //   GET  /app                  the latest Android app (a redirect to the APK)
 //   GET  /now                  the time, and the time zone of the connection
@@ -11,8 +11,8 @@
 // clock can't bring tomorrow's puzzle early (see web/clock.js): each page carries
 // a reading. Deployed by hand (see README).
 
-const WEB = 'https://raw.githubusercontent.com/matisseduffield/ladder-releases/main/web/';
-const APK = 'https://raw.githubusercontent.com/matisseduffield/ladder-releases/main/Dailies.apk';
+const WEB = 'https://raw.githubusercontent.com/matisseduffield/dailies-releases/main/web/';
+const APK = 'https://raw.githubusercontent.com/matisseduffield/dailies-releases/main/Dailies.apk';
 const TYPES = { html: 'text/html; charset=utf-8', css: 'text/css; charset=utf-8', js: 'text/javascript; charset=utf-8', woff2: 'font/woff2', txt: 'text/plain; charset=utf-8' };
 const HEADERS = { 'Referrer-Policy': 'no-referrer', 'X-Content-Type-Options': 'nosniff' };
 

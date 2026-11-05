@@ -101,7 +101,7 @@ letter at a time, and every step has to be a word.
 - Today / Practice tabs: practice ladders are random, short (par 3 to 4),
   medium (5 to 6) or long (7 to 8); New ladder picks the length.
 - How to play (top bar) opens by itself on the first visit.
-- Android app: self-updating from the public `ladder-releases` repo.
+- Android app: self-updating from the public `dailies-releases` repo.
 - In a browser: https://dailies.matisseduffield.workers.dev (shared results
   link here, so friends can play without the app; `/app` gets the APK).
 
@@ -136,7 +136,7 @@ save `{ date: new Date().toDateString(), text }` to localStorage as
   build step), `lib.js` its pure logic, tested by `node --test "tests/*.test.js"`,
   and `words.js`, `puzzles.js` or `days.js` its data.
 - `worker/worker.js`: the Cloudflare Workers `dailies`, `slugle` and `ladder`
-  (old addresses) that serve the pages from `ladder-releases/web/` (every
+  (old addresses) that serve the pages from `dailies-releases/web/` (every
   release publishes it there) and tell the time at `/now`. No bindings; deployed by hand when it changes,
   not on every release.
 - `app/`: Kotlin WebView wrapper (`com.matisseduffield.ladder`) that bundles
@@ -145,6 +145,6 @@ save `{ date: new Date().toDateString(), text }` to localStorage as
 ## Releasing
 
 Commit, then push an annotated `v*` tag. Actions builds a signed APK and
-publishes it with `latest.json` to `ladder-releases`; the tag message's `- `
+publishes it with `latest.json` to `dailies-releases`; the tag message's `- `
 lines become the "What's new" notes in the app. When `lib.js` or a game's data
 changes, bump its `?v=` in `index.html` so browsers don't mix old and new.

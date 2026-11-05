@@ -16,7 +16,7 @@ import java.security.MessageDigest
 
 /**
  * Self-updater. The source repo is private, so each release build also
- * publishes the APK and a small latest.json to the public ladder-releases
+ * publishes the APK and a small latest.json to the public dailies-releases
  * repo; this reads that file, downloads the APK, checks its SHA-256, and
  * hands it to [PackageInstaller]. The OS verifies the signature matches the
  * installed app, so data is preserved and nothing unsigned can install.
@@ -26,9 +26,9 @@ object UpdateManager {
     // serve a copy up to ~5 minutes old, so it is only the fallback (the API
     // allows 60 unauthenticated requests an hour per IP).
     private const val LATEST_API =
-        "https://api.github.com/repos/matisseduffield/ladder-releases/contents/latest.json"
+        "https://api.github.com/repos/matisseduffield/dailies-releases/contents/latest.json"
     private const val LATEST_RAW =
-        "https://raw.githubusercontent.com/matisseduffield/ladder-releases/main/latest.json"
+        "https://raw.githubusercontent.com/matisseduffield/dailies-releases/main/latest.json"
 
     data class UpdateInfo(
         val versionCode: Int,
