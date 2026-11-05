@@ -13,7 +13,7 @@ const days = readFileSync(path.join(SCRIPTS, 'grids.txt'), 'utf8').split('\n').f
 });
 const all = D.puzzles.map(L.parse);
 // SCOWL size: how common a word is. Words on the lively list count as common.
-const sizes = new Map(readFileSync(path.join(SCRIPTS, 'words.txt'), 'utf8').split('\n').filter(Boolean).map(l => l.split(' ')));
+const sizes = new Map(['words.txt', 'inflected.txt'].flatMap(f => readFileSync(path.join(SCRIPTS, f), 'utf8').split('\n').filter(Boolean).map(l => l.split(' '))));
 const lively = new Set(readFileSync(path.join(SCRIPTS, 'lively.txt'), 'utf8').split('\n').filter(l => !l.startsWith('#')).join(' ').split(/\s+/));
 const sizeOf = word => (lively.has(word) ? 20 : Number(sizes.get(word) || 35));
 const day = (d, data = D) => L.daily(d, data);
@@ -270,6 +270,49 @@ test('no answer comes back within 60 days', () => {
     for (const e of p.entries) {
       if (last.has(e.word)) assert.ok(i - last.get(e.word) >= R.REPEAT_GAP, `${e.word} on day ${i + 1}`);
       last.set(e.word, i);
+    }
+  });
+});
+
+test('no two puzzles share more than a third of their answers', () => {
+  D.puzzles.forEach((a, i) => D.puzzles.slice(0, i).forEach((b, j) => {
+    const share = R.shared(a[0], b[0]);
+    assert.ok(share <= R.MAX_SHARED, `days ${j + 1} and ${i + 1} share ${Math.round(share * 100)}%`);
+  }));
+});
+
+test('the same square turned on its side counts as the same grid', () => {
+  assert.equal(R.shared('owl/roe/bet', 'orb/woe/let'), 1);
+});
+
+test('no joke is recycled, and no reference is leaned on', () => {
+  const list = all.flatMap((p, i) => p.entries.map(e => ({ day: i + 1, word: e.word, clue: e.clue })));
+  assert.deepEqual(R.recycled(list), []);
+});
+
+test('recycling is caught', () => {
+  assert.ok(R.nearCopy('Winner of a war in 1932', "Winner of Australia's 1932 war"));
+  assert.ok(R.nearCopy('Keen on', 'Really keen on'));
+  assert.ok(!R.nearCopy('Cheek', 'Backchat'));
+  const faults = R.recycled([1, 40, 80].map(day => ({ day, word: 'owl' + day, clue: `Duolingo mascot number ${day}` })));
+  assert.equal(faults.length, 2);   // the name and the stock phrase
+  assert.equal(R.recycled([1, 10].map(day => ({ day, word: 'x' + day, clue: `Likes the Duolingo app ${day}` }))).length, 1);
+});
+
+test('a level 3 clue misdirects, so a puzzle has one plain blank there at most', () => {
+  all.forEach((p, i) => {
+    const blanks = p.entries.filter(e => e.level === 3 && e.clue.includes('___'));
+    assert.ok(blanks.length <= 1, `day ${i + 1}: ${blanks.map(e => e.clue).join(' / ')}`);
+  });
+});
+
+test('every recent clue has a source, or is plain common knowledge', () => {
+  const lines = readFileSync(path.join(SCRIPTS, 'verified.txt'), 'utf8').split('\n').filter(Boolean);
+  all.forEach((p, i) => {
+    for (const e of p.entries.filter(x => x.tag === 'n')) {
+      const line = lines.find(l => l.startsWith(`${i + 1} ${e.word} | ${e.clue} |`));
+      assert.ok(line, `day ${i + 1} ${e.word}: ${e.clue}`);
+      assert.match(line, /https?:|common knowledge/, line);
     }
   });
 });

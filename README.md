@@ -61,13 +61,18 @@ the streak. No Practice, because a spare puzzle is a day used up.
 `scripts/cluey/grids.txt` is the days in order and `clues-*.txt` their clues,
 written by hand with the puzzle in view, as `word level tag clue`. Tags say what
 a clue is doing (plain, blank, double meaning, culture, recent culture, ? pun,
-wordplay), and `scripts/cluey-rules.cjs` checks each puzzle has a good mix and
-no answer returns within 60 days. `node scripts/build-cluey.mjs` makes
+wordplay). `scripts/cluey-rules.cjs` checks each puzzle has a good mix, no answer
+returns within 60 days, and no two puzzles anywhere in the list share more than a
+third of their answers, which also catches a grid turned on its side. It catches
+recycled jokes too: two near-identical clues for one answer, or a name or stock
+phrase used more than twice or within 30 days of itself. `verified.txt` gives a
+source for every recent-culture clue. `node scripts/build-cluey.mjs` makes
 `web/cluey/puzzles.js`. To add days, always whole weeks so a puzzle stays on its
 weekday when the list goes round: `--more 7 --pool` adds grids at the end and
 lists the clues to write in `scripts/cluey/missing.txt`. Words picked for a grid
-come from `good.txt` and `lively.txt`, then `words.txt` (SCOWL), never from
-`reject.txt`.
+come from `good.txt` and `lively.txt`, then `words.txt` and, two to a grid at
+most, `inflected.txt` (both from SCOWL), never from `reject.txt`. Late in the
+list a grid can need `--pool --nodes 30000 --total 40000000`.
 
 ## Slugle
 

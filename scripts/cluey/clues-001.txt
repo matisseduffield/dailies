@@ -47,7 +47,7 @@ sash 3 d Beauty queen's label
 idle 3 d Run without going anywhere
 stream 3 n Watch Stan, say
 ute 3 d Kelpie's preferred transport
-lip 3 d Cheek
+lip 3 d Backchat
 barren 3 w Unproductive noble, by the sound of it
 else 3 b Or ___ (vague threat)
 reed 3 p Thatcher's material?
@@ -70,7 +70,7 @@ scrap 1 d Punch-up in the schoolyard
 waive 1 d Drop, as a late fee
 aspen 1 d Tree with trembling leaves
 the 1 c ___ Castle, home of Darryl Kerrigan
-two 1 n Number of Heeler kids in Bluey
+two 1 n Bandit and Chilli's kid count
 
 day 6
 gas 1 d Laughing stuff at the dentist
@@ -168,7 +168,7 @@ mouse 1 c Mickey, for one
 edit 1 n Bad ___, blamed by reality TV villains
 not 1 d Word that flips a sentence
 draw 1 d Result of a rained-out Test
-fee 1 n What Afterpay slugs you if you're late
+fee 1 n What your bank slugs you for going overdrawn
 
 day 13
 sia 1 c Chandelier swinger from Adelaide
@@ -179,11 +179,11 @@ she 1 b ___'ll be right, mate
 suds 1 d Washing-up bubbles
 item 1 d Couple, to the gossips
 atlas 2 p Book with the world on its shoulders?
-etch 1 c ___ A Sketch, a drawing toy
+etch 1 c Scratch a plate, like Rembrandt
 rake 1 b Thin as a ___
 
 day 14
-fold 2 n Galaxy Z ___, Samsung's bendy phone
+fold 2 n Bendy phone type, or quit at poker
 ever 2 b Happily ___ after
 never 2 d Not in a million years
 rego 2 d Yearly bill for the car, informally
@@ -199,7 +199,7 @@ veto 2 d Official knockback
 area 2 b ___ 51, where the aliens are
 plank 3 d Part of a deck
 ruse 2 c Trojan horse, for one
-yeet 2 n Chuck, as the kids say
+yeet 2 n Chuck, if anyone still says that
 value 3 d Prize
 erase 3 d Undo a pencil's work
 tenet 3 w Belief, whichever way you look at it
@@ -212,7 +212,7 @@ code 3 c Morse or Da Vinci
 charge 3 p Bill for the Light Brigade?
 longer 3 d One who pines
 oboe 2 c Duck in Peter and the Wolf
-ton 2 n Regency high society, in a Netflix hit
+ton 2 n Regency high society, in Bridgerton
 gorge 3 c Katherine, up north
 edge 3 d Nick to the keeper
 leer 2 d Sleazy sideways look
@@ -231,7 +231,7 @@ stood 3 d Ran for parliament
 horn 3 x French or Cape, say
 box 3 n Best part of a Temu order, to the cat
 unused 3 d Mint
-node 3 p Joint on a plant?
+node 3 p Bump in the network?
 grew 3 d Waxed, like the moon
 debtor 3 p Visa holder, perhaps?
 bush 3 c Kate of Wuthering Heights fame
@@ -283,7 +283,7 @@ wire 1 n What AirPods do without
 day 21
 spam 1 p Tinned meat in your inbox?
 aloof 2 d Like most cats
-verve 2 c The ___, of Bitter Sweet Symphony
+verve 2 c Vigour shown by a Britpop band
 eater 2 b Fussy ___ at the kids' table
 darn 2 x Mend a sock, or swear gently
 save 1 d Job for a goalie or for Ctrl+S
@@ -301,7 +301,7 @@ lad 2 d Young fella in a stable
 lose 2 d Come second in a grand final
 acne 2 p Breakout hit with teens?
 pearl 3 p Reward for an oyster's grit?
-aria 2 n Opera solo, or a prize for Bluey's album
+aria 2 n Opera solo, or an Australian music prize
 need 2 b On a ___-to-know basis
 
 day 23
@@ -316,11 +316,11 @@ event 3 d Hammer, for one
 gem 2 d Ruby or Jade, say
 stain 3 d Red wine's parting gift
 hotly 3 d How a rumour is often denied
-spa 2 n Belgian town where Piastri won in 2025
+spa 2 n Belgian Grand Prix town
 
 day 24
 bob 3 c Marley or Hawke
-tour 3 d Lions' outing Down Under
+tour 3 d Lions' outing to Australia
 aviator 3 x Ray-Ban style, or Amelia Earhart
 gap 2 b Mind the ___
 way 3 c Sinatra's preferred method
@@ -339,7 +339,7 @@ son 3 d Male issue
 day 25
 rat 3 d Dob on a mate
 user 3 d Friend who only rings for favours
-stamina 3 n What a full season of MAFS demands
+stamina 3 n What a full season of reality TV demands
 oar 2 b Stick your ___ in
 don 3 p Put on Bradman?
 iceberg 3 d Bed for a prawn cocktail
@@ -347,7 +347,7 @@ line 3 d It might be drawn, crossed or toed
 tag 3 d Spray-can signature
 rum 3 x Odd drink from Bundaberg
 aside 3 d Remark the rest of the cast can't hear
-tenor 3 c One of three at the 1990 World Cup
+tenor 3 c One of three in Rome, 1990
 rang 3 d Gave a bell
 soil 3 x Dirty ground
 tacit 3 d Like a knowing nod
@@ -364,7 +364,7 @@ boost 1 d Shot in the arm
 ally 1 d Friend in a fight
 doe 1 c Female deer in a Sound of Music song
 shoe 1 n Daniel Ricciardo drank from one
-wry 1 d Dryly funny
+wry 1 d Twisted, as a grin
 
 day 27
 slam 1 b Grand ___, like the Australian Open

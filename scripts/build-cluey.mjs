@@ -9,8 +9,10 @@
 //   node scripts/build-cluey.mjs --more 7    add days at the end, from the bank
 //   node scripts/build-cluey.mjs --redo 3,9  fill those days again (before they
 //                                            go live only: a place in the list is a day)
-//   ... --pool                               also let in everyday words with no clue
-//                                            yet; the build then lists what to write
+//   ... --pool                               also let in everyday words and a few
+//                                            plurals; the build lists what to write
+//   ... --nodes, --total, --wide, --salt     search effort, for grids that won't fill
+//   ... --out file                           write the days elsewhere
 //   ... --draft                              write puzzles.js even with clues missing
 //
 // Add days a week at a time so the list stays a multiple of seven: when it goes
@@ -54,6 +56,10 @@ const listOf = name => new Set(readFileSync(new URL(name, DIR), 'utf8').split('\
 const good = listOf('good.txt');
 const lively = new Set(readFileSync(new URL('lively.txt', DIR), 'utf8').split('\n').filter(l => !l.startsWith('#')).join(' ').split(/\s+/).filter(Boolean));
 
+// Common plurals and past tenses, a little dull as answers. Only --pool lets
+// them in, and a grid may have two.
+const inflected = new Map(readFileSync(new URL('inflected.txt', DIR), 'utf8').split('\n').filter(Boolean).map(l => l.split(' ')));
+
 function readDays() {
   if (!existsSync(GRIDS)) return [];
   return readFileSync(GRIDS, 'utf8').split('\n').filter(Boolean).map(line => {
@@ -61,7 +67,7 @@ function readDays() {
     return { grid, levels: [...levels].map(Number) };
   });
 }
-const writeDays = days => writeFileSync(GRIDS, days.map(d => `${d.grid} ${d.levels.join('')}\n`).join(''));
+const writeDays = days => writeFileSync(arg('--out') || GRIDS, days.map(d => `${d.grid} ${d.levels.join('')}\n`).join(''));
 
 // ---- patterns ----
 // Every half-turn shape where each cell is in two answers of 3+, kept only if
@@ -173,7 +179,7 @@ function fill(shape, indexes, random, maxNodes, keep = null) {
       while (x) { const t = x & -x; options.push(i * 32 + 31 - Math.clz32(t)); x &= x - 1; }
     }
     // Mostly in list order, with enough chance for grids to differ.
-    const order = options.map(i => [i, i / ix.words.length + random() * .6]).sort((a, b) => a[1] - b[1]).slice(0, 30);
+    const order = options.map(i => [i, i / ix.words.length + random() * .6]).sort((a, b) => a[1] - b[1]).slice(0, Number(arg('--wide')) || 80);
     for (const [i] of order) {
       const w = ix.words[i];
       if (placed.some(p => p && (p === w || R.related(p, w)))) continue;
@@ -205,36 +211,63 @@ function assignLevels(grid, mix, random) {
 function makeDay(day, days, words, bank, cache) {
   const rule = R.WEEK[L.weekdayOf(day, EPOCH)];
   cache.patterns[rule.size] ||= patterns(rule.size);
-  const shapes = cache.patterns[rule.size].filter(p => rule.blocks.includes(p.blocks));
+  // Three-letter words run short first, so shapes with fewest of them go first.
+  const threes = p => R.entries(p.shape).filter(e => e.word.length === 3).length;
+  const allowed = cache.patterns[rule.size].filter(p => rule.blocks.includes(p.blocks)).sort((a, b) => threes(a) - threes(b));
+  const shapes = rule.size === 5 ? allowed : allowed.filter(p => threes(p) <= threes(allowed[Math.floor(allowed.length / 3)]));
   const near = new Set();
   const sizes = new Map(words.map(w => [w.word, w.size]));
+  const uses = new Map();
+  const others = days.filter((d, i) => d && i + 1 !== day);
   days.forEach((d, i) => {
     if (!d || i + 1 === day) return;
-    if (Math.abs(i + 1 - day) < R.REPEAT_GAP) R.entries(d.grid).forEach(e => near.add(e.word));
+    for (const e of R.entries(d.grid)) {
+      uses.set(e.word, (uses.get(e.word) || 0) + 1);
+      if (Math.abs(i + 1 - day) < R.REPEAT_GAP) near.add(e.word);
+    }
   });
-  const recent = days.slice(Math.max(0, day - 8), day - 1).filter(Boolean).map(d => d.grid.replace(/[a-z]/g, 'a'));
+  // A fill that lands on another day's grid, often the same square turned on
+  // its side, loses most of those words for the next try.
+  const banned = new Set();
+  const recent = days.slice(Math.max(0, day - 8), day + 7).filter(Boolean).map(d => d.grid.replace(/[a-z]/g, 'a'));
   const random = L.rng(day * 104729 + (cache.salt || 0));
   const byLength = {};
   for (const w of words) {
     if (near.has(w.word)) continue;
     (byLength[w.word.length] ||= []).push(w);
   }
-  const indexes = {};
-  for (const k in byLength) {
-    // Clued words first, then fresh ones, with a shuffle so days differ.
-    // The easy days get first go at the commonest words; hard days leave them be.
+  let indexes = {};
+  const reindex = () => {
+    indexes = {};
+    for (const k in byLength) {
+    // Lively words first, then read-through ones, then the rest, always leaning
+    // to words the list has used least, with a shuffle so days differ. The easy
+    // days get first go at the commonest words; hard days leave them be.
     const lean = rule.rare < 10 ? 1 : -.6;
-    const list = byLength[k].map(w => [w.word, (lively.has(w.word) ? -.7 : good.has(w.word) ? 0 : 1) + lean * (w.size > 20 ? .6 : 0) + w.size / 200 + random() * .5]).sort((a, b) => a[1] - b[1]).map(x => x[0]);
-    indexes[k] = new Index(list);
-  }
-  const fails = { fill: 0, rare: 0, levels: 0, shapes: shapes.length, pool: Object.fromEntries(Object.entries(byLength).map(([k, v]) => [k, v.length])), near: near.size };
-  for (let tries = 0; tries < 1200; tries++) {
-    const p = shapes[Math.floor(random() * shapes.length)];
-    if (recent.includes(p.shape) && tries < 200) continue;
-    const grid = fill(p.shape, indexes, random, tries < 1000 ? 3000 : 30000);
+      const list = byLength[k].filter(w => !banned.has(w.word)).map(w => [w.word, (lively.has(w.word) ? -.7 : good.has(w.word) ? 0 : inflected.has(w.word) ? 1.2 : 1) + lean * (w.size > 20 ? .6 : 0) + w.size / 200 + (uses.get(w.word) || 0) * .35 + random() * .7]).sort((a, b) => a[1] - b[1]).map(x => x[0]);
+      indexes[k] = new Index(list);
+    }
+  };
+  reindex();
+  const fails = { fill: 0, rare: 0, shared: 0, shapes: shapes.length, pool: Object.fromEntries(Object.entries(byLength).map(([k, v]) => [k, v.length])), near: near.size };
+  const budget = Number(arg('--nodes')) || 6000;
+  const total = Number(arg('--total')) || 2400000;
+  for (let tries = 0; tries < total / budget; tries++) {
+    const p = shapes[tries % shapes.length];
+    if (recent.includes(p.shape) && tries < 3) continue;
+    const grid = fill(p.shape, indexes, random, budget);
     if (!grid) { fails.fill++; continue; }
     const rare = R.entries(grid).filter(e => (sizes.get(e.word) ?? 35) > 20).length;
     if (rare > rule.rare) { fails.rare++; continue; }
+    if (R.entries(grid).filter(e => inflected.has(e.word)).length > 2) { fails.inflected = (fails.inflected || 0) + 1; continue; }
+    const twin = others.find(d => R.shared(grid, d.grid) > R.MAX_SHARED);
+    if (twin) {
+      fails.shared++;
+      const theirs = new Set(R.entries(twin.grid).map(e => e.word));
+      for (const e of R.entries(grid)) if (theirs.has(e.word) && random() < .7) banned.add(e.word);
+      reindex();
+      continue;
+    }
     return { grid, levels: assignLevels(grid, rule.mix, random), rare };
   }
   throw new Error(`day ${day}: no fill found ${JSON.stringify(fails)}`);
@@ -248,7 +281,10 @@ function candidates(bank) {
   const add = (word, size) => { if (!rejected.has(word) && !out.has(word)) out.set(word, { word, size }); };
   for (const w of lively) add(w, 20);
   for (const w of good) add(w, Number(sizes.get(w) || 35));
-  if (process.argv.includes('--pool')) for (const [w, s] of sizes) add(w, Number(s));
+  if (process.argv.includes('--pool')) {
+    for (const [w, s] of sizes) add(w, Number(s));
+    for (const [w, s] of inflected) add(w, Number(s));
+  }
   return [...out.values()];
 }
 
@@ -268,6 +304,8 @@ function fillDays() {
       days[day - 1] = null;
       try {
         days[day - 1] = makeDay(day, days, words, bank, cache);
+        writeDays(days);
+        console.log(`day ${day} done`);
       } catch (e) {
         days[day - 1] = before;
         console.log(e.message);
@@ -303,6 +341,11 @@ function build() {
     if (fault) faults.push(`day ${i + 1}: ${fault}`);
     return [d.grid, ...clues.map(c => `${c.level}${c.tag}${c.clue}`)];
   });
+  const every = days.flatMap((d, i) => [...(bank.get(i + 1) || new Map()).entries()].map(([word, c]) => ({ day: i + 1, word, clue: c.clue })));
+  faults.push(...R.recycled(every));
+  days.forEach((d, i) => days.slice(0, i).forEach((e, j) => {
+    if (R.shared(d.grid, e.grid) > R.MAX_SHARED) faults.push(`days ${j + 1} and ${i + 1} share too many answers`);
+  }));
   if (faults.length) console.log(faults.join('\n'));
   if (missing.length) {
     writeFileSync(new URL('missing.txt', DIR), [...new Set(missing)].sort().join('\n') + '\n');
