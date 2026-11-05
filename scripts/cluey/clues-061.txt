@@ -3,8 +3,8 @@ run 1 d Cricketer's single
 pope 1 n Election winner in the film Conclave
 elbow 1 d Arm's bendy bit
 rein 1 p Horse's steering wheel?
-ran 1 d Stood for parliament
-robin 1 c Batman's offsider
+ran 1 d Campaigned for a seat
+robin 1 c Holy offsider in Gotham
 upon 1 b Once ___ a time
 new 1 d Just out of the box
 plea 1 d Not guilty, for one
@@ -22,25 +22,13 @@ aisle 2 d Bride's route
 lot 1 b Thanks a ___
 bit 1 d Horse's mouthpiece
 
-day 63
-sow 1 c Mummy Pig, for one
-image 2 d Spin doctor's concern
-tesla 2 c Bowie's role in The Prestige
-enter 2 d Key above Shift
-eel 1 d Slippery customer
-site 2 d Tradie's workplace
-omen 2 n The First ___, 2024 horror prequel
-waste 2 b ___ not, want not
-glee 2 d Feeling when Collingwood lose
-earl 2 p Grey peer?
-
 day 64
 mush 2 d Cry to a husky team
 ashes 3 c Remains at Lord's
 shoal 3 x School that's shallow
 serve 2 n What starts each rally in Challengers
 reed 2 c Lou of Walk on the Wild Side
-mass 2 n Midnight ___, Netflix horror series
+mass 2 n Midnight ___, Mike Flanagan horror series
 usher 3 d Picture guide
 shore 3 x Prop found at the beach
 heave 2 b Given the old ___-ho
@@ -56,7 +44,7 @@ red 2 n Turning ___, Pixar's panda film
 coast 3 d Gold or Sunshine, on the map
 oath 2 b My ___! (Aussie for too right)
 tray 3 d Ute's back
-brand 3 d Apple or Blackberry, for example
+brand 3 d Bonds or Apple, for example
 star 2 d Southern Cross member
 true 2 d Dinkum
 
@@ -74,7 +62,7 @@ echo 3 d Yodeller's comeback
 arable 3 p Fit to be tilled?
 dip 3 d Chip's partner, but not Dale
 debase 3 p Lower by removing foundation?
-amen 3 d Last word in a service
+amen 3 d Hear, hear, at St Mary's
 gale 3 c Dorothy from Kansas
 lag 2 d Bane of online gamers
 
@@ -86,7 +74,7 @@ nod 2 d Silent bid at auction
 bog 3 d Snorkelling spot in Wales
 repose 3 x Model again, or lie down
 oven 3 d It might be fan-forced
-pert 3 d Saucy, in a good way
+pert 3 d Neat and jaunty, as a hat
 swan 3 c Ugly duckling, in the end
 manor 3 n Saltburn, in the 2023 film
 oxide 3 d Lime, to a chemist
@@ -109,8 +97,8 @@ scar 1 n Mufasa's brother in the 2024 prequel
 taxi 1 c ___ Driver, De Niro classic
 
 day 69
-the 1 n ___ Dry, Eric Bana's outback thriller
-irony 2 c Rain on your wedding day, supposedly
+the 1 n ___ Dry, Eric Bana's drought thriller
+irony 2 c Alanis Morissette's big mislabel
 curve 2 b Learning ___
 endow 2 d Fund a university chair, say
 key 1 d Esc, for example
@@ -133,7 +121,7 @@ tot 1 x Little one, or a little rum
 cob 1 b Corn on the ___
 
 day 71
-emu 2 c Winner of Australia's 1932 war
+emu 2 c Kangaroo's offsider on the coat of arms
 shrub 3 d Bottlebrush, for one
 louse 3 d Nit's mum
 upper 3 p Sole mate?
@@ -169,30 +157,12 @@ stale 3 b ___mate, a chess draw
 toll 3 n Ring, or a Linkt charge
 vie 3 x Compete for life in Paris
 aspire 3 w Aim high, or a church top
-scene 3 d What a toddler makes in Woolies
-torn 3 c Imbruglia's big hit
+scene 3 d Part of an act
+torn 3 c Ripped, per Natalie Imbruglia
 dental 3 p Like bridge and crown work?
 ditto 3 c I'll have what she's having
 fast 3 x Stuck, yet quick
 ill 2 d Crook
-
-day 74
-club 3 d Wood or iron
-repel 3 d Turn off mozzies, say
-agree 3 d Shake on it
-moo 3 d Low remark from a Friesian
-ask 2 b Don't ___, don't get
-algae 3 p Blue-green bloomers?
-rouge 3 c Colour of Baz Luhrmann's windmill
-bean 3 c Part of Jack's magic purchase
-cram 3 d Stuff the night before
-lego 3 n Pharrell's biopic was built with it
-uproar 3 p Big rowing event?
-bee 3 d Drone, for one
-league 3 c One of Nemo's 20,000
-saga 3 d Icelandic yarn
-keen 3 d Like mustard, so they say
-lob 2 d Arrive, in Aussie slang
 
 day 75
 gas 1 d Bottled barbecue fuel
@@ -230,18 +200,6 @@ rhino 2 p Hard-nosed safari sight?
 torso 2 d Six-pack site
 seek 2 x Hunt, or an Aussie jobs website
 
-day 78
-veto 2 d Official no
-area 2 b ___ 51, alien hotspot
-plank 3 d Core exercise
-ruse 2 c Baldrick's cunning plan, say
-yeet 2 n Throw hard, in Gen Z slang
-value 3 d Treasure
-erase 3 p Do a rubber's job?
-tenet 3 n Nolan's 2020 film, read either way
-oak 2 d Acorn's ambition
-pry 2 d Have a stickybeak
-
 day 79
 dam 2 d Warragamba, for one
 vile 2 d Like Vegemite, to an American
@@ -263,7 +221,7 @@ excel 3 p Shine at the office?
 dye 2 b Tie-___ T-shirt
 owl 3 n Duolingo's pushy mascot
 rotor 3 w Chopper part, coming or going
-adele 3 n She's 19, 21, 25 and 30
+adele 3 n Hello girl of Easy On Me
 ward 3 d Where patients lie
 fox 3 c Quick brown jumper
 encore 3 d Song after the last song
@@ -280,7 +238,7 @@ tile 3 n Wordle's little square
 foster 3 d Raise for a while
 flu 3 b Man ___: a dad's bad cold
 lab 2 d Guide dog, often
-lather 3 b ___, rinse, repeat
+lather 3 x Shaving foam, or a nervous horse's sweat
 ikea 3 c Allen key supplier
 term 3 d Stretch at school
 its 3 d Pedant's apostrophe trap
@@ -288,7 +246,7 @@ title 3 d Dame, for example
 clear 3 d Get over the bar
 herb 3 p Dill, literally?
 flake 3 d Shark at the chippy
-outer 3 b On the ___ (in the doghouse)
+outer 3 d Uncovered part of the footy ground
 flit 3 d Dart
 ham 2 d Overacting type
 
@@ -300,45 +258,21 @@ race 1 n Event in Brad Pitt's F1
 yen 1 x Urge, or Tokyo tender
 hot 1 b Some Like It ___
 ever 1 c Worst. Episode. ___.
-repay 1 n Clear an Afterpay debt
+repay 1 d Settle up with the bank
 rice 1 p Wedding confetti you can eat?
 den 1 d Dad's man cave
 
 day 83
 sea 1 d Coral or Tasman
-scalp 2 n Resell Swift tickets at a mark-up
+scalp 2 n Resell concert tickets at a mark-up
 noise 2 n What AirPods Pro cancel
 annex 2 d Extra wing
 get 1 c ___ Out, Jordan Peele horror
 saint 2 d Mary MacKillop, for one
-else 1 b Or ___!
+else 1 b Anything ___? asks the checkout
 apex 1 d Tip of a pyramid
-snag 1 x Hitch, or a Bunnings barbecue item
+snag 1 x Sausage, or a rip in your stocking
 cone 1 d Witch's hat, on the road
-
-day 84
-spam 1 x Junk from a tin or an inbox
-aloof 2 n Like Jenna Ortega's Wednesday
-verve 2 c Bitter Sweet Symphony band, with The
-eater 2 c Pac-Man, for one
-darn 1 x Mild curse, or mend a sock
-save 2 d Ctrl+S
-plead 2 d Answer in the dock
-aorta 2 d Main road from the heart
-mover 2 b ___ and shaker
-fern 2 c Silver one on an All Black
-
-day 85
-lap 2 p What disappears when you stand?
-ocean 3 c Frank with great depth
-snare 3 x Drum that catches rabbits
-eerie 3 c Like a Hanging Rock picnic
-lad 2 d Stable worker
-lose 2 d Misplace, as the TV remote
-acne 2 d Teen breakout
-pearl 3 d Nugget of wisdom from Broome
-aria 2 n Showpiece for Angelina Jolie's Callas
-need 2 b All You ___ Is Love
 
 day 86
 fad 2 d Fidget spinner, for one
@@ -349,58 +283,40 @@ trade 3 d Sparky's line
 set 2 n Where Greta Gerwig goes to work
 fat 2 b ___ chance! (No way)
 alert 3 d Bushy-tailed, so to speak
-diner 3 d Table for one, perhaps
+diner 3 d Party of one, perhaps
 atlas 3 p Whole world, bound?
 shade 3 n Insult that gets thrown, in slang
-yet 2 b Are we there ___? (Back-seat whine)
-
-day 87
-rat 3 c Pixar's Paris chef
-user 3 p Manipulator with a login?
-stamina 3 d Reserve for a long spell
-oar 2 d It's put in by busybodies
-don 3 x Put on, or Bradman
-iceberg 3 p Lettuce with a famous tip?
-line 3 d Pick-up attempt
-tag 3 d You're it!
-rum 2 b Yo ho ho and a bottle of ___
-aside 3 d One-liner for the stalls
-tenor 3 d General drift
-rang 3 d Got on the blower
-soil 3 x Foul ground
-tacit 3 d Understood
-arena 3 n Paul Mescal's office in Gladiator II
-beg 3 d Sit for a biscuit
+yet 2 b Not ___: give it a minute
 
 day 88
 bawl 3 w Howl at Cinderella's do, by ear
 mushy 3 x Soppy, like overcooked peas
 ether 3 d Old knockout gas
-din 2 d Racket with no strings
+din 2 b The ___ of battle
 owe 3 d Be in the red
-inter 3 x Bury, or a Milan club
+inter 3 x Put six feet under, or a San Siro side
 stole 3 p Pinched wrap?
 cork 3 c Aussie hat dangler
 but 2 d Word that ends a Queensland sentence
 ashore 3 d Beached
 whew 3 d That was close!
-lyre 3 b ___bird, the chainsaw mimic
+lyre 3 d Australian mimic's tail shape
 mentor 3 n Snow, to Lucy Gray
 disc 3 d Slipped one hurts your back
-into 3 d Really keen on
-elk 3 d Moose, in Europe
+into 3 d Mad about, as a hobby
+elk 3 d Wapiti, by another name
 
 day 89
-sit 1 d Dog's first command
+sit 1 d Take the weight off
 vine 1 c Tarzan's transport
 pence 1 d Small change in London
 arch 1 d The Coathanger's shape
-rye 1 b Catcher in the ___
+rye 1 b ___ bread, the dark sort
 since 1 d Seeing as
 inch 1 d Creep along in traffic
-tee 1 p Driver's starting point?
+tee 1 p Casual shirt, for short?
 very 1 c The ___ Hungry Caterpillar
-par 1 n Happy Gilmore 2's score to beat
+par 1 n Hole's target, in Happy Gilmore 2
 
 day 90
 slam 1 d Door's parting shot
