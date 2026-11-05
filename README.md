@@ -73,6 +73,31 @@ lists the clues to write in `scripts/cluey/missing.txt`. Words picked for a grid
 come from `good.txt` and `lively.txt`, then `words.txt` and, two to a grid at
 most, `inflected.txt` (both from SCOWL), never from `reject.txt`. Late in the
 list a grid can need `--pool --nodes 30000 --total 40000000`.
+=======
+## Mend
+
+A board of crossing words has been mixed up. Tap two tiles to swap them, or drag
+one onto the other, and get every word back before the swaps run out. There's
+no undo, and swaps left are the score. Green is in place and can't be moved,
+yellow is wanted elsewhere in a word through that tile, and grey is neither.
+Two green tiles or two of the same letter can't be swapped, so a slip costs
+nothing. Out of swaps, or Give up, slides the tiles to the answer. Plus unlimited
+Practice from puzzles kept apart from the days.
+
+Every puzzle is fixed in `web/mend/days.js`: its letters, and a seed that mixes
+them, so the page never searches. There are two years of days for now, and the
+list goes round after that. `scripts/build-mend.mjs` (about 10 min) only
+keeps a puzzle once it has proven that no other arrangement of its letters works
+with any word in SCOWL up to size 80, and that it needs exactly its day's fewest
+swaps. The boards and swaps for each weekday are in `web/mend/lib.js`; word
+commonness and how misleading the opening is are in `scripts/mend-rules.cjs`. Words
+are in `scripts/mend-words.txt`, built by `scripts/build-mend-words.mjs`, with
+`scripts/mend-not-answers.txt` for words read and left out by hand. Answers are
+words most adults know and are happy to see, in British and Australian spelling;
+a puzzle's place is its day, so the list isn't for changing lightly.
+`scripts/mend-bots.cjs` holds the simulated players that measure the week:
+`node scripts/mend-report.cjs` prints the table.
+>>>>>>> worktree-agent-ad0aeae8aae4bfe03
 
 ## Slugle
 
@@ -133,6 +158,7 @@ save `{ date: new Date().toDateString(), text }` to localStorage as
   phone, so `Clock.now()` replaces `new Date()` for anything to do with the day.
 - `web/shared.css`: the palette, keyboard, sheets and so on that every page uses.
 - `web/slugle/`, `web/hunch/`, `web/sorted/`, `web/reach/`, `web/cluey/`: a game each. `index.html` is the whole game (no
+- `web/slugle/`, `web/hunch/`, `web/sorted/`, `web/reach/`, `web/mend/`: a game each. `index.html` is the whole game (no
   build step), `lib.js` its pure logic, tested by `node --test "tests/*.test.js"`,
   and `words.js`, `puzzles.js` or `days.js` its data.
 - `worker/worker.js`: the Cloudflare Workers `dailies`, `slugle` and `ladder`

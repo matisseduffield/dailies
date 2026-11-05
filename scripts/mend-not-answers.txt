@@ -1,0 +1,346 @@
+# Words read and left out of Mend's answers by hand. They still count in the
+# proof of one solution. Changing this means rebuilding days.js.
+
+# Rude, or about bodies and sex
+arses asses bitch booby booty boner bosom cocks cocky dildo enema fetus groin
+horny kinky lusty nuder penis prick pussy semen sperm thong titty turds udder
+urine uteri whore bawdy buxom
+bugger condom erotic faeces faggot harlot herpes incest nipple orgasm rectal
+rectum sadism sadist sexism sexist sexual sodomy suckle testes testis vagina
+virgin uterus breast pelvis pelvic
+asexual bastard buttock cumming genital jackass knacker lesbian obscene puberty
+sensual urinate vaginae vaginal excrete pervert bondage cocaine ovary hernia
+orifice libido
+
+# Grim, or no fun on a morning
+abort death dying fatal grief lynch noose rabid slave vomit polio retch moron
+idiot goner ulcer mucus leper opium bigot gayer sissy
+burial cancer coffin corpse famine hearse heroin killer murder napalm plague
+racial racism racist rapist rabies tumour typhus victim cretin midget retard
+gunman gunmen hatred terror kidnap lament
+abscess anthrax assault autopsy bigotry carnage cholera coroner cremate cripple
+crucify cyanide enslave fascism fascist firearm funeral gallows gunfire gunshot
+heathen hostage idiotic infidel leprosy lunatic malaria measles mongrel moronic
+pillage satanic shotgun slavery suicide tetanus torture typhoid violate warhead
+atheism atheist phlegm maggot pimple pimply
+
+# Names, nations and faiths
+bible china maria paddy peter harry sally dolly roman psalm rabbi deity
+french guinea scotch august martin newton victor rabbis mosque
+bologna hackney mercury pacific phoenix gentile
+
+# Plurals and the like that the endings rule can't see
+oases genii fungi cacti radii thous kiwis saris delis menus sades elves
+alibis bayous crises fezzes genera hooves khakis knives larvae laymen loaves
+madmen maxima monies nuclei optima papyri seamen selves strata wolves
+bikinis bureaus calculi doormen dustmen firemen foremen indices mailmen milkmen
+nebulae postmen quizzes safaris salamis sandmen scarves showmen spectra stimuli
+termini workmen
+
+# Bare comparatives
+abler apter barer baser bluer coyer cuter direr finer fewer freer huger lamer
+laxer muter newer nicer odder older paler purer rarer rawer ripen riper ruder
+safer sager saner shyer slyer sorer surer truer viler wider wiser wryer rifer
+acuter ampler badder balder bigger bolder braver calmer chicer closer colder
+cruder curter danker darker deader deafer dearer deeper denser dourer duller
+dumber evener fairer falser faster fatter fonder fouler fuller funner graver
+greyer harder hipper higher hotter inaner juster keener kinder larger leaner
+lefter lesser lither longer looser louder lusher madder meaner meeker milder
+naiver nearer neater nobler perter pinker poorer realer redder richer rummer
+sadder sicker slower snider softer sooner sourer sparer staler suaver taller
+tarter tauter tenser terser triter vaguer vainer vaster wanner warmer weaker
+wetter whiter wilder
+blacker blander blanker bleaker blinder blonder blunter brasher briefer brisker
+broader browner chaster cheaper chiefer choicer clearer coarser crasser crisper
+crosser demurer droller drunker eagerer eviller exacter fainter feebler fickler
+fiercer fleeter flusher frailer franker fresher gaunter gentler gladder glibber
+glummer grander greater greener grimmer grosser gruffer harsher hoarser humaner
+humbler impurer insaner littler loyaler maturer minuter moister nimbler obtuser
+oftener opaquer plainer plumper plusher politer primmer prouder purpler queerer
+quicker quieter rapider remoter rougher rounder savager scanter scarcer securer
+sedater serener severer sharper sheerer shorter simpler sleeker slicker slimmer
+smaller smarter smugger snugger soberer solider sounder sparser sprucer squarer
+stabler staider starker steeper sterner stiffer stiller stouter subtler suppler
+sweeter swifter thicker thinner tighter timider tireder tougher uniquer unsafer
+untruer unwiser urbaner vivider weirder wronger younger
+
+# Doers nobody says, and made-up-looking forms
+dimer edger haler liker sizer taker
+abuser bedder beeper blamer bugler caster earner feller fibber linker loader
+mapper milker ouster passer pended puffer punker ranker rooter salter scorer
+setter signer stater wedder whaler
+bluffer bungler courser flooder marcher rattler sheller slitter slummer snuffer
+speller sweller swisher wounder wrecker lighter
+
+# Half-words and contractions
+dunno gimme gonna kinda lemme multi sorta wanna betcha ultra
+
+# Too rare to expect anyone to know, or an old or American form
+acrid aback abhor allay amiss arcing aural baulk bandy bayou biped burro butte
+byway cacao calve caulk chaff cheep chide clack cleat clime colic crock curio
+datum decry deify dirge doily dowdy dross dully fauna feted fetid fiche filch
+filet flout fogey foist fount frond gable gaily gavel gnarl gnash gulch guile
+halon hovel infix karat knoll lathe leach levee lithe loath lupin lymph mange
+matte mealy modal mores natty neigh newsy nobly octal olden pends pique pithy
+plumb polyp primp privy prise quash quell rebut remit revue rayon shire shoal
+shuck sidle sinew skein slake smelt smite smote snipe spate stave stoke strew
+sunup tarry tatty tepee theta tilde tonal unman unsay unset upend upped usurp
+verve whirr wreak yokel letup pokey homey goody hippy mamma ninny dopey redid
+undid unify whoop sylph infer
+accede adjoin alkali ampere ashcan avowal azalea beeves bettor bisect bitmap
+blanch bobbin bootee bovine boxcar braise bronco bunion burble burlap bursar
+cajole calico callow callus canker cavort chintz choral cipher claret cleave
+cloven coffer cogent comely consul convex corral cupful curtsy daemon dearth
+deaves debase deject dialog dinghy diaper discus dither dorsal doubly duress
+effigy egoism embalm emboss endive enmity ensign equine errant eulogy exhort
+exhume expiry extant facile faucet fester fetter flunky foible folksy foment
+forego fracas frieze furore gander garnet garret gibber girdle goatee gopher
+graven grille grotto groyne gullet harrow hereby herein hither hobnob holler
+homage hooter hymnal impale impend indict infirm instep jalopy junket kipper
+kowtow lambda larynx legume lichen limber litany loonie lupine madcap magnum
+malady mantel matron mettle minion minnow minuet mohair morass mucous nether
+newbie nicety nougat nought oblong ocular onrush oodles ordain outdid outran
+pagoda pallid pallor pander pantie parsec parser parson paunch pauper pedlar
+pewter phoney physic pickax piddle pigpen pilfer pinion plaice planar pliant
+powwow prefab prepay presto pseudo pueblo pumice pummel putrid quaver quorum
+raster realty rebind recant recoup rector regale relaid renege repute revile
+rosary rotund rubric ruckus rueful rumple sallow scalar scanty scythe sedate
+sheave sierra sinewy siphon sluice solder stanch stanza stigma stodgy stolid
+stylus sublet swathe tallow tandem tartar tawdry tedium termly tether theist
+thence thresh titbit tousle tripos truism tureen turgid unsung unwary upshot
+urbane urchin vagary valise velour vilify wanton warble waylay welter whence
+wicket wigwam wright writhe yonder zenith inlaid inbred arable
+acrider actuary adjunct affably ambient arraign askance beseech blither brazier
+burnish capably carrion cistern cogency connote corsage debrief decoder delimit
+demerit demount devolve diocese divisor dualism egotism endways entreat epithet
+epsilon excrete festoon fixable forbear fractal fulcrum gainful gelatin gingham
+gizzard gosling granule grouper harpist hemlock hosiery inbuilt ingrain insofar
+iterate jackdaw jocular jugular languor larceny lectern lexical lexicon liturgy
+lozenge magnate mannish maudlin maximal megaton modicum mollify mollusc motlier
+nuptial obelisk omnibus onerous operand oration osmosis overlie panacea paucity
+perusal piccolo piteous placard polemic portico proviso purport regalia regimen
+requiem rescind riposte ringlet rostrum rotunda salient scruple seepage shamble
+simplex smidgen sojourn spacial spangle spittle sporran stopgap stratum succour
+swarthy synapse tendril thereby therein thereof thereon tonnage trestle trounce
+truancy typeset umpteen unheard unmoved unnamed vestige viaduct wheedle whereby
+wherein winsome zincked
+bellboy bellhop caboose cannery castoff checkup cutback dogwood forbore foresaw
+forsook forwent freeway gumdrop kickoff kinfolk ladybug letdown lowdown mailman
+outgrew outlaid overate overdid overran oversaw parkway partook rewrote rowboat
+rundown striven takeoff taxicab turnout walkout washout blowout broiler
+
+# Second read, as a strict editor: would most adults know it and be happy to see it?
+
+# Slurs, or rude in Britain or Australia
+queer chink pansy spunk bloody crotch fondle seduce sucker grope nymph nudity
+tramp sleazy manly madam harem spank naked flasher hustler carnal fetish
+bigamy junkie weirdo loony loser lousy fatty obese dwarf caste albino flabby
+insane senile ghetto maniac lunacy vulgar
+
+# Grim, gross or unwelcome
+abuse belch bowel drool filth flesh fiend gland louse mangy snort stink swine
+wince arson bribe curse felon fraud junta theft toxin tripe
+addict armpit asthma asylum behead bomber bullet casket coward denial disease
+enrage filthy gunner harass hostage insult loathe manure menace morbid morgue
+mortal mugger nausea phobia pistol rioter robber rotten saliva sewage sickle
+sickly sinner smoker sniper stench stupid thrash toilet tyrant vandal vermin
+weapon wretch odious
+abusive anguish arsenic ashtray bayonet carcass cardiac convict divorce eyesore
+fallout fanatic fatigue glutton grenade hateful hideous hurtful illness lawless
+madness militia missile nostril plunger poverty prowler rupture sadness scalpel
+seizure slander sterile symptom syringe tobacco torment tragedy vicious violent
+warfare wartime traitor treason
+
+# Function words and other filler with nothing to them
+about above after again ahead along among aside below could every first forth
+hence later least maybe might never often other ought quite shall since their
+there these those twice under until where which while whose would
+across almost always anyhow anyway around awhile became become before behalf
+behind beside beyond cannot during either enough except indeed itself mainly
+merely mostly myself namely nearly rather really seldom should though toward
+unless versus whilst within albeit amidst apiece
+against already amongst another anybody because between despite exactly finally
+firstly further however instead neither nothing nowhere oneself perhaps someone
+somehow someday through usually whereas whether whoever without himself herself
+several
+
+# Plain adverbs
+amply aptly dimly drily fully hotly newly oddly slyly truly
+barely boldly busily calmly coldly coolly cosily darkly dearly deeply deftly
+easily evenly fairly finely firmly flatly fondly freely gladly glibly grimly
+hardly highly hugely humbly justly keenly kindly lastly lately likely loudly
+meekly mildly mutely neatly nicely nimbly openly overly partly poorly primly
+purely rarely rashly richly rudely safely simply singly slowly smugly snugly
+softly solely sorely subtly surely tamely thinly unduly vastly warmly weakly
+weekly widely wildly wisely wholly yearly hourly
+acutely amiably angrily audibly awfully blankly blindly bluntly bravely briefly
+briskly broadly cheaply chiefly cleanly clearly closely crazily crisply crudely
+cruelly densely eagerly equally faintly falsely fatally frankly freshly funnily
+gravely greatly grandly grossly gruffly happily harshly hastily heavily huskily
+ideally jointly largely legally legibly lightly locally loosely luckily merrily
+monthly moodily morally naively nastily nightly noisily notably overtly plainly
+proudly quickly quietly rapidly readily rightly rigidly roughly royally sharply
+shortly smartly solidly soundly sternly stiffly sweetly swiftly tacitly tersely
+thickly tightly timidly totally utterly vaguely validly visibly vitally vividly
+wearily wrongly
+
+# Past forms and participles with no life of their own
+arose awoke began begun chose clung crept dealt drank drawn drove dwelt eaten
+flown flung froze given grown heard knelt known leapt meant shone shook shown
+slain slept slung slunk spelt spilt spoke stank stole stood stung stunk swept
+swore sworn swung taken threw woken woven wrote wrung risen borne
+arisen awoken beaten befell beheld bidden bitten bought caught chosen dreamt
+driven fallen forgot fought gotten learnt misled proven remade repaid ridden
+shaken shaven shrank shrunk sought spoken sprang sprung strewn strode strove
+struck strung taught thrown upheld redone
+brought forbade forgave forgone mislaid mistook outdone rebuilt trodden unwound
+waylaid written wrought
+
+# US-only, or a spelling or sense that would feel wrong here
+broil candy diner flunk sassy sedan bobcat bummer condor cougar coyote fender
+hooray tuxedo uptown yogurt closet
+bathtub bobsled caribou chowder cowgirl granola hickory janitor license mailbox
+muffler mustang oatmeal opossum program pretzel raccoon skillet sneaker snicker
+
+# Computing and office words nobody enjoys
+alias array cache debug input parse pager proxy query reset retry token usage
+binary buffer cursor syntax subset router toggle module vector encode decode
+default integer payload keyword toolkit unblock mistype itemise numeric offload
+payroll modular
+
+# Crosswordese and words too bookish for most people
+abate abode affix afoot aglow allot aloft amass annex annul antic aorta appal
+ashen askew aspen avail avert axiom baste belie berth beset brine briny brunt
+cagey canny carat chafe cinch circa clang clank cleft clink clout clove cluck
+corps covet crass crony croon daunt debit deign delve ditty dally dandy defer
+dogma douse dowry drawl dunce dusky edict elegy elude embed enrol ensue envoy
+epoch ether ethic ethos evict evoke exalt exert exude exult extol expel facet
+feign feint filly filmy flail fleck flora foray forgo forte friar frill gamma
+gamut gauze gawky genus ghoul girth glade glean godly goofy gourd gouge graft
+gripe gruel guise gummy guppy gurus gusty heady heath heave hefty hutch idler
+idiom impel imply incur inept inert inlay inlet inter jaunt jiffy larva lance
+laden latch leery ledge lever libel liken lingo liven livid lowly lucid lurch
+lurid mania maxim midst mirth miser motif moult mulch musty nasal naval niche
+nippy nomad occur onset optic ounce outdo overt oxide ozone pagan papal parch
+patty payer pecan peeve penal pence peony perky piety pious pleat plume poach
+preen prong prose prude psych pudgy purge putty qualm quark quart quill ratty
+ravel recap recur refer repel resin reuse rouse rouge ruddy rummy riser rotor
+sabre salve saver scald scant scoff scour seedy sever shaft shawl sheaf shear
+sheen shirk showy shrew shunt sigma singe sinus skimp skulk slosh slink smock
+snide snuff sooty spasm spawn spore sprig spurn spurt staid stint stomp strum
+suave sulky surly swill swoon tacit taint tally tawny taxis tenet tepid terse
+tinge tinny tonne totem tract trawl trite trill tuner tunic twine uncut undue
+valet verge viola visor vista vying waive waken wager whiff winch wispy wordy
+wield yearn yodel tying
+abduct abject abound accost accrue acumen adroit affirm afield aflame afresh
+alcove allude amoral amulet anoint append aplomb arbour ardent ardour artful
+assail assent assort attest averse befall bemoan bemuse bender benign bereft
+bestow billow bleary blight blithe bodice boggle brassy brawny broach bungle
+bushel bygone caddie cagier canter captor caucus causal caveat censor chaste
+cherub citric clammy cleric clinch cobble coerce compel concur confer cooper
+cordon cornea cornet corpus cortex covert crabby craggy crummy crusty curdle
+cutter cyclic dabble damper damsel dapper dawdle deacon deaden debtor decree
+deduce deduct deface defame defile deform defter demean demise demote demure
+denote deport depose deride desist despot detest devoid devout dilate disown
+dispel distil disuse docile dopier dredge drivel drowse drudge dugout duplex
+dynamo eczema eerier elapse elicit embody encase engulf entail entrap enzyme
+equate equity esteem ethnic excise exempt exodus expend extort feeder feeler
+feting feudal filler firmer fiscal fisher fitful fitter fleshy forger frigid
+frizzy gaiety galore gambit garble garish garter gasket genial gentry girder
+glower gobble goggle gooier gospel govern grader grisly groggy groovy grouch
+grouse grovel grower guffaw gusher gyrate hairdo halter hanger hanker hasten
+header healer heckle heifer heresy hiatus hobbit holder holdup homely homier
+hopper hotbed hubbub humane humbug hurrah hurtle hyphen idiocy impair impart
+impede impure inborn incite indent induce induct infamy infest influx infuse
+ingest inmate innate instil insure inward iodine italic jabber jailer jangle
+jogger jostle kosher lander latent lather laxity layman leaden ledger leeway
+lesion lessen levity lewder liable limper linear locale logger loiter lustre
+madden madman malign manger mangle mantle marshy martyr matrix measly meddle
+median menial merger metric midway mildew miller mislay misuse modify morose
+motley musket muster mutate muzzle myopic myriad nebula negate neural neuron
+neuter notify obtuse oblige oddity offset onward opaque opener orator orient
+ornate outlay outset overdo pacify packer paltry papacy parish parity parole
+pathos patter payoff pedant peddle pellet peruse photon picket pickup piracy
+plaque plasma plural podium poplar porous portal portly potent prance primer
+proton psyche pucker pulley pulpit pundit punter purify pusher putter quartz
+rabble radial radium radius raider ramrod rancid rankle rarity rasher ratify
+ravage ravish reaper rebate rebuff rebuke recede recoil redeem redraw refute
+regain regent regime rehash relent relive reload remiss rename render renown
+rental repeal repent repose reread resale reside retina retort retype revamp
+revere revert revoke rework rewind ritual rotary rudder sadden saloon scribe
+screwy scruff seaman secede seethe sender sensor sentry serial shanty shaver
+sheath sheikh shelve shifty shrewd sicken silken simile sinful sitter sliver
+sludge snitch snooty sodden sodium solace sonata sonnet sordid spigot spinal
+spleen splice splint sprain spruce squire stance stifle stingy strait strife
+stupor subdue suffix suitor sullen sultry sundry supple swivel tactic tamper
+tanker tanner tariff tassel tattle teethe teeter teller tendon tenure tester
+thieve thrift throng thwart tinder tirade titter toddle tomcat tonsil torque
+torrid totter toupee trader treble tremor trifle troupe truant tryout tumult
+tundra tussle tycoon typify typist unborn undone unhook unison unmask unpick
+unread unsaid unseat untold upkeep upping uptake upturn usable utmost vacate
+veneer viable vigour virile voodoo vortex waiver wallop warden washer weaver
+welder whinny whiten wicker wilful wither worsen
+abridge absolve accuser acidity acreage adjourn affable afflict affront agonise
+ailment alimony almanac amenity amorous annuity antonym apparel appease arbiter
+arduous armoury artisan ascetic ascribe astuter astride auditor augment austere
+avarice aviator baloney beguile belying bequest bereave besiege bestial blemish
+blotter bolster boorish bootleg borough breadth brevity brocade brusque brutish
+buffoon bulbous bullion buoyant cadence cagiest callous candour canvass caprice
+carouse catcall caterer caustic censure certify chagrin chalice chasten cheapen
+checker chequer chiller chipper clamber clamour clapper coarsen coexist coinage
+collate commend commune concave concede conceit concord condone congeal congest
+conical conifer consign consort contend contort contour convene copious cordial
+corrode courier cowhide cranium crudity crybaby cuticle curable cursory curtail
+decease decency decibel decorum defraud defunct degrade deplete deplore deprave
+derange derrick destine detract devalue deviant deviate devotee dictate diction
+dietary diffuse digress dioxide disavow disband discern disdain dissect dissent
+distend diverge diviner divulge doleful doorman dopiest drabber drapery dryness
+dweller earmark earshot earthly edifice egotist elation elector elitism elitist
+ellipse emanate emotive emulate endemic engross enliven enthral entrant entropy
+envelop epitaph epitome erasure erudite evasion excerpt expanse expound factual
+faculty fallacy falsify falsity fatuous fervent fervour figment fishery fission
+fissure flounce flyover foreleg forfeit forsake foundry fretful fritter frontal
+furlong furtive gaseous gastric gazette genesis gladden globule glucose godless
+godlike godsend gooiest grabber gratify griddle gristle grouchy hapless haywire
+headway hearsay hearten heckler heinous hellish heretic hoarder homiest homonym
+hoodlum hothead humanly hydrant idolise illicit imagery immerse immoral impasse
+impeach imperil impetus impinge implore impound inbreed incisor incline inertia
+inexact infancy infield inflame inhibit inhuman innards inquest inquire inquiry
+insipid insular insulin insurer interim intrude inverse isthmus jaywalk kinship
+kindred knocker laggard lampoon languid lateral latrine launder leakage legible
+lenient liaison lineage linkage liquefy lithium longish lyrical macabre machete
+mallard manacle manhood marital marquee masonry meddler mediate melodic menthol
+microbe midriff migrant mimicry minimal misdeed mislead misread missive mortify
+mourner movable mummify mystify naivety necktie neutron nitrate nominal nominee
+noxious nucleus nullify obesity oblique offhand oppress optimal optimum opulent
+oratory orbital outlast outlive overlay overuse oxidise papyrus parable paragon
+partake paunchy payable peevish penance pending pennant perjure perjury persona
+pertain perturb pervade petrify piggish pitiful pivotal placate pliable plotter
+polygon portend portent postage potency powdery prattle precede preempt preface
+prefect premise prepaid preside presume pretext procure prodigy profane profess
+proffer profuse progeny prolong pronoun prosper prowess prudish pulsate pungent
+quantum queenly quibble quicken quinine quitter ragtime rambler rancher rancour
+rapport raucous realist rebirth reclaim rectify redraft redress reelect regatta
+regress relapse reliant remnant remodel replete repress reprint reprove repulse
+reroute rescuer residue resound respite restful restive retrace retract revelry
+reverie righter riotous roguish roughen ruffian ruinous rustler sampler sandbag
+sandman sapling saunter scallop scourge scrawny seaport seclude secrecy secrete
+secular servile sheathe shingle showman shyness signify sirloin situate slacken
+slacker slavish slobber slyness smother snippet solicit soluble solvent spatial
+spatter spindly splurge sputter squalid squalor starchy stardom stature statute
+staunch stellar stiffen stinger stoical stringy stupefy subside subsidy subsist
+subvert succumb suffice sundown surmise swindle tangent tankard taxable tenable
+tenancy tenuous textual theorem thicken thyroid topical toughen trainee trapper
+trawler trellis triplet trooper trouser trustee tubular tumbler tuneful twiddle
+tyranny unclean uncouth unequal unfunny ungodly unkempt unnerve unsound unstuck
+untying upstart uranium urgency utilise vacuous vagrant variant varsity velvety
+verbose voucher wastage wayside wedlock whittle widower wildcat witless workman
+worldly wreathe wringer zealous
+
+# Last read of what was left
+abdomen adobe ammonia anaemia anaemic barman bedbug bladder bleed blubber breeder
+choke dropout drown eater eraser felony fireman florid foreman forceps gamer
+geese hacker handler hijack inhaler injure lethal lodger madame madly milkman
+panicky pitcher playpen racer roach schemer scissor shroud stopper striker
+suction swollen talker tamer teeth thrice trauma trimmer turner voter wiper
+women
