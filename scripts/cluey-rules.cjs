@@ -5,8 +5,8 @@
 // across and a down answer of three letters or more.
 //
 // Clue levels: 1 plain, 2 takes a moment, 3 misdirects. The week builds through
-// three things at once: how many cells there are, how many clues are level 3,
-// and how common the answers are. SCOWL size is how common a word is (10 is the
+// how many cells there are and how many clues are level 3, and Monday and
+// Tuesday keep to common answers. SCOWL size is how common a word is (10 is the
 // most common; 35 is still everyday).
 const WEEK = {
   // weekday (0 Sunday): grid size, blocks allowed, clues at levels 1/2/3, and

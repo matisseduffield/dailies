@@ -47,9 +47,9 @@ which gives the same days.
 A small crossword every day, in the shape of a mini: every letter is in an
 across and a down answer, and the grid looks the same spun half a turn. Monday
 to Thursday are 5×5, Friday 6×6, and the weekend 7×7. 7×7 is the biggest that
-keeps the whole grid in view above the keyboard at 320×568, with 38 px squares.
-Clues have three levels, and the week builds through them, through how many
-squares there are, and through how common the answers are: Monday is all plain
+keeps the whole grid in view above the keyboard at 320×568, with 37 px squares.
+Clues have three levels, and the week builds through them and through how many
+squares there are, with the commonest answers kept for Monday and Tuesday. Monday is all plain
 clues, the weekend nearly all misdirection.
 
 The clock stops while the game is hidden. Check marks the word you're on and
