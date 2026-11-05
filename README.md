@@ -97,6 +97,8 @@ a puzzle's place is its day, so the list isn't for changing lightly.
 `scripts/mend-bots.cjs` holds the simulated players that measure the week:
 `node scripts/mend-report.cjs` prints the table.
 
+To take a word out of Mend before its day arrives, use `node scripts/mend-swap-days.cjs word word`, which trades boards with Practice. A rebuild would reassign every day.
+
 ## Slugle
 
 A daily word ladder. Turn a new four-letter word into SLUG by changing one

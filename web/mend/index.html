@@ -198,7 +198,7 @@
 <script src="days.js?v=1"></script>
 <script src="lib.js?v=1"></script>
 <script src="../clock.js?v=1"></script>
-<script src="../next.js?v=3"></script>
+<script src="../next.js?v=5"></script>
 <script>
 (() => {
   const L = window.MendLib, D = window.MendDays;
@@ -643,10 +643,13 @@
 
   const boardEl = $('board');
   boardEl.addEventListener('pointerdown', e => {
-    const node = e.target.closest('.tile');
-    if (!node || locked() || e.button || press) return;
+    // Aimed by the grid, not by what's under the finger: a quick tap can land while
+    // the last swap's tiles are still sliding home.
+    const place = aimed(e.clientX, e.clientY);
+    if (place === null || locked() || e.button || press) return;
+    const node = tileAt(place);
     node.setPointerCapture(e.pointerId);
-    press = { id: e.pointerId, node, place: placeOf(node), x: e.clientX, y: e.clientY, drag: false, over: null, lift: e.pointerType === 'mouse' ? 0 : size * .7 };
+    press = { id: e.pointerId, node, place, x: e.clientX, y: e.clientY, drag: false, over: null, lift: e.pointerType === 'mouse' ? 0 : size * .7 };
   });
   boardEl.addEventListener('pointermove', e => {
     if (!press || e.pointerId !== press.id) return;

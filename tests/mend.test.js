@@ -244,7 +244,7 @@ test('the first days keep their puzzles', () => {
     return [p.shape.name, R.wordsOf(p.shape, p.answer).join(' '), p.start.join('')];
   };
   assert.deepEqual(first(1), ['comb', 'prefer affect gruff offer froth', 'pfecegroertahfffoufrf']);
-  assert.deepEqual(first(2), ['tower', 'knack usual havoc unusual octagon', 'cktanohunuvulaouugakcsl']);
+  assert.deepEqual(first(2), ['tower', 'tabby await group wayward obvious', 'waoaadpywstoutrivbabgoy']);
   assert.deepEqual(first(5), ['wheel', 'fuzzy outer union cycle', 'lnnzczrciuufteyo']);
 });
 
@@ -328,7 +328,8 @@ test('words are spread out: 90 days apart and 16 days at most', () => {
   const uses = new Map();
   const whole = new Set();
   list.forEach((p, at) => {
-    assert.ok(!whole.has(p.answer.join('')), `${at}`);
+    // Practice may repeat itself (scripts/mend-swap-days.cjs), but never a daily board.
+    assert.ok(!whole.has(p.answer.join('')) || (at >= D.days && list.findIndex(q => q.answer.join('') === p.answer.join('')) >= D.days), `${at}`);
     whole.add(p.answer.join(''));
     if (at >= D.days) return;
     for (const w of R.wordsOf(p.shape, p.answer)) {
@@ -487,4 +488,14 @@ test('the page takes the day from the clock', () => {
   assert.ok(page.includes("addEventListener('clock', checkDay)"));
   assert.ok(page.includes('window.ladderBack'));
   assert.ok(!/<input|<textarea/.test(page), 'the system keyboard must never open');
+});
+
+test('no board pairs a word with its own relation', () => {
+  for (let day = 1; day <= D.days; day++) {
+    const p = L.daily(day, D);
+    const words = p.shape.words.map(w => w.map(t => p.answer[t]).join(''));
+    words.forEach((a, i) => words.forEach((b, j) => {
+      if (i < j) assert.ok(!a.includes(b) && !b.includes(a), `day ${day}: ${a} ${b}`);
+    }));
+  }
 });
