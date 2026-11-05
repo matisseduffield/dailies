@@ -1,7 +1,7 @@
 // After today's game: a link on to the next one not played yet, so a morning's
 // games run one into the next. Each game calls showNext() from its result.
 (function (root) {
-  const GAMES = [['slugle', 'Slugle'], ['hunch', 'Hunch'], ['sorted', 'Sorted'], ['reach', 'Reach']];
+  const GAMES = [['slugle', 'Slugle'], ['hunch', 'Hunch'], ['sorted', 'Sorted'], ['reach', 'Reach'], ['cluey', 'Cluey']];
 
   function played(id) {
     try {
