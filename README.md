@@ -73,7 +73,6 @@ lists the clues to write in `scripts/cluey/missing.txt`. Words picked for a grid
 come from `good.txt` and `lively.txt`, then `words.txt` and, two to a grid at
 most, `inflected.txt` (both from SCOWL), never from `reject.txt`. Late in the
 list a grid can need `--pool --nodes 30000 --total 40000000`.
-=======
 ## Mend
 
 A board of crossing words has been mixed up. Tap two tiles to swap them, or drag
@@ -97,7 +96,6 @@ words most adults know and are happy to see, in British and Australian spelling;
 a puzzle's place is its day, so the list isn't for changing lightly.
 `scripts/mend-bots.cjs` holds the simulated players that measure the week:
 `node scripts/mend-report.cjs` prints the table.
->>>>>>> worktree-agent-ad0aeae8aae4bfe03
 
 ## Slugle
 
@@ -157,8 +155,7 @@ save `{ date: new Date().toDateString(), text }` to localStorage as
 - `web/clock.js`: the time every game goes by, from our server rather than the
   phone, so `Clock.now()` replaces `new Date()` for anything to do with the day.
 - `web/shared.css`: the palette, keyboard, sheets and so on that every page uses.
-- `web/slugle/`, `web/hunch/`, `web/sorted/`, `web/reach/`, `web/cluey/`: a game each. `index.html` is the whole game (no
-- `web/slugle/`, `web/hunch/`, `web/sorted/`, `web/reach/`, `web/mend/`: a game each. `index.html` is the whole game (no
+- `web/slugle/`, `web/hunch/`, `web/sorted/`, `web/reach/`, `web/cluey/`, `web/mend/`: a game each. `index.html` is the whole game (no
   build step), `lib.js` its pure logic, tested by `node --test "tests/*.test.js"`,
   and `words.js`, `puzzles.js` or `days.js` its data.
 - `worker/worker.js`: the Cloudflare Workers `dailies`, `slugle` and `ladder`
