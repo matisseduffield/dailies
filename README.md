@@ -42,6 +42,33 @@ which is what makes it hard), a best way that stays under 1,500, and at least
 20 ways one move over par. Rebuild with `node scripts/build-reach.mjs` (8 min),
 which gives the same days.
 
+## Cluey
+
+A small crossword every day, in the shape of a mini: every letter is in an
+across and a down answer, and the grid looks the same spun half a turn. Monday
+to Thursday are 5×5, Friday 6×6, and the weekend 7×7. 7×7 is the biggest that
+keeps the whole grid in view above the keyboard at 320×568, with 38 px squares.
+Clues have three levels, and the week builds through them, through how many
+squares there are, and through how common the answers are: Monday is all plain
+clues, the weekend nearly all misdirection.
+
+The clock stops while the game is hidden. Check marks the word you're on and
+Reveal fills in the square you're on, three of each. A clean solve uses neither
+and is right the first time the grid is full, because being told it's wrong is
+a check of the whole grid. Give up shows the answers and doesn't count towards
+the streak. No Practice, because a spare puzzle is a day used up.
+
+`scripts/cluey/grids.txt` is the days in order and `clues-*.txt` their clues,
+written by hand with the puzzle in view, as `word level tag clue`. Tags say what
+a clue is doing (plain, blank, double meaning, culture, recent culture, ? pun,
+wordplay), and `scripts/cluey-rules.cjs` checks each puzzle has a good mix and
+no answer returns within 60 days. `node scripts/build-cluey.mjs` makes
+`web/cluey/puzzles.js`. To add days, always whole weeks so a puzzle stays on its
+weekday when the list goes round: `--more 7 --pool` adds grids at the end and
+lists the clues to write in `scripts/cluey/missing.txt`. Words picked for a grid
+come from `good.txt` and `lively.txt`, then `words.txt` (SCOWL), never from
+`reject.txt`.
+
 ## Slugle
 
 A daily word ladder. Turn a new four-letter word into SLUG by changing one
@@ -100,7 +127,7 @@ save `{ date: new Date().toDateString(), text }` to localStorage as
 - `web/clock.js`: the time every game goes by, from our server rather than the
   phone, so `Clock.now()` replaces `new Date()` for anything to do with the day.
 - `web/shared.css`: the palette, keyboard, sheets and so on that every page uses.
-- `web/slugle/`, `web/hunch/`, `web/sorted/`, `web/reach/`: a game each. `index.html` is the whole game (no
+- `web/slugle/`, `web/hunch/`, `web/sorted/`, `web/reach/`, `web/cluey/`: a game each. `index.html` is the whole game (no
   build step), `lib.js` its pure logic, tested by `node --test "tests/*.test.js"`,
   and `words.js`, `puzzles.js` or `days.js` its data.
 - `worker/worker.js`: the Cloudflare Workers `dailies`, `slugle` and `ladder`
