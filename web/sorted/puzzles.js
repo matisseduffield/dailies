@@ -604,7 +604,7 @@ Home ___: Alone, Run, Page, Brew
 
 Big cheese: Mogul, Tycoon, Magnate, Baron
 Worn over the eyes: Goggles, Blindfold, Eyepatch, Monocle
-Can't be undone: Binding, Final, Irrevocable, Set In Stone
+Can't be undone: Binding, Final, Permanent, Lasting
 Ski trip tumbles into new words: Luge, Piste, Skis, Lodge
 
 Loud noise: Racket, Din, Row, Clamour
@@ -990,7 +990,7 @@ Black ___: Mirror, Widow, Friday, Box
 Choose: Pick, Opt, Elect, Plump
 Things with a filling: Pie, Doona, Tooth, Sandwich
 A day at the Show: Floss, Showbag, Dagwood Dog, Woodchop
-Dentist words hiding a bloke: Enamel, Tartar, Orthodontist, Novocaine
+Dentist words hiding a bloke: Enamel, Tartar, Wisdom, Novocaine
 
 To annoy: Bug, Needle, Irk, Nettle
 They spoil a picnic: Flies, Rain, Mozzies, Sand
