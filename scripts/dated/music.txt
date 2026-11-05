@@ -5,7 +5,7 @@
 1892|2|The Nutcracker ballet opens in St Petersburg|Wikipedia: The Nutcracker
 1913|2|The Rite of Spring causes uproar in Paris|Wikipedia: The Rite of Spring
 1924|2|Gershwin's Rhapsody in Blue is first performed|Wikipedia: Rhapsody in Blue
-1942|2|Bing Crosby records White Christmas|Wikipedia: White Christmas (song)
+1942|2|Bing Crosby first records White Christmas|Wikipedia: White Christmas (song)
 1948|3|Columbia launches the long-playing vinyl record|Wikipedia: LP record
 1954|3|Bill Haley records Rock Around the Clock|Wikipedia: Rock Around the Clock
 1954|3|Fender's Stratocaster guitar goes on sale|Wikipedia: Fender Stratocaster
@@ -23,7 +23,7 @@
 1969|1|Woodstock festival is held|Wikipedia: Woodstock
 1969|2|David Bowie releases Space Oddity|Wikipedia: Space Oddity
 1970|1|Paul McCartney says The Beatles are finished|Wikipedia: Breakup of the Beatles
-1970|3|Glastonbury Festival is first held|Wikipedia: Glastonbury Festival
+1970|3|Michael Eavis holds his first festival at Worthy Farm|Wikipedia: Glastonbury Festival
 1971|1|John Lennon releases Imagine|Wikipedia: Imagine (song)
 1973|1|Pink Floyd release The Dark Side of the Moon|Wikipedia: The Dark Side of the Moon
 1974|1|ABBA win Eurovision with Waterloo|Wikipedia: Waterloo (ABBA song)
@@ -34,15 +34,15 @@
 1978|1|Village People release Y.M.C.A.|Wikipedia: Y.M.C.A. (song)
 1979|2|The Sugarhill Gang release Rapper's Delight|Wikipedia: Rapper's Delight
 1981|1|Journey release Don't Stop Believin'|Wikipedia: Don't Stop Believin'
-1982|1|Michael Jackson releases Thriller|Wikipedia: Thriller (album)
+1982|1|Michael Jackson releases the album Thriller|Wikipedia: Thriller (album)
 1982|1|Toto release Africa|Wikipedia: Africa (Toto song)
 1984|1|Wham! release Last Christmas|Wikipedia: Last Christmas
 1984|1|Madonna releases Like a Virgin|Wikipedia: Like a Virgin (song)
 1984|1|Prince releases Purple Rain|Wikipedia: Purple Rain (album)
 1984|2|Band Aid release Do They Know It's Christmas?|Wikipedia: Do They Know It's Christmas?
-1984|3|Leonard Cohen releases Hallelujah|Wikipedia: Hallelujah (Leonard Cohen song)
+1984|3|Leonard Cohen first releases Hallelujah|Wikipedia: Hallelujah (Leonard Cohen song)
 1985|1|Live Aid concerts are held in London and Philadelphia|Wikipedia: Live Aid
-1985|1|A-ha's Take On Me becomes a hit|Wikipedia: Take On Me
+1985|1|A-ha's Take On Me reaches No. 1 in America|Wikipedia: Take On Me
 1986|1|Bon Jovi release Livin' on a Prayer|Wikipedia: Livin' on a Prayer
 1987|1|Rick Astley releases Never Gonna Give You Up|Wikipedia: Never Gonna Give You Up
 1991|1|Nirvana release Nevermind|Wikipedia: Nevermind
@@ -50,13 +50,13 @@
 1994|1|Mariah Carey releases All I Want for Christmas Is You|Wikipedia: All I Want for Christmas Is You
 1995|1|Oasis release Wonderwall|Wikipedia: Wonderwall (song)
 1996|1|The Spice Girls release Wannabe|Wikipedia: Wannabe
-1998|1|Britney Spears releases ...Baby One More Time|Wikipedia: ...Baby One More Time (song)
+1998|1|Britney Spears releases the single ...Baby One More Time|Wikipedia: ...Baby One More Time (song)
 1998|1|Cher releases Believe|Wikipedia: Believe (Cher song)
 1999|3|Coachella festival is first held|Wikipedia: Coachella
 2000|2|Eminem releases Stan|Wikipedia: Stan (song)
 2003|1|Beyoncé releases Crazy in Love|Wikipedia: Crazy in Love
 2003|2|The Killers first release Mr. Brightside|Wikipedia: Mr. Brightside
-2006|1|Amy Winehouse releases Back to Black|Wikipedia: Back to Black
+2006|1|Amy Winehouse releases the album Back to Black|Wikipedia: Back to Black
 2006|1|Taylor Swift releases her first album|Wikipedia: Taylor Swift (album)
 2007|1|Rihanna releases Umbrella|Wikipedia: Umbrella (song)
 2008|1|Lady Gaga releases Poker Face|Wikipedia: Poker Face (song)

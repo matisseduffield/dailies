@@ -6,7 +6,7 @@
 1960|1|Coronation Street first airs|Wikipedia: Coronation Street
 1960|2|The Flintstones first airs|Wikipedia: The Flintstones
 1963|1|Doctor Who first airs|Wikipedia: Doctor Who
-1964|1|The Beatles play on The Ed Sullivan Show|Wikipedia: The Beatles in the United States
+1964|1|The Beatles first play on The Ed Sullivan Show|Wikipedia: The Beatles on The Ed Sullivan Show
 1965|2|Thunderbirds first airs|Wikipedia: Thunderbirds (TV series)
 1966|1|Star Trek first airs|Wikipedia: Star Trek: The Original Series
 1968|2|Dad's Army first airs|Wikipedia: Dad's Army
@@ -29,7 +29,7 @@
 1985|1|EastEnders first airs|Wikipedia: EastEnders
 1986|1|The Oprah Winfrey Show goes national|Wikipedia: The Oprah Winfrey Show
 1989|1|The Simpsons first airs as a full series|Wikipedia: The Simpsons
-1989|1|Seinfeld first airs|Wikipedia: Seinfeld
+1989|1|The Seinfeld pilot airs on NBC|Wikipedia: The Seinfeld Chronicles
 1990|1|Mr. Bean first airs|Wikipedia: Mr. Bean
 1990|1|The Fresh Prince of Bel-Air first airs|Wikipedia: The Fresh Prince of Bel-Air
 1991|1|Rugrats first airs|Wikipedia: Rugrats

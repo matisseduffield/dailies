@@ -17,13 +17,13 @@ const MAX_TEXT = 60;          // two lines of a timeline row at 320 px
 // last; `level` the hardest card allowed; `known` the share that must be level 1;
 // `hard` how many must be level 3.
 const WEEK = [
-  { name: 'Sun', cards: 12, gap: 1, close: 0.6, span: 60, level: 3, known: 0.15, hard: 3 },
+  { name: 'Sun', cards: 11, gap: 2, close: 0.45, span: 80, level: 3, known: 0.15, hard: 3 },
   { name: 'Mon', cards: 7, gap: 10, close: 0, span: 999, level: 2, known: 0.7, hard: 0 },
   { name: 'Tue', cards: 8, gap: 7, close: 0, span: 999, level: 2, known: 0.5, hard: 0 },
   { name: 'Wed', cards: 9, gap: 5, close: 0, span: 999, level: 2, known: 0.3, hard: 0 },
   { name: 'Thu', cards: 9, gap: 3, close: 0.1, span: 999, level: 3, known: 0.2, hard: 1 },
-  { name: 'Fri', cards: 10, gap: 2, close: 0.25, span: 130, level: 3, known: 0.2, hard: 2 },
-  { name: 'Sat', cards: 11, gap: 1, close: 0.45, span: 80, level: 3, known: 0.15, hard: 3 },
+  { name: 'Fri', cards: 10, gap: 3, close: 0.2, span: 130, level: 3, known: 0.2, hard: 2 },
+  { name: 'Sat', cards: 10, gap: 2, close: 0.35, span: 100, level: 3, known: 0.15, hard: 3 },
 ];
 
 const SUBJECTS = ['tech', 'games', 'music', 'film', 'tv', 'sport', 'science', 'food', 'brands', 'internet', 'world', 'books', 'australia'];

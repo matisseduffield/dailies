@@ -1,9 +1,8 @@
 # Australian life. year|level|text|where to check it
 1770|1|James Cook's Endeavour reaches Botany Bay|Wikipedia: James Cook
-1788|1|The First Fleet arrives at Sydney Cove|Wikipedia: First Fleet
 1838|2|David Jones opens its shop in Sydney|Wikipedia: David Jones (department store)
 1851|2|Edward Hargraves finds gold near Bathurst|Wikipedia: Edward Hargraves
-1858|2|Australian football's first recorded game is played|Wikipedia: Origins of Australian rules football
+1859|2|Melbourne Football Club writes the first Aussie rules|Wikipedia: Origins of Australian rules football
 1861|1|The Melbourne Cup is first run|Wikipedia: Melbourne Cup
 1868|3|The last convict ship reaches Western Australia|Wikipedia: Hougoumont (ship)
 1868|3|An Aboriginal cricket team tours England|Wikipedia: Aboriginal cricket team in England in 1868
@@ -13,18 +12,18 @@
 1882|2|The Ashes get their name from a mock obituary|Wikipedia: The Ashes
 1888|2|The Foster brothers brew their lager in Melbourne|Wikipedia: Foster's Lager
 1890|2|Banjo Paterson publishes The Man from Snowy River|Wikipedia: The Man from Snowy River (poem)
-1894|2|South Australian women win the vote|Wikipedia: Women's suffrage in Australia
+1894|2|South Australia's parliament passes votes for women|Wikipedia: Constitutional Amendment (Adult Suffrage) Act 1894
 1895|2|Banjo Paterson writes Waltzing Matilda|Wikipedia: Waltzing Matilda
 1901|1|The Australian colonies federate|Wikipedia: Federation of Australia
-1902|2|Australian women win the vote in federal elections|Wikipedia: Commonwealth Franchise Act 1902
+1902|2|Most Australian women win the vote in federal elections|Wikipedia: Commonwealth Franchise Act 1902
 1902|3|William Gocher defies the daylight swimming ban at Manly|Wikipedia: William Gocher
-1905|2|The Australian Open is first played, in Melbourne|Wikipedia: 1905 Australasian Championships
+1905|2|What's now the Australian Open is first played, in Melbourne|Wikipedia: 1905 Australasian Championships
 1906|2|The Story of the Kelly Gang, an early feature film, opens|Wikipedia: The Story of the Kelly Gang
 1907|2|Bondi Surf Bathers' Life Saving Club is founded|Wikipedia: Bondi Surf Bathers' Life Saving Club
-1908|2|Dorothea Mackellar's poem My Country is published|Wikipedia: My Country (poem)
+1908|2|Dorothea Mackellar's My Country first appears in print|Wikipedia: My Country
 1912|2|Walter Burley Griffin wins the design contest for Canberra|Wikipedia: Walter Burley Griffin
 1913|1|Canberra gets its name|Wikipedia: Canberra
-1913|3|Hoadley's Violet Crumble goes on sale|Wikipedia: Violet Crumble
+1913|3|Hoadley's makes the first Violet Crumble bar|Wikipedia: Violet Crumble
 1914|2|G. J. Coles opens a shop in Collingwood|Wikipedia: Coles Supermarkets
 1918|2|Norman Lindsay publishes The Magic Pudding|Wikipedia: The Magic Pudding
 1918|3|May Gibbs publishes Snugglepot and Cuddlepie|Wikipedia: Snugglepot and Cuddlepie
@@ -41,11 +40,11 @@
 1930|2|MacRobertson's Freddo Frog goes on sale|Wikipedia: Freddo
 1932|1|Sydney Harbour Bridge opens|Wikipedia: Sydney Harbour Bridge
 1932|2|The ABC goes on air|Wikipedia: Australian Broadcasting Corporation
-1932|2|The Great Ocean Road opens|Wikipedia: Great Ocean Road
+1932|2|The Great Ocean Road is finished|Wikipedia: Great Ocean Road
 1934|2|Thomas Mayne launches Milo at the Sydney Royal Easter Show|Wikipedia: Milo (drink)
 1945|1|Lance Hill starts making the Hills Hoist in Adelaide|Wikipedia: Hills Hoist
 1945|2|The Sydney to Hobart yacht race is first sailed|Wikipedia: Sydney to Hobart Yacht Race
-1947|3|Four'N Twenty pies go on sale in Bendigo|Wikipedia: Four'N Twenty
+1947|3|Bendigo's Les McClure starts making Four'N Twenty pies|Four'n Twenty: Our Story, fourntwenty.com.au
 1948|1|The first Holden rolls off the line|Wikipedia: Holden 48-215
 1948|2|Don Bradman finishes on a Test average of 99.94|Wikipedia: Donald Bradman
 1949|2|Work starts on the Snowy Mountains Scheme|Wikipedia: Snowy Mountains Scheme
@@ -58,14 +57,14 @@
 1956|1|The Olympics open in Melbourne|Wikipedia: 1956 Summer Olympics
 1957|3|Slim Dusty records A Pub with No Beer|Wikipedia: A Pub with No Beer
 1957|2|Jørn Utzon wins the Sydney Opera House contest|Wikipedia: Jørn Utzon
-1958|3|David Warren builds a flight recorder prototype|Wikipedia: David Warren (inventor)
-1959|1|Streets launches the Gaytime ice cream|Wikipedia: Golden Gaytime
+1958|3|David Warren shows his flight recorder in Britain|Museums Victoria: The Black Box Flight Recorder
+1970|1|Streets releases the Golden Gaytime|Wikipedia: Golden Gaytime
 1959|3|Mr Squiggle first airs on the ABC|Wikipedia: Mr. Squiggle
-1961|3|Triple Zero starts in Sydney and Melbourne|Wikipedia: Triple Zero
+1961|3|Australia starts using 000 for emergency calls|Wikipedia: 000 (emergency telephone number)
 1964|1|Arnott's Tim Tam goes on sale|Wikipedia: Tim Tam
 1964|1|The Big Banana opens at Coffs Harbour|Wikipedia: Big Banana
 1964|2|Dawn Fraser wins her third straight Olympic 100 metres|Wikipedia: Dawn Fraser
-1965|3|Thomas Angove patents the wine cask|Wikipedia: Box wine
+1965|3|Thomas Angove patents the wine cask|State Library of SA: SA Memory, Angove's wine cask
 1966|1|Australia switches to decimal currency|Wikipedia: Decimal Day (Australia)
 1966|1|Play School first airs on the ABC|Wikipedia: Play School (Australian TV series)
 1966|2|Jack Brabham wins Formula One in his own car|Wikipedia: Jack Brabham
@@ -90,9 +89,8 @@
 1980|1|State of Origin is first played|Wikipedia: State of Origin series
 1981|1|Trevor Chappell bowls underarm against New Zealand|Wikipedia: Underarm bowling incident of 1981
 1981|1|Sid the Seagull starts telling us to Slip, Slop, Slap|Wikipedia: Slip-Slop-Slap
-1981|1|Men at Work's Down Under tops the Australian chart|Wikipedia: Down Under (song)
+1981|1|Men at Work release Down Under as a single|Wikipedia: Down Under (song)
 1981|3|Dreamworld opens on the Gold Coast|Wikipedia: Dreamworld (Australia)
-1982|3|Streets launches Bubble O'Bill|Wikipedia: Bubble O'Bill
 1983|1|Australia II wins the America's Cup|Wikipedia: 1983 America's Cup
 1984|3|Advance Australia Fair becomes the national anthem|Wikipedia: Advance Australia Fair
 1984|3|Barry Marshall drinks bacteria to prove how ulcers start|Wikipedia: Barry Marshall
@@ -129,18 +127,17 @@
 2004|2|The Ghan reaches Darwin|Wikipedia: Adelaide–Darwin railway
 2005|1|John Aloisi's penalty sends the Socceroos to a World Cup|Wikipedia: John Aloisi
 2005|1|Makybe Diva wins her third Melbourne Cup|Wikipedia: Makybe Diva
-2008|1|Kevin Rudd makes the apology to the Stolen Generations|Wikipedia: Apology to Australia's Indigenous peoples
 2009|1|MasterChef Australia first airs|Wikipedia: MasterChef Australia
 2011|1|Cadel Evans wins the Tour de France|Wikipedia: Cadel Evans
 2011|1|Gotye releases Somebody That I Used to Know|Wikipedia: Somebody That I Used to Know
 2013|1|Canva launches|Wikipedia: Canva
 2013|1|Adam Scott wins the Masters|Wikipedia: Adam Scott (golfer)
-2015|1|Michelle Payne is the first woman to win the Melbourne Cup|Wikipedia: Michelle Payne
+2015|1|Michelle Payne is first woman to ride a Melbourne Cup winner|Wikipedia: Michelle Payne
 2017|1|Holden builds its last car in Australia|Wikipedia: Holden
 2017|1|The AFL Women's competition begins|Wikipedia: AFL Women's
 2018|1|Bluey first airs on ABC Kids|Wikipedia: Bluey (TV series)
 2019|1|Tones and I releases Dance Monkey|Wikipedia: Dance Monkey
-2019|2|Climbing Uluru is banned|Wikipedia: Uluru
+2019|2|The climb up Uluru closes for good|Parks Australia: Uluru climb closure
 2021|1|Ash Barty wins Wimbledon|Wikipedia: Ash Barty
 2021|2|Brisbane is named a future Olympic host|Wikipedia: 2032 Summer Olympics
 2022|1|Ash Barty wins the Australian Open|Wikipedia: Ash Barty

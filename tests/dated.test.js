@@ -8,7 +8,7 @@ const bank = R.readBank();
 const byText = new Map(bank.map(e => [e.text, e]));
 const eventsOf = cards => cards.map(c => byText.get(c.text));
 const allDays = D.days.map((_, at) => L.daily(at + 1, D).cards);
-const PINNED = ["aobm34fgjk647z6gev","4w7s4a80al5k30659g38","601c7wltco98np"];   // days 1, 2 and 5
+const PINNED = ["7lmvgi1wekfe6e4th9","dy7bn9lega6aj3k96pfa","493ai9lc5388fh"];   // days 1, 2 and 5
 const cards = years => years.map((year, id) => ({ id, year, text: `Event ${year}` }));
 
 test('a right card goes in, and a wrong one lands in its true place', () => {

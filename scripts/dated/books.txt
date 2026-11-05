@@ -9,10 +9,10 @@
 1865|1|Lewis Carroll publishes Alice's Adventures in Wonderland|Wikipedia: Alice's Adventures in Wonderland
 1887|1|Sherlock Holmes first appears in print|Wikipedia: A Study in Scarlet
 1897|1|Bram Stoker publishes Dracula|Wikipedia: Dracula
-1898|2|H. G. Wells publishes The War of the Worlds|Wikipedia: The War of the Worlds
+1898|2|H. G. Wells's The War of the Worlds comes out as a book|Wikipedia: The War of the Worlds
 1900|2|L. Frank Baum publishes The Wonderful Wizard of Oz|Wikipedia: The Wonderful Wizard of Oz
 1902|2|Beatrix Potter's Peter Rabbit goes on sale in shops|Wikipedia: The Tale of Peter Rabbit
-1920|3|Agatha Christie publishes her first novel|Wikipedia: The Mysterious Affair at Styles
+1920|3|Agatha Christie's first novel is published, in the US|Wikipedia: The Mysterious Affair at Styles
 1925|2|F. Scott Fitzgerald publishes The Great Gatsby|Wikipedia: The Great Gatsby
 1926|2|A. A. Milne publishes Winnie-the-Pooh|Wikipedia: Winnie-the-Pooh (book)
 1929|2|Hergé's Tintin first appears|Wikipedia: The Adventures of Tintin

@@ -1,19 +1,18 @@
 # Food and drink. year|level|text|where to check it
 1759|2|Arthur Guinness leases the St James's Gate brewery|Wikipedia: Guinness Brewery
-1783|3|Jacob Schweppe starts selling soda water in Geneva|Wikipedia: Schweppes
+1792|3|Jacob Schweppe moves his soda water firm to London|Wikipedia: Schweppes
 1810|2|Peter Durand patents the tin can|Wikipedia: Tin can
 1824|2|John Cadbury opens his shop in Birmingham|Wikipedia: Cadbury
-1837|3|Lea & Perrins start selling Worcestershire sauce|Wikipedia: Lea & Perrins
 1847|2|Fry's of Bristol makes a moulded chocolate bar|Wikipedia: Chocolate bar
 1858|3|Ezra Warner patents the can opener in the US|Wikipedia: Can opener
 1862|2|Don Facundo Bacardí starts his rum company in Cuba|Wikipedia: Bacardi
-1862|2|Louis Pasteur carries out his first pasteurisation test|Wikipedia: Pasteurization
+1865|2|Louis Pasteur patents heating wine to stop it spoiling|Wikipedia: Louis Pasteur
 1869|3|Hippolyte Mège-Mouriès patents margarine|Wikipedia: Margarine
-1875|3|Daniel Peter makes the first milk chocolate|Wikipedia: Daniel Peter
+1875|3|Daniel Peter makes milk chocolate in Switzerland|Wikipedia: Milk chocolate
 1876|2|Heinz Tomato Ketchup goes on sale|Wikipedia: Heinz Tomato Ketchup
 1885|3|Dr Pepper is first served, in Waco, Texas|Wikipedia: Dr Pepper
 1886|1|Coca-Cola is first served at an Atlanta pharmacy|Wikipedia: Coca-Cola
-1886|3|Heinz baked beans go on sale at Fortnum & Mason|Wikipedia: Heinz Baked Beans
+1895|3|Heinz starts selling baked beans in America|Wikipedia: Heinz Baked Beans
 1893|2|Wrigley's Juicy Fruit gum goes on sale|Wikipedia: Juicy Fruit
 1898|2|Brad's Drink is renamed Pepsi-Cola|Wikipedia: Pepsi
 1900|2|Hershey's milk chocolate bar goes on sale|Wikipedia: Hershey bar
@@ -28,8 +27,7 @@
 1926|3|Michelin starts giving stars to restaurants|Wikipedia: Michelin Guide
 1927|3|Pez sweets go on sale in Vienna|Wikipedia: Pez
 1928|2|Sliced bread is first sold, in Missouri|Wikipedia: Sliced bread
-1928|3|Walter Diemer invents bubble gum|Wikipedia: Walter Diemer
-1929|2|The drink that becomes 7 Up goes on sale|Wikipedia: 7 Up
+1928|3|Walter Diemer invents Dubble Bubble gum|Wikipedia: Dubble Bubble
 1930|2|Snickers bar goes on sale|Wikipedia: Snickers
 1930|3|Clarence Birdseye's frozen food goes on sale|Wikipedia: Clarence Birdseye
 1932|2|Forrest Mars makes the Mars bar in Slough|Wikipedia: Mars (chocolate bar)
@@ -38,27 +36,26 @@
 1937|1|Hormel launches Spam|Wikipedia: Spam (food)
 1937|2|Krispy Kreme opens in North Carolina|Wikipedia: Krispy Kreme
 1937|2|Kraft Dinner mac and cheese goes on sale|Wikipedia: Kraft Dinner
-1937|2|Rowntree's launches Smarties|Wikipedia: Smarties
+1937|2|Rowntree's renames its Chocolate Beans Smarties|Wikipedia: Smarties
 1938|2|Nescafé instant coffee launches in Switzerland|Wikipedia: Nescafé
 1940|2|Fanta is created in Germany|Wikipedia: Fanta
 1941|1|M&M's go on sale|Wikipedia: M&M's
-1943|3|Ignacio Anaya serves the first nachos in Mexico|Wikipedia: Nachos
 1955|3|Birds Eye launches fish fingers in Britain|Wikipedia: Fish finger
 1958|3|Momofuku Ando sells the first instant noodles|Wikipedia: Momofuku Ando
 1958|3|Chupa Chups lollipops go on sale in Spain|Wikipedia: Chupa Chups
 1961|2|Coca-Cola launches Sprite in the US|Wikipedia: Sprite (drink)
-1961|2|Julia Child publishes Mastering the Art of French Cooking|Wikipedia: Mastering the Art of French Cooking
+1961|2|Julia Child co-writes Mastering the Art of French Cooking|Wikipedia: Mastering the Art of French Cooking
 1962|3|Sam Panopoulos puts pineapple on pizza in Canada|Wikipedia: Hawaiian pizza
 1963|3|Fry's Creme Egg, later Cadbury's, goes on sale|Wikipedia: Creme Egg
 1964|1|Nutella goes on sale|Wikipedia: Nutella
-1964|3|Buffalo's Anchor Bar serves its first hot wings|Wikipedia: Buffalo wing
+1964|3|Buffalo's Anchor Bar says it served the first hot wings|Wikipedia: Buffalo wing
 1965|3|Gatorade is brewed for the Florida Gators|Wikipedia: Gatorade
 1966|3|Doritos go on sale across the US|Wikipedia: Doritos
 1971|3|Nissin launches Cup Noodles in Japan|Wikipedia: Cup Noodles
 1974|3|Kinder Surprise eggs go on sale|Wikipedia: Kinder Surprise
 1974|3|Baileys Irish Cream goes on sale|Wikipedia: Baileys Irish Cream
 1982|1|Diet Coke goes on sale|Wikipedia: Diet Coke
-1982|3|Ferrero Rocher goes on sale|Wikipedia: Ferrero Rocher
+1982|3|Ferrero Rocher launches across Europe|Ferrero Rocher: history page, ferrerorocher.com
 1985|2|Coca-Cola launches New Coke|Wikipedia: New Coke
 1987|3|Red Bull goes on sale in Austria|Wikipedia: Red Bull
 2013|3|Dominique Ansel invents the Cronut in New York|Wikipedia: Cronut

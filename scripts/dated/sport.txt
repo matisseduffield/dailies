@@ -16,7 +16,7 @@
 1930|1|Uruguay hosts the first FIFA World Cup|Wikipedia: 1930 FIFA World Cup
 1934|2|Golf's Masters is first played at Augusta|Wikipedia: Masters Tournament
 1936|1|Jesse Owens wins four gold medals in Berlin|Wikipedia: Jesse Owens
-1947|1|Jackie Robinson plays for the Brooklyn Dodgers|Wikipedia: Jackie Robinson
+1947|1|Jackie Robinson makes his debut for the Brooklyn Dodgers|Wikipedia: Jackie Robinson
 1950|2|The Formula One world championship begins|Wikipedia: 1950 Formula One season
 1954|1|Roger Bannister runs a mile in under four minutes|Wikipedia: Roger Bannister
 1958|2|Pelé wins his first World Cup at seventeen|Wikipedia: 1958 FIFA World Cup
@@ -46,7 +46,7 @@
 1997|1|Tiger Woods wins his first Masters|Wikipedia: 1997 Masters Tournament
 1998|1|France win the World Cup at home|Wikipedia: 1998 FIFA World Cup
 1999|1|Manchester United win the Treble|Wikipedia: 1998–99 Manchester United F.C. season
-1999|2|Serena Williams wins her first Grand Slam title|Wikipedia: Serena Williams
+1999|2|Serena Williams wins her first Grand Slam singles title|Wikipedia: 1998 Wimbledon Championships – Mixed doubles
 2003|1|Roger Federer wins his first Wimbledon|Wikipedia: Roger Federer
 2003|1|England beat Australia in the Rugby World Cup final|Wikipedia: 2003 Rugby World Cup final
 2004|1|Greece win the Euros in Portugal|Wikipedia: UEFA Euro 2004
@@ -58,7 +58,7 @@
 2014|1|Germany beat Brazil 7-1 in the World Cup semi-final|Wikipedia: Brazil v Germany (2014 FIFA World Cup)
 2016|1|Leicester City win the Premier League|Wikipedia: 2015–16 Leicester City F.C. season
 2018|3|VAR is first used at a men's World Cup|Wikipedia: Video assistant referee
-2019|2|Eliud Kipchoge runs a marathon in under two hours|Wikipedia: Ineos 1:59 Challenge
+2019|2|Eliud Kipchoge runs an unofficial sub-two-hour marathon|Wikipedia: Ineos 1:59 Challenge
 2021|2|Skateboarding makes its Olympic debut in Tokyo|Wikipedia: Skateboarding at the 2020 Summer Olympics
 2022|1|Lionel Messi wins the World Cup with Argentina|Wikipedia: 2022 FIFA World Cup final
 2022|2|England's women win the Euros at Wembley|Wikipedia: UEFA Women's Euro 2022 final

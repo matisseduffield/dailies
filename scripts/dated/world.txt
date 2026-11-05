@@ -15,7 +15,7 @@
 1889|1|The Eiffel Tower opens in Paris|Wikipedia: Eiffel Tower
 1889|2|Vincent van Gogh paints The Starry Night|Wikipedia: The Starry Night
 1893|1|New Zealand gives women the vote|Wikipedia: Women's suffrage in New Zealand
-1893|2|Edvard Munch paints The Scream|Wikipedia: The Scream
+1893|2|Edvard Munch paints the first Scream|Wikipedia: The Scream
 1894|2|Tower Bridge opens in London|Wikipedia: Tower Bridge
 1901|2|The first Nobel Prizes are awarded|Wikipedia: Nobel Prize
 1907|2|Robert Baden-Powell runs his first Scout camp|Wikipedia: Brownsea Island Scout camp
@@ -32,12 +32,11 @@
 1932|2|Amelia Earhart flies solo across the Atlantic|Wikipedia: Amelia Earhart
 1937|1|San Francisco's Golden Gate Bridge opens|Wikipedia: Golden Gate Bridge
 1937|2|Britain's 999 emergency number starts in London|Wikipedia: 999 (emergency telephone number)
-1941|2|Mount Rushmore is finished|Wikipedia: Mount Rushmore
+1941|2|Carving stops on Mount Rushmore|Wikipedia: Mount Rushmore
 1945|1|The United Nations is founded|Wikipedia: United Nations
 1953|1|Hillary and Tenzing reach the top of Everest|Wikipedia: 1953 British Mount Everest expedition
 1953|1|Queen Elizabeth II is crowned|Wikipedia: Coronation of Elizabeth II
 1955|2|The first Guinness Book of Records comes out|Wikipedia: Guinness World Records
-1961|2|The Berlin Wall goes up|Wikipedia: Berlin Wall
 1962|2|Andy Warhol shows his Campbell's Soup Cans|Wikipedia: Campbell's Soup Cans
 1964|2|Japan's bullet train starts running|Wikipedia: Shinkansen
 1968|2|America's 911 emergency number gets its first call|Wikipedia: 9-1-1
@@ -50,10 +49,8 @@
 1989|1|The Berlin Wall comes down|Wikipedia: Fall of the Berlin Wall
 1990|1|Nelson Mandela walks free|Wikipedia: Nelson Mandela
 1994|1|The Channel Tunnel opens|Wikipedia: Channel Tunnel
-1997|1|Britain hands Hong Kong back to China|Wikipedia: Handover of Hong Kong
 2002|1|Euro notes and coins go into use|Wikipedia: Euro
 2003|2|Concorde makes its last passenger flight|Wikipedia: Concorde
-2008|1|Barack Obama is elected president|Wikipedia: 2008 United States presidential election
 2010|1|The Burj Khalifa opens in Dubai|Wikipedia: Burj Khalifa
 2011|1|Prince William marries Catherine Middleton|Wikipedia: Wedding of Prince William and Catherine Middleton
 2014|2|Malala Yousafzai wins the Nobel Peace Prize|Wikipedia: Malala Yousafzai

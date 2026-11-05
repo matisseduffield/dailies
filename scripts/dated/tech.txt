@@ -2,13 +2,13 @@
 1804|3|Richard Trevithick's steam locomotive first runs on rails|Wikipedia: Richard Trevithick
 1823|3|Charles Macintosh patents his waterproof fabric|Wikipedia: Charles Macintosh
 1825|2|Stockton and Darlington Railway opens|Wikipedia: Stockton and Darlington Railway
-1827|3|John Walker sells the first friction matches|Wikipedia: John Walker (inventor)
+1827|3|John Walker logs his first sale of friction matches|https://collection.sciencemuseumgroup.org.uk/objects/co8077012/the-day-book-of-john-walker-books
 1830|3|Edwin Budding patents the lawn mower|Wikipedia: Edwin Beard Budding
 1839|2|Daguerre's photography process is made public|Wikipedia: Daguerreotype
 1843|3|Alexander Bain patents a fax machine|Wikipedia: Fax
 1844|2|Samuel Morse sends "What hath God wrought" by telegraph|Wikipedia: Samuel Morse
 1849|3|Walter Hunt patents the safety pin|Wikipedia: Safety pin
-1854|3|Elisha Otis shows off his safety lift in New York|Wikipedia: Elisha Otis
+1857|3|First Otis passenger lift goes in at a New York store|Wikipedia: E. V. Haughwout Building
 1863|2|London's first Underground line opens|Wikipedia: Metropolitan Railway
 1866|3|First lasting transatlantic telegraph cable is completed|Wikipedia: Transatlantic telegraph cable
 1867|2|Alfred Nobel patents dynamite|Wikipedia: Dynamite
@@ -29,12 +29,12 @@
 1908|1|Ford Model T goes on sale|Wikipedia: Ford Model T
 1913|2|Henry Ford starts his moving assembly line|Wikipedia: Assembly line
 1917|3|Gideon Sundback patents the modern zip|Wikipedia: Zipper
-1926|2|John Logie Baird demonstrates television in London|Wikipedia: John Logie Baird
-1930|3|Frank Whittle patents a turbojet engine|Wikipedia: Frank Whittle
-1934|3|Percy Shaw patents the cat's eye road stud|Wikipedia: Cat's eye (road)
+1926|2|John Logie Baird shows true television in Soho|Wikipedia: John Logie Baird
+1930|3|Frank Whittle files a patent for a turbojet engine|Wikipedia: Frank Whittle
+1934|3|Percy Shaw files his patent for the cat's eye road stud|Wikipedia: Percy Shaw
 1935|3|The world's first parking meter goes in, in Oklahoma City|Wikipedia: Parking meter
 1937|3|Sylvan Goldman introduces the shopping trolley|Wikipedia: Shopping cart
-1938|3|László Bíró patents his ballpoint pen|Wikipedia: László Bíró
+1938|3|László Bíró files a patent for his ballpoint pen|Wikipedia: László Bíró
 1938|3|Chester Carlson makes the first photocopy|Wikipedia: Chester Carlson
 1938|3|Teflon is discovered by accident at DuPont|Wikipedia: Polytetrafluoroethylene
 1940|2|Nylon stockings go on sale across America|Wikipedia: Nylon
@@ -43,7 +43,7 @@
 1947|2|The transistor is first demonstrated at Bell Labs|Wikipedia: History of the transistor
 1948|2|Polaroid's first instant camera goes on sale|Wikipedia: Polaroid Corporation
 1952|3|A barcode patent is granted in the US|Wikipedia: Barcode
-1955|3|George de Mestral patents Velcro|Wikipedia: Velcro
+1951|3|George de Mestral files his Swiss patent for Velcro|https://patents.google.com/patent/CH295638A
 1955|3|Zenith sells a wireless TV remote|Wikipedia: Remote control
 1958|3|Jack Kilby demonstrates an integrated circuit|Wikipedia: Jack Kilby
 1959|2|Volvo makes the three-point seat belt standard|Wikipedia: Nils Bohlin

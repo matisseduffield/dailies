@@ -4,9 +4,9 @@
 1982|3|Scott Fahlman proposes the smiley :-)|Wikipedia: Scott Fahlman
 1985|3|The first .com address is registered|Wikipedia: Symbolics
 1989|1|Tim Berners-Lee proposes the World Wide Web|Wikipedia: World Wide Web
-1991|2|The first website goes online|Wikipedia: Tim Berners-Lee
+1991|2|Tim Berners-Lee announces the web on a public newsgroup|https://home.web.cern.ch/news/news/computing/month-1991-web-spreads-beyond-cern
 1994|2|Yahoo! starts as a list of websites|Wikipedia: Yahoo
-1994|2|GeoCities is founded|Wikipedia: GeoCities
+1994|2|Beverly Hills Internet, later GeoCities, is founded|Wikipedia: GeoCities
 1995|1|Amazon starts selling books online|Wikipedia: Amazon (company)
 1995|1|eBay is founded|Wikipedia: eBay
 1996|3|Hotmail launches|Wikipedia: Outlook.com
@@ -28,10 +28,10 @@
 2007|3|The first hashtag is proposed on Twitter|Wikipedia: Hashtag
 2007|3|Charlie Bit My Finger goes up on YouTube|Wikipedia: Charlie Bit My Finger
 2007|3|The first Rickroll fools people online|Wikipedia: Rickrolling
-2008|1|Spotify launches in Sweden|Wikipedia: Spotify
+2008|1|Swedish start-up Spotify launches its music service|Wikipedia: Spotify
 2008|1|Apple opens the App Store|Wikipedia: App Store (Apple)
 2008|1|The Bitcoin paper is published|Wikipedia: Bitcoin
-2008|3|Airbnb is founded in San Francisco|Wikipedia: Airbnb
+2008|3|AirBed & Breakfast, later Airbnb, launches at SXSW|https://news.airbnb.com/about-us/
 2009|1|WhatsApp launches|Wikipedia: WhatsApp
 2010|1|Instagram launches|Wikipedia: Instagram
 2010|3|Someone buys two pizzas with 10,000 bitcoin|Wikipedia: Laszlo Hanyecz
@@ -40,6 +40,6 @@
 2012|1|Tinder launches|Wikipedia: Tinder (app)
 2012|1|Gangnam Style goes up on YouTube|Wikipedia: Gangnam Style
 2014|1|The Ice Bucket Challenge sweeps social media|Wikipedia: Ice Bucket Challenge
-2015|1|The Dress splits the internet over blue or gold|Wikipedia: The dress
+2015|1|The Dress splits the internet over its colours|Wikipedia: The dress
 2019|1|Disney+ launches|Wikipedia: Disney+
 2023|1|Twitter is renamed X|Wikipedia: Twitter

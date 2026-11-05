@@ -1,12 +1,12 @@
 # Science, space and discovery. year|level|text|where to check it
 1610|2|Galileo publishes his sighting of Jupiter's moons|Wikipedia: Sidereus Nuncius
 1687|2|Isaac Newton publishes his Principia|Wikipedia: Philosophiæ Naturalis Principia Mathematica
-1758|3|Halley's Comet returns just as Edmond Halley predicted|Wikipedia: Halley's Comet
+1758|3|Johann Palitzsch spots the returning Halley's Comet|Wikipedia: Johann Georg Palitzsch
 1781|2|William Herschel discovers Uranus|Wikipedia: Uranus
 1783|2|Montgolfier balloon carries people over Paris|Wikipedia: Montgolfier brothers
 1796|2|Edward Jenner tests his smallpox vaccine|Wikipedia: Edward Jenner
 1799|2|French soldiers find the Rosetta Stone in Egypt|Wikipedia: Rosetta Stone
-1842|3|Richard Owen coins the word dinosaur|Wikipedia: Dinosaur
+1842|3|Richard Owen's word dinosaur first appears in print|https://www.nhm.ac.uk/discover/how-dinosaurs-got-their-name.html
 1846|2|Neptune is discovered|Wikipedia: Neptune
 1846|3|Ether is first shown as an anaesthetic in Boston|Wikipedia: Ether Dome
 1859|1|Charles Darwin publishes On the Origin of Species|Wikipedia: On the Origin of Species
@@ -21,28 +21,27 @@
 1922|1|Howard Carter finds Tutankhamun's tomb|Wikipedia: Tutankhamun
 1922|2|Insulin is first given to a patient|Wikipedia: Frederick Banting
 1928|1|Alexander Fleming discovers penicillin|Wikipedia: Penicillin
-1929|3|Edwin Hubble shows the universe is expanding|Wikipedia: Hubble's law
+1929|3|Edwin Hubble publishes his galaxy velocity-distance law|Wikipedia: Hubble's law
 1930|1|Clyde Tombaugh discovers Pluto|Wikipedia: Pluto
 1938|2|A living coelacanth turns up off South Africa|Wikipedia: Coelacanth
 1940|2|Teenagers find the Lascaux cave paintings in France|Wikipedia: Lascaux
 1947|2|Chuck Yeager breaks the sound barrier|Wikipedia: Chuck Yeager
-1947|2|The first Dead Sea Scrolls are found|Wikipedia: Dead Sea Scrolls
+1947|2|Eleazar Sukenik buys three of the Dead Sea Scrolls|https://www.deadseascrolls.org.il/learn-about-the-scrolls/discovery-and-publication
 1953|1|Watson and Crick describe the structure of DNA|Wikipedia: DNA
 1957|1|Sputnik becomes the first satellite in orbit|Wikipedia: Sputnik 1
-1957|3|Laika the dog orbits the Earth|Wikipedia: Laika
 1958|3|NASA is founded|Wikipedia: NASA
 1958|3|The first implanted pacemaker is fitted, in Sweden|Wikipedia: Artificial cardiac pacemaker
 1960|3|The contraceptive pill is approved in the US|Wikipedia: Combined oral contraceptive pill
 1961|1|Yuri Gagarin becomes the first person in space|Wikipedia: Yuri Gagarin
 1963|2|Valentina Tereshkova becomes the first woman in space|Wikipedia: Valentina Tereshkova
-1967|1|Christiaan Barnard performs a heart transplant|Wikipedia: Christiaan Barnard
+1967|1|Barnard performs the first human-to-human heart transplant|Wikipedia: Christiaan Barnard
 1969|1|Neil Armstrong walks on the Moon|Wikipedia: Apollo 11
 1972|3|The world adds its first leap second|Wikipedia: Leap second
 1974|1|Farmers find China's Terracotta Army|Wikipedia: Terracotta Army
 1974|2|The Lucy skeleton is found in Ethiopia|Wikipedia: Lucy (Australopithecus)
 1977|1|Voyager 1 is launched|Wikipedia: Voyager 1
 1978|1|Louise Brown, the first IVF baby, is born|Wikipedia: Louise Brown
-1980|3|Smallpox is declared wiped out|Wikipedia: Smallpox
+1980|3|The World Health Assembly declares smallpox wiped out|https://www.who.int/news/item/13-12-2019-who-commemorates-the-40th-anniversary-of-smallpox-eradication
 1981|1|The first Space Shuttle is launched|Wikipedia: STS-1
 1985|3|The ozone hole over Antarctica is reported|Wikipedia: Ozone depletion
 1985|2|Robert Ballard finds the wreck of the Titanic|Wikipedia: Wreck of the Titanic
@@ -52,7 +51,7 @@
 1991|2|Ötzi the Iceman is found in the Alps|Wikipedia: Ötzi
 1996|1|Dolly the sheep is born|Wikipedia: Dolly (sheep)
 1998|2|The first part of the Space Station is launched|Wikipedia: International Space Station
-2001|3|Dennis Tito becomes the first paying space tourist|Wikipedia: Dennis Tito
+2001|3|Dennis Tito pays his own way to the Space Station|Wikipedia: Dennis Tito
 2003|2|The Human Genome Project is declared complete|Wikipedia: Human Genome Project
 2006|1|Pluto is demoted to a dwarf planet|Wikipedia: IAU definition of planet
 2012|3|Physicists at CERN announce the Higgs boson|Wikipedia: Higgs boson
@@ -62,6 +61,6 @@
 2015|2|Gravitational waves are first detected|Wikipedia: First observation of gravitational waves
 2018|2|SpaceX sends a Tesla Roadster into space|Wikipedia: Elon Musk's Tesla Roadster
 2019|1|The first photo of a black hole is released|Wikipedia: Messier 87
-2019|3|The kilogram gets a new definition|Wikipedia: 2019 revision of the SI
+2019|3|The kilogram's new definition comes into force|Wikipedia: 2019 revision of the SI
 2021|1|The James Webb Space Telescope is launched|Wikipedia: James Webb Space Telescope
 2022|2|Shackleton's ship Endurance is found in Antarctica|Wikipedia: Endurance (1912 ship)
