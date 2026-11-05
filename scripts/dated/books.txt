@@ -1,0 +1,41 @@
+# Books and comics. year|level|text|where to check it
+1605|3|The first part of Don Quixote is published|Wikipedia: Don Quixote
+1623|2|Shakespeare's First Folio is published|Wikipedia: First Folio
+1719|3|Daniel Defoe publishes Robinson Crusoe|Wikipedia: Robinson Crusoe
+1813|1|Jane Austen publishes Pride and Prejudice|Wikipedia: Pride and Prejudice
+1818|1|Mary Shelley publishes Frankenstein|Wikipedia: Frankenstein
+1843|2|Charles Dickens publishes A Christmas Carol|Wikipedia: A Christmas Carol
+1851|2|Herman Melville publishes Moby-Dick|Wikipedia: Moby-Dick
+1865|1|Lewis Carroll publishes Alice's Adventures in Wonderland|Wikipedia: Alice's Adventures in Wonderland
+1887|1|Sherlock Holmes first appears in print|Wikipedia: A Study in Scarlet
+1897|1|Bram Stoker publishes Dracula|Wikipedia: Dracula
+1898|2|H. G. Wells publishes The War of the Worlds|Wikipedia: The War of the Worlds
+1900|2|L. Frank Baum publishes The Wonderful Wizard of Oz|Wikipedia: The Wonderful Wizard of Oz
+1902|2|Beatrix Potter's Peter Rabbit goes on sale in shops|Wikipedia: The Tale of Peter Rabbit
+1920|3|Agatha Christie publishes her first novel|Wikipedia: The Mysterious Affair at Styles
+1925|2|F. Scott Fitzgerald publishes The Great Gatsby|Wikipedia: The Great Gatsby
+1926|2|A. A. Milne publishes Winnie-the-Pooh|Wikipedia: Winnie-the-Pooh (book)
+1929|2|Hergé's Tintin first appears|Wikipedia: The Adventures of Tintin
+1929|3|Popeye first appears in a newspaper comic strip|Wikipedia: Popeye
+1934|2|P. L. Travers, born in Australia, publishes Mary Poppins|Wikipedia: Mary Poppins (book series)
+1936|2|Margaret Mitchell publishes Gone with the Wind|Wikipedia: Gone with the Wind (novel)
+1937|1|J. R. R. Tolkien publishes The Hobbit|Wikipedia: The Hobbit
+1938|1|Superman first appears in Action Comics|Wikipedia: Action Comics 1
+1939|1|Batman first appears in Detective Comics|Wikipedia: Batman
+1945|2|George Orwell publishes Animal Farm|Wikipedia: Animal Farm
+1950|2|C. S. Lewis publishes The Lion, the Witch and the Wardrobe|Wikipedia: The Lion, the Witch and the Wardrobe
+1950|2|Charles Schulz starts Peanuts|Wikipedia: Peanuts
+1953|2|Ian Fleming's first James Bond novel is published|Wikipedia: Casino Royale (novel)
+1954|2|The first volume of The Lord of the Rings is published|Wikipedia: The Fellowship of the Ring
+1957|1|Dr. Seuss publishes The Cat in the Hat|Wikipedia: The Cat in the Hat
+1959|2|Asterix first appears in Pilote magazine|Wikipedia: Asterix
+1960|1|Harper Lee publishes To Kill a Mockingbird|Wikipedia: To Kill a Mockingbird
+1962|1|Spider-Man first appears in Amazing Fantasy|Wikipedia: Spider-Man
+1964|2|Roald Dahl publishes Charlie and the Chocolate Factory|Wikipedia: Charlie and the Chocolate Factory
+1969|2|Eric Carle publishes The Very Hungry Caterpillar|Wikipedia: The Very Hungry Caterpillar
+1971|2|Roger Hargreaves publishes the first Mr. Men book|Wikipedia: Mr. Men
+1978|2|Garfield first appears in newspapers|Wikipedia: Garfield
+1978|2|The Hitchhiker's Guide to the Galaxy starts on BBC radio|Wikipedia: The Hitchhiker's Guide to the Galaxy
+1987|2|Martin Handford publishes the first Where's Wally?|Wikipedia: Where's Wally?
+1997|1|J. K. Rowling's first Harry Potter book is published|Wikipedia: Harry Potter and the Philosopher's Stone
+2008|2|Suzanne Collins publishes The Hunger Games|Wikipedia: The Hunger Games (novel)

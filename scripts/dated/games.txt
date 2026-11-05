@@ -1,0 +1,47 @@
+# Toys and games, video games included. year|level|text|where to check it
+1889|3|Nintendo is founded, making playing cards|Wikipedia: Nintendo
+1901|3|Frank Hornby patents the toy that becomes Meccano|Wikipedia: Meccano
+1903|2|Crayola crayons are first sold|Wikipedia: Crayola
+1935|2|Parker Brothers starts selling Monopoly|Wikipedia: Monopoly (game)
+1945|3|The Slinky goes on sale at a Philadelphia shop|Wikipedia: Slinky
+1949|2|Cluedo is first sold by Waddingtons|Wikipedia: Cluedo
+1949|2|Lego starts making its plastic bricks|Wikipedia: Lego
+1952|3|Mr Potato Head goes on sale|Wikipedia: Mr. Potato Head
+1956|3|Play-Doh goes on sale as a toy|Wikipedia: Play-Doh
+1957|2|Wham-O starts selling the Pluto Platter, later the Frisbee|Wikipedia: Frisbee
+1958|2|Wham-O's hula hoop craze begins|Wikipedia: Hula hoop
+1959|1|Barbie makes her debut at a New York toy fair|Wikipedia: Barbie
+1960|3|Etch A Sketch goes on sale|Wikipedia: Etch A Sketch
+1968|3|Hot Wheels toy cars are launched|Wikipedia: Hot Wheels
+1970|3|Parker Brothers launches the Nerf ball|Wikipedia: Nerf
+1971|3|The card game Uno is created in Ohio|Wikipedia: Uno (card game)
+1972|1|Atari's Pong reaches arcades|Wikipedia: Pong
+1974|3|Dungeons & Dragons is first published|Wikipedia: Dungeons & Dragons
+1978|1|Space Invaders reaches arcades in Japan|Wikipedia: Space Invaders
+1980|1|Pac-Man reaches arcades in Japan|Wikipedia: Pac-Man
+1980|2|Rubik's Cube launches worldwide|Wikipedia: Rubik's Cube
+1981|3|Trivial Pursuit is first sold|Wikipedia: Trivial Pursuit
+1981|2|Donkey Kong reaches arcades|Wikipedia: Donkey Kong (1981 video game)
+1983|3|Jenga is launched at the London Toy Fair|Wikipedia: Jenga
+1984|1|Alexey Pajitnov creates Tetris in Moscow|Wikipedia: Tetris
+1985|1|Super Mario Bros. comes out in Japan|Wikipedia: Super Mario Bros.
+1985|3|Pictionary is first published|Wikipedia: Pictionary
+1989|1|Game Boy goes on sale in Japan|Wikipedia: Game Boy
+1991|1|Sonic the Hedgehog comes out|Wikipedia: Sonic the Hedgehog (1991 video game)
+1994|1|PlayStation goes on sale in Japan|Wikipedia: PlayStation (console)
+1996|1|Pokémon Red and Green come out in Japan|Wikipedia: Pokémon Red and Blue
+1996|3|Tamagotchi goes on sale in Japan|Wikipedia: Tamagotchi
+1997|2|The first Grand Theft Auto comes out|Wikipedia: Grand Theft Auto (video game)
+1998|3|Furby is launched|Wikipedia: Furby
+2000|1|PlayStation 2 goes on sale in Japan|Wikipedia: PlayStation 2
+2001|1|Xbox goes on sale in the US|Wikipedia: Xbox (console)
+2006|1|Nintendo Wii goes on sale|Wikipedia: Wii
+2009|1|Angry Birds comes out|Wikipedia: Angry Birds (video game)
+2011|1|Minecraft reaches its full release|Wikipedia: Minecraft
+2013|3|Flappy Bird comes out|Wikipedia: Flappy Bird
+2016|1|Pokémon Go comes out|Wikipedia: Pokémon Go
+2017|1|Nintendo Switch goes on sale|Wikipedia: Nintendo Switch
+2017|1|Fortnite Battle Royale comes out|Wikipedia: Fortnite Battle Royale
+2018|3|Among Us comes out|Wikipedia: Among Us
+2020|1|PlayStation 5 goes on sale|Wikipedia: PlayStation 5
+2021|1|Wordle goes public|Wikipedia: Wordle

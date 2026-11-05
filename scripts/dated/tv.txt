@@ -1,0 +1,61 @@
+# Television, first episodes unless it says otherwise. year|level|text|where to check it
+1936|2|The BBC starts a regular television service|Wikipedia: BBC Television
+1951|2|I Love Lucy first airs|Wikipedia: I Love Lucy
+1956|2|The first Eurovision Song Contest is held, in Lugano|Wikipedia: Eurovision Song Contest 1956
+1958|3|Blue Peter first airs|Wikipedia: Blue Peter
+1960|1|Coronation Street first airs|Wikipedia: Coronation Street
+1960|2|The Flintstones first airs|Wikipedia: The Flintstones
+1963|1|Doctor Who first airs|Wikipedia: Doctor Who
+1964|1|The Beatles play on The Ed Sullivan Show|Wikipedia: The Beatles in the United States
+1965|2|Thunderbirds first airs|Wikipedia: Thunderbirds (TV series)
+1966|1|Star Trek first airs|Wikipedia: Star Trek: The Original Series
+1968|2|Dad's Army first airs|Wikipedia: Dad's Army
+1969|1|Sesame Street first airs|Wikipedia: Sesame Street
+1969|1|Monty Python's Flying Circus first airs|Wikipedia: Monty Python's Flying Circus
+1969|1|Scooby-Doo first airs|Wikipedia: Scooby-Doo, Where Are You!
+1975|1|Fawlty Towers first airs|Wikipedia: Fawlty Towers
+1975|1|Saturday Night Live first airs|Wikipedia: Saturday Night Live
+1976|1|The Muppet Show first airs|Wikipedia: The Muppet Show
+1978|2|Dallas first airs|Wikipedia: Dallas (1978 TV series)
+1980|3|Ted Turner launches CNN|Wikipedia: CNN
+1980|3|Dallas viewers finally find out who shot J.R.|Wikipedia: Who Done It (Dallas)
+1981|1|MTV launches with Video Killed the Radio Star|Wikipedia: MTV
+1981|2|Only Fools and Horses first airs|Wikipedia: Only Fools and Horses
+1981|3|Postman Pat first airs|Wikipedia: Postman Pat
+1982|2|Cheers first airs|Wikipedia: Cheers
+1983|2|Blackadder first airs|Wikipedia: Blackadder
+1983|3|The final M*A*S*H draws a record US audience|Wikipedia: Goodbye, Farewell and Amen
+1984|2|Thomas the Tank Engine reaches television|Wikipedia: Thomas & Friends
+1985|1|EastEnders first airs|Wikipedia: EastEnders
+1986|1|The Oprah Winfrey Show goes national|Wikipedia: The Oprah Winfrey Show
+1989|1|The Simpsons first airs as a full series|Wikipedia: The Simpsons
+1989|1|Seinfeld first airs|Wikipedia: Seinfeld
+1990|1|Mr. Bean first airs|Wikipedia: Mr. Bean
+1990|1|The Fresh Prince of Bel-Air first airs|Wikipedia: The Fresh Prince of Bel-Air
+1991|1|Rugrats first airs|Wikipedia: Rugrats
+1993|1|The X-Files first airs|Wikipedia: The X-Files
+1993|1|Mighty Morphin Power Rangers first airs|Wikipedia: Mighty Morphin Power Rangers
+1994|1|Friends first airs|Wikipedia: Friends
+1997|1|Teletubbies first airs|Wikipedia: Teletubbies
+1997|1|South Park first airs|Wikipedia: South Park
+1998|1|Sex and the City first airs|Wikipedia: Sex and the City
+1998|1|Who Wants to Be a Millionaire? first airs, in Britain|Wikipedia: Who Wants to Be a Millionaire? (British game show)
+1999|1|The Sopranos first airs|Wikipedia: The Sopranos
+1999|1|SpongeBob SquarePants first airs|Wikipedia: SpongeBob SquarePants
+1999|2|Bob the Builder first airs|Wikipedia: Bob the Builder
+1999|3|Big Brother first airs, in the Netherlands|Wikipedia: Big Brother (franchise)
+2000|1|Survivor first airs in America|Wikipedia: Survivor (American TV series)
+2001|1|Ricky Gervais's The Office first airs in Britain|Wikipedia: The Office (British TV series)
+2002|1|American Idol first airs|Wikipedia: American Idol
+2004|1|Peppa Pig first airs|Wikipedia: Peppa Pig
+2004|1|Lost first airs|Wikipedia: Lost (TV series)
+2005|1|Steve Carell's The Office first airs in America|Wikipedia: The Office (American TV series)
+2007|1|The Big Bang Theory first airs|Wikipedia: The Big Bang Theory
+2008|1|Breaking Bad first airs|Wikipedia: Breaking Bad
+2010|1|The Great British Bake Off first airs|Wikipedia: The Great British Bake Off
+2011|1|Game of Thrones first airs|Wikipedia: Game of Thrones
+2013|1|Paw Patrol first airs|Wikipedia: PAW Patrol
+2015|2|Australia first competes at Eurovision|Wikipedia: Australia in the Eurovision Song Contest
+2016|1|Stranger Things is released|Wikipedia: Stranger Things
+2016|1|The Crown is released|Wikipedia: The Crown (TV series)
+2021|1|Squid Game is released on Netflix|Wikipedia: Squid Game
