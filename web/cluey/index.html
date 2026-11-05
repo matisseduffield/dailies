@@ -12,33 +12,45 @@
 <link rel="preload" href="../fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../shared.css">
 <style>
-/* Blue points at where you are. Green is right, red is wrong, and yellow is a
-   letter that was handed over. */
+/* A printed crossword: paper squares joined by thin rules, with solid blocks.
+   Yellow is the square you're on and blue its word. Green is right, red is
+   wrong, and pale yellow is a letter that was handed over. */
 :root { --word: color-mix(in srgb, var(--accent) 17%, var(--surface)); --shown: #F4C52E; --on-shown: #14211C; --bad-soft: color-mix(in srgb, var(--neg) 16%, var(--surface)); --good-soft: color-mix(in srgb, var(--pos) 16%, var(--surface)); }
+
+:root {
+  --paper: #FCFCF8; --rule: #A3ACA5; --frame: #14211C; --block: #14211C;
+  --word: #BFD2F8; --here: #F4C52E; --on-here: #14211C; --shown: #FAEBB4; --on-shown: #14211C;
+  --bad-soft: color-mix(in srgb, var(--neg) 16%, var(--paper)); --good-soft: color-mix(in srgb, var(--pos) 16%, var(--paper));
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --paper: #2B3632; --rule: #0E1412; --frame: #66736C; --block: #060908; --word: #3C5488; --shown: #5A4E20; --on-shown: #F7E7A6; }
+}
+:root[data-theme="dark"] { --paper: #2B3632; --rule: #0E1412; --frame: #66736C; --block: #060908; --word: #3C5488; --shown: #5A4E20; --on-shown: #F7E7A6; }
 
 .top { min-height: 44px; }
 .meta { margin-left: auto; padding: 0; font-size: .84rem; color: var(--muted); white-space: nowrap; }
 @media (max-width: 350px) { a.brand > svg:nth-child(2) { display: none; } }
 
-/* The grid: solid tiles straight on the paper, with gaps for blocks */
+/* The grid: the rules are the board showing through a one pixel gap */
 .stage-wrap { position: relative; flex: 1; min-height: 0; display: flex; }
 .stage { flex: 1; min-width: 0; display: grid; place-items: center; padding: 4px 0; overflow: hidden; }
-.grid { --cell: 44px; --gap: 4px; display: grid; gap: var(--gap); grid-template-columns: repeat(var(--n, 5), var(--cell)); grid-auto-rows: var(--cell); user-select: none; -webkit-user-select: none; }
+.grid { --cell: 44px; display: grid; gap: 1px; grid-template-columns: repeat(var(--n, 5), var(--cell)); grid-auto-rows: var(--cell); background: var(--rule); border: 2px solid var(--frame); user-select: none; -webkit-user-select: none; }
+.block { background: var(--block); }
 .cell {
   position: relative; display: grid; place-items: center; padding: 0;
-  background: var(--surface); border: 0; border-radius: 6px;
-  font-size: calc(var(--cell) * .52); font-weight: 600; line-height: 1; text-transform: uppercase;
+  background: var(--paper); border: 0; border-radius: 0;
+  font-size: calc(var(--cell) * .56); font-weight: 600; line-height: 1; text-transform: uppercase;
   touch-action: manipulation;
   transition: background .14s, color .14s;
 }
-.cell .num { position: absolute; top: 3%; left: 7%; font-size: max(9px, calc(var(--cell) * .23)); font-weight: 600; color: var(--muted); transition: color .14s; }
+.cell .num { position: absolute; top: 4%; left: 6%; font-size: max(9px, calc(var(--cell) * .21)); font-weight: 500; color: var(--ink); transition: color .14s; }
 .cell.word { background: var(--word); }
 .cell.right { background: var(--good-soft); color: var(--pos); }
 .cell.wrong { background: var(--bad-soft); color: var(--neg); }
 .cell.shown { background: var(--shown); color: var(--on-shown); }
 .cell.shown .num { color: var(--on-shown); }
-.cell.on { background: var(--accent); color: var(--on-ink); }
-.cell.on .num { color: var(--on-ink); }
+.cell.on { background: var(--here); color: var(--on-here); }
+.cell.on .num { color: var(--on-here); }
 .cell.won { background: var(--pos); color: var(--on-ink); transition-delay: calc(var(--i) * 14ms); }
 .cell.won .num { color: var(--on-ink); transition-delay: calc(var(--i) * 14ms); }
 .cell.won.shown { background: var(--shown); color: var(--on-shown); }
@@ -85,9 +97,9 @@
 
 /* The worked example in How to play */
 .example { display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: center; padding: 12px 14px; background: var(--bg); border-radius: 10px; font-size: .9rem; line-height: 1.4; }
-.mini { display: grid; grid-template-columns: repeat(3, 30px); grid-auto-rows: 30px; gap: 3px; }
-.mini span { display: grid; place-items: center; background: var(--surface); border-radius: 4px; font-size: .9rem; font-weight: 600; }
-.mini .on { background: var(--accent); color: var(--on-ink); }
+.mini { display: grid; grid-template-columns: repeat(3, 30px); grid-auto-rows: 30px; gap: 1px; background: var(--rule); border: 2px solid var(--frame); }
+.mini span { display: grid; place-items: center; background: var(--paper); font-size: .95rem; font-weight: 600; }
+.mini .on { background: var(--here); color: var(--on-here); }
 .mini .word { background: var(--word); }
 .ways { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; font-size: .94rem; line-height: 1.45; }
 .ways b { font-weight: 600; }
@@ -305,15 +317,14 @@
       b.append(document.createTextNode(''));
       return b;
     });
-    grid.replaceChildren(...cells.map(c => c || el('span')));
+    grid.replaceChildren(...cells.map(c => c || el('span', 'block')));
     fit();
   }
 
   function fit() {
     const stage = $('stage'), n = puzzle.size;
-    const gap = n > 5 ? 3 : 4;
-    const room = Math.min(stage.clientWidth, stage.clientHeight - 8, 390);
-    const cell = Math.max(24, Math.min(68, Math.floor((room - gap * (n - 1)) / n)));
+    const room = Math.min(stage.clientWidth, stage.clientHeight - 8, 390) - 4;   // the frame
+    const cell = Math.max(24, Math.min(68, Math.floor((room - (n - 1)) / n)));
     $('grid').style.setProperty('--cell', cell + 'px');
   }
 
