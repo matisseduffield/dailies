@@ -59,7 +59,7 @@ Pronouns out loud: Hour, Wee, Ewe, Eye
 
 An attempt: Go, Crack, Stab, Bash
 They have cells: Jail, Battery, Monastery, Honeycomb
-Found in a golf bag: Iron, Wood, Tee, Wedge
+Styles of heel: Wedge, Kitten, Stiletto, Block
 Top ___: Hat, Dog, Gun, Gear
 
 Hankering: Yen, Craving, Longing, Desire
@@ -80,7 +80,7 @@ ___tail: Swallow, Dove, Pig, Ox
 Very pleased: Happy, Chuffed, Stoked, Rapt
 Half asleep: Sleepy, Dopey, Drowsy, Groggy
 Hill Valley residents: Doc, Marty, Biff, Lorraine
-Hidden trees: Bashful, Pining, Croaky, Firm
+Hidden trees: Bashful, Spineless, Croaky, Firm
 
 Lend support to: Prop, Back, Shore, Brace
 You can convert one: Try, Loft, Barn, Currency
@@ -144,17 +144,17 @@ Sounds like a footballer: Messy, Cane, Bail, Keen
 
 Influence: Power, Clout, Sway, Pull
 Things that set: Sun, Jelly, Concrete, Alarm
-Styles of jacket: Bomber, Puffer, Donkey, Pea
+Styles of jacket: Bomber, Puffer, Biker, Pea
 ___'s Eye: Cat, Tiger, Bull, Bird
 
 Perfectly flat: Level, Plane, Even, Flush
 Things you can file: Nail, Complaint, Patent, Receipt
 Fire safety day: Drill, Warden, Alarm, Assembly
-Seafood with an extra letter: Clamp, Brass, Reel, Spray
+Seafood with an extra letter: Clamp, Brass, Reel, Cord
 
-Brave: Stout, Spirited, Game, Plucky
-You can pull one: Pint, Face, Cracker, Sickie
-Seaside puppet show regulars: Punch, Crocodile, Sausages, Policeman
+Resentful: Bitter, Sour, Salty, Sore
+Aussies chuck them: Sickie, Wobbly, U-Ey, Tanty
+Hole makers: Punch, Gimlet, Awl, Auger
 Ends with a drink: Report, Drum, Stale, Margin
 
 Put right off: Disgust, Repel, Sicken, Revolt
@@ -197,10 +197,10 @@ Things with buttons: Remote, Lift, Cardigan, Accordion
 Worn by a jockey: Silks, Goggles, Breeches, Helmet
 Starts with clothing: Hatch, Booth, Socket, Capture
 
-Hits hard: Clubs, Belts, Decks, Clocks
+Open late: Clubs, Bars, Casinos, Servos
 They get broken: Hearts, Promises, Records, Silence
 Also Rihanna singles: Diamonds, Umbrella, Work, Stay
-Card game with one letter off: Fridge, Whisk, Mummy, Soap
+Spa day first: Spades, Spanner, Spaghetti, Spaniel
 
 Not one to shout a round: Mean, Tight, Near, Cheap
 They have roots: Tooth, Hair, Word, Equation
@@ -229,12 +229,12 @@ Past tenses by ear: Court, Bold, Paste, Road
 
 Talk on and on: Harp, Drone, Rabbit, Waffle
 Things with strings: Puppet, Racquet, Apron, Bow
-In the courtroom: Bar, Bench, Dock, Stand
-Sound orchestral: Liar, Loot, Tuber, Symbol
+Pub fittings: Bar, Snug, Pokies, Tap
+Starts with a baby animal: Kidney, Pupil, Cubicle, Lambast
 
 To tamper: Fiddle, Tinker, Doctor, Monkey
 Things with keys: Organ, Piano, Map, Jailer
-Used by a plumber: Pipe, Plunger, Washer, Snake
+Sherlock's trademarks: Pipe, Cape, Violin, Magnifier
 Instruments missing a first letter: Rum, Ute, Lute, Ell
 
 A real beauty: Peach, Beaut, Cracker, Ripper
@@ -248,7 +248,7 @@ Pilot's alphabet: Delta, Sierra, Echo, Romeo
 Sound like computer terms: Bight, Brows, Male, Sight
 
 Tire out: Exhaust, Drain, Sap, Tax
-Things with a hood: Cobra, Pram, Parka, Hangman
+Things with a hood: Cobra, Pram, Parka, Monk
 In the nursery: Bumper, Mobile, Monitor, Dummy
 Start with a capital, old or new: Bonnet, Romeo, Parish, Rigatoni
 
@@ -272,7 +272,7 @@ Things with locks: Canal, Diary, Scrum, Rapunzel
 The beekeeper's lot: Comb, Veil, Smoker, Queen
 ___ cut: Crew, Buzz, Paper, Pixie
 
-First-rate: Swell, Ripper, Beaut, Grouse
+First-rate: Swell, Bonzer, Dandy, Tops
 Things you can surf: Wave, Channels, Couch, Crowd
 In the laundry aisle: Surf, Omo, Dynamo, Cold Power
 Spring ___: Tide, Roll, Onion, Clean
@@ -287,7 +287,7 @@ You beat them: Drum, Egg, Clock, Carpet
 At the forge: Anvil, Hammer, Tongs, Bellows
 Body parts that read both ways: Leg, Gum, Gut, Lap
 
-Readies: Dough, Bread, Lolly, Moolah
+Sweet treats: Lolly, Fudge, Toffee, Nougat
 Things you can roll: Eyes, Dice, Swag, Sleeves
 At the cheese counter: Wheel, Wedge, Rind, Wire
 Menu in the rear-view mirror: Keel, Regal, May, Snub
@@ -300,7 +300,7 @@ Philosophers one letter off: Pluto, Mars, Cant, Mile
 Do a runner: Escape, Flee, Bolt, Scarper
 You can lose it: Control, Plot, Temper, Keys
 Star Wars title words: Return, Hope, Menace, Revenge
-Animal in the mirror: Tar, Flow, Reed, Tab
+Animal in the mirror: Tar, Kay, Reed, Tab
 
 Instruct: Coach, Train, Tutor, Drill
 You can set one: Trap, Example, Table, Record
@@ -310,11 +310,11 @@ A body part on board: Clipper, Hearse, Shinkansen, Chinook
 Walk unsteadily: Reel, Lurch, Totter, Sway
 Things you turn: Tap, Cheek, Page, Corner
 Dickens title surnames: Twist, Dombey, Pickwick, Nickleby
-Body part up front: Limbo, Shindig, Earnest, Legend
+Starts with a dance: Jigsaw, Hopscotch, Ballot, Tapestry
 
 Friend: Mate, Cobber, China, Pal
 They bounce: Castle, Cheque, Email, Kangaroo
-Found in a hive: Queen, Drone, Worker, Comb
+Killer ___: Queen, Whale, Instinct, App
 Stretches of time by ear: Knight, Weak, Mourning, Daze
 
 Tell on someone: Snitch, Dob, Rat, Grass
@@ -325,7 +325,7 @@ Beheaded pastimes: Nap, Ridge, Arts, Owls
 One of the greats: Icon, Titan, Giant, Star
 Full of squares: Grid, Waffle, Tartan, Sudoku
 Elizabethan playhouses: Globe, Rose, Swan, Curtain
-Two words welded together: Hamlet, Island, Contour, Legend
+Let comes last: Hamlet, Scarlet, Bracelet, Booklet
 
 Sudden forceful stream: Jet, Squirt, Spout, Gush
 Once in a tree: Amber, Cork, Rubber, Syrup
@@ -337,7 +337,7 @@ Things with eyes: Needle, Potato, Storm, Peacock
 Decorating a cake: Frost, Ice, Drizzle, Pipe
 Ends with a preposition: Thunder, Whiteout, Clover, Typhoon
 
-Lure: Draw, Tempt, Bait, Entice
+No winner: Draw, Stalemate, Deadlock, Dead Heat
 You can stretch it: Canvas, Truth, Hamstring, Budget
 Comedy forms: Sketch, Roast, Stand-Up, Improv
 Bands with an extra letter: Scream, Brush, Amuse, Blurb
@@ -360,7 +360,7 @@ Backwards they're blokes: Leon, Mail, Nomad, Nave
 Keep from harm: Harbour, Shelter, Shield, Cover
 They get dressed: Barbie, Salad, Wound, Crab
 Also web browsers: Opera, Safari, Chrome, Edge
-Scrambled bands: Emus, Skis, Reef, Pests
+Scrambled bands: Emus, Skis, Reef, Loot
 
 Keep tabs on: Monitor, Watch, Track, Observe
 Things that crumble: Cookie, Empire, Feta, Sandcastle
@@ -374,7 +374,7 @@ Home fittings up front: Sinker, Rugby, Hobbit, Tapas
 
 To put on hold: Shelve, Park, Mothball, Defer
 Things with legs: Relay, Trousers, Tripod, Spider
-Found in Parliament: Cabinet, Speaker, Whip, Bench
+In the tool shed: Bench, Cabinet, Vice, Lathe
 Furniture that survives beheading: Chair, Table, Couch, Stool
 
 Dish up: Serve, Plate, Spoon, Ladle
@@ -407,7 +407,7 @@ You can walk it: Plank, Dog, Tightrope, Red Carpet
 In the winery: Press, Crush, Barrel, Vintage
 Form a new word backwards: Step, Mat, Trap, Spin
 
-Hold up: Prop, Shore, Brace, Truss
+Hold up: Delay, Stall, Hinder, Detain
 Things with stalls: Market, Stable, Theatre, Cathedral
 Dressing a window: Blind, Curtain, Pelmet, Valance
 Animals with a letter added: Stage, Cast, Bath, Mousse
@@ -432,10 +432,10 @@ Things that rise: Dough, Tide, Phoenix, Damp
 Indiana Jones essentials: Whip, Fedora, Satchel, Idol
 Bedtime with one letter changed: Cream, Score, Willow, Cap
 
-To teach: Coach, Train, School, Drill
+To carry: Ferry, Shuttle, Cart, Truck
 Has wings: Plane, Theatre, Hospital, Angel
 Surfers' lingo: Tube, Barrel, Grommet, Wipeout
-Transport at the start: Carton, Busker, Vandal, Cabin
+Ends with a ute: Flute, Brute, Salute, Parachute
 
 Mess about with: Tinker, Fiddle, Meddle, Tamper
 They get dipped: Soldier, Biscuit, Headlights, Sheep
@@ -465,12 +465,12 @@ Famous Toms: Cruise, Waits, Petty, Holland
 Look closely: Peer, Squint, Scan, Pore
 Usually numbered: Page, Bus, House, Raffle Ticket
 Sesame Street regulars: Count, Elmo, Ernie, Oscar
-Titled folk: Baron, Prince, Earl, Duke
+Nobles one letter off: Bacon, Lard, Earn, Dune
 
 Tiny broken piece: Chip, Shard, Bit, Sliver
 Things you can catch: Virus, Bus, Breath, Wave
 Comes in a tin: Spam, Sardines, Golden Syrup, Paint
-Sound like computing: Bite, Cash, Quay, Sight
+Sound like computing: Sell, Cash, Quay, Sauce
 
 A clue: Pointer, Tip, Hint, Lead
 Wear gloves at work: Boxer, Surgeon, Goalie, Falconer
@@ -498,19 +498,19 @@ Old surveyors' lengths: Perch, Pole, Rod, Chain
 Fish with a letter in front: Reel, Spike, Shake, Fray
 
 Shut someone up: Mute, Gag, Muzzle, Hush
-You can set it: Record, Table, Alarm, Jelly
+You can keep it: Record, Secret, Time, Promise
 Footy positions: Forward, Back, Wing, Ruck
 Backwards in the kitchen: Stop, Snap, Reward, Gum
 
 Push through a crowd: Hustle, Jostle, Elbow, Shoulder
 You can dip into it: Salsa, Savings, Book, Pool
-Dickens in the title: Twist, Dorrit, Nickleby, Drood
+Drink garnishes: Twist, Olive, Cherry, Umbrella
 Dances that reverse into words: Tap, Reel, Dab, Step
 
 Pay the bill: Settle, Foot, Square, Meet
 It has legs: Table, Wine, Trousers, Journey
 Sigmund Freud's world: Couch, Cigar, Ego, Dream
-Vehicle at the start: Cabinet, Carpet, Vanity, Trampoline
+Net at the end: Cabinet, Magnet, Planet, Sonnet
 
 A light blow: Tap, Bop, Pat, Dab
 Things you can twist: Arm, Ankle, Truth, Balloon
@@ -525,7 +525,7 @@ Pop star soundalikes: Share, Prints, Lord, Seer
 Up to date: Current, Topical, Latest, Modern
 You can apply it: Force, Lipstick, Brakes, Sunscreen
 Inside a mattress: Spring, Foam, Ticking, Latex
-Physics takes a C up front: Lever, Heat, Ray, Lamp
+Takes a C up front: Lever, Heat, Ray, Lamp
 
 Interrogate: Grill, Pump, Quiz, Probe
 Things you pick up: Steam, Speed, Tab, Hitchhiker
@@ -534,7 +534,7 @@ Sound like blokes: Stew, Coal, Kneel, Fill
 
 Up to ___: Par, Scratch, Snuff, Speed
 They give off steam: Iron, Kettle, Geyser, Sauna
-For a cup of tea: Caddy, Bag, Cosy, Urn
+Carry your gear: Caddy, Porter, Sherpa, Roadie
 Golf terms minus a first letter: River, Utter, Edge, Lice
 
 Copy: Ape, Parrot, Echo, Mirror
@@ -580,9 +580,9 @@ Two notes from Do Re Mi: Sofa, Mire, Fare, Tire
 Huge: Mammoth, Colossal, Whopping, Massive
 They go bang: Cracker, Balloon, Starter Gun, Door
 Wile E Coyote's shopping list: Anvil, Rocket, Catapult, Bird Seed
-Hidden insects: Signature, Dynamite, Giant, Sticker
+Hidden creepy-crawlies: Signature, Dynamite, Giant, Sticker
 
-Tamper with a drink: Lace, Spike, Doctor, Dope
+Fasten: Lace, Tie, Buckle, Button
 You can run it: Drill, Bath, Errand, Risk
 Pancake by another name: Crepe, Blini, Pikelet, Flapjack
 Fabrics with a bite: Flannel, Taffeta, Gingham, Tartan
@@ -604,17 +604,17 @@ Home ___: Alone, Run, Page, Brew
 
 Big cheese: Mogul, Tycoon, Magnate, Baron
 Worn over the eyes: Goggles, Blindfold, Eyepatch, Monocle
-Parts of a book: Binding, Spine, Jacket, Leaf
+Can't be undone: Binding, Final, Irrevocable, Set In Stone
 Ski trip tumbles into new words: Luge, Piste, Skis, Lodge
 
 Loud noise: Racket, Din, Row, Clamour
 Things you can strike: Match, Pose, Chord, Gold
-Midsummer dreamers: Puck, Bottom, Quince, Oberon
+Flat and round: Puck, Coaster, Frisbee, Pancake
 Animals getting dressed: Foxglove, Cowslip, Catsuit, Hogtie
 
 To submit: Lodge, File, Enter, Put In
 They get raided: Fridge, Tomb, Bank, Hive
-In a power plug: Earth, Live, Neutral, Fuse
+Household wiring: Earth, Live, Neutral, Fuse
 Ends with a street short form: Nest, Cave, Bird, Word
 
 A bit of a thrill: Buzz, Kick, Rush, High
@@ -637,10 +637,10 @@ They can slip: Clutch, Disc, Tongue, Mind
 Punctuation by another name: Dash, Bracket, Stop, Slash
 Ends with a web suffix: Bonnet, Hornet, Sitcom, Cyborg
 
-Finish off a cake: Frost, Ice, Pipe, Glaze
+Done to a window: Frost, Tint, Glaze, Clean
 You can steal it: Thunder, Show, Heart, Scene
 X-Men with ordinary names: Storm, Rogue, Beast, Gambit
-Bands missing a first letter: Rain, Ham, Use, Ream
+Bands missing a first letter: Rain, Ham, Lash, Inks
 
 Wet through: Drench, Douse, Steep, Soak
 Things you round up: Sheep, Suspects, Decimal, Stray
@@ -655,7 +655,7 @@ Two words in one: Motel, Smog, Moped, Brunch
 Be a suck: Fawn, Crawl, Grovel, Creep
 They get roasted: Chestnut, Sunbather, Coffee Bean, Best Man
 Watership Down rabbits: Hazel, Fiver, Bigwig, Dandelion
-First names in reverse: Mail, Aim, Den, Tan
+First names in reverse: Ear, Aim, Den, Tan
 
 Set upon: Mug, Jump, Roll, Ambush
 Things with a filter: Cigarette, Pool, Instagram, Fish Tank
@@ -665,26 +665,26 @@ Furniture short a letter: Chai, Bun, Tale, Self
 Forty winks: Kip, Doze, Zizz, Snooze
 Has sheets: Ream, Yacht, Bed, Excel
 To skip school: Wag, Bunk, Skive, Ditch
-Kitchen items backwards: Gum, Nap, Top, Nib
+Greek gods in reverse: Nap, Suez, Sore, Sire
 
 Edge: Border, Verge, Margin, Brink
 You can trim it: Hedge, Beard, Fat, Sail
-Bowls talk: Jack, Bias, Rink, Lawn
+Gets mown: Lawn, Hay, Oval, Fairway
 TV show off by a letter: Shrubs, Cheeks, Cringe, Mouse
 
-Not the full quid: Galah, Drongo, Dill, Nong
+Not the full quid: Galah, Drongo, Dropkick, Wally
 Things with a pouch: Wombat, Pelican, Postie, Hamster
 Bluey's family: Bluey, Bingo, Bandit, Chilli
 Fauna ending in a woman's name: Brolga, Goanna, Rosella, Yabby
 
 A pause: Break, Rest, Breather, Spell
 You can throw it: Pot, Party, Tantrum, Frisbee
-At the ten-pin lanes: Frame, Strike, Spare, Gutter
+To set up falsely: Frame, Fit Up, Stitch Up, Plant
 Letters out loud: Queue, Tea, Pea, Eye
 
-Give the third degree: Grill, Quiz, Pump, Question
+Over high heat: Grill, Sear, Char, Blacken
 They run on a timer: Oven, Bomb, Sprinkler, Traffic Light
-In the DJ booth: Mixer, Turntable, Headphones, Crossfader
+Topping up a spirit: Mixer, Tonic, Soda, Ice
 Beheaded fruit: Ear, Each, Range, Rune
 
 Thin covering: Sheet, Blanket, Coat, Film
@@ -710,7 +710,7 @@ Lost their heads at the pub: Rink, Lass, Tout, Hot
 Feeling low: Blues, Funk, Dumps, Doldrums
 Things with capitals: Country, Column, Sentence, Alphabet
 Young troublemakers: Punk, Yob, Hoon, Larrikin
-Rhymes with bloke: Yolk, Folk, Cloak, Soak
+A silent L: Folk, Yolk, Palm, Calf
 
 Strength: Power, Might, Muscle, Clout
 They have degrees: Graduate, Oven, Compass, Protractor
@@ -750,7 +750,7 @@ Kids' TV stars inside: Fedora, Spatula, Sesame, Bobbin
 Check out: Vet, Screen, Case, Frisk
 They wear a wig: Judge, Clown, Barrister, Drag Queen
 Brewer's range: Porter, Stout, Bitter, Pilsner
-Blokes going backwards: Nod, Lien, Den, Eel
+Hides a hairpiece: Swig, Twig, Wigwam, Wiggle
 
 Shortage: Dearth, Want, Drought, Scarcity
 Things that run: Nose, Tap, Mascara, Creek
@@ -785,7 +785,7 @@ Sound like game: Bore, Foul, Hair, Dear
 Quiet: Mum, Still, Mute, Hushed
 Things with points: Star, Holly, Reindeer, Fork
 Startup talk: Angel, Seed, Pitch, Unicorn
-Anagrams of each other: Listen, Tinsel, Enlist, Silent
+Starts with a metal: Tinsel, Leader, Ironic, Goldilocks
 
 Sorrow: Misery, Woe, Anguish, Heartache
 They get split: Cell, Atom, Hair, Bill
@@ -795,7 +795,7 @@ Hidden body parts: Shining, Machine, Eclipse, Legend
 Unnerve: Rattle, Spook, Faze, Shake
 Things you can lose: Marbles, Weight, Bet, Way
 Aussie cookout: Barbie, Tongs, Snag, Esky
-Behead for a body part: Bear, Whip, Chair, Clip
+Toys one letter off: Poll, Logo, Bite, Tip
 
 A quick look: Squiz, Dekko, Butcher's, Peek
 Has beds: Hospital, River, Oyster, Nursery
@@ -805,10 +805,10 @@ All the same letters: Garden, Danger, Gander, Ranged
 Ditch: Bin, Dump, Scrap, Chuck
 You can beat it: Drum, Egg, Retreat, Rug
 An elephant has one: Trunk, Tusk, Hide, Memory
-Games with one letter off: Chest, Brisk, Stag, Prong
+Games with one letter changed: Chest, Rusk, Rag, Song
 
 Get it down: Tape, Log, Note, Jot
-Things with a needle: Compass, Pine, Haystack, Tattooist
+They point the way: Compass, Signpost, Arrow, Satnav
 Bridge night: Rubber, Dummy, Trick, Trump
 ___weight: Paper, Feather, Fly, Counter
 
@@ -825,7 +825,7 @@ Potter folk off by a letter: Snare, Album, Hobby, Finch
 Shot up: Rose, Soared, Rocketed, Spiked
 Things with stems: Tulip, Wineglass, Pipe, Brain
 Mickey's crew: Daisy, Pluto, Goofy, Donald
-Two words make one bloom: Buttercup, Snowdrop, Bluebell, Sunflower
+Flowers one letter off: Puppy, Penny, After, Lilt
 
 To go around: Skirt, Circle, Bypass, Orbit
 They get tied: Apron, Bow, Series, Shoelace
@@ -835,7 +835,7 @@ Clothes hiding creatures: Cape, Pants, Boxers, Heels
 Not smooth: Rough, Coarse, Bumpy, Jagged
 They get dug: Bunker, Hole, Grave, Potato
 At the merch stand: Tee, Hoodie, Poster, Tote Bag
-Animal soundalikes: Links, Hair, Mousse, Bore
+Animal soundalikes: Links, Hoarse, Mousse, Lama
 
 Laughs behind the hand: Snickers, Titters, Chortles, Sniggers
 Things with a basket: Picnic, Balloon, Bike, Netball
@@ -854,7 +854,7 @@ Sound like Greek letters: Pie, New, Row, Mew
 
 Upper limit: Cap, Ceiling, Lid, Max
 Things you kick: Bucket, Habit, Goal, Can
-Test cricket staples: Bowler, Keeper, Opener, Baggy Green
+Test cricket staples: Bowler, Keeper, Opener, Slip
 Hats missing a letter: Beet, Bower, Crow, Hod
 
 Flops: Turkey, Dud, Fizzer, Bomb
@@ -887,15 +887,15 @@ Things with a neck: Bottle, Guitar, Giraffe, Woods
 Wine taster's notes: Nose, Body, Legs, Finish
 Bodily with an extra letter: Chain, Brown, Chair, Shine
 
-To laugh: Titter, Snigger, Cackle, Guffaw
+To laugh: Cackle, Guffaw, Howl, Roar
 Things that spin: Top, Reel, Record, Disco Ball
-In a camera: Lens, Shutter, Flash, Sensor
+Bright burst: Flash, Flare, Spark, Glint
 Blends of two words: Chortle, Pulsar, Pixel, Cyborg
 
 Student: Pupil, Learner, Scholar, Trainee
 You can flip it: Lid, Coin, Pancake, Switch
 In a photographer's bag: Lens, Tripod, Flash, Filter
-Pop legends inside: Skeleton, Retina, Product, Archer
+Pop legends inside: Bonobo, Retina, Product, Archer
 
 Extract all you can from: Milk, Bleed, Squeeze, Drain
 Things that churn: Butter, Stomach, Surf, Cement Mixer
@@ -920,7 +920,7 @@ Kitchen minus the first letter: Ridge, Owl, Ink, Late
 Cut down: Felled, Axed, Lopped, Scythed
 Things with scales: Map, Dragon, Mermaid, Justice
 Parts of a cathedral: Gargoyle, Spire, Buttress, Crypt
-Ends with a short day: Salmon, Statue, Mowed, Demon
+Ends with a short day: Summon, Statue, Mowed, Virtue
 
 Winds with names: Sirocco, Mistral, Zephyr, Chinook
 They have shells: Beetle, Tortoise, Taco, Egg
@@ -959,7 +959,7 @@ Famous Kates: Moss, Bush, Spade, Hudson
 
 Bring up to speed: Train, Tutor, Prime, School
 Things with tracks: Album, Tank, Bulldozer, Velodrome
-Spy trade: Sleeper, Mole, Bug, Handler
+Diggers: Mole, Wombat, Miner, Anzac
 Colour then a body part: Redback, Bluetongue, Blackhead, Goldfinger
 
 A longing: Yen, Itch, Urge, Thirst
@@ -970,7 +970,7 @@ Numbers out loud: Won, Too, Fore, Ate
 Wise person: Sage, Guru, Oracle, Pundit
 They make money: Mint, Banker, Forger, Bookie
 Popeye's world: Olive, Bluto, Spinach, Wimpy
-Capital with a letter changed: Merlin, Lime, Dome, Parks
+Also birds of prey: Merlin, Hobby, Harrier, Osprey
 
 Work the soil: Till, Plough, Hoe, Harrow
 Things that beep: Scanner, Microwave, Reversing Truck, Smoke Alarm
@@ -990,7 +990,7 @@ Black ___: Mirror, Widow, Friday, Box
 Choose: Pick, Opt, Elect, Plump
 Things with a filling: Pie, Doona, Tooth, Sandwich
 A day at the Show: Floss, Showbag, Dagwood Dog, Woodchop
-Dentist words hiding a bloke: Enamel, Tartar, Sedative, Root Canal
+Dentist words hiding a bloke: Enamel, Tartar, Orthodontist, Novocaine
 
 To annoy: Bug, Needle, Irk, Nettle
 They spoil a picnic: Flies, Rain, Mozzies, Sand
@@ -1015,6 +1015,6 @@ Avengers inside: Author, Television, Falconer, Waspish
 Everyday essential: Staple, Basic, Necessity, Must Have
 They hold things together: Binder, Glue, Mortar, Zip
 Bits of footage: Clip, Trailer, Reel, Tape
-Beheaded sea life: Hark, Rout, Nail, Ream
+Beheaded sea life: Hark, Hale, Quid, Ream
 ` };
 if (typeof module === 'object' && module.exports) module.exports = SortedPuzzles;
