@@ -1,7 +1,6 @@
 package com.matisseduffield.ladder
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Bitmap
@@ -14,8 +13,6 @@ import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
-import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.core.net.toUri
@@ -28,12 +25,9 @@ import androidx.webkit.WebMessageCompat
 import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
-import com.matisseduffield.ladder.updates.UpdateManager
-import kotlinx.coroutines.Dispatchers
+import com.matisseduffield.ladder.updates.AppUpdates
 import kotlinx.coroutines.launch
-import org.json.JSONArray
 import org.json.JSONObject
-import java.io.File
 
 /**
  * Hosts web/index.html, the hub, and the games in the folders beside it
@@ -48,7 +42,6 @@ class MainActivity : ComponentActivity() {
         const val APP_ORIGIN = "https://$APP_HOST"
         const val START_URL = "$APP_ORIGIN/assets/index.html"
         const val BRIDGE_NAME = "ladderApp"
-        const val CHECK_INTERVAL_MS = 6 * 60 * 60 * 1000L
         const val CLOCK_NAME = "ladderClock"
         const val CLOCK_INTERVAL_MS = 15 * 60 * 1000L
 
@@ -60,13 +53,9 @@ class MainActivity : ComponentActivity() {
     private lateinit var web: WebView
     private val clock by lazy { TrustedClock(this) }
     private var lastClockCheck = 0L
-    private var lastUpdateCheck = 0L
-    private var updatePromptOpen = false
+    private val updates = AppUpdates(this, ::send)
     private var page: JavaScriptReplyProxy? = null
     private var pageWantsBack = false
-    private val bridgeSupported by lazy { WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER) }
-    private var pendingUpdate: UpdateManager.UpdateInfo? = null
-    private var installing = false
 
     // With the bridge, Back is only intercepted while there's somewhere to go
     // back to (a game's "back" message, or the hub behind a game), so the
@@ -175,24 +164,7 @@ class MainActivity : ComponentActivity() {
         web.addJavascriptInterface(clock, CLOCK_NAME)
         web.loadUrl(START_URL)
 
-        // A downloaded update has done its job once the new version is running.
-        if (savedInstanceState == null) {
-            lifecycleScope.launch(Dispatchers.IO) { File(cacheDir, "updates").deleteRecursively() }
-        }
-
-        lifecycleScope.launch {
-            UpdateManager.installError.collect { message ->
-                if (message != null) {
-                    if (installing) {
-                        installing = false
-                        sendUpdateState("failed") { put("message", message) }
-                    } else {
-                        Toast.makeText(this@MainActivity, message, Toast.LENGTH_LONG).show()
-                    }
-                    UpdateManager.installError.value = null
-                }
-            }
-        }
+        updates.start(firstCreate = savedInstanceState == null)
     }
 
     // Out of sight, the page's timers stop entirely; they resume (and catch
@@ -202,7 +174,7 @@ class MainActivity : ComponentActivity() {
         web.onResume()
         web.resumeTimers()
         maybeCheckClock()
-        maybeCheckForUpdate()
+        updates.onResume()
     }
 
     override fun onPause() {
@@ -234,8 +206,8 @@ class MainActivity : ComponentActivity() {
         when (msg.optString("type")) {
             "hello" -> {
                 page = reply
-                send(JSONObject().put("type", "info").put("version", BuildConfig.VERSION_NAME))
-                pendingUpdate?.let { sendUpdateCard(it) }
+                send(JSONObject().put("type", "info").put("version", BuildConfig.VERSION_NAME).put("updates", BuildConfig.SELF_UPDATER))
+                updates.onPageReady()
             }
             "back" -> {
                 pageWantsBack = msg.optBoolean("enabled")
@@ -253,59 +225,8 @@ class MainActivity : ComponentActivity() {
                 if (msg.optString("kind") == "tick") HapticFeedbackConstants.CLOCK_TICK
                 else HapticFeedbackConstants.VIRTUAL_KEY,
             )
-            "checkUpdate" -> checkForUpdateNow()
-            "installUpdate" -> pendingUpdate?.let { installFromCard(it) }
-        }
-    }
-
-    // ---- update card ----
-    // With the bridge, updates appear as a card in the page; the system dialog
-    // below is only the fallback for WebViews without it.
-
-    private fun onUpdateAvailable(info: UpdateManager.UpdateInfo) {
-        if (!bridgeSupported) {
-            if (!updatePromptOpen) offerUpdate(info)
-            return
-        }
-        pendingUpdate = info
-        sendUpdateCard(info) // no-op until the page has said hello; "hello" sends it then
-    }
-
-    private fun sendUpdateCard(info: UpdateManager.UpdateInfo) {
-        if (installing) return
-        send(
-            JSONObject()
-                .put("type", "update")
-                .put("state", "available")
-                .put("version", info.versionName)
-                .put("size", info.sizeBytes)
-                .put("notes", JSONArray(info.notes)),
-        )
-    }
-
-    private fun sendUpdateState(state: String, extra: JSONObject.() -> Unit = {}) {
-        runOnUiThread { send(JSONObject().put("type", "update").put("state", state).apply(extra)) }
-    }
-
-    private fun installFromCard(info: UpdateManager.UpdateInfo) {
-        if (installing) return
-        installing = true
-        lifecycleScope.launch {
-            try {
-                var lastPct = -1
-                val apk = UpdateManager.download(this@MainActivity, info) { fraction ->
-                    val pct = (fraction * 100).toInt()
-                    if (pct != lastPct) {
-                        lastPct = pct
-                        sendUpdateState("downloading") { put("progress", fraction.toDouble()) }
-                    }
-                }
-                sendUpdateState("installing")
-                UpdateManager.install(this@MainActivity, apk)
-            } catch (e: Exception) {
-                installing = false
-                sendUpdateState("failed") { put("message", e.message ?: "The download didn't finish.") }
-            }
+            "checkUpdate" -> updates.checkNow()
+            "installUpdate" -> updates.installPending()
         }
     }
 
@@ -315,77 +236,4 @@ class MainActivity : ComponentActivity() {
         runCatching { page?.postMessage(json.toString()) }
     }
 
-    /** Result of a check the page asked for: "available", "latest" or "failed". */
-    private fun sendUpdateStatus(state: String) {
-        send(JSONObject().put("type", "updateStatus").put("state", state))
-    }
-
-    private fun checkForUpdateNow() {
-        lastUpdateCheck = System.currentTimeMillis()
-        lifecycleScope.launch {
-            when (val result = UpdateManager.check()) {
-                is UpdateManager.CheckResult.Available -> {
-                    sendUpdateStatus("available")
-                    onUpdateAvailable(result.info)
-                }
-                UpdateManager.CheckResult.UpToDate -> sendUpdateStatus("latest")
-                is UpdateManager.CheckResult.Failed -> sendUpdateStatus("failed")
-            }
-        }
-    }
-
-    private fun maybeCheckForUpdate() {
-        val now = System.currentTimeMillis()
-        if (updatePromptOpen || now - lastUpdateCheck < CHECK_INTERVAL_MS) return
-        lastUpdateCheck = now
-        lifecycleScope.launch {
-            val result = UpdateManager.check()
-            if (result is UpdateManager.CheckResult.Available && !isFinishing) onUpdateAvailable(result.info)
-        }
-    }
-
-    private fun offerUpdate(info: UpdateManager.UpdateInfo) {
-        updatePromptOpen = true
-        AlertDialog.Builder(this)
-            .setTitle("Update available")
-            .setMessage("Dailies ${info.versionName} is ready to install. You have ${BuildConfig.VERSION_NAME}.")
-            .setPositiveButton("Update") { _, _ -> runUpdate(info) }
-            .setNegativeButton("Later", null)
-            .setOnDismissListener { updatePromptOpen = false }
-            .show()
-    }
-
-    private fun runUpdate(info: UpdateManager.UpdateInfo) {
-        val pad = (24 * resources.displayMetrics.density).toInt()
-        val bar = ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal).apply {
-            max = 100
-            isIndeterminate = info.sizeBytes <= 0
-        }
-        val box = FrameLayout(this).apply {
-            setPadding(pad, pad / 2, pad, 0)
-            addView(bar)
-        }
-        val progress = AlertDialog.Builder(this)
-            .setTitle("Downloading ${info.versionName}")
-            .setView(box)
-            .setCancelable(false)
-            .show()
-
-        lifecycleScope.launch {
-            try {
-                val apk = UpdateManager.download(this@MainActivity, info) { fraction ->
-                    runOnUiThread { bar.progress = (fraction * 100).toInt() }
-                }
-                progress.dismiss()
-                UpdateManager.install(this@MainActivity, apk)
-            } catch (e: Exception) {
-                progress.dismiss()
-                Toast.makeText(
-                    this@MainActivity,
-                    "Update failed: ${e.message ?: "unknown error"}",
-                    Toast.LENGTH_LONG,
-                ).show()
-            }
-        }
-    }
 }
