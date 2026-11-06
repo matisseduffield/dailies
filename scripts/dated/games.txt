@@ -13,7 +13,7 @@
 1959|1|Barbie makes her debut at a New York toy fair|Wikipedia: Barbie
 1960|3|Etch A Sketch goes on sale|Wikipedia: Etch A Sketch
 1968|3|Hot Wheels toy cars are launched|Wikipedia: Hot Wheels
-1970|3|Parker Brothers launches the Nerf ball|Wikipedia: Nerf
+1970|3|Conway's Game of Life appears in Scientific American|Wikipedia: Conway's Game of Life
 1971|3|The card game Uno is created in Ohio|Wikipedia: Uno (card game)
 1972|1|Atari's Pong reaches arcades|Wikipedia: Pong
 1974|3|Dungeons & Dragons is first published|Wikipedia: Dungeons & Dragons
@@ -27,7 +27,7 @@
 1985|1|Super Mario Bros. comes out in Japan|Wikipedia: Super Mario Bros.
 1985|3|Pictionary is first published|Wikipedia: Pictionary
 1989|1|Game Boy goes on sale in Japan|Wikipedia: Game Boy
-1991|1|Sonic the Hedgehog comes out|Wikipedia: Sonic the Hedgehog (1991 video game)
+1991|1|The first Sonic the Hedgehog game comes out|Wikipedia: Sonic the Hedgehog (1991 video game)
 1994|1|PlayStation goes on sale in Japan|Wikipedia: PlayStation (console)
 1996|1|Pokémon Red and Green come out in Japan|Wikipedia: Pokémon Red and Blue
 1996|3|Tamagotchi goes on sale in Japan|Wikipedia: Tamagotchi

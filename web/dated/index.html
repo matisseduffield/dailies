@@ -207,7 +207,7 @@
 </dialog>
 
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
-<script src="days.js?v=1"></script>
+<script src="days.js?v=2"></script>
 <script src="lib.js?v=1"></script>
 <script src="../clock.js?v=1"></script>
 <script src="../next.js?v=7"></script>
@@ -615,6 +615,8 @@
 
   // Today's result, for the hub's home screen.
   function report() {
+    // Finished in the moments after midnight: that day's over, so the hub's new day stays open.
+    if (L.dayNumber(Clock.now(), D.epoch) !== today) return;
     const rec = state.days[today];
     if (!rec || !rec.done) return;
     const total = L.daily(today, D).cards.length - 1;
@@ -626,7 +628,12 @@
     const text = `${L.shareText(state.mode === 'daily' ? today : 0, now())}\n${SITE}`;
     if (app) return toApp({ type: 'share', title: 'Dated', text });
     if (navigator.share) return navigator.share({ text }).catch(() => {});
-    navigator.clipboard.writeText(text).then(() => say('Copied to share'), () => {});
+    navigator.clipboard.writeText(text).then(() => {
+      // The toast is hidden on the result screen, so the button says it.
+      const b = $(state.mode === 'daily' ? 'resFirst' : 'resSecond');
+      b.textContent = 'Copied';
+      setTimeout(() => { b.textContent = 'Share'; }, 1600);
+    }, () => {});
   }
 
   function startPractice() {

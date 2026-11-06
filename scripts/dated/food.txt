@@ -35,7 +35,7 @@
 1935|2|Canned beer goes on sale in Virginia|Wikipedia: Beverage can
 1937|1|Hormel launches Spam|Wikipedia: Spam (food)
 1937|2|Krispy Kreme opens in North Carolina|Wikipedia: Krispy Kreme
-1937|2|Kraft Dinner mac and cheese goes on sale|Wikipedia: Kraft Dinner
+1936|2|Kraft Dinner mac and cheese goes on sale|Wikipedia: Kraft Dinner
 1937|2|Rowntree's renames its Chocolate Beans Smarties|Wikipedia: Smarties
 1938|2|Nescafé instant coffee launches in Switzerland|Wikipedia: Nescafé
 1940|2|Fanta is created in Germany|Wikipedia: Fanta
@@ -45,7 +45,7 @@
 1958|3|Chupa Chups lollipops go on sale in Spain|Wikipedia: Chupa Chups
 1961|2|Coca-Cola launches Sprite in the US|Wikipedia: Sprite (drink)
 1961|2|Julia Child co-writes Mastering the Art of French Cooking|Wikipedia: Mastering the Art of French Cooking
-1962|3|Sam Panopoulos puts pineapple on pizza in Canada|Wikipedia: Hawaiian pizza
+1962|3|Sam Panopoulos says he first put pineapple on pizza|Wikipedia: Hawaiian pizza
 1963|3|Fry's Creme Egg, later Cadbury's, goes on sale|Wikipedia: Creme Egg
 1964|1|Nutella goes on sale|Wikipedia: Nutella
 1964|3|Buffalo's Anchor Bar says it served the first hot wings|Wikipedia: Buffalo wing

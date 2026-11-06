@@ -62,7 +62,7 @@
 1982|2|First CD player goes on sale, in Japan|Wikipedia: Compact disc
 1984|1|Apple Macintosh goes on sale|Wikipedia: Macintosh 128K
 1985|2|Microsoft Windows is first released|Wikipedia: Windows 1.0
-1990|2|Photoshop is first released|Wikipedia: Adobe Photoshop
+1990|2|Adobe ships Photoshop 1.0|Wikipedia: Adobe Photoshop
 1991|2|Linus Torvalds releases Linux|Wikipedia: Linux
 1992|3|First text message is sent: "Merry Christmas"|Wikipedia: SMS
 1994|3|Denso Wave invents the QR code in Japan|Wikipedia: QR code

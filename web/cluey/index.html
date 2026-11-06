@@ -75,8 +75,8 @@
 @media (max-width: 350px) { .tool { padding: 0 6px; font-size: .82rem; } .tool:last-child { margin-right: -6px; } }
 
 /* The clue, with the way to the one before and after it */
-.bar { display: grid; grid-template-columns: 42px 1fr 42px; align-items: stretch; min-height: 56px; margin-bottom: 7px; background: var(--word); border-radius: 8px; user-select: none; -webkit-user-select: none; }
-.bar button { padding: 0; background: none; border: 0; touch-action: manipulation; }
+.clue-bar { display: grid; grid-template-columns: 42px 1fr 42px; align-items: stretch; min-height: 56px; margin-bottom: 7px; padding: 0 8px; background: var(--word); border-radius: 8px; font-weight: 600; user-select: none; -webkit-user-select: none; }
+.clue-bar button { padding: 0; background: none; border: 0; touch-action: manipulation; }
 .step { display: grid; place-items: center; color: var(--muted); border-radius: 8px; }
 @media (hover: hover) { .step:hover { color: var(--ink); } }
 .step:active { background: var(--key-down); }
@@ -108,7 +108,7 @@
   .app { padding-top: 2px; padding-bottom: 6px; }
   .tools { min-height: 36px; }
   .tool { height: 36px; }
-  .bar { min-height: 50px; margin-bottom: 5px; }
+  .clue-bar { min-height: 50px; margin-bottom: 5px; }
   .say { font-size: .88rem; }
   .result { gap: 9px; padding: 11px 14px; }
   .result-title { font-size: 1.25rem; }
@@ -159,7 +159,7 @@
         <button class="tool" id="revealBtn" type="button"></button>
         <button class="tool" id="giveUpBtn" type="button">Give up</button>
       </div>
-      <div class="bar">
+      <div class="clue-bar">
         <button class="step" id="prevBtn" type="button" aria-label="Previous clue">
           <svg width="10" height="16" viewBox="0 0 10 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2 2 8l6 6"/></svg>
         </button>
@@ -271,7 +271,12 @@
 
   function load() {
     puzzle = L.daily(today, D);
-    if (!fits(state.days[today])) state.days[today] = fresh();
+    const rec = state.days[today];
+    // The day can go back (a flight west): a finished day trimmed for the stats comes back whole.
+    if (rec && rec.done && typeof rec.fill !== 'string') {
+      const first = puzzle.entries[0];
+      Object.assign(rec, { fill: puzzle.answer, marks: L.blank(puzzle), cell: first.cells[0], across: first.across, missed: '' });
+    } else if (!fits(rec)) state.days[today] = fresh();
     play = state.days[today];
     buildGrid();
   }
@@ -629,6 +634,8 @@
 
   // Today's result, for the hub's home screen.
   function report() {
+    // Finished in the moments after midnight: that day's over, so the hub's new day stays open.
+    if (L.dayNumber(Clock.now(), D.epoch) !== today) return;
     const rec = state.days[today];
     if (!rec || !rec.done) return;
     const n = helps(rec);
@@ -712,7 +719,12 @@
   document.addEventListener('keydown', e => {
     if (e.ctrlKey || e.metaKey || e.altKey || e.defaultPrevented || play.done || openDialog()) return;
     const onButton = e.target instanceof Element && e.target.closest('button, a');
-    if (/^[a-z]$/i.test(e.key)) { e.preventDefault(); return press(e.key.toLowerCase()); }
+    if (/^[a-z]$/i.test(e.key)) {
+      e.preventDefault();
+      // Off the last button clicked, so Enter goes to the game.
+      if (e.target instanceof HTMLElement) e.target.blur();
+      return press(e.key.toLowerCase());
+    }
     if (e.key === 'Backspace') { e.preventDefault(); return erase(); }
     if (e.key === 'Delete') { e.preventDefault(); return clearCell(); }
     const way = { ArrowLeft: [0, -1], ArrowRight: [0, 1], ArrowUp: [-1, 0], ArrowDown: [1, 0] }[e.key];
@@ -752,7 +764,7 @@
   };
   function tellBack() { toApp({ type: 'back', enabled: !!openDialog() }); }
 
-  addEventListener('resize', fit);
+  new ResizeObserver(() => { if (puzzle) fit(); }).observe($('stage'));
 
   // A new day while the game sits open (or comes back from the background).
   function checkDay() {
@@ -762,6 +774,7 @@
       save();
       today = day;
       mark = null;
+      $('cluesSheet').close();
       load();
       say('');
       render();

@@ -204,7 +204,7 @@ dialog.sheet::backdrop { background: var(--backdrop); }
 .bar-row { display: grid; grid-template-columns: 64px 1fr; align-items: center; gap: 10px; font-size: .84rem; }
 .bar-row > span { color: var(--muted); }
 .bar { height: 24px; min-width: 26px; padding: 0 8px; border-radius: 4px; background: var(--key); display: flex; align-items: center; justify-content: flex-end; font-size: .8rem; font-weight: 600; }
-.bar.today { background: var(--accent); color: #fff; }
+.bar.today { background: var(--accent); color: var(--on-ink); }
 
 /* The hard mode switch in How to play */
 .mode-row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 14px; min-height: 60px; padding: 10px 14px; background: var(--bg); border: 0; border-radius: 10px; text-align: left; }

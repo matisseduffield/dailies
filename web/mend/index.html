@@ -266,7 +266,7 @@
 
   function load() {
     clearTimers();
-    settling = false; picked = null; press = null;
+    settling = false; picked = null; press = null; cursor = 0;
     if (state.mode === 'practice') {
       puzzle = L.puzzle(state.practice.at, D);
       play = checked(state.practice);
@@ -593,6 +593,8 @@
 
   // Today's result, for the hub's home screen.
   function report() {
+    // Finished in the moments after midnight: that day's over, so the hub's new day stays open.
+    if (L.dayNumber(Clock.now(), D.epoch) !== today) return;
     const rec = state.days[today];
     if (!rec || !rec.done) return;
     const text = rec.won ? `${rec.left} of ${L.daily(today, D).swaps} swaps left` : rec.gaveUp ? 'Gave up' : 'Out of swaps';
@@ -603,7 +605,12 @@
     const text = `${L.shareText(state.mode === 'daily' ? today : 0, puzzle.start, puzzle.answer, play.moves, puzzle.swaps, play)}\n${SITE}`;
     if (app) return toApp({ type: 'share', title: 'Mend', text });
     if (navigator.share) return navigator.share({ text }).catch(() => {});
-    navigator.clipboard.writeText(text).then(() => say('Copied to share'), () => {});
+    navigator.clipboard.writeText(text).then(() => {
+      // The toast is hidden on the result screen, so the button says it.
+      const b = $(state.mode === 'daily' ? 'resFirst' : 'resSecond');
+      b.textContent = 'Copied';
+      setTimeout(() => { b.textContent = 'Share'; }, 1600);
+    }, () => {});
   }
 
   function startPractice() {

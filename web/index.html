@@ -122,9 +122,11 @@
   };
   const dateFormat = new Intl.DateTimeFormat(navigator.language || 'en', { weekday: 'long', day: 'numeric', month: 'long' });
 
+  let shownDay = '';
   function render() {
     const now = Clock.now(), day = now.toDateString();
     let done = 0;
+    shownDay = day;
     $('date').textContent = dateFormat.format(now);
     $('games').replaceChildren(...GAMES.map(g => {
       const result = store.get(g.id);
@@ -158,6 +160,7 @@
   addEventListener('pageshow', render);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) render(); });
   addEventListener('clock', render);
+  setInterval(() => { if (!document.hidden && Clock.now().toDateString() !== shownDay) render(); }, 30000);
 
   // ---- Android app bridge (absent in a browser) ----
   const app = window.ladderApp || null;

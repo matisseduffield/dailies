@@ -16,7 +16,7 @@
 1895|2|Banjo Paterson writes Waltzing Matilda|Wikipedia: Waltzing Matilda
 1901|1|The Australian colonies federate|Wikipedia: Federation of Australia
 1902|2|Most Australian women win the vote in federal elections|Wikipedia: Commonwealth Franchise Act 1902
-1902|3|William Gocher defies the daylight swimming ban at Manly|Wikipedia: William Gocher
+1903|3|Manly Council lifts its daylight swimming ban|Wikipedia: William Gocher
 1905|2|What's now the Australian Open is first played, in Melbourne|Wikipedia: 1905 Australasian Championships
 1906|2|The Story of the Kelly Gang, an early feature film, opens|Wikipedia: The Story of the Kelly Gang
 1907|2|Bondi Surf Bathers' Life Saving Club is founded|Wikipedia: Bondi Surf Bathers' Life Saving Club
@@ -138,7 +138,7 @@
 2018|1|Bluey first airs on ABC Kids|Wikipedia: Bluey (TV series)
 2019|1|Tones and I releases Dance Monkey|Wikipedia: Dance Monkey
 2019|2|The climb up Uluru closes for good|Parks Australia: Uluru climb closure
-2021|1|Ash Barty wins Wimbledon|Wikipedia: Ash Barty
+2021|1|Ash Barty wins the Wimbledon women's singles|Wikipedia: Ash Barty
 2021|2|Brisbane is named a future Olympic host|Wikipedia: 2032 Summer Olympics
 2022|1|Ash Barty wins the Australian Open|Wikipedia: Ash Barty
 2023|1|The Matildas reach a home World Cup semi-final|Wikipedia: Australia at the FIFA Women's World Cup

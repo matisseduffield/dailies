@@ -60,6 +60,7 @@
 @media (prefers-reduced-motion: reduce) {
   .row.new .tile, .row.bad { animation: none; }
 }
+@media (max-height: 640px) { .stage { padding-top: 40px; } }
 </style>
 </head>
 <body>
@@ -361,7 +362,7 @@
   }
   $('hardBtn').addEventListener('click', () => {
     state.hard = !state.hard;
-    if (!state.hard) play.hard = false;
+    if (!state.hard && !play.done) play.hard = false;
     save(); showHard();
   });
 
@@ -400,6 +401,7 @@
     const missed = state.hard && L.missedClue(next, play.guesses, answer);
     if (missed) return reject(missed);
     if (!play.guesses.length) play.hard = state.hard;
+    else if (!state.hard) play.hard = false;
     play.guesses.push(next);
     typed = ''; fresh = true;
     say('');
@@ -433,9 +435,11 @@
 
   // Today's result, for the hub's home screen.
   function report() {
+    // Finished in the moments after midnight: that day's over, so the hub's new day stays open.
+    if (L.dayNumber(Clock.now(), D.epoch) !== today) return;
     const rec = state.days[today];
     if (!rec || !rec.done) return;
-    const text = rec.won ? `Got it in ${rec.guesses.length}` : `It was ${L.daily(today, dict).toUpperCase()}`;
+    const text = rec.won ? `Got it in ${rec.guesses.length}` : 'Out of tries';
     try { localStorage.setItem('hub.hunch', JSON.stringify({ date: Clock.now().toDateString(), text })); } catch {}
   }
 
@@ -494,14 +498,16 @@
   // thumbs typing fast overlap, which loses letters. A click with no pointer
   // behind it is Tab and Enter, or a screen reader.
   let holding = 0;
+  const stopHolding = () => { clearTimeout(holding); clearInterval(holding); };
   $('keys').addEventListener('pointerdown', e => {
     const k = e.target.closest('.key');
     if (!k) return;
     hit(k);
     // Holding delete keeps deleting, as on a phone's own keyboard.
+    stopHolding();
     if (k.dataset.key === 'erase') holding = setTimeout(() => { holding = setInterval(erase, 90); }, 380);
   });
-  for (const type of ['pointerup', 'pointercancel']) addEventListener(type, () => clearInterval(holding));
+  for (const type of ['pointerup', 'pointercancel']) addEventListener(type, stopHolding);
   $('keys').addEventListener('click', e => {
     const k = e.target.closest('.key');
     if (k && (e.detail === 0 || e.pointerType === '')) hit(k);
@@ -511,7 +517,12 @@
 
   document.addEventListener('keydown', e => {
     if (e.ctrlKey || e.metaKey || e.altKey || e.defaultPrevented || play.done || openDialog()) return;
-    if (/^[a-z]$/i.test(e.key)) { e.preventDefault(); return press(e.key.toLowerCase()); }
+    if (/^[a-z]$/i.test(e.key)) {
+      e.preventDefault();
+      // Off the last button clicked, so Enter goes to the game.
+      if (e.target instanceof HTMLElement) e.target.blur();
+      return press(e.key.toLowerCase());
+    }
     if (e.key === 'Backspace') { e.preventDefault(); return erase(); }
     // Enter on a button reached with Tab still presses that button.
     if (e.key === 'Enter' && !(e.target instanceof Element && e.target.closest('button, a'))) { e.preventDefault(); return enter(); }

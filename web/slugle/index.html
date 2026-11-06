@@ -722,6 +722,7 @@
     if (hint && hint.shown === 'word') { typed = hint.word; renderLadder(); return say(`Try ${hint.word.toUpperCase()}. Press Enter.`, 'tip', 5000); }
     const next = L.nextStep(word, puzzle.target, dict);
     if (!next) return say('No way on from here. Undo a step.', 'warn');
+    if (play.ladder.includes(next)) return say(`Go back to ${next.toUpperCase()}: tap it, or Undo.`, 'tip', 5000);
     play.hints++;
     if (hint && hint.word === next) {
       hint.shown = 'word';
@@ -744,6 +745,8 @@
 
   // Today's result, for the hub's home screen.
   function report() {
+    // Finished in the moments after midnight: that day's over, so the hub's new day stays open.
+    if (L.dayNumber(Clock.now(), D.epoch) !== today) return;
     const rec = state.days[today];
     if (!rec || !rec.done) return;
     const text = `Solved in ${rec.ladder.length - 1}, par ${L.parForDay(today, D.epoch)}`;
@@ -804,15 +807,17 @@
   // Keys act on touch-down: a click waits for the finger to lift, and two
   // thumbs typing fast overlap, which loses letters. A click with no pointer
   // behind it is Tab and Enter, or a screen reader.
+  let holding = 0;
+  const stopHolding = () => { clearTimeout(holding); clearInterval(holding); };
   $('keys').addEventListener('pointerdown', e => {
     const k = e.target.closest('.key');
     if (!k) return;
     hit(k);
     // Holding delete keeps deleting, as on a phone's own keyboard.
+    stopHolding();
     if (k.dataset.key === 'erase') holding = setTimeout(() => { holding = setInterval(erase, 90); }, 380);
   });
-  let holding = 0;
-  for (const type of ['pointerup', 'pointercancel']) addEventListener(type, () => clearInterval(holding));
+  for (const type of ['pointerup', 'pointercancel']) addEventListener(type, stopHolding);
   $('keys').addEventListener('click', e => {
     const k = e.target.closest('.key');
     if (k && (e.detail === 0 || e.pointerType === '')) hit(k);
@@ -832,7 +837,12 @@
 
   document.addEventListener('keydown', e => {
     if (e.ctrlKey || e.metaKey || e.altKey || e.defaultPrevented || play.done || openDialog()) return;
-    if (/^[a-z]$/i.test(e.key)) { e.preventDefault(); return press(e.key.toLowerCase()); }
+    if (/^[a-z]$/i.test(e.key)) {
+      e.preventDefault();
+      // Off the last button clicked, so Enter goes to the game.
+      if (e.target instanceof HTMLElement) e.target.blur();
+      return press(e.key.toLowerCase());
+    }
     if (e.key === 'Backspace') { e.preventDefault(); return erase(); }
     // Enter on a button reached with Tab still presses that button.
     if (e.key === 'Enter' && !(e.target instanceof Element && e.target.closest('button, [role="button"]'))) { e.preventDefault(); return enter(); }
