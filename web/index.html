@@ -12,15 +12,15 @@
 <link rel="preload" href="fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="shared.css">
 <style>
-.today { padding-top: 22px; }
+.today { padding-top: 14px; }
 .today h2 { font-size: 1.6rem; font-weight: 600; letter-spacing: -.015em; line-height: 1.2; }
 .today p { margin-top: 2px; font-size: .92rem; color: var(--muted); }
 
 /* A row for each game */
-.games { display: grid; gap: 10px; margin-top: 20px; }
+.games { display: grid; gap: 8px; margin-top: 16px; }
 .game {
-  display: grid; grid-template-columns: 44px 1fr auto; align-items: center; gap: 14px;
-  min-height: 76px; padding: 12px 14px;
+  display: grid; grid-template-columns: 40px 1fr auto; align-items: center; gap: 12px;
+  min-height: 64px; padding: 9px 14px 9px 12px;
   background: var(--surface); border-radius: 10px;
   color: inherit; text-decoration: none;
 }
@@ -101,14 +101,16 @@
   const GRID = '<rect x="6" y="6" width="52" height="52" fill="#14211C"/><rect x="7" y="7" width="16" height="16" fill="#F4C52E"/><rect x="24" y="7" width="16" height="16" fill="#BFD2F8"/><rect x="41" y="7" width="16" height="16" fill="#BFD2F8"/><rect x="7" y="24" width="16" height="16" fill="#FCFCF8"/><rect x="24" y="24" width="16" height="16" fill="#FCFCF8"/><rect x="24" y="41" width="16" height="16" fill="#FCFCF8"/><rect x="41" y="41" width="16" height="16" fill="#FCFCF8"/>';
   const WEAVE = '<rect x="6" y="16" width="52" height="12" rx="3" fill="#1D7548"/><rect x="6" y="36" width="52" height="12" rx="3" fill="#1D7548"/><rect x="16" y="6" width="12" height="52" rx="3" fill="#F4C52E"/><rect x="36" y="6" width="12" height="52" rx="3" fill="#F4C52E"/><rect x="16" y="16" width="12" height="12" fill="#1D7548"/><rect x="36" y="36" width="12" height="12" fill="#1D7548"/>';
   const ROWS = '<rect x="6" y="8" width="40" height="13" rx="3" fill="#2C53C4"/><rect x="18" y="25.5" width="40" height="13" rx="3" fill="#F4C52E"/><rect x="6" y="43" width="40" height="13" rx="3" fill="#2C53C4"/>';
+  const ROUTE = '<path d="M15 49 27 40 24 25 40 26 49 15" stroke="#1D7548" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="15" cy="49" r="10" fill="#F4C52E"/><circle cx="49" cy="15" r="10" fill="#2C53C4"/>';
   const GAMES = [
     { id: 'slugle', name: 'Slugle', line: 'Turn today’s word into SLUG', icon: SLUG },
     { id: 'hunch', name: 'Hunch', line: 'Find the hidden word in six tries', icon: BULB },
-    { id: 'sorted', name: 'Sorted', line: 'Split sixteen words into four groups', icon: BARS },
+    { id: 'sorted', name: 'Sorted', line: 'Find four groups of four words', icon: BARS },
     { id: 'reach', name: 'Reach', line: 'Hit the target with six numbers', icon: RINGS },
-    { id: 'cluey', name: 'Cluey', line: 'A small crossword, slyer as the week goes on', icon: GRID },
-    { id: 'mend', name: 'Mend', line: 'Swap the letters back into their words', icon: WEAVE },
-    { id: 'dated', name: 'Dated', line: 'Put events in order without seeing the years', icon: ROWS },
+    { id: 'cluey', name: 'Cluey', line: 'A small crossword, slyer each day', icon: GRID },
+    { id: 'mend', name: 'Mend', line: 'Swap letters back into words', icon: WEAVE },
+    { id: 'dated', name: 'Dated', line: 'Put history in order, blind', icon: ROWS },
+    { id: 'overland', name: 'Overland', line: 'Cross the map, border by border', icon: ROUTE },
   ];
   const SITE = 'https://dailies.matisseduffield.workers.dev';
 
@@ -130,7 +132,7 @@
       if (played) done++;
       const a = el('a', played ? 'game done' : 'game');
       a.href = `${g.id}/index.html`;
-      a.innerHTML = `<svg width="44" height="44" viewBox="0 0 64 64" fill="none" aria-hidden="true">${g.icon}</svg>`;
+      a.innerHTML = `<svg width="40" height="40" viewBox="0 0 64 64" fill="none" aria-hidden="true">${g.icon}</svg>`;
       const text = el('div');
       text.append(el('b', '', g.name), el('span', '', played ? result.text : g.line));
       a.append(text, el('span', 'state', played ? 'Done' : 'Play'));

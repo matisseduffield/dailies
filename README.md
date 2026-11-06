@@ -106,6 +106,18 @@ live in `scripts/dated/*.txt`, and `node scripts/build-dated.mjs` deals the days
 into `web/dated/days.js`. Any change to the events reassigns every day, so after
 launch fix wording in both the source and `days.js` by hand.
 
+## Overland
+
+Get from one country to another by land, naming the countries between in any
+order, with a few guesses more than the shortest route needs. The map shows land
+with no borders, and only the countries named so far. `web/overland/map.js` holds
+the shapes (Natural Earth, public domain) and borders, written by
+`scripts/build-overland-map.mjs`: borders come off the shapes, are compared with a
+separate list, and the build stops on any disagreement not settled by hand in its
+`FIXES`. `node scripts/build-overland.mjs` deals four years of days into
+`web/overland/days.js` under `scripts/overland-rules.cjs`; a test pins them, so
+don't rebuild over days already played.
+
 ## Slugle
 
 A daily word ladder. Turn a new four-letter word into SLUG by changing one
@@ -164,7 +176,7 @@ save `{ date: new Date().toDateString(), text }` to localStorage as
 - `web/clock.js`: the time every game goes by, from our server rather than the
   phone, so `Clock.now()` replaces `new Date()` for anything to do with the day.
 - `web/shared.css`: the palette, keyboard, sheets and so on that every page uses.
-- `web/slugle/`, `web/hunch/`, `web/sorted/`, `web/reach/`, `web/cluey/`, `web/mend/`, `web/dated/`: a game each. `index.html` is the whole game (no
+- `web/slugle/`, `web/hunch/`, `web/sorted/`, `web/reach/`, `web/cluey/`, `web/mend/`, `web/dated/`, `web/overland/`: a game each. `index.html` is the whole game (no
   build step), `lib.js` its pure logic, tested by `node --test "tests/*.test.js"`,
   and `words.js`, `puzzles.js` or `days.js` its data.
 - `worker/worker.js`: the Cloudflare Workers `dailies`, `slugle` and `ladder`

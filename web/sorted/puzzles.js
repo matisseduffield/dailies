@@ -163,7 +163,7 @@ Capes of the world: Fear, Wrath, Horn, York
 ___ management: Anger, Risk, Waste, Time
 
 A big to-do: Drama, Scene, Fuss, Commotion
-Face up to these: Music, Facts, Fears, East
+Time to face these: Music, Facts, Fears, East
 On the mustard shelf: English, French, Dijon, Wholegrain
 Pop ___: Art, Quiz, Group, Star
 
@@ -268,7 +268,7 @@ A coder's languages: Pascal, Ada, Python, Swift
 Scientists who sound like verbs: Hooke, Boyle, Bohr, Hertz
 
 Outer edge: Fringe, Margin, Verge, Rim
-Under lock: Canal, Diary, Scrum, Rapunzel
+Locks included: Canal, Diary, Scrum, Rapunzel
 The beekeeper's lot: Comb, Veil, Smoker, Queen
 ___ cut: Crew, Buzz, Paper, Pixie
 
@@ -793,7 +793,7 @@ In a decorator's van: Thinner, Turps, Primer, Roller
 Hidden body parts: Shining, Machine, Eclipse, Legend
 
 Unnerve: Rattle, Spook, Faze, Shake
-Gone missing: Marbles, Weight, Bet, Way
+All lost: Marbles, Weight, Bet, Way
 Aussie cookout: Barbie, Tongs, Snag, Esky
 Toys one letter off: Poll, Logo, Bite, Tip
 
@@ -898,7 +898,7 @@ In a photographer's bag: Lens, Tripod, Flash, Filter
 Pop legends inside: Bonobo, Retina, Product, Archer
 
 Extract all you can from: Milk, Bleed, Squeeze, Drain
-Churned up: Butter, Stomach, Surf, Cement Mixer
+Churning: Butter, Stomach, Surf, Cement Mixer
 Miss Muffet's scene: Curds, Whey, Tuffet, Spider
 Dairy with an extra letter: Bride, Fetal, Scream, Cured
 
@@ -953,7 +953,7 @@ Fellowship of the Ring: Merry, Pippin, Strider, Boromir
 Aussie animals one letter off: Combat, Quill, Emo, Bilbo
 
 Hurry: Rush, Dash, Hasten, Hotfoot
-Up they go: Vine, Ladder, Everest, Charts
+Up you go: Vine, Ladder, Everest, Charts
 Batman's rogues: Ivy, Penguin, Joker, Bane
 Famous Kates: Moss, Bush, Spade, Hudson
 
