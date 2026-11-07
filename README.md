@@ -133,19 +133,26 @@ don't rebuild over days already played.
 
 Words sit in a tree, and every word followed by the word under it makes a joined
 word or a familiar phrase (fire + work, fire + alarm). The words start out of place;
-tap two to swap them, then check. A check marks each link, and right links lock.
-Four checks Monday to Thursday, three from Friday, and the trees grow from six
-words on Monday to ten at the weekend. Words hanging from the same word can be in
-either order, so a check reads the answer the way that best fits the board.
+tap two to swap them, then check. A check turns right links into green branches,
+which lock, and breaks wrong ones into dots. Four checks Monday to Thursday, three
+from Friday; trees grow from six words on Monday to a full pyramid of ten at the
+weekend, and every word with nothing under it sits on the bottom row. Words hanging
+from the same word can be in either order, so a check reads the answer the way that
+best fits the board.
 
-The links come from two reviewed lists: `scripts/splice-words.txt` (joined words
-found in SCOWL, kept only when both parts read as words) and
-`scripts/splice-phrases.txt` (phrases one reviewer listed and a second checked for
-everyday Australian use). `node scripts/build-splice.mjs` fills a tree a day into
-`web/splice/days.js`, keeping one only if it has exactly one answer against both
-lists and the proof words in `scripts/mend-words.txt`. A link rests 45 days and a
-word 7. There are 840 days, so the list goes round in February 2029. A test checks
-every day's answer is the only one, so don't rebuild over days already played.
+Answers only come from `scripts/splice-answers.txt`: links two separate strict
+reviewers both kept (familiar at once to an Australian adult, no false splits, no
+US or UK usage, nothing crude), with how each is written. Every link the earlier
+lists held (`scripts/splice-words.txt`, `scripts/splice-phrases.txt`), the phrases
+players were found to know (`scripts/splice-known.txt`) and the proof words in
+`scripts/mend-words.txt` count when proving a tree has one answer.
+`node scripts/build-splice.mjs` keeps every day in `web/splice/days.js` that still
+passes and builds only the ones that fail, listing them, so they're the only days
+that need reading again. A link rests 45 days, a word 7, a word with the same two
+under it 180, and a tree holds at most one little linking word (off, out, back...).
+Every one of the 840 days has been read through as a player after its last change.
+A test checks each day uses only reviewed answers, written their way, and has
+exactly one answer. The list goes round in February 2029.
 
 ## Slugle
 

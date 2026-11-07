@@ -27,11 +27,13 @@
   --paper: #FCFCF8; --rule: #A3ACA5; --frame: #14211C; --block: #14211C;
   --word: #BFD2F8; --here: #F4C52E; --on-here: #14211C; --shown: #FAEBB4; --on-shown: #14211C;
   --bad-soft: color-mix(in srgb, var(--neg) 16%, var(--paper)); --good-soft: color-mix(in srgb, var(--pos) 16%, var(--paper));
+  /* The clue's number and arrows, dark enough to read on the blue */
+  --on-word: #2A4FBC; --on-word-dim: var(--muted);
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --paper: #2B3632; --rule: #0E1412; --frame: #66736C; --block: #060908; --word: #3C5488; --shown: #5A4E20; --on-shown: #F7E7A6; }
+  :root:not([data-theme="light"]) { --paper: #2B3632; --rule: #0E1412; --frame: #66736C; --block: #060908; --word: #3C5488; --shown: #5A4E20; --on-shown: #F7E7A6; --on-word: #C2D0FF; --on-word-dim: #AEB9B2; }
 }
-:root[data-theme="dark"] { --paper: #2B3632; --rule: #0E1412; --frame: #66736C; --block: #060908; --word: #3C5488; --shown: #5A4E20; --on-shown: #F7E7A6; }
+:root[data-theme="dark"] { --paper: #2B3632; --rule: #0E1412; --frame: #66736C; --block: #060908; --word: #3C5488; --shown: #5A4E20; --on-shown: #F7E7A6; --on-word: #C2D0FF; --on-word-dim: #AEB9B2; }
 
 .top { min-height: 44px; }
 .meta { margin-left: auto; padding: 0; font-size: .84rem; color: var(--muted); white-space: nowrap; }
@@ -83,11 +85,11 @@
 /* The clue, with the way to the one before and after it */
 .clue-bar { display: grid; grid-template-columns: 42px 1fr 42px; align-items: stretch; min-height: 56px; margin-bottom: 7px; padding: 0 8px; background: var(--word); border-radius: 8px; font-weight: 600; user-select: none; -webkit-user-select: none; }
 .clue-bar button { padding: 0; background: none; border: 0; touch-action: manipulation; }
-.step { display: grid; place-items: center; color: var(--muted); border-radius: 8px; }
+.step { display: grid; place-items: center; color: var(--on-word-dim); border-radius: 8px; }
 @media (hover: hover) { .step:hover { color: var(--ink); } }
 .step:active { background: var(--key-down); }
 .say { display: block; min-width: 0; padding: 4px 2px !important; font-size: .95rem; line-height: 1.28; text-align: left; }
-.say b { margin-right: 5px; font-weight: 600; color: var(--accent); white-space: nowrap; }
+.say b { margin-right: 5px; font-weight: 600; color: var(--on-word); white-space: nowrap; }
 
 .key { height: clamp(40px, 6.6dvh, 54px); }
 .keys { gap: 5px; }

@@ -112,7 +112,6 @@
 .length span { display: block; font-size: .86rem; color: var(--muted); }
 .length svg { color: var(--line-strong); }
 .length[aria-checked="true"] svg { color: var(--accent); }
-.empty { padding: 18px; border: 1px dashed var(--line-strong); border-radius: 10px; text-align: center; color: var(--muted); font-size: .9rem; }
 
 @media (prefers-reduced-motion: reduce) {
   .row.new, .row.bad, .ladder.won .row, .ladder.swap .row { animation: none; }
@@ -485,14 +484,14 @@
     const tag = $('resTag');
     tag.textContent = best ? `Par ${par}` : diff === 0 ? 'On par' : `${Math.abs(diff)} ${diff < 0 ? 'under' : 'over'} par`;
     tag.classList.toggle('good', best || diff <= 0);
-    const note = $('resNote'), hints = play.hints ? `${play.hints} ${play.hints === 1 ? 'hint' : 'hints'}. ` : '';
+    const note = $('resNote'), hints = play.hints ? `${play.hints} ${play.hints === 1 ? 'hint' : 'hints'} used` : '';
     if (diff <= 0) note.textContent = hints;
     else {
       const b = el('button', 'reveal', best ? 'Back to your ladder' : 'Show the best way');
       b.type = 'button';
       b.prepend(best ? svg(14, 14, 'M5 3 2 6l3 3M2.5 6H9a3 3 0 0 1 0 6H6') : svg(14, 14, 'M1 7s2.2-4 6-4 6 4 6 4-2.2 4-6 4-6-4-6-4zM7 8.6a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2z'));
       b.addEventListener('click', () => { best = !best; swapped = true; renderLadder(); renderResult(); });
-      note.replaceChildren(...(hints ? [`${hints} `] : []), b);
+      note.replaceChildren(...(hints ? [`${hints} · `] : []), b);
     }
     const daily = state.mode === 'daily';
     $('resFirst').textContent = daily ? 'Share' : 'New ladder';

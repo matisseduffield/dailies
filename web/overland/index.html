@@ -65,7 +65,7 @@
 /* What's being typed, and the names it could be */
 .entry { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 36px; }
 .typed { min-width: 0; font-size: 1.06rem; font-weight: 600; text-transform: capitalize; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.typed:empty::before { content: "Type a country"; font-weight: 400; color: var(--muted); }
+.typed:empty::before { content: "Type a country"; font-weight: 400; color: var(--muted); text-transform: none; }
 .left { flex: none; font-size: .86rem; color: var(--muted); white-space: nowrap; }
 .left b { font-weight: 600; color: var(--ink); }
 .left.low b { color: var(--neg); }
@@ -346,17 +346,23 @@
   // would land on one already placed is left off.
   function placeNames(scale) {
     const taken = [];
+    const [vx, vy, vw, vh] = camera;
     const order = [puzzle.start, puzzle.end, ...[...shapes.keys()].slice(2).reverse()];
     for (const code of order) {
       const c = M.countries[code];
       const w = c.name.length * 3.4 * scale, h = 8 * scale;
       // A country smaller than its name wears it underneath.
       const y = c.box[3] - c.box[1] < 24 * scale ? c.box[3] + 10 * scale : c.at[1];
-      const clear = !taken.some(([tx, ty, tw]) => Math.abs(tx - c.at[0]) < w + tw && Math.abs(ty - y) < h * 2);
+      // A name near the edge moves in rather than run off the map; one whose
+      // country is out of view is left off.
+      const seen = c.at[0] > vx && c.at[0] < vx + vw && y > vy && y < vy + vh;
+      const x = Math.min(Math.max(c.at[0], vx + w + 4 * scale), vx + vw - w - 4 * scale);
+      const clear = seen && !taken.some(([tx, ty, tw]) => Math.abs(tx - x) < w + tw && Math.abs(ty - y) < h * 2);
       const { label } = shapes.get(code);
+      label.setAttribute('x', x);
       label.setAttribute('y', y);
       label.style.display = clear ? '' : 'none';
-      if (clear) taken.push([c.at[0], y, w]);
+      if (clear) taken.push([x, y, w]);
     }
   }
 

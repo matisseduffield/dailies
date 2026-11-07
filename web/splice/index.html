@@ -18,31 +18,44 @@
 <link rel="preload" href="../fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../shared.css">
 <style>
-:root { --pick: #55625B; --on-pick: #F7F8F4; --lock: #1D7548; --on-lock: #F7F8F4; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --pick: #AEB9B2; --on-pick: #0E1412; --lock: #2E8A5C; } }
-:root[data-theme="dark"] { --pick: #AEB9B2; --on-pick: #0E1412; --lock: #2E8A5C; }
+:root { --lock: #1D7548; --on-lock: #F7F8F4; --aim: #2C53C4; --tile-edge: #D3DAD1; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --lock: #2E8A5C; --aim: #85A2FF; --tile-edge: #0A0F0D; } }
+:root[data-theme="dark"] { --lock: #2E8A5C; --aim: #85A2FF; --tile-edge: #0A0F0D; }
 
-/* The tree: words placed by row, joined by lines drawn behind them */
+/* The tree: words placed by row, joined by lines drawn behind them. It takes the
+   height the screen has, so the links between rows have room. */
 .stage-wrap { position: relative; flex: 1; min-height: 0; display: flex; }
-.stage { flex: 1; min-width: 0; display: grid; place-items: center; padding: 6px 0 10px; overflow: hidden; }
-.tree { position: relative; width: 100%; max-width: 420px; user-select: none; -webkit-user-select: none; }
+.stage { flex: 1; min-width: 0; display: grid; place-items: center; padding: 10px 0 14px; overflow: hidden; }
+.tree { position: relative; width: 100%; max-width: 440px; user-select: none; -webkit-user-select: none; }
 .tree svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
-.tree line { stroke: var(--line-strong); stroke-width: 2.5; stroke-linecap: round; }
-.tree line.ok { stroke: var(--lock); stroke-width: 4; }
-.tree line.bad { stroke: var(--neg); stroke-dasharray: 3 7; }
+/* Branches: a soft cord, darker once a check finds it right, broken when wrong */
+.link path { fill: none; stroke: var(--line-strong); stroke-width: 4; stroke-linecap: round; opacity: .55; transition: stroke .2s, opacity .2s; }
+.link.ok path { stroke: var(--lock); stroke-width: 6; opacity: 1; }
+.link.bad path { stroke: var(--neg); stroke-dasharray: 1 9; opacity: .8; }
 .word {
   position: absolute; transform: translate(-50%, -50%);
-  width: var(--w); height: 44px; padding: 0 4px;
-  background: var(--surface); border: 0; border-radius: 10px; box-shadow: 0 0 0 1px var(--line);
-  font-size: var(--fs); font-weight: 600; letter-spacing: .02em; text-transform: uppercase; touch-action: manipulation;
-  transition: background .12s, color .12s, transform .12s;
+  width: var(--w); height: 52px; padding: 0 6px;
+  background: var(--surface); border: 0; border-radius: 26px;
+  box-shadow: 0 0 0 1px var(--line), 0 3px 0 var(--tile-edge);
+  font-size: var(--fs); font-weight: 600; letter-spacing: .03em; text-transform: uppercase; touch-action: manipulation;
+  transition: background .15s, color .15s, box-shadow .15s, transform .15s;
 }
-.word:active:not(.locked) { transform: translate(-50%, -50%) scale(.95); }
-.word[aria-pressed="true"] { background: var(--pick); color: var(--on-pick); box-shadow: none; }
-.word.locked { background: var(--lock); color: var(--on-lock); box-shadow: none; cursor: default; }
-.word.swap { animation: pop .22s ease-out; }
+.word:active:not(.locked) { transform: translate(-50%, -50%) scale(.96); }
+/* Picked: lifted, with a ring in the accent colour */
+.word[aria-pressed="true"] { transform: translate(-50%, calc(-50% - 4px)); box-shadow: 0 0 0 3px var(--aim), 0 7px 0 var(--tile-edge); }
+/* The top word starts the tree: gold, and a touch wider */
+.word.root { width: calc(var(--w) + 14px); background: #FFCF33; color: #14211C; box-shadow: 0 3px 0 #C99A12; }
+.word.root[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--aim), 0 7px 0 #C99A12; }
+/* A new tree grows in, top row first */
+.tree.enter .word { animation: rise .4s cubic-bezier(.2, .8, .2, 1) both; animation-delay: calc(var(--row) * 70ms); }
+.tree.enter .link { animation: grow .5s ease-out both; animation-delay: calc(var(--row) * 70ms + 120ms); }
+@keyframes rise { from { opacity: 0; transform: translate(-50%, calc(-50% + 10px)); } }
+.word.locked { background: var(--lock); color: var(--on-lock); box-shadow: 0 3px 0 rgba(0, 0, 0, .18); cursor: default; }
+.word.root.locked { background: var(--lock); color: var(--on-lock); }
+.word.lit { animation: lit .45s ease-out both; animation-delay: calc(var(--row) * 90ms); }
 .tree.shown .word:not(.locked) { background: var(--key); box-shadow: none; }
-@keyframes pop { from { transform: translate(-50%, -50%) scale(.9); } }
+@keyframes lit { 40% { transform: translate(-50%, -50%) scale(1.08); } }
+.tree.won .link { animation: grow .5s ease-out both; animation-delay: calc(var(--row) * 90ms); }
 
 /* Messages sit just above the controls */
 .toast { top: auto; bottom: 6px; left: 50%; right: auto; width: max-content; max-width: 100%; padding: 7px 16px; border-radius: 18px; background: var(--ink); color: var(--on-ink); font-size: .95rem; transform: translate(-50%, 6px); }
@@ -72,9 +85,12 @@
 .example i { width: 2px; height: 12px; background: var(--line-strong); }
 .example span { font-size: .88rem; color: var(--muted); }
 
+@keyframes grow { from { opacity: .2; } }
+.check:disabled { opacity: .45; }
+
 @media (prefers-reduced-motion: reduce) {
-  .word { transition: none; }
-  .word.swap { animation: none; }
+  .word, .link path { transition: none; }
+  .word.lit, .tree.won .link { animation: none; }
 }
 </style>
 </head>
@@ -84,7 +100,7 @@
     <div class="top">
       <a class="brand" href="../index.html" aria-label="All games">
         <svg width="10" height="16" viewBox="0 0 10 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2 2 8l6 6"/></svg>
-        <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#C8682A"/><path d="M32,22L18,40M32,22L46,40" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/><rect x="19" y="10" width="26" height="13" rx="3" fill="#FFCF33"/><text x="32" y="19.8" font-size="8.6" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#14211C">SUN</text><rect x="5" y="37" width="26" height="13" rx="3" fill="#FFFFFF"/><text x="18" y="46.8" font-size="8.6" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#14211C">SET</text><rect x="33" y="37" width="26" height="13" rx="3" fill="#FFFFFF"/><text x="46" y="46.8" font-size="8.6" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#14211C">RISE</text></svg>
+        <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#C8682A"/><path d="M32,22C32,30 18,29 18,38M32,22C32,30 46,29 46,38" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity=".9"/><rect x="19" y="10" width="26" height="13" rx="6.5" fill="#FFCF33"/><text x="32" y="19.6" font-size="8.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#14211C">SUN</text><rect x="5" y="38" width="26" height="13" rx="6.5" fill="#FFFFFF"/><text x="18" y="47.6" font-size="8.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#14211C">SET</text><rect x="33" y="38" width="26" height="13" rx="6.5" fill="#FFFFFF"/><text x="46" y="47.6" font-size="8.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#14211C">RISE</text></svg>
         <h1 class="mark">Splice</h1>
       </a>
       <div class="top-right">
@@ -168,8 +184,8 @@
 </dialog>
 
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
-<script src="days.js?v=1"></script>
-<script src="lib.js?v=1"></script>
+<script src="days.js?v=2"></script>
+<script src="lib.js?v=2"></script>
 <script src="../clock.js?v=1"></script>
 <script src="../pwa.js"></script>
 <script src="../next.js?v=8"></script>
@@ -203,7 +219,9 @@
   let today = L.dayNumber(Clock.now(), D.epoch);
   let puzzle, play;            // the puzzle on screen and its progress
   let pick = null;             // the node of the first word of a swap
-  let moved = [];              // nodes that just swapped, to ease them in
+  let moved = [];              // [node, where its word was] for a swap that just happened
+  let cheer = false;           // light the tree up once, as it's solved
+  let entering = true;         // grow the tree in when a puzzle first shows
 
   const fresh = p => ({ board: [...p.start], swaps: 0, checks: [], done: false, won: false });
   function load() {
@@ -214,7 +232,11 @@
       puzzle = L.daily(today, D);
       play = state.days[today] || (state.days[today] = fresh(puzzle));
     }
+    // A game saved against an older list of trees can't carry over: start it again.
+    const same = (x, y) => x.length === y.length && [...x].sort().join() === [...y].sort().join();
+    if (!same(play.board, puzzle.answer)) Object.assign(play, fresh(puzzle));
     pick = null;
+    entering = true;
   }
   const links = () => L.linksOf(puzzle.parent);
 
@@ -249,26 +271,14 @@
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
   const NS = 'http://www.w3.org/2000/svg';
 
-  // Where each node sits, as fractions of the tree's box. The widest row is
-  // spread evenly; rows below sit under their parents, rows above over their
-  // children.
+  // Where each node sits, as fractions of the tree's box. Every row is spread
+  // evenly across the width, so the tree stands centred like a pyramid; the
+  // shapes keep each row's words in the order of the words above them, so
+  // branches never cross.
   function positions() {
     const { parent, rows } = puzzle;
-    const x = Array(parent.length).fill(0);
-    const children = parent.map((_, k) => parent.map((p, j) => (p === k ? j : -1)).filter(j => j >= 0));
-    const wide = rows.reduce((a, r, i) => (r.length > rows[a].length ? i : a), 0);
-    rows[wide].forEach((k, i) => { x[k] = (i + .5) / rows[wide].length; });
-    const gap = 1 / Math.max(4, rows[wide].length);
-    for (let r = wide + 1; r < rows.length; r++) {
-      for (const k of rows[r]) {
-        const sib = children[parent[k]];
-        x[k] = x[parent[k]] + (sib.length === 1 ? 0 : (sib.indexOf(k) - (sib.length - 1) / 2) * gap);
-      }
-    }
-    for (let r = wide - 1; r >= 0; r--) {
-      for (const k of rows[r]) x[k] = children[k].reduce((a, j) => a + x[j], 0) / children[k].length;
-    }
-    const y = parent.map((_, k) => (rows.findIndex(r => r.includes(k)) + .5) / rows.length);
+    const x = Array(parent.length).fill(0), y = Array(parent.length).fill(0);
+    rows.forEach((row, r) => row.forEach((k, i) => { x[k] = (i + .5) / row.length; y[k] = (r + .5) / rows.length; }));
     return { x, y };
   }
 
@@ -280,34 +290,54 @@
     const rows = puzzle.rows.length;
     const widest = Math.max(...puzzle.rows.map(r => r.length));
     const longest = Math.max(...board.map(w => w.length));
-    box.style.height = `${rows * 76}px`;
-    box.style.setProperty('--w', `${Math.min(96, Math.floor(100 / widest) - 1.5)}%`);
-    box.style.setProperty('--w', `min(${Math.floor(94 / widest)}%, 104px)`);
-    box.style.setProperty('--fs', longest > 7 ? '.82rem' : longest > 5 ? '.92rem' : '1rem');
+    // As tall as the screen allows, within reason, so the links have room to read.
+    const room = box.parentElement.clientHeight - 24;
+    box.style.height = `${Math.round(Math.min(rows * 118, Math.max(rows * 70, room)))}px`;
+    box.style.setProperty('--w', `min(${Math.floor(94 / widest)}%, 108px)`);
+    box.style.setProperty('--fs', longest > 6 ? '.9rem' : longest > 5 ? '.98rem' : '1.06rem');
     box.classList.toggle('shown', shown);
+    box.classList.toggle('won', !!play.won);
+    box.classList.toggle('enter', entering);
+    entering = false;
     const lock = play.won ? new Set(board.map((_, k) => k)) : locked();
+    // Each link is a branch from the bottom of the upper word to the top of the
+    // lower one. A check turns it green when it's right and breaks it when it's not.
+    const W = box.clientWidth, H = parseFloat(box.style.height), half = 26;
     const svg = document.createElementNS(NS, 'svg');
     svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    const node = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const [a, v] of Object.entries(attrs)) e.setAttribute(a, v); return e; };
     links().forEach(([p, k], i) => {
-      const line = document.createElementNS(NS, 'line');
-      line.setAttribute('x1', `${x[p] * 100}%`); line.setAttribute('y1', `${y[p] * 100}%`);
-      line.setAttribute('x2', `${x[k] * 100}%`); line.setAttribute('y2', `${y[k] * 100}%`);
+      const x1 = x[p] * W, y1 = y[p] * H + half - 2, x2 = x[k] * W, y2 = y[k] * H - half + 2, my = (y1 + y2) / 2;
       const m = play.won ? 'ok' : shown ? '' : markOf(i, board);
-      if (m) line.setAttribute('class', m);
-      svg.append(line);
+      const g = node('g', { class: `link${m ? ' ' + m : ''}` });
+      g.style.setProperty('--row', puzzle.rows.findIndex(r => r.includes(k)));
+      g.append(node('path', { d: `M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}` }));
+      svg.append(g);
     });
     const words = board.map((w, k) => {
       const b = el('button', 'word', w);
       b.type = 'button';
       b.dataset.node = k;
+      if (k === 0) b.classList.add('root');
       b.style.left = `${x[k] * 100}%`;
       b.style.top = `${y[k] * 100}%`;
       if (lock.has(k)) { b.classList.add('locked'); b.setAttribute('aria-label', `${w}, locked`); }
       b.setAttribute('aria-pressed', String(k === pick));
-      if (moved.includes(k)) b.classList.add('swap');
+      b.style.setProperty('--row', puzzle.rows.findIndex(r => r.includes(k)));
+      if (play.won && cheer) b.classList.add('lit');
       return b;
     });
     box.replaceChildren(svg, ...words);
+    cheer = false;
+    // The two swapped words glide from where they were.
+    if (moved.length && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      for (const [k, from] of moved) {
+        const b = box.querySelector(`.word[data-node="${k}"]`), to = b.getBoundingClientRect();
+        const dx = from.left - to.left, dy = from.top - to.top;
+        b.animate([{ transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))` }, { transform: 'translate(-50%, -50%)' }], { duration: 240, easing: 'cubic-bezier(.2, .8, .2, 1)' });
+      }
+    }
     moved = [];
   }
 
@@ -318,6 +348,9 @@
     $('left').replaceChildren(el('span', '', 'Checks'), dots);
     $('left').setAttribute('aria-label', `${puzzle.checks - used} checks left`);
     $('swaps').textContent = `${play.swaps} ${play.swaps === 1 ? 'swap' : 'swaps'}`;
+    // Checking the same board twice would only waste a check.
+    const last = play.checks[play.checks.length - 1];
+    $('checkBtn').disabled = !!last && last.saw.every((w, k) => w === play.board[k]);
   }
 
   const dateOf = day => { const [y, m, d] = D.epoch.split('-').map(Number); return new Date(y, m - 1, d + day - 1); };
@@ -367,12 +400,13 @@
 
   function render() {
     renderHeader();
-    renderTree();
     renderBar();
     resetGiveUp();
     $('play').hidden = play.done;
     $('result').hidden = !play.done;
     if (play.done) renderResult();
+    // Last, so the tree sizes itself to the room the footer leaves it.
+    renderTree();
     tellBack();
   }
 
@@ -432,9 +466,11 @@
     haptic();
     if (pick === null || pick === k) { pick = pick === k ? null : k; return renderTree(); }
     const b = play.board;
+    const at = n => $('tree').querySelector(`.word[data-node="${n}"]`).getBoundingClientRect();
+    // Where each word was, so it can glide to where it's going.
+    moved = [[pick, at(k)], [k, at(pick)]];
     [b[pick], b[k]] = [b[k], b[pick]];
     play.swaps++;
-    moved = [pick, k];
     pick = null;
     say('');
     save();
@@ -448,7 +484,7 @@
     const verdict = L.check(puzzle.parent, play.board, puzzle.answer);
     play.checks.push({ verdict, saw: [...play.board] });
     pick = null;
-    if (verdict.every(Boolean)) finish(true);
+    if (verdict.every(Boolean)) { cheer = true; finish(true); }
     else if (play.checks.length >= puzzle.checks) finish(false);
     else {
       const wrong = verdict.filter(ok => !ok).length;
@@ -551,6 +587,9 @@
     } else if (play.done) tickNext();
   }
   document.addEventListener('visibilitychange', () => { if (!document.hidden) checkDay(); });
+  // The tree sizes itself to the screen: again when the screen changes.
+  let resizeTimer = 0;
+  addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(renderTree, 120); });
   addEventListener('clock', checkDay);
   setInterval(() => { if (!document.hidden) checkDay(); }, 30000);
 

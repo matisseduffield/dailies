@@ -17,10 +17,12 @@
   const SHAPES = {
     six: [[2], [2, 1]],
     seven: [[2], [2, 2]],
-    eight: [[2], [2, 2], [1, 0, 0, 0]],
-    nine: [[2], [2, 2], [1, 0, 0, 1]],
-    ten: [[2], [2, 2], [1, 0, 1, 1]],
+    eight: [[3], [2, 1, 1]],
+    nine: [[2], [2, 1], [1, 1, 1]],
+    ten: [[2], [2, 1], [2, 1, 1]],
   };
+  // Every word with nothing under it sits on the bottom row, so a tree always
+  // looks finished: the weekend's is a full pyramid of one, two, three and four.
   // Four checks Monday to Thursday, three from Friday, when the trees are biggest.
   const WEEK = [['ten', 3], ['six', 4], ['seven', 4], ['eight', 4], ['nine', 4], ['nine', 3], ['ten', 3]];
 
@@ -191,8 +193,8 @@
     const answer = data.days[at - 1].split(' ');
     return { day: at, parent, rows, answer, checks, start: scramble(answer, parent, at * 7919) };
   }
-  // How a link reads once found: one word, or two when it's a phrase.
-  const reads = (a, b, data) => (data.spaced.includes(`${a} ${b}`) ? `${a} ${b}` : a + b);
+  // How a link is written once found: firework, ice-cold, fire alarm.
+  const reads = (a, b, data) => (data.written && data.written[`${a} ${b}`]) || a + b;
 
   // Days solved in a row, up to today (or yesterday, if today isn't done yet).
   function streak(solvedDays, today) {
