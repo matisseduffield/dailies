@@ -35,6 +35,13 @@
 /* The map: land with no borders on it, and only the countries named so far */
 .map { position: relative; flex: 1; min-height: 120px; background: var(--surface); border-radius: 10px; overflow: hidden; }
 .map svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+/* Pinch and drag move the map, not the page */
+.map { touch-action: none; user-select: none; -webkit-user-select: none; cursor: grab; }
+.map:active { cursor: grabbing; }
+/* Back to the whole route, once you've moved */
+.fit { position: absolute; top: 8px; right: 8px; min-height: 32px; padding: 0 12px; background: var(--bg); border: 0; border-radius: 16px; box-shadow: 0 0 0 1px var(--line); font-size: .84rem; font-weight: 600; color: var(--ink); cursor: pointer; }
+.fit::after { content: ""; position: absolute; inset: -8px -4px; }
+.fit:active { background: var(--key); }
 .land { fill: var(--land); stroke: none; }
 .place { stroke: var(--surface); stroke-width: 1px; stroke-linejoin: round; animation: show .3s ease-out; transition: fill .3s ease, stroke .3s ease; }
 .place path { vector-effect: non-scaling-stroke; }
@@ -148,6 +155,7 @@
         <g id="places"></g>
         <g class="names" id="names"></g>
       </svg>
+      <button class="fit" id="fitBtn" type="button" hidden>Fit</button>
     </div>
     <div class="trail" id="trail" aria-label="Your guesses"></div>
   </main>
@@ -193,6 +201,7 @@
     </div>
     <p>A guess turns green once a border joins it to either end. You win when the two ends are joined, and you only get a few guesses more than the shortest route needs.</p>
     <p>The map shows no borders, so you need to know what's next to what. Only land borders count: no bridges or tunnels. Spain and Morocco touch at Ceuta and Melilla, Russia reaches Poland and Lithuania at Kaliningrad, and France means France in Europe.</p>
+    <p>Pinch or drag the map to look around, or double-tap to zoom in. <b>Fit</b> brings the whole route back.</p>
     <p>The week gets harder. Monday's route needs 3 countries, with 3 guesses to spare. By Sunday it's 7 or 8, with 2 to spare.</p>
     <p class="muted">A new route arrives every midnight. Want more? <b>Practice</b> deals as many as you like.</p>
     <button class="btn btn-primary" type="button" data-close>Play</button>
@@ -378,8 +387,81 @@
     cameraFrame = requestAnimationFrame(step);
   }
 
+  // ---- looking around ----
+  // Pinch or drag the map, or use the wheel; double-tap zooms in. The map
+  // goes back to framing the route with Fit, or by itself after the next guess.
+  const world = Object.values(M.countries).reduce((a, c) => (a ? unite(a, c.box) : c.box), null);
+  const CLOSEST = 90;   // the narrowest view, in map units
+  function clampView([x, y, w, h]) {
+    const aspect = h / w;
+    w = Math.min(Math.max(w, CLOSEST), (world[2] - world[0]) * 1.15);
+    h = w * aspect;
+    // The middle of the view stays over the world.
+    const cx = Math.min(Math.max(x + w / 2, world[0]), world[2]), cy = Math.min(Math.max(y + h / 2, world[1]), world[3]);
+    return [cx - w / 2, cy - h / 2, w, h];
+  }
+  function lookAround(view) {
+    cancelAnimationFrame(cameraFrame);
+    $('fitBtn').hidden = false;
+    look(clampView(view));
+  }
+  // A point on screen, in map units.
+  const toMap = (px, py) => {
+    const r = $('map').getBoundingClientRect();
+    return [camera[0] + (px - r.left) / r.width * camera[2], camera[1] + (py - r.top) / r.height * camera[3], r];
+  };
+  function zoomAt(px, py, by) {
+    if (!camera) return;
+    const [ux, uy, r] = toMap(px, py);
+    const w = camera[2] / by, h = camera[3] / by;
+    lookAround([ux - (px - r.left) / r.width * w, uy - (py - r.top) / r.height * h, w, h]);
+  }
+  function panBy(dx, dy) {
+    if (!camera) return;
+    const r = $('map').getBoundingClientRect();
+    lookAround([camera[0] - dx / r.width * camera[2], camera[1] - dy / r.height * camera[3], camera[2], camera[3]]);
+  }
+  const fingers = new Map();   // pointerId: { x, y }
+  let lastTap = 0, travelled = 0;
+  $('map').addEventListener('pointerdown', e => {
+    if (e.target.closest('.fit')) return;
+    try { $('map').setPointerCapture(e.pointerId); } catch {}
+    fingers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (fingers.size === 1) travelled = 0;
+  });
+  $('map').addEventListener('pointermove', e => {
+    const was = fingers.get(e.pointerId);
+    if (!was) return;
+    if (fingers.size === 1) {
+      travelled += Math.abs(e.clientX - was.x) + Math.abs(e.clientY - was.y);
+      if (travelled > 6) panBy(e.clientX - was.x, e.clientY - was.y);
+    } else if (fingers.size === 2) {
+      const [a, b] = [...fingers.values()];
+      const other = a === was ? b : a;
+      const before = Math.hypot(was.x - other.x, was.y - other.y);
+      const after = Math.hypot(e.clientX - other.x, e.clientY - other.y);
+      const mx = (e.clientX + other.x) / 2, my = (e.clientY + other.y) / 2;
+      panBy((e.clientX - was.x) / 2, (e.clientY - was.y) / 2);
+      if (before > 0) zoomAt(mx, my, after / before);
+      travelled = 99;
+    }
+    fingers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  });
+  const lift = e => {
+    if (!fingers.delete(e.pointerId)) return;
+    // Two quick taps in the same place zoom in there.
+    if (e.type === 'pointerup' && !fingers.size && travelled <= 6) {
+      if (e.timeStamp - lastTap < 320) { zoomAt(e.clientX, e.clientY, 2); lastTap = 0; } else lastTap = e.timeStamp;
+    }
+  };
+  $('map').addEventListener('pointerup', lift);
+  $('map').addEventListener('pointercancel', lift);
+  $('map').addEventListener('wheel', e => { e.preventDefault(); zoomAt(e.clientX, e.clientY, Math.exp(-e.deltaY * .0015)); }, { passive: false });
+  $('fitBtn').addEventListener('click', () => { haptic(); drawMap(); });
+
   // Everything named so far, and the route it missed once the game's over.
   function drawMap() {
+    $('fitBtn').hidden = true;
     const s = now();
     const missed = play.done ? L.route(M, puzzle.start, puzzle.end).slice(1, -1).filter(c => !play.guesses.includes(c)) : [];
     const paint = (code, cls) => {
@@ -691,7 +773,17 @@
   function tellBack() { toApp({ type: 'back', enabled: !!openDialog() || state.mode === 'practice' }); }
 
   // The map's box changes with the result panel and the phone's turn.
-  new ResizeObserver(() => { if (puzzle) { cancelAnimationFrame(cameraFrame); look(frame([...play.guesses])); drawMap(); } }).observe($('map'));
+  new ResizeObserver(() => {
+    if (!puzzle) return;
+    // Someone looking around keeps their view, reshaped to the new box.
+    if (!$('fitBtn').hidden && camera) {
+      const { width, height } = $('map').getBoundingClientRect();
+      if (!width || !height) return;
+      const h = camera[2] * height / width, cy = camera[1] + camera[3] / 2;
+      return look(clampView([camera[0], cy - h / 2, camera[2], h]));
+    }
+    cancelAnimationFrame(cameraFrame); look(frame([...play.guesses])); drawMap();
+  }).observe($('map'));
 
   // A new day while the game sits open (or comes back from the background).
   function checkDay() {
