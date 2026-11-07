@@ -55,3 +55,30 @@
 2011|1|Prince William marries Catherine Middleton|Wikipedia: Wedding of Prince William and Catherine Middleton
 2014|2|Malala Yousafzai wins the Nobel Peace Prize|Wikipedia: Malala Yousafzai
 2018|2|A Banksy shreds itself after being sold at auction|Wikipedia: Love Is in the Bin
+1504|2|Michelangelo's David goes on show in Florence|Wikipedia: David (Michelangelo)
+1512|2|Michelangelo's Sistine Chapel ceiling is unveiled|Wikipedia: Sistine Chapel ceiling
+1582|3|Ten days vanish as the Gregorian calendar begins|Wikipedia: Gregorian calendar
+1599|2|Shakespeare's company builds the Globe Theatre|Wikipedia: Globe Theatre
+1620|2|The Mayflower reaches Cape Cod|Wikipedia: Mayflower
+1752|3|Britain skips eleven days to fix its calendar|Wikipedia: Calendar (New Style) Act 1750
+1871|2|London's Royal Albert Hall opens|Wikipedia: Royal Albert Hall
+1880|3|Cologne Cathedral is finally finished|Wikipedia: Cologne Cathedral
+1890|2|Scotland's Forth Bridge opens|Wikipedia: Forth Bridge
+1907|3|A ball first drops in Times Square on New Year's Eve|Wikipedia: Times Square Ball
+1930|2|New York's Chrysler Building opens|Wikipedia: Chrysler Building
+1931|2|Rio's Christ the Redeemer statue is opened|Wikipedia: Christ the Redeemer (statue)
+1938|2|Mallard sets the steam locomotive speed record|Wikipedia: LNER Class A4 4468 Mallard
+1947|2|Princess Elizabeth marries Philip Mountbatten|Wikipedia: Wedding of Princess Elizabeth and Philip Mountbatten
+1962|2|Seattle's Space Needle opens|Wikipedia: Space Needle
+1965|2|The last piece of St Louis's Gateway Arch is set|Wikipedia: Gateway Arch
+1967|3|Sweden switches to driving on the right|Wikipedia: Dagen H
+1970|2|Americans mark the first Earth Day|Wikipedia: Earth Day
+1971|3|London Bridge reopens in Arizona|Wikipedia: London Bridge (Lake Havasu City)
+1973|3|Istanbul's Bosphorus Bridge joins Europe and Asia|Wikipedia: 15 July Martyrs Bridge
+1977|2|Paris's Centre Pompidou opens|Wikipedia: Centre Pompidou
+1990|2|Moscow's first McDonald's opens|Wikipedia: McDonald's in Russia
+1997|2|Frank Gehry's Guggenheim Bilbao opens|Wikipedia: Guggenheim Museum Bilbao
+2000|1|The London Eye opens to the public|Wikipedia: London Eye
+2011|3|Samoa skips a day to cross the date line|Wikipedia: Time in Samoa
+2018|1|Prince Harry marries Meghan Markle at Windsor|Wikipedia: Wedding of Prince Harry and Meghan Markle
+2023|1|King Charles III is crowned|Wikipedia: Coronation of Charles III and Camilla

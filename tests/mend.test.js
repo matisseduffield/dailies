@@ -264,8 +264,8 @@ test('the list goes round onto the same weekday', () => {
   }
 });
 
-test('two years of puzzles, and spares for Practice', () => {
-  assert.equal(D.days, 728);
+test('days to the start of 2029, and spares for Practice', () => {
+  assert.equal(D.days, 791);
   assert.ok(total > D.days);
   const lengths = list.reduce((sum, p) => sum + p.answer.length, 0);
   assert.equal(D.letters.length, lengths);

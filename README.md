@@ -23,7 +23,9 @@ one is a day used up.
 The puzzles are plain text in `web/sorted/puzzles.js`, a line for each group,
 easiest first. Add new ones at the end; a puzzle's place in the list is its
 day, so moving one changes what's on that day. The list goes round when it runs
-out, with a different deal.
+out, with a different deal: it holds 791 days, so that's 4 January 2029.
+`node scripts/sorted-rules.cjs more.txt` checks new puzzles against the list before
+they're added, and keep to whole weeks when adding.
 
 ## Reach
 
@@ -72,7 +74,9 @@ weekday when the list goes round: `--more 7 --pool` adds grids at the end and
 lists the clues to write in `scripts/cluey/missing.txt`. Words picked for a grid
 come from `good.txt` and `lively.txt`, then `words.txt` and, two to a grid at
 most, `inflected.txt` (both from SCOWL), never from `reject.txt`. Late in the
-list a grid can need `--pool --nodes 30000 --total 40000000`.
+list a grid can need `--pool --nodes 30000 --total 40000000`. The list goes round on
+4 January 2029. `node scripts/cluey-check.cjs 211 245` lists every fault in a range of
+days while clues are being written, and `--show 211 245` prints what there is to write.
 ## Mend
 
 A board of crossing words has been mixed up. Tap two tiles to swap them, or drag
@@ -84,8 +88,8 @@ nothing. Out of swaps, or Give up, slides the tiles to the answer. Plus unlimite
 Practice from puzzles kept apart from the days.
 
 Every puzzle is fixed in `web/mend/days.js`: its letters, and a seed that mixes
-them, so the page never searches. There are two years of days for now, and the
-list goes round after that. `scripts/build-mend.mjs` (about 10 min) only
+them, so the page never searches. There are 791 days, and the list goes round on
+4 January 2029. `scripts/build-mend.mjs` (about 10 min) only
 keeps a puzzle once it has proven that no other arrangement of its letters works
 with any word in SCOWL up to size 80, and that it needs exactly its day's fewest
 swaps. The boards and swaps for each weekday are in `web/mend/lib.js`; word
@@ -97,14 +101,21 @@ a puzzle's place is its day, so the list isn't for changing lightly.
 `scripts/mend-bots.cjs` holds the simulated players that measure the week:
 `node scripts/mend-report.cjs` prints the table.
 
+To add days, in whole weeks, use `node scripts/build-mend.mjs --more 63`. It keeps
+every day and every Practice board, and the new boards are ones nobody has met in
+Practice.
+
 To take a word out of Mend before its day arrives, use `node scripts/mend-swap-days.cjs word word`, which trades boards with Practice. A rebuild would reassign every day.
 
 ## Dated
 
 Place events in order without seeing the years, with three lives. The events
 live in `scripts/dated/*.txt`, and `node scripts/build-dated.mjs` deals the days
-into `web/dated/days.js`. Any change to the events reassigns every day, so after
-launch fix wording in both the source and `days.js` by hand.
+into `web/dated/days.js`. A plain build reassigns every day, so after launch fix
+wording in both the source and `days.js` by hand. To add days or events, raise `DAYS`
+in `scripts/dated-rules.cjs`, add to the source files and run
+`node scripts/build-dated.mjs --keep`, which leaves the days there are and deals on
+from them. There are 791 days, and the list goes round on 4 January 2029.
 
 ## Overland
 

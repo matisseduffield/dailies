@@ -2,6 +2,8 @@
 // page only reads these back and never searches.
 //
 //   node scripts/build-mend.mjs          (about 10 minutes on 32 cores)
+//   node scripts/build-mend.mjs --more 63  (a minute: add days, keeping every day
+//                                          and every Practice board there is)
 //
 // 1. Fill: boards are filled at random from the answer words, and a fill is kept
 //    only if its rarity is right for its day and a search of every word in
@@ -38,6 +40,20 @@ const OPENINGS = 24;     // right openings to choose among
 const BATCH = 30;        // fill jobs sent out at once
 
 const weekdayOfBoard = name => L.WEEK.findIndex(d => d.boards.includes(name));
+
+// --more N adds days without touching a day already in the list. New boards take the
+// places straight after the days, so a player can't have met them in Practice, and
+// the Practice boards they displace move to the end of the list. That's 60 weeks on,
+// which lands on the same weekday and the same board, so nothing has to be rebuilt.
+const MORE = process.argv.includes('--more') ? Number(process.argv[process.argv.indexOf('--more') + 1]) : 0;
+const MORE_JOBS = 1000000;   // past any job a full build reaches, so fills are new
+// Two words on a board that give each other away, as scripts/mend-swap-days.cjs reads it.
+const related = (a, b) => {
+  if (a.includes(b) || b.includes(a)) return true;
+  let n = 0;
+  while (n < a.length && n < b.length && a[n] === b[n]) n++;
+  return n >= 4 && n >= Math.min(a.length, b.length) - 2;
+};
 
 function fillerFor(words) {
   const byLength = {}, index = {};
@@ -188,6 +204,11 @@ if (!isMainThread) {
     pump();
   });
 
+  if (MORE) {
+    await extend(run, seconds);
+    process.exit(0);
+  }
+
   // Which board each place in the list wants.
   const places = Array.from({ length: DAYS + SPARES }, (_, at) => L.shapeAt(at, EPOCH).name);
   const wanted = {};
@@ -281,4 +302,86 @@ if (typeof module === 'object' && module.exports) module.exports = MendDays;
   writeFileSync(new URL('../web/mend/days.js', import.meta.url), out);
   console.log(`${picks.length} puzzles, ${(out.length / 1024).toFixed(1)} KB, ${seconds()} s`);
   process.exit(0);
+}
+
+// See MORE at the top.
+async function extend(run, seconds) {
+  if (MORE % 7) throw new Error('add whole weeks, so a day stays on its weekday');
+  const D = require('../web/mend/days.js');
+  const total = D.seeds.length / 3;
+  const spares = total - D.days;
+  const boardAt = at => L.shapeAt(at, EPOCH);
+  const stored = Array.from({ length: total }, (_, at) => L.puzzle(at, D));
+  if (spares % 14) throw new Error('moving Practice boards this far would change their shape');
+  const whole = new Set(stored.map(p => p.answer.join('')));
+
+  // How the days so far have used each word.
+  const lastSeen = new Map(), uses = new Map();
+  stored.slice(0, D.days).forEach((p, at) => {
+    for (const w of R.wordsOf(p.shape, p.answer)) { lastSeen.set(w, at); uses.set(w, (uses.get(w) || 0) + 1); }
+  });
+  // Words at their cap or too recent for the first new day stay out of every fill,
+  // which also keeps the proof from spending its time on boards that can't be placed.
+  const spent = [...uses].filter(([w, n]) => n >= CAP || lastSeen.get(w) > D.days - GAP).map(([w]) => w);
+
+  // Plenty of fills for each board, so the assigning below has a real choice.
+  const wanted = {};
+  for (let at = D.days; at < D.days + MORE; at++) wanted[boardAt(at).name] = (wanted[boardAt(at).name] || 0) + 1;
+  const usable = {};
+  await Promise.all(Object.keys(wanted).map(async name => {
+    const shape = L.SHAPES[name];
+    const goal = wanted[name] * 12;
+    const kept = [];
+    const seen = new Set(whole);
+    for (let job = MORE_JOBS; kept.length < goal; job += BATCH) {
+      const batch = await Promise.all(Array.from({ length: BATCH }, (_, i) => run({ kind: 'fill', name, job: job + i, banned: spent })));
+      for (const f of batch.flat()) {
+        if (seen.has(f)) continue;
+        seen.add(f);
+        const words = R.wordsOf(shape, [...f]);
+        if (words.some((a, i) => words.some((b, j) => i < j && related(a, b)))) continue;
+        kept.push(f);
+      }
+      if (job > MORE_JOBS + 40000) throw new Error(`not enough fills for ${name}: ${kept.length}`);
+    }
+    const mixed = await Promise.all(kept.slice(0, goal).map(answer => run({ kind: 'mix', name, answer })));
+    usable[name] = kept.slice(0, goal).map((answer, i) => ({ answer, ...mixed[i] })).filter(f => f.seed >= 0);
+    console.log(`${name}: ${usable[name].length} usable, ${seconds()} s`);
+  }));
+
+  // Each new day takes the fill whose words have been used least so far.
+  const picks = [];
+  const taken = new Set();
+  for (let at = D.days; at < D.days + MORE; at++) {
+    const shape = boardAt(at);
+    let chosen = -1, score = Infinity;
+    usable[shape.name].forEach((fill, i) => {
+      if (taken.has(shape.name + i)) return;
+      const words = R.wordsOf(shape, [...fill.answer]);
+      if (!words.every(w => (uses.get(w) || 0) < CAP && (!lastSeen.has(w) || at - lastSeen.get(w) >= GAP))) return;
+      const most = Math.max(...words.map(w => uses.get(w) || 0));
+      if (most < score) { score = most; chosen = i; }
+    });
+    if (chosen < 0) throw new Error(`no fill left for place ${at} (${shape.name})`);
+    taken.add(shape.name + chosen);
+    const fill = usable[shape.name][chosen];
+    for (const w of R.wordsOf(shape, [...fill.answer])) { lastSeen.set(w, at); uses.set(w, (uses.get(w) || 0) + 1); }
+    picks.push({ answer: fill.answer, seed: fill.seed.toString(36).padStart(3, '0') });
+  }
+
+  const old = stored.map((p, at) => ({ answer: p.answer.join(''), seed: D.seeds.slice(at * 3, at * 3 + 3) }));
+  const list = [...old.slice(0, D.days), ...picks, ...old.slice(D.days + MORE), ...old.slice(D.days, D.days + MORE)];
+  const out = `// Generated by scripts/build-mend.mjs. Don't edit by hand.
+// days: how many daily puzzles there are; the rest are for Practice. letters: each
+// puzzle's answer, tile by tile. seeds: how to mix each one, three characters each.
+var MendDays = ${JSON.stringify({
+    epoch: EPOCH,
+    days: D.days + MORE,
+    letters: list.map(p => p.answer).join(''),
+    seeds: list.map(p => p.seed).join(''),
+  })};
+if (typeof module === 'object' && module.exports) module.exports = MendDays;
+`;
+  writeFileSync(new URL('../web/mend/days.js', import.meta.url), out);
+  console.log(`${D.days + MORE} days and ${spares} for Practice, ${(out.length / 1024).toFixed(1)} KB, ${seconds()} s`);
 }
