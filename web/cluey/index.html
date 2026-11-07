@@ -36,8 +36,10 @@
 :root[data-theme="dark"] { --paper: #2B3632; --rule: #0E1412; --frame: #66736C; --block: #060908; --word: #3C5488; --shown: #5A4E20; --on-shown: #F7E7A6; --on-word: #C2D0FF; --on-word-dim: #AEB9B2; }
 
 .top { min-height: 44px; }
-.meta { margin-left: auto; padding: 0; font-size: .84rem; color: var(--muted); white-space: nowrap; }
-@media (max-width: 350px) { a.brand > svg:nth-child(2) { display: none; } }
+.meta { min-width: 0; margin-left: auto; padding: 0; font-size: .84rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Small phones or large text (in em, so a bigger font size counts too) */
+.top { container-type: inline-size; }
+@container (max-width: 21.25em) { a.brand > svg:nth-child(2) { display: none; } }
 
 /* The grid: the rules are the board showing through a one pixel gap */
 .stage-wrap { position: relative; flex: 1; min-height: 0; display: flex; }
@@ -71,7 +73,7 @@
 .toast.warn { color: var(--on-ink); }
 
 /* The time, then the help on offer */
-.tools { display: flex; align-items: center; min-height: 40px; }
+.tools { display: flex; flex-wrap: wrap; align-items: center; min-height: 40px; }
 .time { flex: 1; font-size: 1rem; font-weight: 600; letter-spacing: .01em; }
 .tool { display: inline-flex; align-items: center; gap: 5px; height: 44px; padding: 0 9px; background: none; border: 0; border-radius: 6px; font-size: .86rem; font-weight: 600; color: var(--muted); white-space: nowrap; }
 .tool:last-child { margin-right: -9px; }
@@ -80,7 +82,8 @@
 .tool.sure { color: var(--neg); }
 .tool b { font-weight: 600; color: var(--faint); }
 .tool.sure b { display: none; }
-@media (max-width: 350px) { .tool { padding: 0 6px; font-size: .82rem; } .tool:last-child { margin-right: -6px; } }
+.tools { container-type: inline-size; }
+@container (max-width: 21.25em) { .tool { padding: 0 6px; font-size: .82rem; } .tool:last-child { margin-right: -6px; } }
 
 /* The clue, with the way to the one before and after it */
 .clue-bar { display: grid; grid-template-columns: 42px 1fr 42px; align-items: stretch; min-height: 56px; margin-bottom: 7px; padding: 0 8px; background: var(--word); border-radius: 8px; font-weight: 600; user-select: none; -webkit-user-select: none; }

@@ -51,7 +51,10 @@
 @media (hover: hover) { .tool:hover:not(:disabled) { color: var(--ink); background: var(--key); } }
 .tool:disabled { opacity: .4; cursor: default; }
 .tool.sure { color: var(--neg); }
-@media (max-width: 350px) { .tools-left .tool { font-size: 0; gap: 0; } }
+/* Small phones or large text: Undo and Restart go down to their icons (in em, so a bigger font size counts too) */
+.tools { container-type: inline-size; }
+@container (max-width: 21.25em) { .tools-left .tool { font-size: 0; gap: 0; } .count { white-space: normal; line-height: 1.25; } }
+@container (max-width: 17em) { .tools-right .tool { padding: 0 6px; } .tools-right { margin-right: -6px; } }
 .count { font-size: .86rem; color: var(--muted); text-align: center; white-space: nowrap; }
 .count b { font-weight: 600; color: var(--ink); }
 .count.over b { color: var(--neg); }

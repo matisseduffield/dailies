@@ -75,8 +75,11 @@
 @media (hover: hover) { .tool:hover:not(:disabled) { color: var(--ink); background: var(--key); } }
 .tool:disabled { opacity: .4; cursor: default; }
 .tool.hint { color: var(--accent); }
-/* Small phones: Undo and Restart go down to their icons, so Hint stays on screen */
-@media (max-width: 350px) { .tools-left .tool { font-size: 0; gap: 0; } }
+/* Small phones or large text: Undo and Restart go down to their icons, then Hint,
+   so the row stays on screen. Measured in em, so a bigger font size counts too */
+.tools { container-type: inline-size; }
+@container (max-width: 21.25em) { .tools-left .tool { font-size: 0; gap: 0; } .count { white-space: normal; line-height: 1.25; } }
+@container (max-width: 16em) { .tools-right .tool { font-size: 0; gap: 0; } }
 @media (hover: hover) { .tool.hint:hover:not(:disabled) { color: var(--accent); background: var(--accent-soft); } }
 .count { font-size: .86rem; color: var(--muted); text-align: center; white-space: nowrap; }
 .count b { font-weight: 600; color: var(--ink); }

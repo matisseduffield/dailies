@@ -338,6 +338,16 @@
       return b;
     });
     box.replaceChildren(svg, ...words);
+    // With large phone text a long word can outgrow its pill: shrink just that word to fit.
+    // Relative to --fs, so the phone's text size isn't applied twice.
+    for (const b of words) {
+      // Both measured on screen, so an animation's scale cancels out
+      const range = document.createRange();
+      range.selectNodeContents(b);
+      const shown = b.getBoundingClientRect().width;
+      const room = shown * (b.clientWidth - 12) / b.clientWidth, need = range.getBoundingClientRect().width;
+      if (room > 0 && need > room) b.style.fontSize = `calc(var(--fs) * ${(room / need).toFixed(3)})`;
+    }
     cheer = false;
     // The two swapped words glide from where they were.
     if (moved.length && !matchMedia('(prefers-reduced-motion: reduce)').matches) {

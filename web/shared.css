@@ -73,6 +73,9 @@
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 html, body { margin: 0; height: 100%; }
+/* Never wider than the screen: with large phone text a row that runs over would
+   widen the whole page, and every sheet with it, cutting them off on the right */
+html, body { overflow-x: hidden; overflow-x: clip; }
 body {
   background: var(--bg);
   color: var(--ink);
@@ -123,6 +126,8 @@ a.brand > svg:first-child { color: var(--muted); }
 .tab .dot { display: inline-block; width: 6px; height: 6px; margin-left: 6px; border-radius: 50%; background: var(--accent); vertical-align: 2px; }
 .meta { padding-bottom: 11px; font-size: .84rem; color: var(--muted); white-space: nowrap; }
 .meta .link { font-size: .84rem; }
+/* Beside the tabs, the date wraps rather than running off a phone with large text */
+.modes .meta { min-width: 0; white-space: normal; text-align: right; }
 /* The date opens past ladders; New ladder opens the lengths */
 .meta-btn { position: relative; display: inline-flex; align-items: center; gap: 5px; padding: 0; background: none; border: 0; font-size: .84rem; color: var(--muted); }
 .meta-btn::after { content: ""; position: absolute; inset: -12px -8px; }
@@ -156,6 +161,8 @@ a.brand > svg:first-child { color: var(--muted); }
 
 /* Result: how it went, with a tag for how it measures up, then what's next */
 .result { display: grid; gap: 14px; padding: 16px; background: var(--surface); border-radius: 12px; animation: rise .25s ease-out; }
+/* With large phone text the result can outgrow the screen: it scrolls rather than hiding its buttons */
+.result { max-height: calc(100dvh - 116px - env(safe-area-inset-top, 0px)); overflow-y: auto; overscroll-behavior: contain; }
 .result-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .result-title { font-size: 1.5rem; font-weight: 600; letter-spacing: -.015em; line-height: 1.2; }
 .result-tag { flex: none; padding: 4px 10px; border-radius: 13px; background: var(--key); font-size: .82rem; font-weight: 600; color: var(--muted); white-space: nowrap; }
