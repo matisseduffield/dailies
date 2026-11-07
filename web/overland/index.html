@@ -50,6 +50,9 @@
 .place.joined { fill: var(--pos); }
 .place.loose { fill: var(--loose); }
 .place.way { fill: var(--way); }
+/* Once it's over: every other country, plain, with its borders showing */
+.place.rest { fill: var(--land); stroke: var(--surface); stroke-width: 1px; animation: show .5s ease-out; }
+.names text.rest-name { font-weight: 500; fill: var(--muted); }
 /* A small country draws its own edge too, or it's lost on a wide map */
 .place.speck { stroke-width: 3px; }
 .place.speck.from { stroke: var(--from); }
@@ -201,7 +204,7 @@
     </div>
     <p>A guess turns green once a border joins it to either end. You win when the two ends are joined, and you only get a few guesses more than the shortest route needs.</p>
     <p>The map shows no borders, so you need to know what's next to what. Only land borders count: no bridges or tunnels. Spain and Morocco touch at Ceuta and Melilla, Russia reaches Poland and Lithuania at Kaliningrad, and France means France in Europe.</p>
-    <p>Pinch or drag the map to look around, or double-tap to zoom in. <b>Fit</b> brings the whole route back.</p>
+    <p>Pinch or drag the map to look around, or double-tap to zoom in. <b>Fit</b> brings the whole route back. Once the game is over, the whole map opens up to explore.</p>
     <p>The week gets harder. Monday's route needs 3 countries, with 3 guesses to spare. By Sunday it's 7 or 8, with 2 to spare.</p>
     <p class="muted">A new route arrives every midnight. Want more? <b>Practice</b> deals as many as you like.</p>
     <button class="btn btn-primary" type="button" data-close>Play</button>
@@ -278,6 +281,7 @@
     $('places').replaceChildren();
     $('names').replaceChildren();
     shapes.clear();
+    rest.clear();
     camera = null;
   }
 
@@ -297,7 +301,8 @@
   // ---- the map ----
   const shapes = new Map();    // code: { place, label }
 
-  function shape(code) {
+  const rest = new Set();      // countries shown only once the game's over
+  function shape(code, under = false) {
     let s = shapes.get(code);
     if (s) return s;
     const c = M.countries[code];
@@ -309,8 +314,8 @@
     label.setAttribute('x', c.at[0]);
     label.setAttribute('y', c.at[1]);
     label.textContent = c.name;
-    $('places').append(place);
-    $('names').append(label);
+    if (under) { $('places').prepend(place); $('names').prepend(label); label.setAttribute('class', 'rest-name'); rest.add(code); }
+    else { $('places').append(place); $('names').append(label); }
     s = { place, label };
     shapes.set(code, s);
     return s;
@@ -356,7 +361,8 @@
   function placeNames(scale) {
     const taken = [];
     const [vx, vy, vw, vh] = camera;
-    const order = [puzzle.start, puzzle.end, ...[...shapes.keys()].slice(2).reverse()];
+    const played = [...shapes.keys()].filter(c => !rest.has(c) && c !== puzzle.start && c !== puzzle.end);
+    const order = [puzzle.start, puzzle.end, ...played.reverse(), ...rest];
     for (const code of order) {
       const c = M.countries[code];
       const w = c.name.length * 3.4 * scale, h = 8 * scale;
@@ -472,6 +478,8 @@
     paint(puzzle.end, 'to');
     for (const g of play.guesses) paint(g, s.joined.has(g) ? 'joined' : 'loose');
     if (!s.won) for (const g of missed) paint(g, 'way');
+    // Once the game's over the whole map opens up to explore, under the route.
+    if (play.done) for (const code of Object.keys(M.countries)) if (!shapes.has(code) || rest.has(code)) shape(code, true).place.setAttribute('class', 'place rest');
     moveTo(frame([...play.guesses, ...(s.won ? [] : missed)]));
   }
 
