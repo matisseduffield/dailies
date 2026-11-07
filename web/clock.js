@@ -46,7 +46,13 @@
     root.addEventListener('pageshow', e => { if (e.persisted) refresh(); });
   }
 
-  const Clock = { now, wall };
+  // Someone mid-game at midnight finishes the day they're on before the new one
+  // takes its place; coming back to it hours later, they get the new day.
+  let touched = -Infinity;
+  if (root.addEventListener) for (const type of ['pointerdown', 'keydown']) root.addEventListener(type, () => { touched = Date.now(); }, true);
+  const playing = () => Date.now() - touched < 30 * 6e4;
+
+  const Clock = { now, wall, playing };
   root.Clock = Clock;
   if (typeof module === 'object' && module.exports) module.exports = Clock;
 })(globalThis);

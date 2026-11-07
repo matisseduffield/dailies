@@ -261,7 +261,7 @@
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="words.js?v=4"></script>
 <script src="lib.js?v=10"></script>
-<script src="../clock.js?v=1"></script>
+<script src="../clock.js?v=2"></script>
 <script src="../pwa.js"></script>
 <script src="../next.js?v=8"></script>
 <script>
@@ -887,6 +887,8 @@
   function checkDay() {
     const now = L.dayNumber(Clock.now(), D.epoch);
     if (now !== today) {
+      // A daily in hand at midnight is finished first; it still counts for its day.
+      if (state.mode === 'daily' && view === today && play.ladder.length > 1 && !play.done && Clock.playing()) return;
       // Whoever was on today's ladder moves on to the new one.
       if (view === today) view = now;
       today = now;

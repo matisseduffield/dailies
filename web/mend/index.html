@@ -203,7 +203,7 @@
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="days.js?v=2"></script>
 <script src="lib.js?v=1"></script>
-<script src="../clock.js?v=1"></script>
+<script src="../clock.js?v=2"></script>
 <script src="../pwa.js"></script>
 <script src="../next.js?v=8"></script>
 <script>
@@ -763,6 +763,8 @@
   function checkDay() {
     const day = L.dayNumber(Clock.now(), D.epoch);
     if (day !== today) {
+      // A daily in hand at midnight is finished first; it still counts for its day.
+      if (state.mode === 'daily' && play.moves.length && !play.done && Clock.playing()) return;
       today = day;
       if (state.mode === 'daily') load();
       say('');

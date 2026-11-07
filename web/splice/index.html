@@ -190,7 +190,7 @@
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="days.js?v=2"></script>
 <script src="lib.js?v=3"></script>
-<script src="../clock.js?v=1"></script>
+<script src="../clock.js?v=2"></script>
 <script src="../pwa.js"></script>
 <script src="../next.js?v=8"></script>
 <script>
@@ -576,7 +576,10 @@
   }
 
   function startPractice() {
-    const day = 1 + Math.floor(Math.random() * D.days.length);
+    // Any puzzle but one that's a daily within the next year, so practice spoils nothing.
+    const n = D.days.length, soon = d => (((d - today) % n) + n) % n <= 365;
+    let day;
+    do day = 1 + Math.floor(Math.random() * n); while (n > 400 && soon(day));
     state.practice = { day, ...fresh(L.daily(day, D)) };
     state.mode = 'practice';
     save(); load(); say(''); render();
@@ -619,6 +622,8 @@
   function checkDay() {
     const day = L.dayNumber(Clock.now(), D.epoch);
     if (day !== today) {
+      // A daily in hand at midnight is finished first; it still counts for its day.
+      if (state.mode === 'daily' && (play.swaps > 0 || play.checks.length > 0) && !play.done && Clock.playing()) return;
       today = day;
       if (state.mode === 'daily') load();
       say('');
