@@ -64,3 +64,28 @@
 2019|3|The kilogram's new definition comes into force|Wikipedia: 2019 revision of the SI
 2021|1|The James Webb Space Telescope is launched|Wikipedia: James Webb Space Telescope
 2022|2|Shackleton's ship Endurance is found in Antarctica|Wikipedia: Endurance (1912 ship)
+1543|2|Copernicus publishes his Sun-centred universe|Wikipedia: De revolutionibus orbium coelestium
+1628|3|William Harvey publishes on the circulation of blood|Wikipedia: De Motu Cordis
+1665|3|Robert Hooke publishes Micrographia|Wikipedia: Micrographia
+1823|3|Mary Anning finds a complete plesiosaur skeleton|Wikipedia: Mary Anning
+1831|2|Charles Darwin sets sail on HMS Beagle|Wikipedia: Second voyage of HMS Beagle
+1865|3|Gregor Mendel presents his pea plant findings in Brno|Wikipedia: Gregor Mendel
+1885|2|Louis Pasteur gives his rabies vaccine to a bitten boy|Wikipedia: Joseph Meister
+1912|3|Alfred Wegener first proposes continental drift in a talk|Wikipedia: Alfred Wegener
+1926|2|Robert Goddard launches a liquid-fuelled rocket|Wikipedia: Robert H. Goddard
+1939|2|Basil Brown uncovers the Sutton Hoo ship burial|Wikipedia: Sutton Hoo
+1955|1|Jonas Salk's polio vaccine is declared safe|Wikipedia: Jonas Salk
+1960|2|Trieste reaches the bottom of the Mariana Trench|Wikipedia: Trieste (bathyscaphe)
+1965|2|Alexei Leonov makes the first spacewalk|Wikipedia: Alexei Leonov
+1967|3|Jocelyn Bell Burnell detects the first pulsar|Wikipedia: Jocelyn Bell Burnell
+1968|1|Apollo 8's crew photograph Earthrise|Wikipedia: Earthrise
+1970|1|Apollo 13's crew splash down safely|Wikipedia: Apollo 13
+1972|1|Apollo 17 makes the final Apollo Moon landing|Wikipedia: Apollo 17
+1976|2|Viking 1 lands on Mars|Wikipedia: Viking 1
+1983|2|Sally Ride becomes the first American woman in space|Wikipedia: Sally Ride
+1989|2|Voyager 2 flies past Neptune|Wikipedia: Voyager 2
+1994|2|Comet Shoemaker-Levy 9 slams into Jupiter|Wikipedia: Comet Shoemaker–Levy 9
+2011|1|Atlantis makes the last Space Shuttle flight|Wikipedia: STS-135
+2014|2|Rosetta's Philae probe lands on a comet|Wikipedia: Philae (spacecraft)
+2021|2|NASA's Perseverance rover lands on Mars|Wikipedia: Perseverance (rover)
+2023|2|India lands Chandrayaan-3 near the Moon's south pole|Wikipedia: Chandrayaan-3

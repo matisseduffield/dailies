@@ -43,3 +43,27 @@
 2015|1|The Dress splits the internet over its colours|Wikipedia: The dress
 2019|1|Disney+ launches|Wikipedia: Disney+
 2023|1|Twitter is renamed X|Wikipedia: Twitter
+1978|3|Gary Thuerk sends out a mass email, later called spam|Wikipedia: Gary Thuerk
+1978|3|CBBS bulletin board goes online in Chicago|Wikipedia: CBBS
+1988|3|Jarkko Oikarinen writes the IRC chat program in Finland|Wikipedia: IRC
+1993|2|Mosaic web browser is released|Wikipedia: Mosaic (web browser)
+1993|3|Cambridge's Trojan Room coffee pot goes live on the web|Wikipedia: Trojan Room coffee pot
+1994|2|Netscape Navigator is released|Wikipedia: Netscape Navigator
+1994|3|HotWired runs a web banner ad for AT&T|Wikipedia: Web banner
+1995|1|Microsoft releases Internet Explorer|Wikipedia: Internet Explorer
+1995|2|Craigslist begins as an email list in San Francisco|Wikipedia: Craigslist
+1995|3|Ward Cunningham starts the first wiki|Wikipedia: WikiWikiWeb
+1996|2|Brewster Kahle founds the Internet Archive|Wikipedia: Internet Archive
+1997|2|The domain name google.com is registered|Wikipedia: History of Google
+1999|2|Pyra Labs launches Blogger|Wikipedia: Blogger (service)
+2003|1|Skype's first public beta is released|Wikipedia: Skype
+2003|1|LinkedIn launches|Wikipedia: LinkedIn
+2003|2|Second Life opens to the public|Wikipedia: Second Life
+2004|1|Mozilla releases Firefox 1.0|Wikipedia: Firefox
+2007|2|Google Street View launches in the US|Wikipedia: Google Street View
+2008|1|Google releases its Chrome browser|Wikipedia: Google Chrome
+2009|2|Kickstarter launches|Wikipedia: Kickstarter
+2011|2|Twitch launches as a spin-off of Justin.tv|Wikipedia: Twitch (service)
+2013|1|Twitter launches Vine|Wikipedia: Vine (service)
+2015|2|Discord launches|Wikipedia: Discord
+2023|1|Meta launches Threads|Wikipedia: Threads (social network)

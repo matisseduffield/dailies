@@ -79,3 +79,32 @@
 2012|3|The Raspberry Pi goes on sale|Wikipedia: Raspberry Pi
 2015|1|Apple Watch goes on sale|Wikipedia: Apple Watch
 2022|1|ChatGPT is released to the public|Wikipedia: ChatGPT
+1589|3|William Lee builds his stocking frame near Nottingham|Wikipedia: Stocking frame
+1712|3|A Newcomen steam engine is erected at Conygree Coalworks|Wikipedia: Newcomen atmospheric engine
+1781|3|The Iron Bridge opens to traffic over the River Severn|Wikipedia: The Iron Bridge
+1829|2|Stephenson's Rocket wins the Rainhill Trials|Wikipedia: Stephenson's Rocket
+1868|3|Christopher Sholes and partners patent a typewriter|Wikipedia: Christopher Latham Sholes
+1869|2|A golden spike joins America's transcontinental railroad|Wikipedia: Golden spike
+1882|3|Edison's Pearl Street power station starts up in New York|Wikipedia: Pearl Street Station
+1900|2|The first Zeppelin airship flies over Lake Constance|Wikipedia: LZ 1
+1927|3|Philo Farnsworth transmits an all-electronic TV image|Wikipedia: Philo Farnsworth
+1954|3|Regency TR-1 transistor radio goes on sale|Wikipedia: Regency TR-1
+1962|2|Telstar relays live TV across the Atlantic|Wikipedia: Telstar 1
+1965|3|Gordon Moore forecasts chip components doubling each year|Wikipedia: Moore's law
+1969|1|Concorde makes its first test flight|Wikipedia: Concorde
+1982|1|Commodore 64 home computer goes on sale|Wikipedia: Commodore 64
+1982|2|Sinclair's ZX Spectrum goes on sale in Britain|Wikipedia: ZX Spectrum
+1983|2|Microsoft Word is first released|Wikipedia: Microsoft Word
+1985|3|Clive Sinclair launches his C5 electric trike|Wikipedia: Sinclair C5
+1993|2|Intel launches its first Pentium chip|Wikipedia: Pentium (original)
+1993|2|Apple's Newton handheld goes on sale|Wikipedia: Apple Newton
+1996|2|The first Palm Pilot goes on sale|Wikipedia: Palm (PDA)
+1997|1|IBM's Deep Blue beats Garry Kasparov in a chess match|Wikipedia: Deep Blue versus Garry Kasparov
+1999|2|Research In Motion's first BlackBerry goes on sale|Wikipedia: BlackBerry
+2000|1|Nokia 3310 mobile phone goes on sale|Wikipedia: Nokia 3310
+2001|1|Microsoft releases Windows XP|Wikipedia: Windows XP
+2004|1|Motorola's Razr flip phone goes on sale|Wikipedia: Motorola Razr V3
+2012|2|Tesla delivers its first Model S cars|Wikipedia: Tesla Model S
+2014|2|Amazon unveils its Echo smart speaker|Wikipedia: Amazon Echo
+2016|1|Apple's AirPods go on sale|Wikipedia: AirPods
+2024|1|Apple Vision Pro headset goes on sale in the US|Wikipedia: Apple Vision Pro

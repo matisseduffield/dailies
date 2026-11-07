@@ -5,7 +5,7 @@ const path = require('node:path');
 const L = require('../web/dated/lib.js');
 
 const EPOCH = '2026-11-05';   // a Thursday
-const DAYS = 364;             // whole weeks, so a day stays on its weekday when the list goes round
+const DAYS = 791;             // whole weeks, so a day stays on its weekday when the list goes round
 const COOL = 60;              // no card back within this many days, round the end of the list too
 const SHARED = 2;             // the most cards any two days may have in common
 const CLOSE = 3;              // neighbours this many years apart or fewer are a close call
@@ -88,4 +88,22 @@ function dayProblems(day, events) {
   return out;
 }
 
-module.exports = { EPOCH, DAYS, COOL, SHARED, CLOSE, MAX_TEXT, WEEK, SUBJECTS, readBank, eventProblems, measure, dayProblems };
+// Two cards that are really one event: the same words, near enough, a year or so
+// apart. Only `fresh` events are looked at, so old pairs don't have to move.
+const WORDS_IGNORED = new Set('the a an of in on at to for and is are by its his her their first from with as into becomes opens goes launches'.split(' '));
+const wordsOf = text => new Set(text.toLowerCase().replace(/[^a-z0-9' ]+/g, ' ').split(/\s+/).filter(w => w && !WORDS_IGNORED.has(w)));
+function sameEvent(a, b) {
+  const one = wordsOf(a.text), two = wordsOf(b.text);
+  const shared = [...one].filter(w => two.has(w)).length;
+  const likeness = shared / (one.size + two.size - shared);
+  return a.text.toLowerCase() === b.text.toLowerCase() || likeness > 0.75 || (Math.abs(a.year - b.year) <= 1 && likeness >= 0.6);
+}
+function repeats(bank, fresh) {
+  const out = [];
+  fresh.forEach(a => bank.forEach(b => {
+    if (a !== b && !(fresh.includes(b) && bank.indexOf(b) < bank.indexOf(a)) && sameEvent(a, b)) out.push(`${a.year} ${a.text} / ${b.year} ${b.text}`);
+  }));
+  return out;
+}
+
+module.exports = { EPOCH, DAYS, COOL, SHARED, CLOSE, MAX_TEXT, WEEK, SUBJECTS, readBank, eventProblems, measure, dayProblems, sameEvent, repeats };

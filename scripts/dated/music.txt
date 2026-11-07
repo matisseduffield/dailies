@@ -69,3 +69,28 @@
 2017|1|Luis Fonsi releases Despacito|Wikipedia: Despacito
 2019|1|The Weeknd releases Blinding Lights|Wikipedia: Blinding Lights
 2023|1|Taylor Swift's Eras Tour begins|Wikipedia: The Eras Tour
+1717|3|Handel's Water Music is played on the River Thames|Wikipedia: Water Music
+1791|2|Mozart's The Magic Flute opens in Vienna|Wikipedia: The Magic Flute
+1846|3|Adolphe Sax patents the saxophone|Wikipedia: Adolphe Sax
+1875|2|Bizet's opera Carmen opens in Paris|Wikipedia: Carmen
+1899|3|Scott Joplin's Maple Leaf Rag is published|Wikipedia: Maple Leaf Rag
+1928|3|Ravel's Boléro is first performed, in Paris|Wikipedia: Boléro
+1952|3|John Cage's silent piece 4'33" is first performed|Wikipedia: 4′33″
+1957|2|John Lennon meets Paul McCartney at a church fete|Wikipedia: Lennon–McCartney
+1959|2|Miles Davis releases Kind of Blue|Wikipedia: Kind of Blue
+1965|2|Bob Dylan goes electric at the Newport Folk Festival|Wikipedia: Electric Dylan controversy
+1967|2|Jimi Hendrix sets his guitar alight at Monterey|Wikipedia: Jimi Hendrix
+1977|1|The Bee Gees release Stayin' Alive|Wikipedia: Stayin' Alive
+1971|1|Led Zeppelin release Stairway to Heaven|Wikipedia: Stairway to Heaven
+1973|3|DJ Kool Herc hosts a party on Sedgwick Avenue in the Bronx|Wikipedia: DJ Kool Herc
+1976|1|The Eagles release the album Hotel California|Wikipedia: Hotel California (album)
+1978|2|Kate Bush releases Wuthering Heights|Wikipedia: Wuthering Heights (song)
+1981|2|Cats opens in London's West End|Wikipedia: Cats (musical)
+1983|1|Cyndi Lauper releases Girls Just Want to Have Fun|Wikipedia: Girls Just Want to Have Fun
+1985|1|USA for Africa release We Are the World|Wikipedia: We Are the World
+1990|1|MC Hammer releases U Can't Touch This|Wikipedia: U Can't Touch This
+2000|1|Coldplay release Yellow|Wikipedia: Yellow (Coldplay song)
+2003|1|OutKast release Hey Ya!|Wikipedia: Hey Ya!
+2015|2|Hamilton opens on Broadway|Wikipedia: Hamilton (musical)
+2019|1|Billie Eilish releases Bad Guy|Wikipedia: Bad Guy (Billie Eilish song)
+2021|1|Olivia Rodrigo releases Drivers License|Wikipedia: Drivers License (song)

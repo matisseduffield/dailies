@@ -1,14 +1,30 @@
 // Deals Dated's days from the events in scripts/dated/ and writes web/dated/days.js.
 // The same events always give the same days. Takes under a minute:
 //   node scripts/build-dated.mjs
+//
+// Days people have played can't move, so once the game is out use
+//   node scripts/build-dated.mjs --keep
+// It leaves web/dated/days.js as it is up to its last day and deals on from there to
+// R.DAYS, and events new to the bank go on the end of the list with the next numbers.
 import fs from 'node:fs';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const L = require('../web/dated/lib.js');
 const R = require('./dated-rules.cjs');
 
-const bank = R.readBank();
+const KEEP = process.argv.includes('--keep');
+const kept = KEEP ? require('../web/dated/days.js') : null;
+
+let bank = R.readBank();
 bank.sort((a, b) => a.year - b.year || a.text.localeCompare(b.text));
+if (KEEP) {
+  const byText = new Map(bank.map(e => [e.text, e]));
+  const gone = kept.texts.filter(t => !byText.has(t));
+  if (gone.length) { console.error(gone.join(' / ') + ': no longer in the bank'); process.exit(1); }
+  const had = new Set(kept.texts);
+  bank = [...kept.texts.map(t => byText.get(t)), ...bank.filter(e => !had.has(e.text))];
+  if (bank.length > 36 * 36) { console.error('more events than two characters can number'); process.exit(1); }
+}
 const bad = bank.flatMap(e => R.eventProblems(e).map(p => `${e.subject}:${e.line} ${p}: ${e.text}`));
 if (bad.length) { console.error(bad.join('\n')); process.exit(1); }
 const seen = new Set();
@@ -21,13 +37,13 @@ let random = L.rng(0);
 let usedOn = [];   // the days each event is on, counting from 0
 let days = [];
 let why = {};      // what stopped each try, printed if a day can't be dealt
-const LATE = 220, URGENCY = 5;
+const LATE = R.DAYS - 144, URGENCY = 5;
 
 const pick = list => list[Math.floor(random() * list.length)];
 const apart = (a, b) => { const d = Math.abs(a - b); return Math.min(d, R.DAYS - d); };
 // One event in eight is held back for the last weeks. The cooldown reaches round the
 // end of the list to the first days, and these have nothing there to clash with.
-const held = (id, at) => id % 8 === 3 && at < R.DAYS - 70;
+const held = (id, at) => !KEEP && id % 8 === 3 && at < R.DAYS - 70;
 const cool = (id, at) => !held(id, at) && usedOn[id].every(u => apart(u, at) > R.COOL);
 
 // The most cards `ids` shares with any earlier day.
@@ -132,7 +148,11 @@ function dealAll(seed) {
   random = L.rng(seed);
   usedOn = bank.map(() => []);
   days = [];
-  for (let at = 0; at < R.DAYS; at++) {
+  if (KEEP) {
+    days = kept.days.map(d => L.unpack(d));
+    days.forEach((ids, at) => ids.forEach(id => usedOn[id].push(at)));
+  }
+  for (let at = days.length; at < R.DAYS; at++) {
     const picked = deal(at);
     if (!picked) return at + 1;
     for (const id of picked) usedOn[id].push(at);
