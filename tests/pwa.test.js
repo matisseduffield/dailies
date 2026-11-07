@@ -154,7 +154,7 @@ test('the Worker serves the manifest, icons, service worker and scripts', async 
   }
 });
 
-const GAMES = ['slugle', 'hunch', 'sorted', 'reach', 'cluey', 'mend', 'dated', 'overland'];
+const GAMES = ['slugle', 'hunch', 'sorted', 'reach', 'cluey', 'mend', 'dated', 'overland', 'splice'];
 
 test('a game can be added to the home screen from its own page', () => {
   for (const game of GAMES) {

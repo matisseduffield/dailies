@@ -129,6 +129,24 @@ separate list, and the build stops on any disagreement not settled by hand in it
 `web/overland/days.js` under `scripts/overland-rules.cjs`; a test pins them, so
 don't rebuild over days already played.
 
+## Splice
+
+Words sit in a tree, and every word followed by the word under it makes a joined
+word or a familiar phrase (fire + work, fire + alarm). The words start out of place;
+tap two to swap them, then check. A check marks each link, and right links lock.
+Four checks Monday to Thursday, three from Friday, and the trees grow from six
+words on Monday to ten at the weekend. Words hanging from the same word can be in
+either order, so a check reads the answer the way that best fits the board.
+
+The links come from two reviewed lists: `scripts/splice-words.txt` (joined words
+found in SCOWL, kept only when both parts read as words) and
+`scripts/splice-phrases.txt` (phrases one reviewer listed and a second checked for
+everyday Australian use). `node scripts/build-splice.mjs` fills a tree a day into
+`web/splice/days.js`, keeping one only if it has exactly one answer against both
+lists and the proof words in `scripts/mend-words.txt`. A link rests 45 days and a
+word 7. There are 840 days, so the list goes round in February 2029. A test checks
+every day's answer is the only one, so don't rebuild over days already played.
+
 ## Slugle
 
 A daily word ladder. Turn a new four-letter word into SLUG by changing one
@@ -197,7 +215,7 @@ reading would hold the games on an old day; `/now` and `/app` pass through.
 - `web/clock.js`: the time every game goes by, from our server rather than the
   phone, so `Clock.now()` replaces `new Date()` for anything to do with the day.
 - `web/shared.css`: the palette, keyboard, sheets and so on that every page uses.
-- `web/slugle/`, `web/hunch/`, `web/sorted/`, `web/reach/`, `web/cluey/`, `web/mend/`, `web/dated/`, `web/overland/`: a game each. `index.html` is the whole game (no
+- `web/slugle/`, `web/hunch/`, `web/sorted/`, `web/reach/`, `web/cluey/`, `web/mend/`, `web/dated/`, `web/overland/`, `web/splice/`: a game each. `index.html` is the whole game (no
   build step), `lib.js` its pure logic, tested by `node --test "tests/*.test.js"`,
   and `words.js`, `puzzles.js` or `days.js` its data.
 - `worker/worker.js`: the Cloudflare Workers `dailies`, `slugle` and `ladder`
