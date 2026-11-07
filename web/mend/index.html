@@ -6,6 +6,12 @@
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#E8ECE5" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0E1412" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="../manifest.json">
+<link rel="apple-touch-icon" sizes="180x180" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Dailies">
 <meta name="description" content="Mend: a board of crossing words has been mixed up. Swap the letters back before your swaps run out.">
 <title>Mend</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><rect x=%226%22 y=%2216%22 width=%2252%22 height=%2212%22 rx=%223%22 fill=%22%231D7548%22/><rect x=%226%22 y=%2236%22 width=%2252%22 height=%2212%22 rx=%223%22 fill=%22%231D7548%22/><rect x=%2216%22 y=%226%22 width=%2212%22 height=%2252%22 rx=%223%22 fill=%22%23F4C52E%22/><rect x=%2236%22 y=%226%22 width=%2212%22 height=%2252%22 rx=%223%22 fill=%22%23F4C52E%22/><rect x=%2216%22 y=%2216%22 width=%2212%22 height=%2212%22 fill=%22%231D7548%22/><rect x=%2236%22 y=%2236%22 width=%2212%22 height=%2212%22 fill=%22%231D7548%22/></svg>">
@@ -198,6 +204,7 @@
 <script src="days.js?v=1"></script>
 <script src="lib.js?v=1"></script>
 <script src="../clock.js?v=1"></script>
+<script src="../pwa.js"></script>
 <script src="../next.js?v=7"></script>
 <script>
 (() => {
@@ -205,7 +212,7 @@
   const $ = id => document.getElementById(id);
   const locale = navigator.language || 'en';
   // Where the game lives on the web; shared results link here.
-  const SITE = 'https://dailies.matisseduffield.workers.dev/mend/index.html';
+  const SITE = `${location.hostname === 'appassets.androidplatform.net' ? 'https://dailies.matisseduffield.workers.dev' : location.origin}/mend/index.html`;
   const SAID = { hit: 'in place', near: 'wanted elsewhere in its word', miss: 'not wanted here' };
 
   const store = {

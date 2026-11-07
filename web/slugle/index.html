@@ -6,6 +6,12 @@
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#E8ECE5" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0E1412" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="../manifest.json">
+<link rel="apple-touch-icon" sizes="180x180" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Dailies">
 <meta name="description" content="Slugle: a daily word ladder. Turn a new word into SLUG, one letter at a time.">
 <title>Slugle</title>
 <link rel="preload" href="../fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -254,6 +260,7 @@
 <script src="words.js?v=4"></script>
 <script src="lib.js?v=10"></script>
 <script src="../clock.js?v=1"></script>
+<script src="../pwa.js"></script>
 <script src="../next.js?v=7"></script>
 <script>
 (() => {
@@ -262,7 +269,7 @@
   const $ = id => document.getElementById(id);
   const locale = navigator.language || 'en';
   // Where the game lives on the web; shared results link here.
-  const SITE = 'https://dailies.matisseduffield.workers.dev/slugle/index.html';
+  const SITE = `${location.hostname === 'appassets.androidplatform.net' ? 'https://dailies.matisseduffield.workers.dev' : location.origin}/slugle/index.html`;
 
   const store = {
     get(k) { try { return JSON.parse(localStorage.getItem('ladder.' + k)); } catch { return null; } },

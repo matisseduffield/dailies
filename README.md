@@ -169,6 +169,16 @@ it to `GAMES` in `web/index.html` and `web/next.js`, and when today's game ends
 save `{ date: new Date().toDateString(), text }` to localStorage as
 `hub.<folder>`. Call `showNext()` from its result for the link to the next game.
 
+## On an iPhone
+
+The website installs from Safari with Share, then Add to Home Screen: `web/manifest.json`
+(`.json` because the Worker's file list has no `.webmanifest`), `web/icons/` (rendered from the
+launcher icon), the Apple tags, and `web/pwa.js`, which registers `web/sw.js` and shows a one-time
+hint in Safari on an iPhone. `pwa.js` does nothing on `appassets.androidplatform.net`, so neither
+runs in the Android app. `sw.js` is network-first with a cached copy for offline opening, and only
+touches the files it names. It strips the `serverClock` reading from pages it keeps, since an old
+reading would hold the games on an old day; `/now` and `/app` pass through.
+
 ## Layout
 
 - `web/index.html`: the hub's home screen, and its update card. `GAMES` at the

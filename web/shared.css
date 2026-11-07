@@ -90,7 +90,7 @@ p, h1, h2, h3 { margin: 0; }
   position: relative;
   display: flex; flex-direction: column;
   height: 100dvh; max-width: 480px; margin: 0 auto;
-  padding: 8px max(16px, env(safe-area-inset-right, 0px)) max(10px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  padding: calc(8px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(10px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
 }
 
 /* Top bar: the name, then stats and help */

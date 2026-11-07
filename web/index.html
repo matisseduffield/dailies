@@ -6,6 +6,12 @@
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#E8ECE5" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0E1412" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Dailies">
 <meta name="description" content="Dailies: a few small daily games, new every day. Free, no ads.">
 <title>Dailies</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect x=%223%22 y=%223%22 width=%2212%22 height=%2212%22 rx=%223%22 fill=%22%23F4C52E%22/><rect x=%2217%22 y=%223%22 width=%2212%22 height=%2212%22 rx=%223%22 fill=%22%232C53C4%22/><rect x=%223%22 y=%2217%22 width=%2212%22 height=%2212%22 rx=%223%22 fill=%22%232C53C4%22/><rect x=%2217%22 y=%2217%22 width=%2212%22 height=%2212%22 rx=%223%22 fill=%22%231D7548%22/></svg>">
@@ -33,6 +39,8 @@
 .foot { margin-top: auto; padding: 18px 0 8px; text-align: center; }
 .get-app { margin: 0 0 4px; font-size: .86rem; color: var(--muted); }
 .get-app .link { font-size: .86rem; text-decoration: none; }
+.install-hint { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 6px 0 0; font-size: .84rem; line-height: 1.35; color: var(--muted); }
+.install-hint button { flex: none; width: 44px; height: 44px; margin: -10px -12px -10px 0; padding: 0; background: none; border: 0; font-size: 1.2rem; color: var(--muted); }
 .privacy { display: inline-block; padding: 12px 8px; font-size: .8rem; color: var(--muted); }
 
 /* App update (Android app only) */
@@ -79,6 +87,7 @@
     </div>
   </section>
 
+  <p class="install-hint" id="installHint" hidden><span>Keep Dailies on your iPhone: tap Share, then Add to Home Screen.</span><button type="button" aria-label="Dismiss">×</button></p>
   <main>
     <div class="today">
       <h2 id="date"></h2>
@@ -95,6 +104,7 @@
 </div>
 
 <script src="clock.js?v=1"></script>
+<script src="pwa.js"></script>
 <script>
 (() => {
   // Every game in the hub: its folder, its name and a line about it. A game
@@ -117,7 +127,8 @@
     { id: 'dated', name: 'Dated', line: 'Put history in order, blind', icon: ROWS },
     { id: 'overland', name: 'Overland', line: 'Cross the map, border by border', icon: ROUTE },
   ];
-  const SITE = 'https://dailies.matisseduffield.workers.dev';
+  const inApp = location.hostname === 'appassets.androidplatform.net';
+  const SITE = inApp ? 'https://dailies.matisseduffield.workers.dev' : location.origin;
 
   const $ = id => document.getElementById(id);
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
@@ -246,7 +257,7 @@
   }
 
   // ---- boot ----
-  $('getApp').hidden = !!app || location.origin !== SITE;
+  $('getApp').hidden = !!app || inApp || !/Android/.test(navigator.userAgent);
   render();
   toApp({ type: 'hello' });
 })();

@@ -13,7 +13,7 @@
 
 const WEB = 'https://raw.githubusercontent.com/matisseduffield/dailies-releases/main/web/';
 const APK = 'https://raw.githubusercontent.com/matisseduffield/dailies-releases/main/Dailies.apk';
-const TYPES = { html: 'text/html; charset=utf-8', css: 'text/css; charset=utf-8', js: 'text/javascript; charset=utf-8', woff2: 'font/woff2', txt: 'text/plain; charset=utf-8' };
+const TYPES = { html: 'text/html; charset=utf-8', css: 'text/css; charset=utf-8', js: 'text/javascript; charset=utf-8', woff2: 'font/woff2', txt: 'text/plain; charset=utf-8', json: 'application/json', png: 'image/png' };
 const HEADERS = { 'Referrer-Policy': 'no-referrer', 'X-Content-Type-Options': 'nosniff' };
 
 // Minutes ahead of UTC in a time zone, or null if there's no telling.
@@ -40,7 +40,7 @@ export default {
     if (url.pathname === '/app') return new Response(null, { status: 302, headers: { Location: APK, 'Cache-Control': 'no-store', ...HEADERS } });
     if (url.pathname === '/now') return new Response(reading(request), { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', ...HEADERS } });
     const file = url.pathname.replace(/^\/+/, '').replace(/(^|\/)$/, '$1index.html');
-    if (!/^[a-z0-9-]+(\/[a-zA-Z0-9.-]+)*\.(html|css|js|woff2|txt)$/.test(file)) return new Response('Not found', { status: 404, headers: HEADERS });
+    if (!/^[a-z0-9-]+(\/[a-zA-Z0-9.-]+)*\.(html|css|js|woff2|txt|json|png)$/.test(file)) return new Response('Not found', { status: 404, headers: HEADERS });
     // A ?v= file never changes, so it can sit in the browser for a week. The
     // version goes upstream too, or an old edge copy could be kept under it.
     const version = /^\?v=\d+$/.test(url.search) ? url.search : '';
