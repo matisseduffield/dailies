@@ -57,6 +57,19 @@ test('search finds what people type', () => {
   assert.equal(top('sao'), 'STP');
   assert.deepEqual(L.search(M, 'x'), []);
   assert.deepEqual(L.search(M, 'zzz'), []);
+  // Anywhere in a name, once there are three letters.
+  assert.deepEqual(L.search(M, 'stan').sort(), ['AFG', 'KAZ', 'KGZ', 'PAK', 'TJK', 'TKM', 'UZB']);
+  assert.ok(L.search(M, 'land').includes('THA') && L.search(M, 'land').includes('FIN'));
+  assert.deepEqual(L.search(M, 'ia'), []);
+  // Starts of names still come first.
+  assert.deepEqual(L.search(M, 'niger').slice(0, 2), ['NER', 'NGA']);
+  // Near misses, only when nothing else matches.
+  assert.equal(top('columbia'), 'COL');
+  assert.equal(top('phillipines'), 'PHL');
+  assert.equal(top('kazakstan'), 'KAZ');
+  assert.equal(top('swizerland'), 'CHE');
+  assert.equal(top('argentnia'), 'ARG');
+  assert.deepEqual(L.search(M, 'zzzz'), []);
 });
 
 test('guesses in any order join the ends, and only then is it won', () => {

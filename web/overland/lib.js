@@ -93,8 +93,27 @@
     return list;
   }
 
-  // Countries a typed text could be, best first.
-  function search(map, typed, limit = 6) {
+  // Edits (a letter changed, added, dropped or two swapped) between a and b.
+  function edits(a, b) {
+    const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
+    for (let j = 1; j <= b.length; j++) d[0][j] = j;
+    for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) {
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+    }
+    return d[a.length][b.length];
+  }
+  // A misspelling of how a name starts: "columb" for Colombia, "kazakst" for Kazakhstan.
+  const near = (q, name) => {
+    const allowed = q.length >= 7 ? 2 : 1;
+    for (let n = q.length - allowed; n <= q.length + allowed; n++) if (n > 0 && edits(q, name.slice(0, n)) <= allowed) return true;
+    return false;
+  };
+
+  // Countries a typed text could be, best first: the name itself, how a name
+  // starts, how a later word starts, then anywhere in a name ("stan" finds every
+  // -stan), then a near miss once nothing else matches.
+  function search(map, typed, limit = 12) {
     const q = squash(typed);
     if (q.length < 2) return [];
     const rank = e => {
@@ -102,9 +121,15 @@
       if (e.whole.startsWith(q)) return 1;
       if (e.also.some(a => a.startsWith(q))) return 2;
       if (e.later.some(w => w.startsWith(q))) return 3;
+      if (q.length >= 3 && e.whole.includes(q)) return 4;
+      if (q.length >= 3 && e.also.some(a => a.includes(q))) return 5;
       return 9;
     };
-    return index(map).map(e => [rank(e), e]).filter(([r]) => r < 9)
+    const found = index(map).map(e => [rank(e), e]).filter(([r]) => r < 9);
+    if (!found.length && q.length >= 4) {
+      for (const e of index(map)) if ([e.whole, ...e.also, ...e.later].some(name => near(q, name))) found.push([6, e]);
+    }
+    return found
       .sort(([a, x], [b, y]) => a - b || map.countries[x.code].name.localeCompare(map.countries[y.code].name))
       .slice(0, limit).map(([, e]) => e.code);
   }
