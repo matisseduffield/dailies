@@ -138,7 +138,9 @@ which lock, and breaks wrong ones into dots. Four checks Monday to Thursday, thr
 from Friday; trees grow from six words on Monday to a full pyramid of ten at the
 weekend, and every word with nothing under it sits on the bottom row. Words hanging
 from the same word can be in either order, so a check reads the answer the way that
-best fits the board.
+best fits the board. Tapping a branch marks the pair on it amber; marked words
+move together, keeping their shape, and a move that doesn't fit is refused
+(`swap()` in `web/splice/lib.js`).
 
 Answers only come from `scripts/splice-answers.txt`: links two separate strict
 reviewers both kept (familiar at once to an Australian adult, no false splits, no

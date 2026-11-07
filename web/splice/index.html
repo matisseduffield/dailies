@@ -18,9 +18,9 @@
 <link rel="preload" href="../fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../shared.css">
 <style>
-:root { --lock: #1D7548; --on-lock: #F7F8F4; --aim: #2C53C4; --tile-edge: #D3DAD1; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --lock: #2E8A5C; --aim: #85A2FF; --tile-edge: #0A0F0D; } }
-:root[data-theme="dark"] { --lock: #2E8A5C; --aim: #85A2FF; --tile-edge: #0A0F0D; }
+:root { --lock: #1D7548; --on-lock: #F7F8F4; --aim: #2C53C4; --tile-edge: #D3DAD1; --pair: #E39A14; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --lock: #2E8A5C; --aim: #85A2FF; --tile-edge: #0A0F0D; --pair: #F2B33D; } }
+:root[data-theme="dark"] { --lock: #2E8A5C; --aim: #85A2FF; --tile-edge: #0A0F0D; --pair: #F2B33D; }
 
 /* The tree: words placed by row, joined by lines drawn behind them. It takes the
    height the screen has, so the links between rows have room. */
@@ -30,8 +30,11 @@
 .tree svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 /* Branches: a soft cord, darker once a check finds it right, broken when wrong */
 .link path { fill: none; stroke: var(--line-strong); stroke-width: 4; stroke-linecap: round; opacity: .55; transition: stroke .2s, opacity .2s; }
+/* A pair the player is sure of: amber, and it moves as one */
+.link.paired path { stroke: var(--pair); stroke-width: 6; opacity: 1; }
 .link.ok path { stroke: var(--lock); stroke-width: 6; opacity: 1; }
 .link.bad path { stroke: var(--neg); stroke-dasharray: 1 9; opacity: .8; }
+.tree .link path.hit { stroke: transparent; stroke-width: 28; stroke-dasharray: none; opacity: 1; pointer-events: stroke; cursor: pointer; transition: none; }
 .word {
   position: absolute; transform: translate(-50%, -50%);
   width: var(--w); height: 52px; padding: 0 6px;
@@ -166,7 +169,8 @@
     <div class="example" aria-label="Fire over alarm makes fire alarm">
       <b>FIRE</b><i></i><b>ALARM</b><span>makes fire alarm</span>
     </div>
-    <p>Tap two words to swap them. When you think the tree is right, <b>Check</b>. Each link turns green when both of its words are where they belong, and green words stay put.</p>
+    <p>Tap two words to swap them. Sure of a pair? Tap the branch between them to mark it amber, and the two move together. Tap it again to let go.</p>
+    <p>When you think the tree is right, <b>Check</b>. Each link turns green when both of its words are where they belong, and green words stay put.</p>
     <p>You get four checks Monday to Thursday and three from Friday, when the trees are biggest. There’s only one way to finish each tree.</p>
     <p class="muted">A new tree arrives every midnight. Want more? <b>Practice</b> deals as many as you like.</p>
     <button class="btn btn-primary" type="button" data-close>Play</button>
@@ -185,7 +189,7 @@
 
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="days.js?v=2"></script>
-<script src="lib.js?v=2"></script>
+<script src="lib.js?v=3"></script>
 <script src="../clock.js?v=1"></script>
 <script src="../pwa.js"></script>
 <script src="../next.js?v=8"></script>
@@ -223,7 +227,7 @@
   let cheer = false;           // light the tree up once, as it's solved
   let entering = true;         // grow the tree in when a puzzle first shows
 
-  const fresh = p => ({ board: [...p.start], swaps: 0, checks: [], done: false, won: false });
+  const fresh = p => ({ board: [...p.start], swaps: 0, checks: [], marks: [], done: false, won: false });
   function load() {
     if (state.mode === 'practice') {
       play = state.practice;
@@ -310,9 +314,14 @@
     links().forEach(([p, k], i) => {
       const x1 = x[p] * W, y1 = y[p] * H + half - 2, x2 = x[k] * W, y2 = y[k] * H - half + 2, my = (y1 + y2) / 2;
       const m = play.won ? 'ok' : shown ? '' : markOf(i, board);
-      const g = node('g', { class: `link${m ? ' ' + m : ''}` });
+      // A pair the player marked shows amber, until a check settles it.
+      const paired = !m && !play.done && (play.marks || []).includes(L.pairOf(board[p], board[k]));
+      const g = node('g', { class: `link${m ? ' ' + m : paired ? ' paired' : ''}` });
       g.style.setProperty('--row', puzzle.rows.findIndex(r => r.includes(k)));
-      g.append(node('path', { d: `M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}` }));
+      const d = `M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}`;
+      g.append(node('path', { d }));
+      // A wide, invisible stroke to tap: marks or unmarks the pair.
+      if (!play.done && m !== 'ok') g.append(node('path', { d, class: 'hit', 'data-link': i }));
       svg.append(g);
     });
     const words = board.map((w, k) => {
@@ -465,17 +474,35 @@
     if (play.done || locked().has(k)) return;
     haptic();
     if (pick === null || pick === k) { pick = pick === k ? null : k; return renderTree(); }
-    const b = play.board;
+    // Marked pairs go along with their words.
+    const done = L.swap(puzzle.parent, play.board, play.marks || [], pick, k, locked());
+    if (done.refused) { haptic('tick'); pick = null; say(done.refused); return renderTree(); }
     const at = n => $('tree').querySelector(`.word[data-node="${n}"]`).getBoundingClientRect();
     // Where each word was, so it can glide to where it's going.
-    moved = [[pick, at(k)], [k, at(pick)]];
-    [b[pick], b[k]] = [b[k], b[pick]];
+    const was = new Map(play.board.map((w, n) => [w, at(n)]));
+    moved = done.board.map((w, n) => [n, was.get(w)]).filter(([n, r]) => play.board[n] !== done.board[n]);
+    play.board = done.board;
     play.swaps++;
     pick = null;
     say('');
     save();
     renderTree();
     renderBar();
+  }
+
+  // Tapping a branch marks the pair of words on it, or clears the mark.
+  function tapLink(i) {
+    if (play.done) return;
+    const [p, k] = links()[i];
+    const pair = L.pairOf(play.board[p], play.board[k]);
+    if (locked().has(p) && locked().has(k)) return;
+    haptic();
+    play.marks = play.marks || [];
+    const at = play.marks.indexOf(pair);
+    if (at >= 0) play.marks.splice(at, 1); else play.marks.push(pair);
+    pick = null;
+    save();
+    renderTree();
   }
 
   function check() {
@@ -554,7 +581,9 @@
   // ---- controls ----
   $('tree').addEventListener('click', e => {
     const w = e.target.closest('.word');
-    if (w) tapWord(Number(w.dataset.node));
+    if (w) return tapWord(Number(w.dataset.node));
+    const hit = e.target.closest('.hit');
+    if (hit) tapLink(Number(hit.dataset.link));
   });
   $('checkBtn').addEventListener('click', check);
   $('giveUpBtn').addEventListener('click', giveUp);

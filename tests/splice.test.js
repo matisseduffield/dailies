@@ -88,3 +88,27 @@ test('links are written the usual way', () => {
   assert.equal(L.reads('fire', 'alarm', { written: { 'fire alarm': 'fire alarm' } }), 'fire alarm');
   assert.equal(L.reads('ice', 'cold', { written: { 'ice cold': 'ice-cold' } }), 'ice-cold');
 });
+
+test('marked words move together, and only where their shape fits', () => {
+  // seven: 0 > (1 > (3, 4), 2 > (5, 6))
+  const { parent } = L.tree('seven');
+  const board = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
+  // No marks: a plain swap.
+  assert.deepEqual(L.swap(parent, board, [], 3, 6).board, ['a', 'b', 'c', 'g', 'e', 'f', 'd']);
+  // b>d marked: moving b to c takes d to c's first child, and f comes back to d's place.
+  assert.deepEqual(L.groupOf(parent, board, ['b>d'], 1).sort(), [1, 3]);
+  assert.deepEqual(L.swap(parent, board, ['b>d'], 1, 2).board, ['a', 'c', 'b', 'f', 'e', 'd', 'g']);
+  // The marks follow the words: after the move b>d sits on the right-hand link.
+  const after = L.swap(parent, board, ['b>d'], 1, 2).board;
+  assert.deepEqual(L.groupOf(parent, after, ['b>d'], 2).sort(), [2, 5]);
+  // A marked pair can't go where there's no room for its lower word.
+  assert.ok(L.swap(parent, board, ['b>d'], 1, 4).refused);
+  // Two marked words can't be swapped with each other.
+  assert.ok(L.swap(parent, board, ['b>d'], 1, 3).refused);
+  // Green words never move.
+  assert.ok(L.swap(parent, board, ['b>d'], 1, 2, new Set([5])).refused);
+  // A pair swapped with a pair of the same shape.
+  assert.deepEqual(L.swap(parent, board, ['b>d', 'c>f'], 1, 2).board, ['a', 'c', 'b', 'f', 'e', 'd', 'g']);
+  // A single word swapped onto a marked pair moves the pair instead.
+  assert.deepEqual(L.swap(parent, board, ['c>f'], 1, 2).board, ['a', 'c', 'b', 'f', 'e', 'd', 'g']);
+});

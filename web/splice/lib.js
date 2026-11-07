@@ -211,6 +211,62 @@
     return best;
   }
 
+  // Marked pairs. A player can mark a link they're sure of; marks belong to the
+  // two words, written 'upper>lower', so they travel with them. Marked words
+  // move together: the group is every node joined to this one by marked links.
+  const pairOf = (upper, lower) => `${upper}>${lower}`;
+  function groupOf(parent, board, marks, node) {
+    const marked = new Set(marks);
+    const group = new Set([node]), queue = [node];
+    while (queue.length) {
+      const x = queue.pop();
+      parent.forEach((p, k) => {
+        if (p < 0) return;
+        const join = (p === x && !group.has(k)) ? k : (k === x && !group.has(p)) ? p : -1;
+        if (join >= 0 && marked.has(pairOf(board[p], board[k]))) { group.add(join); queue.push(join); }
+      });
+    }
+    return [...group];
+  }
+  // Where a group lands if `from` goes to `to`: each node keeps its place
+  // relative to `from` (its parent, or its first or second child, and so on).
+  // Null if the tree has no room for that shape there.
+  function relocate(parent, group, from, to) {
+    const kids = childrenOf(parent), inGroup = new Set(group);
+    const where = new Map([[from, to]]), queue = [from];
+    while (queue.length) {
+      const x = queue.shift(), t = where.get(x);
+      const up = parent[x];
+      if (up >= 0 && inGroup.has(up) && !where.has(up)) {
+        if (parent[t] < 0) return null;
+        where.set(up, parent[t]); queue.push(up);
+      }
+      kids[x].forEach((c, i) => {
+        if (!inGroup.has(c) || where.has(c)) return;
+        if (kids[t][i] === undefined) return where.set(c, null);
+        where.set(c, kids[t][i]); queue.push(c);
+      });
+    }
+    return [...where.values()].includes(null) ? null : where;
+  }
+  // A swap of the words at a and b, taking marked groups along. Returns the new
+  // board, or why it can't be done. Locked nodes never move.
+  function swap(parent, board, marks, a, b, locked = new Set()) {
+    let ga = groupOf(parent, board, marks, a), gb = groupOf(parent, board, marks, b);
+    if (ga.includes(b)) return { refused: 'Those words are marked together' };
+    // The bigger group leads; the other has to fit inside where it lands.
+    let [g, from, to, other] = ga.length >= gb.length ? [ga, a, b, gb] : [gb, b, a, ga];
+    const where = relocate(parent, g, from, to);
+    if (!where) return { refused: 'That pair doesn’t fit there' };
+    const targets = [...where.values()];
+    if (targets.some(t => g.includes(t))) return { refused: 'That pair doesn’t fit there' };
+    if (!other.every(x => targets.includes(x))) return { refused: 'Those pairs don’t fit each other' };
+    if ([...g, ...targets].some(x => locked.has(x))) return { refused: 'Green words stay put' };
+    const next = [...board];
+    for (const [x, t] of where) [next[x], next[t]] = [board[t], board[x]];
+    return { board: next };
+  }
+
   // Each check as a line of marks, one per link. No words.
   function shareText(day, checks, won) {
     const head = day ? `Splice ${day}` : 'Splice practice';
@@ -218,7 +274,7 @@
     return [title, ...checks.map(c => c.map(ok => (ok ? '●' : '○')).join(''))].join('\n');
   }
 
-  const lib = { SHAPES, WEEK, tree, linksOf, rng, shuffled, shapeKeys, alikeBefore, variants, solutions, check, scramble, dayNumber, weekdayOf, shapeForDay, daily, reads, streak, bestStreak, shareText };
+  const lib = { SHAPES, WEEK, tree, linksOf, rng, shuffled, shapeKeys, alikeBefore, variants, solutions, check, scramble, dayNumber, weekdayOf, shapeForDay, daily, reads, pairOf, groupOf, relocate, swap, streak, bestStreak, shareText };
   if (typeof module === 'object' && module.exports) module.exports = lib;
   else root.SpliceLib = lib;
 })(this);
