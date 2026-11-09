@@ -20,9 +20,11 @@
 <style>
 /* The list runs past a short screen: the page grows, so the bottom padding stays clear of the home bar */
 .app { height: auto; min-height: 100dvh; }
+/* The day, and how it's going, with Share today beside that once a game is played, so the list fits a screen */
 .today { padding-top: 14px; }
+.today-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 2px; }
 .today h2 { font-size: 1.6rem; font-weight: 600; letter-spacing: -.015em; line-height: 1.2; }
-.today p { margin-top: 2px; font-size: .92rem; color: var(--muted); }
+.today p { min-width: 0; font-size: .92rem; color: var(--muted); }
 
 /* The games, one list: a row each, with a hairline between them that starts after the icon */
 .games { display: grid; margin-top: 16px; background: var(--surface); border-radius: 10px; overflow: hidden; }
@@ -37,7 +39,7 @@
 /* Played today: the line under the name is how it went, in green, or red if it was lost */
 .game.done span { color: var(--pos); }
 .game.done.lost span { color: var(--neg); }
-/* Said to a screen reader, as the green can't be */
+/* Said to a screen reader, as the colour can't be */
 .game span .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 .foot { margin-top: auto; padding: 18px 0 8px; text-align: center; }
@@ -53,7 +55,10 @@
 .update-title { font-weight: 600; line-height: 1.3; }
 .update-sub, .update-msg { font-size: .84rem; color: var(--muted); }
 .update-notes { margin: 0; padding: 0 0 0 16px; font-size: .88rem; line-height: 1.4; }
-.share-all { width: 100%; margin-top: 14px; }
+.share-all { position: relative; flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 14px 0 12px; border: 0; border-radius: 18px; background: var(--key); color: var(--ink); font-size: .88rem; font-weight: 600; }
+.share-all::after { content: ""; position: absolute; inset: -6px -4px; }
+@media (hover: hover) { .share-all:hover { background: var(--key-down); } }
+.share-all:active { background: var(--key-down); }
 .update-progress { display: flex; align-items: center; gap: 12px; min-height: 46px; }
 .update-track { flex: 1; height: 6px; border-radius: 3px; background: var(--accent-soft); overflow: hidden; }
 .update-track span { display: block; height: 100%; width: 0; border-radius: 3px; background: var(--accent); transition: width .2s; }
@@ -96,10 +101,12 @@
   <main>
     <div class="today">
       <h2 id="date"></h2>
-      <p id="progress"></p>
+      <div class="today-row">
+        <p id="progress"></p>
+        <button class="share-all" id="shareAll" type="button" aria-label="Share today" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span id="shareLabel">Share</span></button>
+      </div>
     </div>
     <nav class="games" id="games" aria-label="Today's games"></nav>
-    <button class="btn btn-primary share-all" id="shareAll" type="button" hidden>Share today</button>
   </main>
 
   <footer class="foot">
@@ -149,6 +156,11 @@
   const dateFormat = new Intl.DateTimeFormat(navigator.language || 'en', { weekday: 'long', day: 'numeric', month: 'long' });
   const shortDate = new Intl.DateTimeFormat(navigator.language || 'en', { weekday: 'short', day: 'numeric', month: 'short' });
 
+  // Lost, from what the game saved. Results saved before games said so go by
+  // their wording: each game's way of saying it lost.
+  const LOST = /^(Out of |Gave up|Lost,)|out of lives$|^\d+ of \d+ sorted$/;
+  const lostIt = r => (typeof r.lost === 'boolean' ? r.lost : LOST.test(r.text || ''));
+
   let shownDay = '';
   function render() {
     const now = Clock.now(), day = now.toDateString();
@@ -161,13 +173,13 @@
       const today = !!result && result.date === day;
       const played = today && !result.started;
       if (played) done++;
-      // Results saved before games said whether they were lost stay green.
-      const a = el('a', played ? (result.lost === true ? 'game done lost' : 'game done') : 'game');
+      const lost = played && lostIt(result);
+      const a = el('a', played ? (lost ? 'game done lost' : 'game done') : 'game');
       a.href = `${g.id}/index.html`;
       a.innerHTML = `<svg width="40" height="40" viewBox="0 0 64 64" fill="none" aria-hidden="true">${g.icon}</svg>`;
       const text = el('div');
       const line = el('span', '', played ? result.text : today ? 'Started' : g.line);
-      if (played) line.append(el('span', 'sr', ', played'));
+      if (played) line.append(el('span', 'sr', lost ? ', lost' : ', played'));
       text.append(el('b', '', g.name), line);
       a.append(text);
       return a;
@@ -187,8 +199,8 @@
     if (window.ladderApp) return toApp({ type: 'share', title: 'Dailies', text });
     if (navigator.share) return navigator.share({ text }).catch(() => {});
     navigator.clipboard.writeText(text).then(() => {
-      $('shareAll').textContent = 'Copied';
-      setTimeout(() => { $('shareAll').textContent = 'Share today'; }, 1600);
+      $('shareLabel').textContent = 'Copied';
+      setTimeout(() => { $('shareLabel').textContent = 'Share'; }, 1600);
     }, () => {});
   }
   $('shareAll').addEventListener('click', shareAll);
