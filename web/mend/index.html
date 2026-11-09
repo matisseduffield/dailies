@@ -67,11 +67,23 @@
 /* The swaps left, and Give up. A message takes the place of the count, then gives it back */
 .tools { position: relative; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; min-height: 44px; margin-bottom: 4px; }
 .tools-right { display: flex; justify-content: flex-end; margin-right: -10px; }
-.count { font-size: .86rem; color: var(--muted); text-align: center; white-space: nowrap; }
+.count { font-size: .86rem; line-height: 1.25; color: var(--muted); text-align: center; white-space: nowrap; }
 .count b { font-weight: 600; color: var(--ink); transition: color .2s; }
 .count.low b { color: var(--neg); }
-.toast { top: 0; bottom: 0; left: 0; right: 76px; display: flex; align-items: center; padding: 0; transform: none; }
+.count .par::before { content: " · "; }
+.toast { top: 0; bottom: 0; left: 4.75rem; right: 4.75rem; display: flex; align-items: center; justify-content: center; padding: 0; line-height: 1.2; white-space: normal; transform: none; }
 .toast.show { transform: none; }
+/* Small phones or large text (in em, so a bigger font size counts too): the count
+   leaves the middle for the room beside Give up, and par goes under it */
+#play { container-type: inline-size; }
+@container (max-width: 21em) {
+  .tools { grid-template-columns: minmax(0, 1fr) auto; }
+  .tools > span:first-of-type { display: none; }
+  .count { white-space: normal; }
+  .count .par { display: block; }
+  .count .par::before { content: none; }
+  .toast { left: 0; }
+}
 .tool { flex: none; height: 44px; padding: 0 10px; background: none; border: 0; border-radius: 6px; font-size: .86rem; font-weight: 600; color: var(--muted); }
 @media (hover: hover) { .tool:hover { color: var(--ink); background: var(--key); } }
 .tool.sure { color: var(--neg); }
@@ -167,10 +179,10 @@
     <p>Every line of tiles is a real word with its letters mixed up: put them back before your swaps run out.</p>
     <div class="example">
       <div class="example-boards" id="example" aria-hidden="true"></div>
-      <span>The words are <b>TOE</b> and <b>GOAT</b>. Swap the top A with the yellow T and both go green. Now the E and the last T are grey: each belongs in the other’s word, so one more swap finishes it.</span>
+      <span>The words are <b>TOE</b> and <b>GOAT</b>. Swap the top A with the yellow T in the row and both go green. Now the E and the last T are grey: each belongs in the other’s word, so one more swap finishes it.</span>
     </div>
     <div class="rules">
-      <div class="rule"><span class="n">1</span><p>Tap two tiles, or drag one onto the other, to swap them. A swap can’t be undone. You get three more than the fewest it can be done in, and what’s left is your score.</p></div>
+      <div class="rule"><span class="n">1</span><p>Tap two tiles, or drag one onto the other, to swap them. A swap can’t be undone. <b>Par</b> is the fewest it can be done in: you get par + 3 swaps, and what’s left is your score.</p></div>
       <div class="rule"><span class="n">2</span><p><b>Green</b> is in place and stays put. <b>Yellow</b> is wanted elsewhere in a word through that tile, either word where two cross. <b>Grey</b> isn’t wanted in its own words, but may belong in another.</p></div>
       <div class="rule"><span class="n">3</span><p>A word only lights as many of a letter as it still needs: if it shows two Es and wants one more, one is yellow and one grey.</p></div>
     </div>
@@ -358,7 +370,7 @@
     const left = puzzle.swaps - play.moves.length;
     const c = $('count');
     c.classList.toggle('low', left <= 3);
-    c.replaceChildren(el('b', '', String(left)), `${left === 1 ? ' swap left' : ' swaps left'} · fewest ${puzzle.shape.fewest}`);
+    c.replaceChildren(el('b', '', String(left)), left === 1 ? ' swap left' : ' swaps left', el('span', 'par', `par ${puzzle.shape.fewest}`));
   }
 
   const dateOf = day => { const [y, m, d] = D.epoch.split('-').map(Number); return new Date(y, m - 1, d + day - 1); };

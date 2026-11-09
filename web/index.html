@@ -36,6 +36,8 @@
 .game span { display: block; font-size: .88rem; line-height: 1.35; color: var(--muted); }
 /* Played today: the line under the name is how it went, in green */
 .game.done span { color: var(--pos); }
+/* Said to a screen reader, as the green can't be */
+.game span .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 .foot { margin-top: auto; padding: 18px 0 8px; text-align: center; }
 .get-app { margin: 0 0 4px; font-size: .86rem; color: var(--muted); }
@@ -156,7 +158,9 @@
       a.href = `${g.id}/index.html`;
       a.innerHTML = `<svg width="40" height="40" viewBox="0 0 64 64" fill="none" aria-hidden="true">${g.icon}</svg>`;
       const text = el('div');
-      text.append(el('b', '', g.name), el('span', '', played ? result.text : g.line));
+      const line = el('span', '', played ? result.text : g.line);
+      if (played) line.append(el('span', 'sr', ', played'));
+      text.append(el('b', '', g.name), line);
       a.append(text);
       return a;
     }));
