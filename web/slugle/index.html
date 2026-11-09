@@ -261,9 +261,9 @@
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="words.js?v=4"></script>
 <script src="lib.js?v=10"></script>
-<script src="../clock.js?v=2"></script>
+<script src="../clock.js?v=3"></script>
 <script src="../pwa.js"></script>
-<script src="../next.js?v=8"></script>
+<script src="../next.js?v=9"></script>
 <script>
 (() => {
   const L = window.LadderLib, D = window.LadderWords;
@@ -476,6 +476,7 @@
     meta.replaceChildren(b);
   }
 
+  const hintCount = n => `${n} ${n === 1 ? 'hint' : 'hints'}`;
   const todayDone = () => !!(state.days[today] && state.days[today].done);
   const solvedDays = () => Object.keys(state.days).filter(d => state.days[d].done).map(Number);
   // Only ladders solved on their own day keep a streak going.
@@ -485,16 +486,19 @@
     const n = steps(), par = puzzle.par, diff = n - par;
     $('resTitle').textContent = best ? `The ${par}-step way` : `Solved in ${n}`;
     const tag = $('resTag');
-    tag.textContent = best ? `Par ${par}` : diff === 0 ? 'On par' : `${Math.abs(diff)} ${diff < 0 ? 'under' : 'over'} par`;
-    tag.classList.toggle('good', best || diff <= 0);
-    const note = $('resNote'), hints = play.hints ? `${play.hints} ${play.hints === 1 ? 'hint' : 'hints'} used` : '';
-    if (diff <= 0) note.textContent = hints;
+    const hints = play.hints ? hintCount(play.hints) : '';
+    // Hints found the way, so a hinted ladder is never on or under par.
+    const helped = hints && diff <= 0;
+    tag.textContent = best ? `Par ${par}` : helped ? hints : diff === 0 ? 'On par' : `${Math.abs(diff)} ${diff < 0 ? 'under' : 'over'} par`;
+    tag.classList.toggle('good', best || (diff <= 0 && !helped));
+    const note = $('resNote');
+    if (diff <= 0) note.textContent = '';
     else {
       const b = el('button', 'reveal', best ? 'Back to your ladder' : 'Show the best way');
       b.type = 'button';
       b.prepend(best ? svg(14, 14, 'M5 3 2 6l3 3M2.5 6H9a3 3 0 0 1 0 6H6') : svg(14, 14, 'M1 7s2.2-4 6-4 6 4 6 4-2.2 4-6 4-6-4-6-4zM7 8.6a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2z'));
       b.addEventListener('click', () => { best = !best; swapped = true; renderLadder(); renderResult(); });
-      note.replaceChildren(...(hints ? [`${hints} · `] : []), b);
+      note.replaceChildren(...(hints ? [`${hints} used · `] : []), b);
     }
     const daily = state.mode === 'daily';
     $('resFirst').textContent = daily ? 'Share' : 'New ladder';
@@ -508,13 +512,10 @@
     if (!play.done) return;
     if (view !== today && state.mode === 'daily') return foot.replaceChildren(el('span', '', play.late ? 'Solved late, so it doesn’t change your streak' : 'Solved on the day'));
     if (!todayDone()) return foot.replaceChildren(el('span', '', 'Today’s ladder is still to do'));
-    const now = Clock.now();
-    const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-    const mins = Math.max(1, Math.ceil((midnight - now) / 60000));
     const s = L.streak(streakDays(), today);
     const left = el('span');
     left.append(el('b', '', String(s)), ` day streak`);
-    foot.replaceChildren(left, el('span', '', `Next ladder in ${mins >= 60 ? `${Math.floor(mins / 60)} h ` : ''}${mins % 60} min`));
+    foot.replaceChildren(left, el('span', '', Clock.untilNext('ladder', today, L.dayNumber(Clock.now(), D.epoch))));
   }
 
   function render() {
@@ -534,7 +535,12 @@
       body.replaceChildren(el('p', 'empty', 'Finish a daily ladder to start your stats.'));
       return;
     }
-    const diffs = days.map(d => state.days[d].ladder.length - 1 - L.parForDay(d, D.epoch));
+    // Against par, or 'hints' for a hinted ladder that would be on or under it.
+    const against = d => {
+      const rec = state.days[d], diff = rec.ladder.length - 1 - L.parForDay(d, D.epoch);
+      return rec.hints && diff <= 0 ? 'hints' : diff;
+    };
+    const diffs = days.map(against);
     const atPar = diffs.filter(x => x <= 0).length;
     const nums = el('div', 'numbers');
     for (const [v, label] of [
@@ -548,10 +554,11 @@
       nums.append(n);
     }
     const buckets = [['Under par', x => x < 0], ['On par', x => x === 0], ['1 over', x => x === 1], ['2 over', x => x === 2], ['3+ over', x => x >= 3]];
+    if (diffs.includes('hints')) buckets.push(['With hints', x => x === 'hints']);
     const counts = buckets.map(([, f]) => diffs.filter(f).length);
     const max = Math.max(...counts, 1);
     const todayRec = state.days[today];
-    const todayDiff = todayRec && todayRec.done ? todayRec.ladder.length - 1 - L.parForDay(today, D.epoch) : null;
+    const todayDiff = todayRec && todayRec.done ? against(today) : null;
     const dist = el('div', 'dist');
     dist.append(el('p', 'dist-title', 'Against par'));
     buckets.forEach(([label, f], i) => {
@@ -758,7 +765,7 @@
     if (L.dayNumber(Clock.now(), D.epoch) !== today) return;
     const rec = state.days[today];
     if (!rec || !rec.done) return;
-    const text = `Solved in ${rec.ladder.length - 1}, par ${L.parForDay(today, D.epoch)}`;
+    const text = `Solved in ${rec.ladder.length - 1}, par ${L.parForDay(today, D.epoch)}${rec.hints ? `, ${hintCount(rec.hints)}` : ''}`;
     try { localStorage.setItem('hub.slugle', JSON.stringify({ date: Clock.now().toDateString(), text })); } catch {}
   }
 
@@ -887,8 +894,9 @@
   function checkDay() {
     const now = L.dayNumber(Clock.now(), D.epoch);
     if (now !== today) {
-      // A daily in hand at midnight is finished first; it still counts for its day.
-      if (state.mode === 'daily' && view === today && play.ladder.length > 1 && !play.done && Clock.playing()) return;
+      // A daily in hand at midnight is finished first and counts for its day;
+      // finished after midnight, its result stays up while it's read or shared.
+      if (state.mode === 'daily' && view === today && Clock.hold(today, play.ladder.length > 1, play.done)) return tickNext();
       // Whoever was on today's ladder moves on to the new one.
       if (view === today) view = now;
       today = now;

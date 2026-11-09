@@ -48,3 +48,37 @@ test('the app reading wins over the phone clock', () => {
   assert.ok(Math.abs(Clock.now() - Date.now()) < 5000);
   delete globalThis.ladderClock;
 });
+
+// A fresh copy of clock.js with a page to tap on.
+function page() {
+  const handlers = {};
+  globalThis.addEventListener = (type, fn) => { handlers[type] = fn; };
+  delete require.cache[require.resolve('../web/clock.js')];
+  const C = require('../web/clock.js');
+  delete globalThis.addEventListener;
+  return { C, tap: () => handlers.pointerdown() };
+}
+
+test('a game in hand at midnight is held, and its result stays once finished', () => {
+  const { C, tap } = page();
+  assert.strictEqual(C.hold(5, true, false), false, 'nobody has touched it');
+  tap();
+  assert.strictEqual(C.hold(5, false, false), false, 'not started');
+  assert.strictEqual(C.hold(5, true, false), true);
+  assert.strictEqual(C.hold(5, true, true), true, 'finished after midnight');
+});
+
+test('a game finished before midnight lets the new day in', () => {
+  const { C, tap } = page();
+  tap();
+  assert.strictEqual(C.hold(5, true, true), false);
+  // The next night it was in hand, so that one is held.
+  assert.strictEqual(C.hold(6, true, false), true);
+  assert.strictEqual(C.hold(6, true, true), true);
+  assert.strictEqual(C.hold(7, true, true), false);
+});
+
+test('the result says the next game is out while a held day is up', () => {
+  assert.strictEqual(Clock.untilNext('word', 4, 5), 'Next word is out');
+  assert.match(Clock.untilNext('word', 5, 5), /^Next word in (\d+ h )?\d+ min$/);
+});

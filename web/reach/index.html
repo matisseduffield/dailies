@@ -201,9 +201,9 @@
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="days.js?v=2"></script>
 <script src="lib.js?v=2"></script>
-<script src="../clock.js?v=2"></script>
+<script src="../clock.js?v=3"></script>
 <script src="../pwa.js"></script>
-<script src="../next.js?v=8"></script>
+<script src="../next.js?v=9"></script>
 <script>
 (() => {
   const L = window.ReachLib, D = window.ReachDays;
@@ -236,6 +236,7 @@
   let today = L.dayNumber(Clock.now(), D.epoch);
   let puzzle, play;            // the puzzle on screen and its progress
   let picked = null;           // the place of the first number of a move
+  let made = false;            // picked is the answer of the last move, picked by the game
   let op = null;               // the operator of a move
   let best = false;            // showing the best way in place of the player's
   let swapped = false;         // ease the moves in once, after that changes
@@ -365,12 +366,9 @@
     if (!play.done) return;
     const rec = state.days[today];
     if (!rec || !rec.done) return foot.replaceChildren(el('span', '', 'Today’s puzzle is still to do'));
-    const clock = Clock.now();
-    const midnight = new Date(clock.getFullYear(), clock.getMonth(), clock.getDate() + 1);
-    const mins = Math.max(1, Math.ceil((midnight - clock) / 60000));
     const left = el('span');
     left.append(el('b', '', String(L.streak(wonDays(), today))), ' day streak');
-    foot.replaceChildren(left, el('span', '', `Next puzzle in ${mins >= 60 ? `${Math.floor(mins / 60)} h ` : ''}${mins % 60} min`));
+    foot.replaceChildren(left, el('span', '', Clock.untilNext('puzzle', today, L.dayNumber(Clock.now(), D.epoch))));
   }
 
   function render() {
@@ -445,8 +443,14 @@
     if (play.done) return;
     haptic();
     if (picked !== null && picked !== i && op) return move(picked, op, i);
-    picked = picked === i ? null : i;
-    if (picked === null) op = null;
+    // Tapping the answer the game picked keeps it, so the next operator has a
+    // number to go with; only the player's own pick lets go on a tap.
+    if (picked === i && made) made = false;
+    else {
+      picked = picked === i ? null : i;
+      made = false;
+      if (picked === null) op = null;
+    }
     renderSlots();
     renderOps();
   }
@@ -464,7 +468,7 @@
     const { value, refused } = L.apply(slots[from], how, slots[to]);
     if (refused) return refuse(to, refused);
     play.moves.push([from, how, to]);
-    picked = to; op = null; fresh = to;
+    picked = to; made = true; op = null; fresh = to;
     say('');
     if (value === puzzle.target) finish(true);
     else if (now().slots.filter(v => v != null).length === 1) say('No numbers left. Undo or restart', 0);
@@ -609,8 +613,9 @@
   function checkDay() {
     const day = L.dayNumber(Clock.now(), D.epoch);
     if (day !== today) {
-      // A daily in hand at midnight is finished first; it still counts for its day.
-      if (state.mode === 'daily' && play.moves.length && !play.done && Clock.playing()) return;
+      // A daily in hand at midnight is finished first and counts for its day;
+      // finished after midnight, its result stays up while it's read or shared.
+      if (state.mode === 'daily' && Clock.hold(today, play.moves.length > 0, play.done)) return tickNext();
       today = day;
       if (state.mode === 'daily') load();
       say('');

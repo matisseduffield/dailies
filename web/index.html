@@ -106,7 +106,7 @@
   </footer>
 </div>
 
-<script src="clock.js?v=2"></script>
+<script src="clock.js?v=3"></script>
 <script src="pwa.js"></script>
 <script>
 (() => {
@@ -162,11 +162,12 @@
       return a;
     }));
     $('progress').textContent = done === GAMES.length ? 'All done. See you tomorrow.' : `${done} of ${GAMES.length} played today`;
-    $('shareAll').hidden = done !== GAMES.length;
+    $('shareAll').hidden = !done;
   }
-  // Every result in one message, once the day's games are done.
+  // Today's results in one message, the games played so far.
   function shareAll() {
-    const lines = GAMES.map(g => `${g.name}: ${(store.get(g.id) || {}).text || ''}`);
+    const day = Clock.now().toDateString();
+    const lines = GAMES.map(g => [g, store.get(g.id)]).filter(([, r]) => r && r.date === day).map(([g, r]) => `${g.name}: ${r.text}`);
     const text = [`Dailies, ${dateFormat.format(Clock.now())}`, ...lines, SITE].join('\n');
     if (window.ladderApp) return toApp({ type: 'share', title: 'Dailies', text });
     if (navigator.share) return navigator.share({ text }).catch(() => {});

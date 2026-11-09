@@ -29,7 +29,8 @@
 /* The guesses: a row for each one so far and one for the next, growing down
    from the top. */
 .stage-wrap { position: relative; flex: 1; min-height: 0; display: flex; }
-.stage { flex: 1; min-width: 0; display: grid; justify-items: center; align-content: start; padding: 50px 0 14px; overflow: hidden; }
+.stage { position: relative; flex: 1; min-width: 0; display: grid; justify-items: center; align-content: start; padding: 50px 0 14px; overflow: hidden auto; overscroll-behavior: contain; scrollbar-width: none; }
+.stage::-webkit-scrollbar { display: none; }
 .guesses { --tile: 54px; --gap: 7px; display: grid; gap: var(--gap); }
 .row { display: grid; grid-template-columns: repeat(5, var(--tile)); gap: var(--gap); }
 .tile {
@@ -159,9 +160,9 @@
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="words.js?v=2"></script>
 <script src="lib.js?v=3"></script>
-<script src="../clock.js?v=2"></script>
+<script src="../clock.js?v=3"></script>
 <script src="../pwa.js"></script>
-<script src="../next.js?v=8"></script>
+<script src="../next.js?v=9"></script>
 <script>
 (() => {
   const L = window.HunchLib, D = window.HunchWords;
@@ -260,14 +261,24 @@
     }
   }
 
-  // One tile size for every game: room for all six guesses.
+  // One tile size for every game: room for all six guesses. On a short screen
+  // or with large text they can still outgrow the stage, so the row being
+  // typed (or the last guess) is kept in view and the first ones scroll off.
   function fit() {
     const stage = $('stage');
-    if (play.done && $('guesses').style.getPropertyValue('--tile')) return;
-    const h = stage.clientHeight - 64, w = Math.min(stage.clientWidth, 360);
-    const tile = Math.max(38, Math.min(60, Math.floor(Math.min(h / 6.8, (w - 28) / 5))));
-    $('guesses').style.setProperty('--tile', tile + 'px');
+    if (!(play.done && $('guesses').style.getPropertyValue('--tile'))) {
+      const h = stage.clientHeight - 64, w = Math.min(stage.clientWidth, 360);
+      const tile = Math.max(28, Math.min(60, Math.floor(Math.min(h / 6.8, (w - 28) / 5))));
+      $('guesses').style.setProperty('--tile', tile + 'px');
+    }
+    follow();
   }
+  function follow() {
+    const stage = $('stage'), last = $('guesses').lastElementChild;
+    if (last) stage.scrollTop = Math.max(0, last.offsetTop + last.offsetHeight + 14 - stage.clientHeight);
+  }
+  // The result takes more room than the keyboard.
+  new ResizeObserver(follow).observe($('stage'));
 
   const dateOf = day => { const [y, m, d] = D.epoch.split('-').map(Number); return new Date(y, m - 1, d + day - 1); };
   const dayFormat = new Intl.DateTimeFormat(locale, { weekday: 'short', day: 'numeric', month: 'short' });
@@ -304,12 +315,9 @@
     if (!play.done) return;
     const rec = state.days[today];
     if (!rec || !rec.done) return foot.replaceChildren(el('span', '', 'Today’s word is still to do'));
-    const now = Clock.now();
-    const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-    const mins = Math.max(1, Math.ceil((midnight - now) / 60000));
     const left = el('span');
     left.append(el('b', '', String(L.streak(wonDays(), today))), ' day streak');
-    foot.replaceChildren(left, el('span', '', `Next word in ${mins >= 60 ? `${Math.floor(mins / 60)} h ` : ''}${mins % 60} min`));
+    foot.replaceChildren(left, el('span', '', Clock.untilNext('word', today, L.dayNumber(Clock.now(), D.epoch))));
   }
 
   function render() {
@@ -558,8 +566,9 @@
   function checkDay() {
     const now = L.dayNumber(Clock.now(), D.epoch);
     if (now !== today) {
-      // A daily in hand at midnight is finished first; it still counts for its day.
-      if (state.mode === 'daily' && play.guesses.length && !play.done && Clock.playing()) return;
+      // A daily in hand at midnight is finished first and counts for its day;
+      // finished after midnight, its result stays up while it's read or shared.
+      if (state.mode === 'daily' && Clock.hold(today, play.guesses.length > 0, play.done)) return tickNext();
       today = now;
       if (state.mode === 'daily') load();
       render();

@@ -26,10 +26,12 @@
 .stage-wrap { position: relative; flex: 1; min-height: 0; display: flex; }
 .line { flex: 1; min-width: 0; padding-top: 8px; overflow: hidden auto; overscroll-behavior: contain; scrollbar-width: none; touch-action: pan-y; }
 .line::-webkit-scrollbar { display: none; }
-.track { --row: 46px; --gap: 14px; --end: 34px; position: relative; user-select: none; -webkit-user-select: none; transition: height .26s ease; }
+/* A row holds two lines of an event at the phone's text size; sizes() makes
+   it taller if the day has a longer one. */
+.track { --row: max(46px, calc(2.1rem + 12px)); --gap: 14px; --end: 34px; position: relative; user-select: none; -webkit-user-select: none; transition: height .26s ease; }
 .row {
   position: absolute; top: 0; left: 0; right: 0; height: var(--row);
-  display: grid; grid-template-columns: 50px 1fr; align-items: center; gap: 8px; padding: 0 10px;
+  display: grid; grid-template-columns: minmax(50px, max-content) 1fr; align-items: center; gap: 8px; padding: 0 10px;
   background: var(--surface); border-radius: 8px; pointer-events: none;
   transform: translate(var(--x, 0), var(--y, 0));
   transition: transform .34s cubic-bezier(.3, .7, .25, 1), background-color .3s ease, opacity .3s ease;
@@ -107,7 +109,7 @@
 
 /* Short phones: tighter rows, and the result leaves the list more room */
 @media (max-height: 640px) {
-  .track { --row: 42px; --gap: 10px; --end: 30px; }
+  .track { --row: max(42px, calc(2.1rem + 8px)); --gap: 10px; --end: 30px; }
   .deal { min-height: 66px; padding: 8px 14px; font-size: .98rem; }
   .tools { min-height: 30px; }
   .result { gap: 8px; padding: 10px 12px; }
@@ -215,9 +217,9 @@
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="days.js?v=3"></script>
 <script src="lib.js?v=1"></script>
-<script src="../clock.js?v=2"></script>
+<script src="../clock.js?v=3"></script>
 <script src="../pwa.js"></script>
-<script src="../next.js?v=8"></script>
+<script src="../next.js?v=9"></script>
 <script>
 (() => {
   const L = window.DatedLib, D = window.DatedDays;
@@ -282,6 +284,7 @@
     rows.clear();
     $('track').replaceChildren();
     slots = [];
+    size = null;
   }
 
   const later = (fn, ms) => { timers.push(setTimeout(fn, ms)); };
@@ -305,7 +308,28 @@
   let order = [];              // the cards showing, top to bottom
   let cursor = 0;              // the slot keyboard focus is at
 
-  const sizes = () => (matchMedia('(max-height: 640px)').matches ? { row: 42, gap: 10, end: 30 } : { row: 46, gap: 14, end: 34 });
+  // Row and gap heights as drawn, measured on a real row, so dragging aims at
+  // the rows where they are. A row grows past its CSS height when the day's
+  // longest event needs more lines at the phone's text size.
+  let size = null;
+  function sizes() {
+    if (size) return size;
+    const track = $('track'), probe = el('div', 'row');
+    probe.append(el('b', '', '0000'), el('span'));
+    probe.style.visibility = 'hidden';
+    track.style.removeProperty('--row');
+    track.append(probe);
+    let row = probe.offsetHeight;
+    const pad = Math.round(row - parseFloat(getComputedStyle(probe.lastChild).lineHeight) * 2);
+    for (const c of puzzle.cards) {
+      probe.lastChild.textContent = c.text;
+      row = Math.max(row, probe.lastChild.offsetHeight + pad);
+    }
+    probe.remove();
+    track.style.setProperty('--row', row + 'px');
+    const css = getComputedStyle(track), px = name => parseFloat(css.getPropertyValue(name));
+    return size = { row, gap: px('--gap'), end: px('--end') };
+  }
 
   function rowFor(card) {
     let node = rows.get(card.id);
@@ -459,12 +483,9 @@
     if (!play.done) return;
     const rec = state.days[today];
     if (!rec || !rec.done) return foot.replaceChildren(el('span', '', 'Today’s game is still to do'));
-    const clock = Clock.now();
-    const midnight = new Date(clock.getFullYear(), clock.getMonth(), clock.getDate() + 1);
-    const mins = Math.max(1, Math.ceil((midnight - clock) / 60000));
     const left = el('span');
     left.append(el('b', '', String(L.streak(wonDays(), today))), ' day streak');
-    foot.replaceChildren(left, el('span', '', `Next game in ${mins >= 60 ? `${Math.floor(mins / 60)} h ` : ''}${mins % 60} min`));
+    foot.replaceChildren(left, el('span', '', Clock.untilNext('game', today, L.dayNumber(Clock.now(), D.epoch))));
   }
 
   let settling = false;        // the game is over and the last card is still landing
@@ -774,13 +795,16 @@
   };
   function tellBack() { toApp({ type: 'back', enabled: !!openDialog() || state.mode === 'practice' }); }
 
-  addEventListener('resize', () => { if (!busy && !press) drawLine(); });
+  addEventListener('resize', () => { if (!busy && !press) { size = null; drawLine(); } });
+  // The font arriving can change how many lines an event takes.
+  document.fonts.ready.then(() => { if (!busy && !press) { size = null; drawLine(); } });
   // A new day while the game sits open (or comes back from the background).
   function checkDay() {
     const day = L.dayNumber(Clock.now(), D.epoch);
     if (day !== today) {
-      // A daily in hand at midnight is finished first; it still counts for its day.
-      if (state.mode === 'daily' && play.moves.length && !play.done && Clock.playing()) return;
+      // A daily in hand at midnight is finished first and counts for its day;
+      // finished after midnight, its result stays up while it's read or shared.
+      if (state.mode === 'daily' && Clock.hold(today, play.moves.length > 0, play.done)) return settling || tickNext();
       today = day;
       if (state.mode === 'daily') { settling = false; load(); $('line').scrollTop = 0; }
       say('');

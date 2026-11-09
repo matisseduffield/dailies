@@ -123,7 +123,7 @@
 
   <footer>
     <div id="play">
-      <div class="tools"><span>Mistakes left</span><span class="dots" id="dots"></span></div>
+      <div class="tools"><span>Mistakes left</span><span class="dots" id="dots" role="img"></span></div>
       <div class="controls">
         <button class="btn btn-secondary" id="shuffleBtn" type="button">Shuffle</button>
         <button class="btn btn-secondary" id="clearBtn" type="button">Clear</button>
@@ -178,9 +178,9 @@
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="puzzles.js?v=6"></script>
 <script src="lib.js?v=2"></script>
-<script src="../clock.js?v=2"></script>
+<script src="../clock.js?v=3"></script>
 <script src="../pwa.js"></script>
-<script src="../next.js?v=8"></script>
+<script src="../next.js?v=9"></script>
 <script>
 (() => {
   const L = window.SortedLib, D = window.SortedPuzzles;
@@ -322,12 +322,9 @@
 
   function tickNext() {
     if (!play.done) return;
-    const now = Clock.now();
-    const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-    const mins = Math.max(1, Math.ceil((midnight - now) / 60000));
     const left = el('span');
     left.append(el('b', '', String(L.streak(wonDays(), today))), ' day streak');
-    $('resFoot').replaceChildren(left, el('span', '', `Next puzzle in ${mins >= 60 ? `${Math.floor(mins / 60)} h ` : ''}${mins % 60} min`));
+    $('resFoot').replaceChildren(left, el('span', '', Clock.untilNext('puzzle', today, L.dayNumber(Clock.now(), D.epoch))));
   }
 
   function render() {
@@ -417,14 +414,23 @@
     const guess = [...picked];
     const { group, near } = L.check(guess, puzzle);
     play.guesses.push(guess);
-    const now = L.progress(play.guesses, puzzle);
+    let now = L.progress(play.guesses, puzzle);
     if (group >= 0) {
       fresh = [group];
+      // The last four can only go together, so they go in by themselves, as a
+      // guess of their own like any other.
+      const rest = play.order.filter(w => !now.solved.includes(L.groupOf(w, puzzle)));
+      const last = !now.done && rest.length === L.SIZE;
+      if (last) {
+        play.guesses.push(rest);
+        fresh.push(L.groupOf(rest[0], puzzle));
+        now = L.progress(play.guesses, puzzle);
+      }
       say('');
       haptic('tick');
       if (now.done) finish(now);
       save();
-      return settle(guess);
+      return settle(last ? [...guess, ...rest] : guess);
     }
     if (!now.done) {
       haptic('tick');
@@ -438,7 +444,8 @@
     render();
   }
 
-  // The four hop, then the group takes their place and the rest close up.
+  // The four hop (eight, when the last group goes in too), then the group
+  // takes their place and the rest close up.
   function settle(guess) {
     picked = [];
     if (calm.matches) return render();
@@ -449,7 +456,7 @@
       tile.classList.add('hop');
     });
     showPicked();
-    setTimeout(() => { busy = false; slide(render); }, 500);
+    setTimeout(() => { busy = false; slide(render); }, 220 + guess.length * 70);
   }
 
   function finish({ won, solved }) {
@@ -513,8 +520,9 @@
   function checkDay() {
     const now = L.dayNumber(Clock.now(), D.epoch);
     if (now !== today) {
-      // A daily in hand at midnight is finished first; it still counts for its day.
-      if (play.guesses.length && !play.done && Clock.playing()) return;
+      // A daily in hand at midnight is finished first and counts for its day;
+      // finished after midnight, its result stays up while it's read or shared.
+      if (Clock.hold(today, play.guesses.length > 0, play.done)) return tickNext();
       today = now;
       load();
       render();

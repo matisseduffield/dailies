@@ -25,7 +25,7 @@
 
 :root {
   --paper: #FCFCF8; --rule: #A3ACA5; --frame: #14211C; --block: #14211C;
-  --word: #BFD2F8; --here: #F4C52E; --on-here: #14211C; --shown: #FAEBB4; --on-shown: #14211C;
+  --word: #BFD2F8; --here: #F4C52E; --on-here: #14211C; --here-wrong: #9B2C20; --shown: #FAEBB4; --on-shown: #14211C;
   --bad-soft: color-mix(in srgb, var(--neg) 16%, var(--paper)); --good-soft: color-mix(in srgb, var(--pos) 16%, var(--paper));
   /* The clue's number and arrows, dark enough to read on the blue */
   --on-word: #2A4FBC; --on-word-dim: var(--muted);
@@ -61,6 +61,8 @@
 .cell.shown .num { color: var(--on-shown); }
 .cell.on { background: var(--here); color: var(--on-here); }
 .cell.on .num { color: var(--on-here); }
+/* A checked wrong letter stays red under the cursor, in a red that reads on the yellow */
+.cell.on.wrong { color: var(--here-wrong); }
 .cell.won { background: var(--pos); color: var(--on-ink); transition-delay: calc(var(--i) * 14ms); }
 .cell.won .num { color: var(--on-ink); transition-delay: calc(var(--i) * 14ms); }
 .cell.won.shown { background: var(--shown); color: var(--on-shown); }
@@ -80,7 +82,8 @@
 @media (hover: hover) { .tool:hover:not(:disabled) { color: var(--ink); background: var(--key); } }
 .tool:disabled { opacity: .4; cursor: default; }
 .tool.sure { color: var(--neg); }
-.tool b { font-weight: 600; color: var(--faint); }
+/* The count takes the label's colour: --faint is under 4.5:1 on the page in light mode */
+.tool b { font-weight: 600; }
 .tool.sure b { display: none; }
 .tools { container-type: inline-size; }
 @container (max-width: 21.25em) { .tool { padding: 0 6px; font-size: .82rem; } .tool:last-child { margin-right: -6px; } }
@@ -244,9 +247,9 @@
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="puzzles.js?v=2"></script>
 <script src="lib.js?v=1"></script>
-<script src="../clock.js?v=2"></script>
+<script src="../clock.js?v=3"></script>
 <script src="../pwa.js"></script>
-<script src="../next.js?v=8"></script>
+<script src="../next.js?v=9"></script>
 <script>
 (() => {
   const L = window.ClueyLib, D = window.ClueyPuzzles;
@@ -412,12 +415,9 @@
 
   function tickNext() {
     if (!play.done) return;
-    const clock = Clock.now();
-    const midnight = new Date(clock.getFullYear(), clock.getMonth(), clock.getDate() + 1);
-    const mins = Math.max(1, Math.ceil((midnight - clock) / 60000));
     const left = el('span');
     left.append(el('b', '', String(L.streak(wonDays(), today))), ' day streak');
-    $('resFoot').replaceChildren(left, el('span', '', `Next puzzle in ${mins >= 60 ? `${Math.floor(mins / 60)} h ` : ''}${mins % 60} min`));
+    $('resFoot').replaceChildren(left, el('span', '', Clock.untilNext('puzzle', today, L.dayNumber(Clock.now(), D.epoch))));
   }
 
   function render() {
@@ -782,8 +782,9 @@
   function checkDay() {
     const day = L.dayNumber(Clock.now(), D.epoch);
     if (day !== today) {
-      // A daily in hand at midnight is finished first; it still counts for its day.
-      if (state.mode === 'daily' && (play.ms > 0 || play.fill !== L.blank(puzzle)) && !play.done && Clock.playing()) return;
+      // A daily in hand at midnight is finished first and counts for its day;
+      // finished after midnight, its result stays up while it's read or shared.
+      if (Clock.hold(today, play.ms > 0 || play.fill !== L.blank(puzzle), play.done)) return tickNext();
       tick();
       save();
       today = day;

@@ -21,4 +21,17 @@
     // Replacing this page keeps Back going to the home screen, not the last game.
     link.onclick = e => { e.preventDefault(); location.replace(link.href); };
   };
+
+  // The result's foot reads "streak · next game" on one line. When it won't
+  // fit, the parts stack without the dot instead of a line starting with one.
+  // Measured unstacked each time, so taking the dot out can't flip it back.
+  if (root.document) for (const foot of root.document.querySelectorAll('.result-foot')) {
+    const fit = () => {
+      foot.classList.remove('stack');
+      const parts = [...foot.children];
+      foot.classList.toggle('stack', parts.some(p => p.offsetTop !== parts[0].offsetTop));
+    };
+    new MutationObserver(fit).observe(foot, { childList: true });
+    new ResizeObserver(fit).observe(foot);
+  }
 })(this);

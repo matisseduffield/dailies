@@ -16,7 +16,7 @@ turned on before a first guess.
 
 Sixteen words hide four groups of four. Tap four and press Check: a right group
 is set aside, a wrong one costs one of four mistakes, and three out of four
-says One away. A group's colour says how hard it was: yellow, green, blue, then purple. One
+says One away. Once three are found the last four go in by themselves. A group's colour says how hard it was: yellow, green, blue, then purple. One
 puzzle a day and no Practice, because every puzzle is hand-written and a spare
 one is a day used up.
 
@@ -173,15 +173,16 @@ letter at a time, and every step has to be a word.
   rung, Undo or Restart to go back.
 - Letters already in place show green, on every row, and nothing else is
   highlighted. Hint marks which letter to change;
-  asked again on the same rung, it types the word in. Hints count.
+  asked again on the same rung, it types the word in. Hints count: a hinted
+  ladder is never on or under par, in the result or the stats.
 - Past ladders: tap the date to play any day you missed. Late solves count
   in stats but not the streak.
 - The result: steps against par, the day streak, a button to swap your ladder
   for the best one if you went over, and a spoiler-free picture to share (which letter changed on each
   step). Stats (top bar): solved, streak, best streak, and how often you're
   on, under or over par.
-- Today / Practice tabs: practice ladders are random, short (par 3 to 4),
-  medium (5 to 6) or long (7 to 8); New ladder picks the length.
+- Today / Practice tabs: practice ladders are random, short (par 4 to 5),
+  medium (6 to 7) or long (8 to 9); New ladder picks the length.
 - How to play (top bar) opens by itself on the first visit.
 - Android app: self-updating from the public `dailies-releases` repo.
 - In a browser: https://dailies.matisseduffield.workers.dev (shared results
@@ -223,6 +224,9 @@ reading would hold the games on an old day; `/now` and `/app` pass through.
   top of its script lists the games.
 - `web/clock.js`: the time every game goes by, from our server rather than the
   phone, so `Clock.now()` replaces `new Date()` for anything to do with the day.
+  `Clock.hold()` keeps a game in hand at midnight on its own day until it's
+  finished and its result has been seen, and `Clock.untilNext()` is the
+  result's countdown.
 - `web/shared.css`: the palette, keyboard, sheets and so on that every page uses.
 - `web/slugle/`, `web/hunch/`, `web/sorted/`, `web/reach/`, `web/cluey/`, `web/mend/`, `web/dated/`, `web/overland/`, `web/splice/`: a game each. `index.html` is the whole game (no
   build step), `lib.js` its pure logic, tested by `node --test "tests/*.test.js"`,

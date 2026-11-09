@@ -52,7 +52,28 @@
   if (root.addEventListener) for (const type of ['pointerdown', 'keydown']) root.addEventListener(type, () => { touched = Date.now(); }, true);
   const playing = () => Date.now() - touched < 30 * 6e4;
 
-  const Clock = { now, wall, playing };
+  // Whether a page keeps the day it shows once the clock has moved on: a game
+  // in hand stays to be finished, and one finished after midnight keeps its
+  // result up, so it isn't swapped for an empty board while it's being read
+  // or shared. A game already finished at midnight isn't held. Either lets go
+  // after a long break, or when the player moves on (a reload, Practice).
+  let held = null;
+  function hold(day, started, done) {
+    if (!started || !playing()) return false;
+    if (!done) held = day;
+    return held === day;
+  }
+
+  // The result's line about the next game: a countdown to midnight, or, while
+  // a held day is still on screen, that the next one is out.
+  function untilNext(noun, shown, today) {
+    if (shown !== today) return `Next ${noun} is out`;
+    const at = now();
+    const mins = Math.max(1, Math.ceil((new Date(at.getFullYear(), at.getMonth(), at.getDate() + 1) - at) / 6e4));
+    return `Next ${noun} in ${mins >= 60 ? `${Math.floor(mins / 60)} h ` : ''}${mins % 60} min`;
+  }
+
+  const Clock = { now, wall, playing, hold, untilNext };
   root.Clock = Clock;
   if (typeof module === 'object' && module.exports) module.exports = Clock;
 })(globalThis);

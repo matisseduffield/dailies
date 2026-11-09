@@ -227,9 +227,9 @@
 <script src="map.js?v=1"></script>
 <script src="days.js?v=1"></script>
 <script src="lib.js?v=2"></script>
-<script src="../clock.js?v=2"></script>
+<script src="../clock.js?v=3"></script>
 <script src="../pwa.js"></script>
-<script src="../next.js?v=8"></script>
+<script src="../next.js?v=9"></script>
 <script>
 (() => {
   const L = window.OverlandLib, D = window.OverlandDays, M = window.OverlandMap;
@@ -556,12 +556,9 @@
     if (!play.done) return;
     const rec = state.days[today];
     if (!rec || !rec.done) return foot.replaceChildren(el('span', '', 'Today’s route is still to do'));
-    const clock = Clock.now();
-    const midnight = new Date(clock.getFullYear(), clock.getMonth(), clock.getDate() + 1);
-    const mins = Math.max(1, Math.ceil((midnight - clock) / 60000));
     const left = el('span');
     left.append(el('b', '', String(L.streak(wonDays(), today))), ' day streak');
-    foot.replaceChildren(left, el('span', '', `Next route in ${mins >= 60 ? `${Math.floor(mins / 60)} h ` : ''}${mins % 60} min`));
+    foot.replaceChildren(left, el('span', '', Clock.untilNext('route', today, L.dayNumber(Clock.now(), D.epoch))));
   }
 
   function render() {
@@ -806,8 +803,9 @@
   function checkDay() {
     const day = L.dayNumber(Clock.now(), D.epoch);
     if (day !== today) {
-      // A daily in hand at midnight is finished first; it still counts for its day.
-      if (state.mode === 'daily' && play.guesses.length && !play.done && Clock.playing()) return;
+      // A daily in hand at midnight is finished first and counts for its day;
+      // finished after midnight, its result stays up while it's read or shared.
+      if (state.mode === 'daily' && Clock.hold(today, play.guesses.length > 0, play.done)) return tickNext();
       today = day;
       if (state.mode === 'daily') load();
       say('');
