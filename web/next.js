@@ -6,9 +6,20 @@
   function played(id) {
     try {
       const result = JSON.parse(localStorage.getItem('hub.' + id));
-      return !!result && result.date === Clock.now().toDateString();
+      return !!result && result.date === Clock.now().toDateString() && !result.started;
     } catch { return false; }
   }
+
+  // Today's game begun but not finished: the home screen says Started. Never
+  // over today's result, and only from today's game, never Practice.
+  root.markStarted = id => {
+    const day = Clock.now().toDateString();
+    try {
+      const result = JSON.parse(localStorage.getItem('hub.' + id));
+      if (result && result.date === day) return;
+      localStorage.setItem('hub.' + id, JSON.stringify({ date: day, started: true }));
+    } catch {}
+  };
 
   root.showNext = (link, here, show = true) => {
     const at = GAMES.findIndex(g => g[0] === here);

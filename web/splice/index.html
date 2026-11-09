@@ -190,7 +190,7 @@
 <script src="lib.js?v=4"></script>
 <script src="../clock.js?v=4"></script>
 <script src="../pwa.js"></script>
-<script src="../next.js?v=9"></script>
+<script src="../next.js?v=10"></script>
 <script>
 (() => {
   const L = window.SpliceLib, D = window.SpliceDays;
@@ -217,7 +217,7 @@
     practice,
     mode: saved.mode === 'practice' && practice ? 'practice' : 'daily',
   };
-  const save = () => store.set('state', state);
+  const save = () => { store.set('state', state); begun(); };
 
   let today = L.dayNumber(Clock.now(), D.epoch);
   let puzzle, play;            // the puzzle on screen and its progress
@@ -551,6 +551,12 @@
     say('');
     finish(false);
     save(); render();
+  }
+
+  // Today's game begun: the home screen says Started until it's done.
+  function begun() {
+    const rec = state.days[today];
+    if (rec && !rec.done && (rec.swaps > 0 || rec.checks.length > 0) && L.dayNumber(Clock.now(), D.epoch) === today) markStarted('splice');
   }
 
   // Today's result, for the hub's home screen.

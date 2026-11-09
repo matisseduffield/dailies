@@ -108,7 +108,7 @@
 </div>
 
 <script src="clock.js?v=4"></script>
-<script src="today.js?v=1"></script>
+<script src="today.js?v=2"></script>
 <script src="pwa.js"></script>
 <script>
 (() => {
@@ -156,13 +156,15 @@
     $('date').textContent = dateFormat.format(now);
     $('games').replaceChildren(...GAMES.map(g => {
       const result = store.get(g.id);
-      const played = !!result && result.date === day;
+      // A game begun today but not finished saves { date, started } until it is.
+      const today = !!result && result.date === day;
+      const played = today && !result.started;
       if (played) done++;
       const a = el('a', played ? 'game done' : 'game');
       a.href = `${g.id}/index.html`;
       a.innerHTML = `<svg width="40" height="40" viewBox="0 0 64 64" fill="none" aria-hidden="true">${g.icon}</svg>`;
       const text = el('div');
-      const line = el('span', '', played ? result.text : g.line);
+      const line = el('span', '', played ? result.text : today ? 'Started' : g.line);
       if (played) line.append(el('span', 'sr', ', played'));
       text.append(el('b', '', g.name), line);
       a.append(text);
@@ -204,6 +206,12 @@
   // selfUpdates is off until the app says otherwise: Play builds update through
   // the store, so there the version is a plain label with nothing to tap.
   let appVersion = '', selfUpdates = false, updateReady = false, versionTimer = 0, updateVersion = '', updateSize = 0;
+  // Not now holds for the version it was said to while the app stays open; the
+  // link at the top right still opens the card.
+  const later = {
+    get() { try { return sessionStorage.getItem('updateLater') || ''; } catch { return ''; } },
+    set(v) { try { sessionStorage.setItem('updateLater', v); } catch {} },
+  };
   function showVersion(text, st) {
     clearTimeout(versionTimer);
     $('version').hidden = false;
@@ -260,12 +268,15 @@
         showVersion(m.state === 'latest' ? 'Up to date' : "Couldn't check");
         versionTimer = setTimeout(() => showVersion(`v${appVersion}`), 2500);
       } else if (m.type === 'update' && selfUpdates) {
+        const away = $('updateCard').hidden;
         if (m.state === 'available') { updateReady = true; showVersion('Update available', 'available'); }
         showUpdate(m);
+        // Put off: the card is filled in for the link, but stays out of the way.
+        if (m.state === 'available' && away && m.version && m.version === later.get()) $('updateCard').hidden = true;
       }
     };
     $('updateGo').addEventListener('click', () => { showUpdate({ state: 'downloading', progress: 0 }); toApp({ type: 'installUpdate' }); });
-    $('updateLater').addEventListener('click', () => { $('updateCard').hidden = true; });
+    $('updateLater').addEventListener('click', () => { $('updateCard').hidden = true; later.set(updateVersion); });
     $('version').addEventListener('click', () => {
       if (updateReady) { $('updateCard').hidden = false; return; }
       showVersion('Checking…');

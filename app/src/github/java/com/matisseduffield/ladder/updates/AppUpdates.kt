@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
+import java.io.IOException
 
 /**
  * The self-updater's side of MainActivity: when to check, the page's update
@@ -25,6 +26,12 @@ class AppUpdates(
 ) {
     private companion object {
         const val CHECK_INTERVAL_MS = 6 * 60 * 60 * 1000L
+        const val NO_CONNECTION = "No connection. Try again with better signal."
+
+        // A dropped or missing connection (no host, timed out, refused, cut off)
+        // says so plainly; a bad checksum or HTTP status keeps its own words.
+        fun downloadError(e: Exception): String =
+            if (e is IOException) NO_CONNECTION else e.message ?: "The download didn't finish."
     }
 
     private var lastUpdateCheck = 0L
@@ -101,18 +108,24 @@ class AppUpdates(
         activity.lifecycleScope.launch {
             try {
                 var lastPct = -1
-                val apk = UpdateManager.download(activity, info) { fraction ->
-                    val pct = (fraction * 100).toInt()
-                    if (pct != lastPct) {
-                        lastPct = pct
-                        sendUpdateState("downloading") { put("progress", fraction.toDouble()) }
+                val apk = try {
+                    UpdateManager.download(activity, info) { fraction ->
+                        val pct = (fraction * 100).toInt()
+                        if (pct != lastPct) {
+                            lastPct = pct
+                            sendUpdateState("downloading") { put("progress", fraction.toDouble()) }
+                        }
                     }
+                } catch (e: Exception) {
+                    installing = false
+                    sendUpdateState("failed") { put("message", downloadError(e)) }
+                    return@launch
                 }
                 sendUpdateState("installing")
                 UpdateManager.install(activity, apk)
             } catch (e: Exception) {
                 installing = false
-                sendUpdateState("failed") { put("message", e.message ?: "The download didn't finish.") }
+                sendUpdateState("failed") { put("message", e.message ?: "The update didn't install.") }
             }
         }
     }
@@ -175,8 +188,14 @@ class AppUpdates(
 
         activity.lifecycleScope.launch {
             try {
-                val apk = UpdateManager.download(activity, info) { fraction ->
-                    activity.runOnUiThread { bar.progress = (fraction * 100).toInt() }
+                val apk = try {
+                    UpdateManager.download(activity, info) { fraction ->
+                        activity.runOnUiThread { bar.progress = (fraction * 100).toInt() }
+                    }
+                } catch (e: Exception) {
+                    progress.dismiss()
+                    Toast.makeText(activity, downloadError(e), Toast.LENGTH_LONG).show()
+                    return@launch
                 }
                 progress.dismiss()
                 UpdateManager.install(activity, apk)

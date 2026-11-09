@@ -31,3 +31,44 @@ test('a result from before cards gives its words in the same shape', () => {
 test('nothing played today, nothing to share', () => {
   assert.equal(todayText([['Slugle', { date: 'Sun Nov 08 2026', text: 'x', card: 'y' }], ['Hunch', null]], opts()), '');
 });
+
+test('a game only begun today has no line and doesn’t count as played', () => {
+  const entries = [
+    ['Slugle', { date: DAY, started: true }],
+    ['Hunch', { date: DAY, text: 'Got it in 3', card: 'Hunch 3/6 ⬜⬜🟩' }],
+  ];
+  assert.equal(todayText(entries, opts()), 'Dailies · Mon 9 Nov · 1 of 9\nHunch 3/6 ⬜⬜🟩\ndailies.teloone.au');
+  assert.equal(todayText([['Slugle', { date: DAY, started: true }]], opts()), '');
+});
+
+// next.js as a game page runs it, with its storage and clock faked.
+function loadNext(stored = {}) {
+  const fs = require('node:fs'), path = require('node:path'), vm = require('node:vm');
+  const values = Object.fromEntries(Object.entries(stored).map(([k, v]) => ['hub.' + k, JSON.stringify(v)]));
+  const root = {
+    Clock: { now: () => new Date(2026, 10, 9, 12) },
+    localStorage: { getItem: k => values[k] ?? null, setItem: (k, v) => { values[k] = String(v); } },
+  };
+  vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../web/next.js'), 'utf8'), root);
+  return { root, get: id => JSON.parse(values['hub.' + id] ?? 'null') };
+}
+
+test('a first move marks today’s game started, never over today’s result', () => {
+  const { root, get } = loadNext({
+    hunch: { date: DAY, text: 'Got it in 3' },
+    sorted: { date: 'Sun Nov 08 2026', text: 'Perfect' },
+  });
+  root.markStarted('slugle');
+  root.markStarted('hunch');
+  root.markStarted('sorted');
+  assert.deepEqual(get('slugle'), { date: DAY, started: true });
+  assert.deepEqual(get('hunch'), { date: DAY, text: 'Got it in 3' });
+  assert.deepEqual(get('sorted'), { date: DAY, started: true });
+});
+
+test('the next game link still offers a game only begun', () => {
+  const { root } = loadNext({ hunch: { date: DAY, started: true }, sorted: { date: DAY, text: 'Perfect' } });
+  const link = {};
+  root.showNext(link, 'slugle');
+  assert.equal(link.href, '../hunch/index.html');
+});

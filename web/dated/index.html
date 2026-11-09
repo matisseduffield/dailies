@@ -225,7 +225,7 @@
 <script src="lib.js?v=2"></script>
 <script src="../clock.js?v=4"></script>
 <script src="../pwa.js"></script>
-<script src="../next.js?v=9"></script>
+<script src="../next.js?v=10"></script>
 <script>
 (() => {
   const L = window.DatedLib, D = window.DatedDays;
@@ -261,7 +261,7 @@
     const rec = state.days[d];
     if (!rec || typeof rec !== 'object' || (!fresh && !rec.done)) delete state.days[d];
   }
-  const save = () => store.set('state', state);
+  const save = () => { store.set('state', state); begun(); };
 
   let today = L.dayNumber(Clock.now(), D.epoch);
   let puzzle, play;            // the game on screen and its progress
@@ -597,6 +597,8 @@
 
     const quick = still();
     if (right) {
+      // Read out, not shown: the row turning green says it on screen.
+      $('toast').textContent = `Right: ${card.year}`;
       keepInView(slot);
       later(() => next(node), quick ? 0 : 340);
       return;
@@ -644,6 +646,12 @@
     buildSlots();
     readable();
     tellBack();
+  }
+
+  // Today's game begun: the home screen says Started until it's done.
+  function begun() {
+    const rec = state.days[today];
+    if (rec && !rec.done && rec.moves.length > 0 && L.dayNumber(Clock.now(), D.epoch) === today) markStarted('dated');
   }
 
   // Today's result, for the hub's home screen.

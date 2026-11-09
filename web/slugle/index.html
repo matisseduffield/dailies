@@ -258,7 +258,7 @@
 <script src="lib.js?v=12"></script>
 <script src="../clock.js?v=4"></script>
 <script src="../pwa.js"></script>
-<script src="../next.js?v=9"></script>
+<script src="../next.js?v=10"></script>
 <script>
 (() => {
   const L = window.LadderLib, D = window.LadderWords;
@@ -289,7 +289,7 @@
     hard: !!saved.hard,
     mode: saved.mode === 'practice' && saved.practice ? 'practice' : 'daily',
   };
-  const save = () => store.set('state', state);
+  const save = () => { store.set('state', state); begun(); };
 
   let today = L.dayNumber(Clock.now(), D.epoch);
   let view = today;            // the daily ladder on screen: today or a past one
@@ -346,6 +346,7 @@
   // The row being typed. A keypress redraws only this, not the whole ladder.
   function drawEntry(row) {
     row.className = bad ? 'row entry bad' : 'row entry';
+    row.setAttribute('role', 'img');
     row.replaceChildren();
     tiles(row, typed);
     row.setAttribute('aria-label', typed ? `Next word: ${typed.toUpperCase()}` : 'Type the next word');
@@ -752,6 +753,12 @@
     if (state.mode === 'daily' && view !== today) play.late = true;
     haptic('tick');
     report(true);
+  }
+
+  // Today's game begun: the home screen says Started until it's done.
+  function begun() {
+    const rec = state.days[today];
+    if (rec && !rec.done && rec.ladder.length > 1 && L.dayNumber(Clock.now(), D.epoch) === today) markStarted('slugle');
   }
 
   // Today's result, for the hub's home screen.

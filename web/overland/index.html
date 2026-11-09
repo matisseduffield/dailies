@@ -67,9 +67,11 @@
 /* Guesses so far, newest last */
 .trail { display: flex; gap: 6px; min-height: 30px; overflow: auto hidden; scrollbar-width: none; }
 .trail::-webkit-scrollbar { display: none; }
-.stop { flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 30px; padding: 0 10px; background: var(--surface); border-radius: 15px; font-size: .84rem; font-weight: 600; white-space: nowrap; }
+.stop { position: relative; flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 30px; padding: 0 10px; background: var(--surface); border-radius: 15px; font-size: .84rem; font-weight: 600; white-space: nowrap; }
 .stop i { width: 9px; height: 9px; border-radius: 50%; background: var(--loose); transition: background-color .3s ease; }
 .stop.joined i { background: var(--pos); }
+/* Said to a screen reader, as the green can't be */
+.stop .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 /* The guesses left, then what's being typed and the names it could be */
 .tools { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; min-height: 32px; }
@@ -230,7 +232,7 @@
 <script src="lib.js?v=3"></script>
 <script src="../clock.js?v=4"></script>
 <script src="../pwa.js"></script>
-<script src="../next.js?v=9"></script>
+<script src="../next.js?v=10"></script>
 <script>
 (() => {
   const L = window.OverlandLib, D = window.OverlandDays, M = window.OverlandMap;
@@ -258,7 +260,7 @@
     mode: saved.mode === 'practice' && practiceSaved ? 'practice' : 'daily',
   };
   for (const d of Object.keys(state.days)) if (!state.days[d] || typeof state.days[d] !== 'object') delete state.days[d];
-  const save = () => store.set('state', state);
+  const save = () => { store.set('state', state); begun(); };
 
   let today = L.dayNumber(Clock.now(), D.epoch);
   let puzzle, play;            // the game on screen and its progress
@@ -492,6 +494,7 @@
     const stops = play.guesses.map(g => {
       const stop = el('span', s.joined.has(g) ? 'stop joined' : 'stop');
       stop.append(el('i'), nameOf(g));
+      if (s.joined.has(g)) stop.append(el('span', 'sr', ', joined'));
       return stop;
     });
     $('trail').replaceChildren(...stops);
@@ -656,6 +659,12 @@
     const code = L.search(M, typed)[0];
     if (code) return guess(code);
     say(typed.length < 2 ? 'Keep typing' : 'No country by that name');
+  }
+
+  // Today's game begun: the home screen says Started until it's done.
+  function begun() {
+    const rec = state.days[today];
+    if (rec && !rec.done && rec.guesses.length > 0 && L.dayNumber(Clock.now(), D.epoch) === today) markStarted('overland');
   }
 
   // Today's result, for the hub's home screen.

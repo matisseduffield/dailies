@@ -44,7 +44,7 @@ function runPwa({ hostname = 'dailies.teloone.au', ua = SAFARI, standalone = fal
 // sw.js with its events caught, to see what it would answer.
 function loadSw() {
   const on = {};
-  const scope = { addEventListener: (type, fn) => { on[type] = fn; }, location: new URL('https://dailies.teloone.au/sw.js'), URL, Response, console, fetch: async () => new Response(''), caches: { open: async () => ({ put: async () => {} }), match: async () => undefined } };
+  const scope = { addEventListener: (type, fn) => { on[type] = fn; }, location: new URL('https://dailies.teloone.au/sw.js'), URL, Response, console, setTimeout, fetch: async () => new Response(''), caches: { open: async () => ({ put: async () => {} }), match: async () => undefined } };
   vm.runInNewContext(read('sw.js').toString(), scope);
   return request => {
     let answered = false;
@@ -110,6 +110,79 @@ test('the service worker answers for the app itself', () => {
   const answers = loadSw();
   assert.equal(answers({ url: 'https://dailies.teloone.au/', mode: 'navigate' }), true);
   for (const url of KEPT) assert.equal(answers({ url: `https://dailies.teloone.au/${url}` }), true, url);
+});
+
+// sw.js answering a page, with the network and the kept copies given, and the
+// waiting done on a mock clock. `ask` sends it another request.
+async function swPage(t, { network, copy }) {
+  t.mock.timers.enable({ apis: ['setTimeout', 'Date'] });
+  const on = {}, put = [];
+  const caches = {
+    open: async () => ({ put: async (key, res) => { put.push([key, await res.text()]); } }),
+    match: async () => (copy == null ? undefined : new Response(copy)),
+  };
+  const scope = { addEventListener: (type, fn) => { on[type] = fn; }, location: new URL('https://dailies.teloone.au/sw.js'), URL, Response, console, Date, setTimeout: (fn, ms) => setTimeout(fn, ms), fetch: () => network, caches };
+  vm.runInNewContext(read('sw.js').toString(), scope);
+  const waits = [];
+  const ask = (url, mode) => {
+    let answer;
+    on.fetch({ request: { method: 'GET', mode, url }, respondWith(p) { answer = p; }, waitUntil(p) { waits.push(p); } });
+    return answer;
+  };
+  const answer = ask('https://dailies.teloone.au/hunch/', 'navigate');
+  return { answer, ask, waits, put, tick: ms => t.mock.timers.tick(ms) };
+}
+const settle = () => new Promise(r => setImmediate(r));
+
+test('a page on a connection that answers nothing opens from its copy after 3 seconds', async t => {
+  let answer;
+  const late = new Promise(r => { answer = r; });
+  const sw = await swPage(t, { network: late, copy: 'kept' });
+  let text = null;
+  sw.answer.then(res => res.text()).then(s => { text = s; });
+  sw.tick(2900); await settle();
+  assert.equal(text, null);
+  sw.tick(100); await settle(); await settle();
+  assert.equal(text, 'kept');
+  // The answer that comes in late still refreshes the copy, without its clock reading.
+  answer(new Response('<script>var serverClock={"now":1}</script>new'));
+  await Promise.all(sw.waits); await settle(); await settle();
+  assert.deepEqual(sw.put, [['https://dailies.teloone.au/hunch/index.html', 'new']]);
+});
+
+test('after a page has waited, its files come from their copies straight away', async t => {
+  const sw = await swPage(t, { network: new Promise(() => {}), copy: 'kept' });
+  sw.tick(3000); await settle(); await settle();
+  assert.equal(await (await sw.answer).text(), 'kept');
+  let text = null;
+  sw.ask('https://dailies.teloone.au/shared.css', 'no-cors').then(res => res.text()).then(s => { text = s; });
+  await settle(); await settle();
+  assert.equal(text, 'kept');
+  // Long after, a file waits its turn again.
+  sw.tick(6000);
+  text = null;
+  sw.ask('https://dailies.teloone.au/clock.js', 'no-cors').then(res => res.text()).then(s => { text = s; });
+  await settle(); await settle();
+  assert.equal(text, null);
+  sw.tick(3000); await settle(); await settle();
+  assert.equal(text, 'kept');
+});
+
+test('a page that answers in time is the fresh one', async t => {
+  const sw = await swPage(t, { network: Promise.resolve(new Response('fresh')), copy: 'kept' });
+  assert.equal(await (await sw.answer).text(), 'fresh');
+});
+
+test('with no copy, a slow page is waited for', async t => {
+  let answer;
+  const sw = await swPage(t, { network: new Promise(r => { answer = r; }), copy: null });
+  let text = null;
+  sw.answer.then(res => res.text()).then(s => { text = s; });
+  sw.tick(5000); await settle(); await settle();
+  assert.equal(text, null);
+  answer(new Response('slow'));
+  await settle(); await settle();
+  assert.equal(text, 'slow');
 });
 
 test('every file the service worker keeps exists', () => {

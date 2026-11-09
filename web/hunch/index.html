@@ -165,7 +165,7 @@
 <script src="lib.js?v=5"></script>
 <script src="../clock.js?v=4"></script>
 <script src="../pwa.js"></script>
-<script src="../next.js?v=9"></script>
+<script src="../next.js?v=10"></script>
 <script>
 (() => {
   const L = window.HunchLib, D = window.HunchWords;
@@ -192,7 +192,7 @@
     hard: !!saved.hard,
     mode: saved.mode === 'practice' && saved.practice ? 'practice' : 'daily',
   };
-  const save = () => store.set('state', state);
+  const save = () => { store.set('state', state); begun(); };
 
   let today = L.dayNumber(Clock.now(), D.epoch);
   let answer, play;            // the word on screen and its progress
@@ -229,6 +229,7 @@
 
   function drawEntry(row) {
     row.className = bad ? 'row entry bad' : 'row entry';
+    row.setAttribute('role', 'img');
     row.replaceChildren();
     for (let i = 0; i < L.LEN; i++) row.append(el('span', 'tile', typed[i] || ''));
     row.setAttribute('aria-label', typed ? `Next guess: ${typed.toUpperCase()}` : 'Type a guess');
@@ -239,11 +240,15 @@
     if (row) drawEntry(row);
   }
 
+  // A guess as a screen reader says it, as the colours can't be.
+  const said = g => { const m = L.marks(g, answer); return [...g].map((c, j) => `${c.toUpperCase()} ${SAID[m[j]]}`).join(', '); };
+
   function renderGuesses() {
     const rows = play.guesses.map((g, i) => {
       const m = L.marks(g, answer);
       const row = el('div', fresh && i === play.guesses.length - 1 ? 'row new' : 'row');
-      row.setAttribute('aria-label', [...g].map((c, j) => `${c.toUpperCase()} ${SAID[m[j]]}`).join(', '));
+      row.setAttribute('role', 'img');
+      row.setAttribute('aria-label', said(g));
       m.forEach((mark, j) => {
         const t = el('span', `tile ${mark}`, g[j]);
         t.style.setProperty('--i', j);
@@ -260,8 +265,11 @@
   function renderKeys() {
     const known = L.letters(play.guesses, answer);
     for (const k of $('keys').querySelectorAll('[data-key]')) {
+      if (k.dataset.key.length > 1) continue;
+      const mark = known[k.dataset.key];
       k.classList.remove('hit', 'near', 'miss');
-      if (known[k.dataset.key]) k.classList.add(known[k.dataset.key]);
+      if (mark) { k.classList.add(mark); k.setAttribute('aria-label', `${k.dataset.key.toUpperCase()}, ${SAID[mark]}`); }
+      else k.removeAttribute('aria-label');
     }
   }
 
@@ -424,7 +432,9 @@
     else if (!state.hard) play.hard = false;
     play.guesses.push(next);
     typed = ''; fresh = true;
+    // Read out, not shown: the new row's colours say it on screen.
     say('');
+    $('toast').textContent = said(next);
     if (next === answer || play.guesses.length === L.TRIES) finish(next === answer);
     save();
     render();
@@ -451,6 +461,12 @@
     play.won = won;
     haptic('tick');
     report(true);
+  }
+
+  // Today's game begun: the home screen says Started until it's done.
+  function begun() {
+    const rec = state.days[today];
+    if (rec && !rec.done && rec.guesses.length > 0 && L.dayNumber(Clock.now(), D.epoch) === today) markStarted('hunch');
   }
 
   // Today's result, for the hub's home screen.

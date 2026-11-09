@@ -217,7 +217,9 @@ Give it a folder in `web/` with an `index.html` that links `../shared.css`, add
 it to `GAMES` in `web/index.html` and `web/next.js`, and when today's game ends
 save `{ date: new Date().toDateString(), text, card }` to localStorage as
 `hub.<folder>` (`card` is its line in Share today; a result without one shows
-its `text`). Call `showNext()` from its result for the link to the next game.
+its `text`). On today's first move, call `markStarted('<folder>')` (in `next.js`) so the
+home screen says Started; it never writes over a result, and Practice never calls it.
+Call `showNext()` from its result for the link to the next game.
 
 ## On an iPhone
 
@@ -226,7 +228,8 @@ The website installs from Safari with Share, then Add to Home Screen: `web/manif
 launcher icon), the Apple tags, and `web/pwa.js`, which registers `web/sw.js` and shows a one-time
 hint in Safari on an iPhone. `pwa.js` does nothing on `appassets.androidplatform.net`, so neither
 runs in the Android app. `sw.js` is network-first with a cached copy for offline opening, and only
-touches the files it names. It strips the `serverClock` reading from pages it keeps, since an old
+touches the files it names. A file that hasn't come in 3 seconds is answered from its copy (the
+network's answer still refreshes it), so a connection that answers nothing doesn't leave a blank page. It strips the `serverClock` reading from pages it keeps, since an old
 reading would hold the games on an old day; `/now` and `/app` pass through.
 
 ## Layout

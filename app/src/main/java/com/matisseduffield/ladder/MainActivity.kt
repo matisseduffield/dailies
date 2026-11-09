@@ -26,6 +26,8 @@ import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
 import com.matisseduffield.ladder.updates.AppUpdates
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
@@ -44,6 +46,9 @@ class MainActivity : ComponentActivity() {
         const val BRIDGE_NAME = "ladderApp"
         const val CLOCK_NAME = "ladderClock"
         const val CLOCK_INTERVAL_MS = 15 * 60 * 1000L
+        // A failed check goes again while the app is open: a phone just
+        // restarted is often a minute away from a signal.
+        val CLOCK_RETRIES_MS = longArrayOf(0, 10_000, 30_000, 90_000)
 
         // A game's ladderBack() closes a sheet or leaves practice, and says
         // whether it did anything. If not, Back goes to the page before it.
@@ -53,6 +58,8 @@ class MainActivity : ComponentActivity() {
     private lateinit var web: WebView
     private val clock by lazy { TrustedClock(this) }
     private var lastClockCheck = 0L
+    private var clockCheck: Job? = null
+    private var renderGone = false
     private val updates = AppUpdates(this, ::send)
     private var page: JavaScriptReplyProxy? = null
     private var pageWantsBack = false
@@ -119,6 +126,8 @@ class MainActivity : ComponentActivity() {
                 // If Android ends the page's renderer (low memory), start the
                 // screen again rather than letting the whole app crash.
                 override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
+                    // From the hub, not the page that may have run it out of memory.
+                    renderGone = true
                     recreate()
                     return true
                 }
@@ -162,7 +171,10 @@ class MainActivity : ComponentActivity() {
             })
         }
         web.addJavascriptInterface(clock, CLOCK_NAME)
-        web.loadUrl(START_URL)
+        // A theme or font change, or Android ending the app in the background,
+        // rebuilds the screen: carry on with the page that was open. It loads
+        // afresh, so it reads the clock, says hello and takes the new colours.
+        if (savedInstanceState?.let { web.restoreState(it) } == null) web.loadUrl(START_URL)
 
         updates.start(firstCreate = savedInstanceState == null)
     }
@@ -178,9 +190,15 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onPause() {
+        clockCheck?.cancel()
         web.onPause()
         web.pauseTimers()
         super.onPause()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        if (!renderGone) web.saveState(outState)
     }
 
     override fun onDestroy() {
@@ -189,14 +207,20 @@ class MainActivity : ComponentActivity() {
     }
 
     // Time since boot carries the reading between checks, so these are only for a
-    // restart or a new time zone. A failed check tries again on the next open.
+    // restart or a new time zone. A failed check tries a few more times while the
+    // app is open, then again on the next open.
     private fun maybeCheckClock() {
         val sinceBoot = SystemClock.elapsedRealtime()
         if (lastClockCheck != 0L && sinceBoot - lastClockCheck < CLOCK_INTERVAL_MS) return
-        lifecycleScope.launch {
-            if (clock.check()) {
-                lastClockCheck = SystemClock.elapsedRealtime()
-                web.evaluateJavascript("dispatchEvent(new Event('clock'))", null)
+        if (clockCheck?.isActive == true) return
+        clockCheck = lifecycleScope.launch {
+            for (wait in CLOCK_RETRIES_MS) {
+                delay(wait)
+                if (clock.check()) {
+                    lastClockCheck = SystemClock.elapsedRealtime()
+                    web.evaluateJavascript("dispatchEvent(new Event('clock'))", null)
+                    return@launch
+                }
             }
         }
     }
