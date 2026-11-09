@@ -100,12 +100,15 @@
 .key { height: clamp(40px, 6.6dvh, 54px); }
 .keys { gap: 5px; }
 
-/* All the clues in a sheet */
-.list { display: grid; gap: 4px; }
-.list h3 { margin: 6px 0 2px; font-size: .78rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
-.row { display: grid; grid-template-columns: 26px 1fr; gap: 6px; width: 100%; min-height: 44px; padding: 8px 10px; background: var(--bg); border: 0; border-radius: 8px; font-size: .94rem; line-height: 1.3; text-align: left; }
-.row.here { background: var(--word); }
+/* All the clues in a sheet: plain rows, as in Slugle's past ladders, the one you're on in blue */
+.list { display: grid; margin-top: -6px; }
+.list h3 { padding: 16px 0 4px; font-size: .78rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.list h3:first-child { padding-top: 0; }
+.row { display: grid; grid-template-columns: 28px 1fr; gap: 6px; min-height: 48px; margin: 0 -8px; padding: 13px 8px 12px; background: none; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; font-size: .94rem; line-height: 1.3; text-align: left; }
+@media (hover: hover) { .row:hover { background: var(--bg); } }
+.row.here { background: var(--accent-soft); }
 .row b { font-weight: 600; }
+.row.here b { color: var(--accent); }
 .row.filled span:last-child { color: var(--muted); }
 .row small { display: block; margin-top: 1px; font-size: .86rem; font-weight: 600; letter-spacing: .05em; color: var(--ink); }
 
@@ -115,8 +118,6 @@
 .mini span { display: grid; place-items: center; background: var(--paper); font-size: .95rem; font-weight: 600; }
 .mini .on { background: var(--here); color: var(--on-here); }
 .mini .word { background: var(--word); }
-.ways { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; font-size: .94rem; line-height: 1.45; }
-.ways b { font-weight: 600; }
 
 @media (max-height: 640px) {
   .app { padding-top: 2px; padding-bottom: 6px; }
@@ -202,31 +203,29 @@
 
 <dialog class="sheet" id="helpSheet" aria-labelledby="helpTitle">
   <div class="sheet-head">
-    <h2 id="helpTitle">How to play</h2>
+    <h2 id="helpTitle" tabindex="-1" autofocus>How to play</h2>
     <button class="icon-btn" type="button" data-close aria-label="Close">
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m4 4 10 10M14 4 4 14"/></svg>
     </button>
   </div>
   <div class="sheet-body">
-    <p>A small crossword every day. Fill every square so each row and column of letters answers its clue.</p>
+    <p>Fill every square so each row and column of letters answers its clue.</p>
     <div class="example">
       <div class="mini" aria-hidden="true"><span class="word">O</span><span class="on">W</span><span class="word">L</span><span>R</span><span>O</span><span>E</span><span>B</span><span>E</span><span>T</span></div>
       <span><b>1 Across</b>: Night shift worker?<br>The answer is OWL, not a nurse. The crossing letters tell you which.</span>
     </div>
-    <ul class="ways">
-      <li>Tap a square to pick it, and tap it again to turn between across and down.</li>
-      <li>The clue sits above the keyboard. Tap it or use the arrows to change clue.</li>
-      <li>A clue ending in <b>?</b> is having you on: think of another meaning.</li>
-    </ul>
-    <p>Monday is 5×5 and plain. The clues get slyer each day, Friday is 6×6, and the weekend is 7×7 and hardest.</p>
-    <p><b>Check</b> marks the word you’re on, and <b>Reveal</b> fills in the square you’re on. You get three of each. A <b>clean</b> solve uses neither and is right the first time the grid is full, because being told it’s wrong counts too.</p>
-    <button class="btn btn-primary" type="button" data-close>Play</button>
+    <div class="rules">
+      <div class="rule"><span class="n">1</span><p>Tap a square to pick it, and again to turn between across and down. Tap the clue above the keyboard, or its arrows, to change clue.</p></div>
+      <div class="rule"><span class="n">2</span><p>A clue ending in <b>?</b> is having you on: think of another meaning.</p></div>
+      <div class="rule"><span class="n">3</span><p><b>Check</b> marks the word you’re on and <b>Reveal</b> fills in the square you’re on, three of each. A <b>clean</b> solve uses neither and is right the first time the grid is full.</p></div>
+    </div>
+    <p class="muted">Monday is 5×5 and plain, then the clues get slyer each day: Friday is 6×6 and the weekend 7×7.</p>
   </div>
 </dialog>
 
 <dialog class="sheet" id="statsSheet" aria-labelledby="statsTitle">
   <div class="sheet-head">
-    <h2 id="statsTitle">Stats</h2>
+    <h2 id="statsTitle" tabindex="-1" autofocus>Stats</h2>
     <button class="icon-btn" type="button" data-close aria-label="Close">
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m4 4 10 10M14 4 4 14"/></svg>
     </button>
@@ -236,7 +235,7 @@
 
 <dialog class="sheet" id="cluesSheet" aria-labelledby="cluesTitle">
   <div class="sheet-head">
-    <h2 id="cluesTitle">Clues</h2>
+    <h2 id="cluesTitle" tabindex="-1" autofocus>Clues</h2>
     <button class="icon-btn" type="button" data-close aria-label="Close">
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m4 4 10 10M14 4 4 14"/></svg>
     </button>

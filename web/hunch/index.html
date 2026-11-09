@@ -60,9 +60,10 @@
 /* A letter ruled out loses its key, so what's left to try stands out */
 .key.miss { background: none; color: var(--line-strong); }
 
-.rules { display: grid; gap: 14px; }
-.legend { display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: center; }
-.legend .tile { --tile: 34px; border-radius: 5px; }
+.example { display: grid; justify-items: center; padding: 18px 0 16px; background: var(--bg); border-radius: 10px; }
+.example .row { --tile: 34px; --gap: 5px; }
+.example .tile { border-radius: 5px; }
+.example-cap { margin-top: 10px; font-size: .8rem; color: var(--muted); text-align: center; }
 
 @media (prefers-reduced-motion: reduce) {
   .row.new .tile, .row.bad { animation: none; }
@@ -126,30 +127,32 @@
 
 <dialog class="sheet" id="helpSheet" aria-labelledby="helpTitle">
   <div class="sheet-head">
-    <h2 id="helpTitle">How to play</h2>
+    <h2 id="helpTitle" tabindex="-1" autofocus>How to play</h2>
     <button class="icon-btn" type="button" data-close aria-label="Close">
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m4 4 10 10M14 4 4 14"/></svg>
     </button>
   </div>
   <div class="sheet-body">
-    <p>There’s a hidden five-letter word, and you have six tries to find it. Type a real word and press <b>Enter</b>, and each letter tells you something.</p>
-    <div class="rules">
-      <div class="legend"><span class="tile hit">a</span><p>In the word, and in the right spot.</p></div>
-      <div class="legend"><span class="tile near">a</span><p>In the word, but somewhere else.</p></div>
-      <div class="legend"><span class="tile miss">a</span><p>Not in the word.</p></div>
+    <p>Find the hidden five-letter word in six tries: type a real word and press <b>Enter</b>, and each letter tells you something.</p>
+    <div class="example">
+      <div class="row" aria-label="Example: CRANE when the word is HEART"><span class="tile miss">c</span><span class="tile near">r</span><span class="tile hit">a</span><span class="tile miss">n</span><span class="tile near">e</span></div>
+      <p class="example-cap">CRANE, when the word is HEART</p>
     </div>
-    <p class="muted">A new word arrives every midnight. Want more? <b>Practice</b> deals as many as you like.</p>
+    <div class="rules">
+      <div class="rule"><span class="n">1</span><p><b>Green</b> is in the word, in the right spot.</p></div>
+      <div class="rule"><span class="n">2</span><p><b>Yellow</b> is in the word, but somewhere else.</p></div>
+      <div class="rule"><span class="n">3</span><p><b>Grey</b> isn’t in the word.</p></div>
+    </div>
     <button class="mode-row" id="hardBtn" type="button" role="switch" aria-checked="false">
       <span><b>Hard mode</b><small id="hardNote"></small></span>
       <span class="switch" aria-hidden="true"></span>
     </button>
-    <button class="btn btn-primary" type="button" data-close>Play</button>
   </div>
 </dialog>
 
 <dialog class="sheet" id="statsSheet" aria-labelledby="statsTitle">
   <div class="sheet-head">
-    <h2 id="statsTitle">Stats</h2>
+    <h2 id="statsTitle" tabindex="-1" autofocus>Stats</h2>
     <button class="icon-btn" type="button" data-close aria-label="Close">
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m4 4 10 10M14 4 4 14"/></svg>
     </button>
@@ -324,7 +327,8 @@
     renderHeader();
     renderGuesses();
     renderKeys();
-    $('count').replaceChildren(el('b', '', `Guess ${Math.min(play.guesses.length + 1, L.TRIES)}`), ` of ${L.TRIES}`);
+    const left = L.TRIES - play.guesses.length;
+    $('count').replaceChildren(el('b', '', String(left)), left === 1 ? ' guess left' : ' guesses left');
     $('play').hidden = play.done;
     $('result').hidden = !play.done;
     if (play.done) renderResult();

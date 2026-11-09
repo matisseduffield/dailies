@@ -24,9 +24,12 @@
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --pick: #AEB9B2; --on-pick: #0E1412; } }
 :root[data-theme="dark"] { --pick: #AEB9B2; --on-pick: #0E1412; }
 
-/* As tall as the Today and Practice tabs, so the rule sits where it does in every game */
-.modes { min-height: 44px; }
-.ask { padding-bottom: 11px; font-size: .84rem; color: var(--muted); }
+/* No Practice, so no tabs: the date sits in the top bar, as in Cluey */
+.top { min-height: 44px; }
+.meta { min-width: 0; margin-left: auto; padding: 0; font-size: .84rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Small phones or large text (in em, so a bigger font size counts too) */
+.top { container-type: inline-size; }
+@container (max-width: 21.25em) { a.brand > svg:nth-child(2) { display: none; } }
 
 /* Messages sit on top of the board, where the eyes already are */
 .toast { left: 50%; right: auto; width: max-content; max-width: 100%; padding: 7px 16px; border-radius: 18px; background: var(--ink); color: var(--on-ink); font-size: .95rem; transform: translate(-50%, 6px); }
@@ -65,16 +68,20 @@
 .set.new { animation: settle .34s cubic-bezier(.2, 1.3, .4, 1) both; animation-delay: calc(var(--i) * 160ms); }
 @keyframes settle { from { opacity: 0; transform: scale(.94); } }
 
-/* Mistakes left, then the three things to do */
-.tools { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 36px; margin-bottom: 6px; font-size: .86rem; color: var(--muted); }
-.dots { display: flex; gap: 6px; }
-.dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--ink); transition: background .2s; }
-.dots i.gone { background: var(--key-down); }
-.controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding-bottom: 4px; }
-.controls .btn-secondary { background: var(--key); border-color: transparent; }
-@media (hover: hover) { .controls .btn-secondary:hover { background: var(--key-down); } }
-.controls .btn:disabled { opacity: .45; cursor: default; }
+/* Shuffle and Clear, the mistakes left, then Check under them */
+.tools { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; min-height: 44px; margin-bottom: 4px; }
+.tools-left { display: flex; gap: 2px; margin-left: -10px; }
+.tool { display: inline-flex; align-items: center; height: 44px; padding: 0 10px; background: none; border: 0; border-radius: 6px; font-size: .86rem; font-weight: 600; color: var(--muted); }
+@media (hover: hover) { .tool:hover:not(:disabled) { color: var(--ink); background: var(--key); } }
+.tool:disabled { opacity: .4; cursor: default; }
+.count { font-size: .86rem; color: var(--muted); text-align: center; white-space: nowrap; }
+.count b { font-weight: 600; color: var(--ink); }
+.check { width: 100%; margin-bottom: 4px; }
+.check:disabled { opacity: .45; cursor: default; }
+/* Stats is in the top bar, so the result has the one button */
+.result .actions { grid-template-columns: 1fr; }
 
+.example { padding: 14px; background: var(--bg); border-radius: 10px; }
 .scale { display: grid; gap: 6px; }
 .scale-bars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
 .scale-bars i { height: 22px; border-radius: 5px; }
@@ -85,7 +92,7 @@
 .scale-ends { display: flex; justify-content: space-between; font-size: .84rem; color: var(--muted); }
 
 @media (prefers-reduced-motion: reduce) {
-  .word, .dots i { transition: none; }
+  .word { transition: none; }
   .word.bad, .word.hop, .set.new { animation: none; }
 }
 </style>
@@ -99,6 +106,7 @@
         <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#C2407A"/><rect x="9" y="9" width="9.5" height="9.5" rx="2.2" fill="#FFCF33"/><rect x="20.5" y="9" width="9.5" height="9.5" rx="2.2" fill="#FFCF33"/><rect x="9" y="20.5" width="9.5" height="9.5" rx="2.2" fill="#FFCF33"/><rect x="20.5" y="20.5" width="9.5" height="9.5" rx="2.2" fill="#FFCF33"/><rect x="34" y="9" width="9.5" height="9.5" rx="2.2" fill="#FFFFFF"/><rect x="45.5" y="9" width="9.5" height="9.5" rx="2.2" fill="#FFFFFF"/><rect x="34" y="20.5" width="9.5" height="9.5" rx="2.2" fill="#FFFFFF"/><rect x="45.5" y="20.5" width="9.5" height="9.5" rx="2.2" fill="#FFFFFF"/><rect x="9" y="34" width="9.5" height="9.5" rx="2.2" fill="#8FE3B4"/><rect x="20.5" y="34" width="9.5" height="9.5" rx="2.2" fill="#8FE3B4"/><rect x="9" y="45.5" width="9.5" height="9.5" rx="2.2" fill="#8FE3B4"/><rect x="20.5" y="45.5" width="9.5" height="9.5" rx="2.2" fill="#8FE3B4"/><rect x="34" y="34" width="9.5" height="9.5" rx="2.2" fill="#BFD2F8"/><rect x="45.5" y="34" width="9.5" height="9.5" rx="2.2" fill="#BFD2F8"/><rect x="34" y="45.5" width="9.5" height="9.5" rx="2.2" fill="#BFD2F8"/><rect x="45.5" y="45.5" width="9.5" height="9.5" rx="2.2" fill="#BFD2F8"/></svg>
         <h1 class="mark">Sorted</h1>
       </a>
+      <p class="meta" id="meta"></p>
       <div class="top-right">
         <button class="icon-btn" id="statsBtn" type="button" aria-label="Stats">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 16.5V11M10 16.5V4M16 16.5V8"/></svg>
@@ -107,10 +115,6 @@
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M7.7 7.6a2.4 2.4 0 1 1 3.3 2.2c-.6.3-1 .8-1 1.5v.5"/><circle cx="10" cy="14.6" r=".4" fill="currentColor"/></svg>
         </button>
       </div>
-    </div>
-    <div class="modes">
-      <p class="ask">Find the four groups of four</p>
-      <p class="meta" id="meta"></p>
     </div>
   </header>
 
@@ -123,12 +127,15 @@
 
   <footer>
     <div id="play">
-      <div class="tools"><span>Mistakes left</span><span class="dots" id="dots" role="img"></span></div>
-      <div class="controls">
-        <button class="btn btn-secondary" id="shuffleBtn" type="button">Shuffle</button>
-        <button class="btn btn-secondary" id="clearBtn" type="button">Clear</button>
-        <button class="btn btn-primary" id="checkBtn" type="button">Check</button>
+      <div class="tools">
+        <div class="tools-left">
+          <button class="tool" id="shuffleBtn" type="button">Shuffle</button>
+          <button class="tool" id="clearBtn" type="button">Clear</button>
+        </div>
+        <p class="count" id="count"></p>
+        <span></span>
       </div>
+      <button class="btn btn-primary check" id="checkBtn" type="button">Check</button>
     </div>
     <section class="result" id="result" aria-live="polite" hidden>
       <div class="result-head">
@@ -136,7 +143,6 @@
         <p class="result-tag" id="resTag"></p>
       </div>
       <div class="actions">
-        <button class="btn btn-secondary" id="resStats" type="button">Stats</button>
         <button class="btn btn-primary" id="resShare" type="button">Share</button>
       </div>
       <a class="next" id="resNext" hidden></a>
@@ -147,27 +153,28 @@
 
 <dialog class="sheet" id="helpSheet" aria-labelledby="helpTitle">
   <div class="sheet-head">
-    <h2 id="helpTitle">How to play</h2>
+    <h2 id="helpTitle" tabindex="-1" autofocus>How to play</h2>
     <button class="icon-btn" type="button" data-close aria-label="Close">
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m4 4 10 10M14 4 4 14"/></svg>
     </button>
   </div>
   <div class="sheet-body">
-    <p>Sixteen words hide four groups of four. Tap four that belong together and press <b>Check</b>.</p>
-    <p>A right group is set aside. A wrong one costs one of your four mistakes, and if three of your four belonged together you’ll see <b>One away</b>.</p>
-    <p>Plenty of words seem to fit two groups, but only one way works for all sixteen.</p>
-    <div class="scale" aria-hidden="true">
+    <p>Sixteen words hide four groups of four: tap four that belong together and press <b>Check</b>.</p>
+    <div class="example scale" aria-hidden="true">
       <div class="scale-bars"><i></i><i></i><i></i><i></i></div>
       <div class="scale-ends"><span>Easiest group</span><span>Trickiest</span></div>
     </div>
-    <p class="muted">A new puzzle arrives every midnight.</p>
-    <button class="btn btn-primary" type="button" data-close>Play</button>
+    <div class="rules">
+      <div class="rule"><span class="n">1</span><p>A right group is set aside. A wrong one costs one of your four mistakes.</p></div>
+      <div class="rule"><span class="n">2</span><p><b>One away</b> means three of your four belong together.</p></div>
+      <div class="rule"><span class="n">3</span><p>Plenty of words seem to fit two groups, but only one way works for all sixteen.</p></div>
+    </div>
   </div>
 </dialog>
 
 <dialog class="sheet" id="statsSheet" aria-labelledby="statsTitle">
   <div class="sheet-head">
-    <h2 id="statsTitle">Stats</h2>
+    <h2 id="statsTitle" tabindex="-1" autofocus>Stats</h2>
     <button class="icon-btn" type="button" data-close aria-label="Close">
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m4 4 10 10M14 4 4 14"/></svg>
     </button>
@@ -281,10 +288,8 @@
 
   function renderControls() {
     const { mistakes } = L.progress(play.guesses, puzzle);
-    const dots = [];
-    for (let i = 0; i < L.MISTAKES; i++) dots.push(el('i', i < L.MISTAKES - mistakes ? '' : 'gone'));
-    $('dots').replaceChildren(...dots);
-    $('dots').setAttribute('aria-label', `${L.MISTAKES - mistakes} of ${L.MISTAKES}`);
+    const left = L.MISTAKES - mistakes;
+    $('count').replaceChildren(el('b', '', String(left)), left === 1 ? ' mistake left' : ' mistakes left');
     showPicked();
   }
   function showPicked() {
@@ -507,7 +512,6 @@
   });
   $('checkBtn').addEventListener('click', check);
   $('resShare').addEventListener('click', share);
-  $('resStats').addEventListener('click', () => openSheet('statsSheet'));
   $('helpBtn').addEventListener('click', () => openSheet('helpSheet'));
   $('statsBtn').addEventListener('click', () => openSheet('statsSheet'));
 

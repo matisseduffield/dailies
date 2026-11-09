@@ -75,14 +75,11 @@
 .slot.new { transition: none; }
 .track.closed .slot { display: none; }
 
-/* Lives and the count; a message takes their place, then gives it back */
-.tools { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 36px; }
-.lives { display: flex; gap: 6px; }
-.lives i { width: 14px; height: 14px; border-radius: 50%; background: var(--neg); transition: background-color .35s ease, transform .35s ease; }
-.lives i.lost { background: var(--key); transform: scale(.72); }
-.note { font-size: .86rem; color: var(--muted); white-space: nowrap; }
-.note b { font-weight: 600; color: var(--ink); }
-.toast { top: 0; bottom: 0; left: 68px; right: 0; display: flex; align-items: center; justify-content: flex-end; padding: 0; transform: none; }
+/* Lives left and the count; a message takes their place, then gives it back */
+.tools { position: relative; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; min-height: 36px; }
+.count { font-size: .86rem; color: var(--muted); text-align: center; white-space: nowrap; }
+.count b { font-weight: 600; color: var(--ink); }
+.toast { top: 0; bottom: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: center; padding: 0; transform: none; }
 .toast.show { transform: none; }
 
 /* The card to place */
@@ -119,7 +116,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .row, .slot, .track, .deal, .lives i { transition: none; }
+  .row, .slot, .track, .deal { transition: none; }
   .row.bump, .deal.new { animation: none; }
 }
 </style>
@@ -161,8 +158,8 @@
     <div id="play">
       <div class="tools">
         <p class="toast" id="toast" role="status"></p>
-        <div class="lives" id="lives" role="img"><i></i><i></i><i></i></div>
-        <p class="note" id="note"></p>
+        <span></span>
+        <p class="count" id="count"></p>
       </div>
       <div class="deal" id="deal" aria-live="polite"></div>
     </div>
@@ -183,13 +180,13 @@
 
 <dialog class="sheet" id="helpSheet" aria-labelledby="helpTitle">
   <div class="sheet-head">
-    <h2 id="helpTitle">How to play</h2>
+    <h2 id="helpTitle" tabindex="-1" autofocus>How to play</h2>
     <button class="icon-btn" type="button" data-close aria-label="Close">
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m4 4 10 10M14 4 4 14"/></svg>
     </button>
   </div>
   <div class="sheet-body">
-    <p>Put each event in its place on the timeline. Tap a gap, or drag the yellow card there. Its year stays hidden until you place it.</p>
+    <p>Put each event in its place on the timeline, without seeing its year.</p>
     <div class="example">
       <div class="mini"><b>1876</b><span>Alexander Graham Bell patents the telephone</span></div>
       <div class="mini card">Alexander Bain patents a fax machine</div>
@@ -197,16 +194,18 @@
       <div class="mini wrong"><b>1843</b><span>Alexander Bain patents a fax machine</span></div>
       <div class="mini"><b>1876</b><span>Alexander Graham Bell patents the telephone</span></div>
     </div>
-    <p>A wrong card slides to its true place and stays there to help you. You have three lives, and the game ends when every card is placed or the lives are gone. Your score is the cards you got right and the lives you kept.</p>
-    <p>The week gets harder. Monday has 6 well-known events decades apart. By Sunday there are 10, packed within a few years of each other, and some will surprise you.</p>
-    <p class="muted">A new game arrives every midnight. Want more? <b>Practice</b> deals as many as you like.</p>
-    <button class="btn btn-primary" type="button" data-close>Play</button>
+    <div class="rules">
+      <div class="rule"><span class="n">1</span><p>Tap a gap, or drag the yellow card there. Its year shows once it’s placed.</p></div>
+      <div class="rule"><span class="n">2</span><p>A wrong card costs a life, then slides to its true place and stays there to help you.</p></div>
+      <div class="rule"><span class="n">3</span><p>It’s over when every card is placed or your three lives are gone. Your score is the cards you got right and the lives you kept.</p></div>
+    </div>
+    <p class="muted">Monday has 6 well-known events decades apart; Sunday has 10, a few years apart.</p>
   </div>
 </dialog>
 
 <dialog class="sheet" id="statsSheet" aria-labelledby="statsTitle">
   <div class="sheet-head">
-    <h2 id="statsTitle">Stats</h2>
+    <h2 id="statsTitle" tabindex="-1" autofocus>Stats</h2>
     <button class="icon-btn" type="button" data-close aria-label="Close">
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m4 4 10 10M14 4 4 14"/></svg>
     </button>
@@ -432,9 +431,7 @@
 
   function renderStatus() {
     const s = now();
-    [...$('lives').children].forEach((pip, i) => pip.classList.toggle('lost', i >= s.lives));
-    $('lives').setAttribute('aria-label', L.livesText(s.lives));
-    $('note').replaceChildren(el('b', '', String(s.placed)), ` placed · ${s.total - s.played} to go`);
+    $('count').replaceChildren(el('b', '', String(s.lives)), ` ${s.lives === 1 ? 'life' : 'lives'} left · ${s.placed} placed · ${s.total - s.played} to go`);
   }
 
   function renderCard(enter = true) {

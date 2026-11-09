@@ -24,19 +24,18 @@
 .today h2 { font-size: 1.6rem; font-weight: 600; letter-spacing: -.015em; line-height: 1.2; }
 .today p { margin-top: 2px; font-size: .92rem; color: var(--muted); }
 
-/* A row for each game */
-.games { display: grid; gap: 8px; margin-top: 16px; }
-.game {
-  display: grid; grid-template-columns: 40px 1fr auto; align-items: center; gap: 12px;
-  min-height: 64px; padding: 9px 14px 9px 12px;
-  background: var(--surface); border-radius: 10px;
-  color: inherit; text-decoration: none;
-}
+/* The games, one list: a row each, with a hairline between them that starts after the icon */
+.games { display: grid; margin-top: 16px; background: var(--surface); border-radius: 10px; overflow: hidden; }
+.game { display: grid; grid-template-columns: 40px 1fr; align-items: center; gap: 12px; padding-left: 12px; color: inherit; text-decoration: none; }
+.game > div { display: grid; align-content: center; min-height: 64px; padding: 9px 14px 9px 0; }
+.game + .game > div { border-top: 1px solid var(--line); }
+.game:focus-visible { outline-offset: -2px; }
+@media (hover: hover) { .game:hover { background: var(--bg); } }
 .game:active { background: var(--key); }
 .game b { display: block; font-size: 1.05rem; font-weight: 600; line-height: 1.3; }
 .game span { display: block; font-size: .88rem; line-height: 1.35; color: var(--muted); }
-.game .state { color: var(--faint); }
-.game.done .state { color: var(--pos); }
+/* Played today: the line under the name is how it went, in green */
+.game.done span { color: var(--pos); }
 
 .foot { margin-top: auto; padding: 18px 0 8px; text-align: center; }
 .get-app { margin: 0 0 4px; font-size: .86rem; color: var(--muted); }
@@ -158,7 +157,7 @@
       a.innerHTML = `<svg width="40" height="40" viewBox="0 0 64 64" fill="none" aria-hidden="true">${g.icon}</svg>`;
       const text = el('div');
       text.append(el('b', '', g.name), el('span', '', played ? result.text : g.line));
-      a.append(text, el('span', 'state', played ? 'Done' : 'Play'));
+      a.append(text);
       return a;
     }));
     $('progress').textContent = done === GAMES.length ? 'All done. See you tomorrow.' : `${done} of ${GAMES.length} played today`;

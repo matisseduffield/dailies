@@ -173,24 +173,26 @@
 
 <dialog class="sheet" id="helpSheet" aria-labelledby="helpTitle">
   <div class="sheet-head">
-    <h2 id="helpTitle">How to play</h2>
+    <h2 id="helpTitle" tabindex="-1" autofocus>How to play</h2>
     <button class="icon-btn" type="button" data-close aria-label="Close">
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m4 4 10 10M14 4 4 14"/></svg>
     </button>
   </div>
   <div class="sheet-body">
-    <p>Make the target from the six numbers. Tap a number, an operator, then a second number, and the answer takes their place. You don’t have to use them all.</p>
+    <p>Make the target from the six numbers, using as many of them as you need.</p>
     <div class="example"><span>Tap <b>7</b>, <b>+</b>, <b>6</b> and you have a <b>13</b> to use next.</span></div>
-    <p>Numbers stay whole and above zero, so 7 ÷ 2 and 5 − 5 won’t work. Tap the two in either order: the bigger one goes first.</p>
-    <p><b>Par</b> is the fewest moves it can possibly be done in, so it can be matched but never beaten. It’s 3 on Monday and Tuesday, then 4. The weekend is hardest, with very few ways to match it.</p>
-    <p class="muted">A new puzzle arrives every midnight. Want more? <b>Practice</b> deals as many as you like.</p>
-    <button class="btn btn-primary" type="button" data-close>Play</button>
+    <div class="rules">
+      <div class="rule"><span class="n">1</span><p>Tap a number, an operator and a second number, and the answer takes their place. Tap the two in either order: the bigger goes first.</p></div>
+      <div class="rule"><span class="n">2</span><p>Numbers stay whole and above zero, so 7 ÷ 2 and 5 − 5 won’t work.</p></div>
+      <div class="rule"><span class="n">3</span><p><b>Par</b> is the fewest moves it can possibly be done in, so it can be matched but never beaten.</p></div>
+    </div>
+    <p class="muted">Par is 3 on Monday and Tuesday, then 4, and the weekend has the fewest ways to match it.</p>
   </div>
 </dialog>
 
 <dialog class="sheet" id="statsSheet" aria-labelledby="statsTitle">
   <div class="sheet-head">
-    <h2 id="statsTitle">Stats</h2>
+    <h2 id="statsTitle" tabindex="-1" autofocus>Stats</h2>
     <button class="icon-btn" type="button" data-close aria-label="Close">
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m4 4 10 10M14 4 4 14"/></svg>
     </button>

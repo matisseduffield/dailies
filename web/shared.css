@@ -208,6 +208,12 @@ dialog.sheet::backdrop { background: var(--backdrop); }
 .sheet-body p { font-size: .94rem; line-height: 1.55; }
 .sheet-body .muted { color: var(--muted); }
 .sheet-body .empty { padding: 18px; border: 1px dashed var(--line-strong); border-radius: 10px; text-align: center; color: var(--muted); font-size: .9rem; }
+/* How to play: a few numbered rules under the example */
+.rules { display: grid; gap: 14px; }
+.rule { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: start; }
+.rule .n { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--key); font-size: .8rem; font-weight: 600; }
+/* A sheet opens with focus on its heading (tabindex="-1" autofocus), not ringed on the close button */
+.sheet [tabindex="-1"]:focus { outline: none; }
 .numbers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 .num b { display: block; font-size: 1.45rem; font-weight: 600; line-height: 1.15; letter-spacing: -.01em; }
 .num span { display: block; font-size: .76rem; line-height: 1.3; color: var(--muted); }
