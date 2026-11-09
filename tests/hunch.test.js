@@ -92,6 +92,7 @@ test('share text gives nothing away', () => {
   assert.match(L.shareText(3, ['crane'], 'crane', true), /^Hunch 3 · 1\/6 · Hard\n/);
   assert.equal(L.cardText(['moldy', 'nacre', 'crane'], 'crane'), 'Hunch 3/6 ⬜⬜🟩');
   assert.equal(L.cardText(['moldy', 'nacre'], 'crane'), 'Hunch X/6 ⬜⬜');
+  assert.equal(L.cardText(['moldy', 'crane'], 'crane', true), 'Hunch 2/6 · Hard ⬜🟩');
 });
 
 test('a clock set before the first day still gets a word', () => {

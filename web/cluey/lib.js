@@ -246,7 +246,7 @@
   // solve, yellow for one with help and red for giving up.
   function cardText(g) {
     if (g.gaveUp) return 'Cluey gave up 🟥';
-    return clean(g) ? `Cluey ${clock(g.ms)} · clean 🟩` : `Cluey ${clock(g.ms)} · ${helpText(g)} 🟨`;
+    return clean(g) ? `Cluey ${clock(g.ms)} · clean 🟩` : `Cluey ${clock(g.ms)} · ${helpText(g).replace(/, /g, ' · ')} 🟨`;
   }
 
   const lib = { CHECKS, REVEALS, BLOCK, rng, dayNumber, weekdayOf, parse, rawFor, daily, blank, entryAt, label, locked, wordFull, isFull, isRight, nextGap, firstGap, stepClue, type, erase, arrow, canCheck, check, reveal, clean, helpText, clock, streak, bestStreak, shareText, cardText };

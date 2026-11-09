@@ -670,7 +670,10 @@
     if (!rec || !rec.done) return;
     const daily = L.daily(today, D, M);
     const text = L.scoreText(daily, L.replay(M, daily, rec.guesses));
-    try { localStorage.setItem('hub.overland', JSON.stringify({ date: Clock.now().toDateString(), text, card: L.cardText(M, daily, rec.guesses) })); } catch {}
+    // Its line in Share today; should that ever fail, the result still saves.
+    let card;
+    try { card = L.cardText(M, daily, rec.guesses); } catch {}
+    try { localStorage.setItem('hub.overland', JSON.stringify({ date: Clock.now().toDateString(), text, card })); } catch {}
   }
 
   function share() {

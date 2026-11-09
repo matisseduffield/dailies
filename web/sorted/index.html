@@ -487,7 +487,10 @@
     if (!rec || !rec.done) return;
     const { mistakes, solved } = L.progress(rec.guesses, puzzle);
     const text = rec.won ? L.mistakeText(mistakes) : `${solved.length} of ${puzzle.length} sorted`;
-    try { localStorage.setItem('hub.sorted', JSON.stringify({ date: Clock.now().toDateString(), text, card: L.cardText(rec.guesses, puzzle) })); } catch {}
+    // Its line in Share today; should that ever fail, the result still saves.
+    let card;
+    try { card = L.cardText(rec.guesses, puzzle); } catch {}
+    try { localStorage.setItem('hub.sorted', JSON.stringify({ date: Clock.now().toDateString(), text, card })); } catch {}
   }
 
   function share() {

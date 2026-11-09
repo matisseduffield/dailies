@@ -255,7 +255,7 @@
 
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="words.js?v=4"></script>
-<script src="lib.js?v=11"></script>
+<script src="lib.js?v=12"></script>
 <script src="../clock.js?v=4"></script>
 <script src="../pwa.js"></script>
 <script src="../next.js?v=9"></script>
@@ -309,7 +309,7 @@
     } else {
       puzzle = L.daily(view, D, dict);
       play = state.days[view] || (state.days[view] = { ladder: [puzzle.start], hints: 0, done: false });
-      if (play.ladder[0] !== puzzle.start) Object.assign(play, { ladder: [puzzle.start], hints: 0, done: false });
+      if (play.ladder[0] !== puzzle.start) Object.assign(play, { ladder: [puzzle.start], hints: 0, hinted: [], done: false });
     }
     typed = ''; hint = null; bad = null; best = false;
   }
@@ -690,7 +690,7 @@
     if (!L.oneApart(word, next)) return reject(`Change just one letter of ${word.toUpperCase()}`);
     if (play.ladder.includes(next)) return reject(`${next.toUpperCase()} is already on the ladder`);
     // A step a hint found shows as such in the share.
-    if (hint && hint.word === next) play.hinted = [...(play.hinted || []).filter(i => i < play.ladder.length), play.ladder.length];
+    if (hint && hint.word === next) play.hinted = [...(play.hinted || []), play.ladder.length];
     play.ladder.push(next);
     typed = ''; hint = null; fresh = true;
     say('');
@@ -718,6 +718,8 @@
   function back(to = steps() - 1) {
     if (play.done || to < 0 || to >= steps()) return;
     play.ladder.length = to + 1;
+    // hinted holds ladder places, so the steps undone go with them.
+    if (play.hinted) play.hinted = play.hinted.filter(i => i <= to);
     typed = ''; hint = null;
     say('');
     save();
@@ -763,7 +765,10 @@
     const rec = state.days[today];
     if (!rec || !rec.done) return;
     const text = `Solved in ${rec.ladder.length - 1}, par ${L.parForDay(today, D.epoch)}${rec.hints ? `, ${hintCount(rec.hints)}` : ''}`;
-    try { localStorage.setItem('hub.slugle', JSON.stringify({ date: Clock.now().toDateString(), text, card: L.cardText(L.parForDay(today, D.epoch), rec.ladder, rec.hints, rec.hinted || []) })); } catch {}
+    // Its line in Share today; should that ever fail, the result still saves.
+    let card;
+    try { card = L.cardText(L.parForDay(today, D.epoch), rec.ladder, rec.hints, rec.hinted || []); } catch {}
+    try { localStorage.setItem('hub.slugle', JSON.stringify({ date: Clock.now().toDateString(), text, card })); } catch {}
   }
 
   // The blank square in a share follows the phone's theme, as the big word games do.

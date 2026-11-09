@@ -106,9 +106,9 @@
 
   // A line for the home screen's Share today: a square a guess, green for the one
   // that found it.
-  function cardText(guesses, answer) {
+  function cardText(guesses, answer, hard = false) {
     const won = guesses[guesses.length - 1] === answer;
-    return `Hunch ${won ? guesses.length : 'X'}/${TRIES} ${guesses.map(g => (g === answer ? '🟩' : '⬜')).join('')}`;
+    return `Hunch ${won ? guesses.length : 'X'}/${TRIES}${hard ? ' · Hard' : ''} ${guesses.map(g => (g === answer ? '🟩' : '⬜')).join('')}`;
   }
 
   const lib = { LEN, TRIES, split, dictionary, marks, letters, missedClue, rng, dayNumber, daily, streak, bestStreak, shareText, cardText };

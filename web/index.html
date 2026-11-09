@@ -108,6 +108,7 @@
 </div>
 
 <script src="clock.js?v=4"></script>
+<script src="today.js?v=1"></script>
 <script src="pwa.js"></script>
 <script>
 (() => {
@@ -170,18 +171,15 @@
     $('progress').textContent = done === GAMES.length ? 'All done. See you tomorrow.' : `${done} of ${GAMES.length} played today`;
     $('shareAll').hidden = !done;
   }
-  // Today's results in one message: a line for each game played so far, as the
-  // game wrote it (an older result without one gives its words), with the blank
-  // square following the phone's theme.
+  // Today's results in one message (today.js).
   function shareAll() {
     // The page may have sat open past midnight: share the day it is now.
     render();
-    const day = Clock.now().toDateString();
-    const dark = matchMedia('(prefers-color-scheme: dark)').matches;
-    const lines = GAMES.map(g => [g, store.get(g.id)]).filter(([, r]) => r && r.date === day)
-      .map(([g, r]) => (typeof r.card === 'string' && r.card ? (dark ? r.card.replace(/⬜/g, '⬛') : r.card) : `${g.name} · ${r.text}`));
-    if (!lines.length) return;
-    const text = [`Dailies · ${shortDate.format(Clock.now()).replace(/,/g, '')} · ${lines.length} of ${GAMES.length}`, ...lines, SITE].join('\n');
+    const text = todayText(GAMES.map(g => [g.name, store.get(g.id)]), {
+      day: Clock.now().toDateString(), date: shortDate.format(Clock.now()).replace(/,/g, ''), total: GAMES.length,
+      dark: matchMedia('(prefers-color-scheme: dark)').matches, site: SITE,
+    });
+    if (!text) return;
     if (window.ladderApp) return toApp({ type: 'share', title: 'Dailies', text });
     if (navigator.share) return navigator.share({ text }).catch(() => {});
     navigator.clipboard.writeText(text).then(() => {

@@ -188,7 +188,7 @@ test('sharing gives no letters away', () => {
   assert.equal(L.shareText(3, p, { ms: 83000, gaveUp: true, checks: 0, reveals: 0, misses: 0 }), `Cluey 3 · ${p.size}×${p.size} · Gave up at 1:23`);
   for (const e of p.entries) assert.ok(!helped.toLowerCase().includes(e.word));
   assert.equal(L.cardText({ ms: 83000, checks: 0, reveals: 0, misses: 0 }), 'Cluey 1:23 · clean 🟩');
-  assert.equal(L.cardText({ ms: 83000, checks: 1, reveals: 0, misses: 0 }), `Cluey 1:23 · ${L.helpText({ checks: 1, reveals: 0, misses: 0 })} 🟨`);
+  assert.equal(L.cardText({ ms: 83000, checks: 1, reveals: 2, misses: 0 }), 'Cluey 1:23 · 1 check · 2 reveals 🟨');
   assert.equal(L.cardText({ ms: 83000, gaveUp: true }), 'Cluey gave up 🟥');
 });
 

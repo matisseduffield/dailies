@@ -564,7 +564,10 @@
     const rec = state.days[today];
     if (!rec || !rec.done) return;
     const text = rec.won ? `Solved with ${checksWord(rec.checks.length)}` : rec.gaveUp ? 'Gave up' : 'Out of checks';
-    try { localStorage.setItem('hub.splice', JSON.stringify({ date: Clock.now().toDateString(), text, card: L.cardText(rec.checks.map(c => c.verdict), !!rec.won) })); } catch {}
+    // Its line in Share today; should that ever fail, the result still saves.
+    let card;
+    try { card = L.cardText(rec.checks.map(c => c.verdict), !!rec.won); } catch {}
+    try { localStorage.setItem('hub.splice', JSON.stringify({ date: Clock.now().toDateString(), text, card })); } catch {}
   }
 
   // The blank square in a share follows the phone's theme, as the big word games do.

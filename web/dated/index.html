@@ -658,7 +658,10 @@
     if (!rec || !rec.done) return;
     const total = L.daily(today, D).cards.length - 1;
     const text = rec.won ? `${rec.placed} of ${total}, ${L.livesText(rec.lives)}` : `${rec.placed} of ${total}, out of lives`;
-    try { localStorage.setItem('hub.dated', JSON.stringify({ date: Clock.now().toDateString(), text, card: L.cardText(L.replay(L.daily(today, D).cards, rec.moves)) })); } catch {}
+    // Its line in Share today; should that ever fail, the result still saves.
+    let card;
+    try { card = L.cardText(L.replay(L.daily(today, D).cards, rec.moves)); } catch {}
+    try { localStorage.setItem('hub.dated', JSON.stringify({ date: Clock.now().toDateString(), text, card })); } catch {}
   }
 
   function share() {

@@ -245,7 +245,7 @@
 
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="puzzles.js?v=2"></script>
-<script src="lib.js?v=2"></script>
+<script src="lib.js?v=3"></script>
 <script src="../clock.js?v=4"></script>
 <script src="../pwa.js"></script>
 <script src="../next.js?v=9"></script>
@@ -656,7 +656,10 @@
     if (!rec || !rec.done) return;
     const n = helps(rec);
     const text = rec.won ? `${L.clock(rec.ms)}, ${n ? `${n} ${n === 1 ? 'help' : 'helps'}` : 'clean'}` : 'Gave up';
-    try { localStorage.setItem('hub.cluey', JSON.stringify({ date: Clock.now().toDateString(), text, card: L.cardText(rec) })); } catch {}
+    // Its line in Share today; should that ever fail, the result still saves.
+    let card;
+    try { card = L.cardText(rec); } catch {}
+    try { localStorage.setItem('hub.cluey', JSON.stringify({ date: Clock.now().toDateString(), text, card })); } catch {}
   }
 
   function share() {

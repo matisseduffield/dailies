@@ -34,6 +34,15 @@ test('a game without its slash, the short link a share carries, goes on to the p
   assert.strictEqual(res.status, 301);
   assert.strictEqual(res.headers.get('Location'), '/slugle/');
   assert.strictEqual((await worker.fetch(get('/app'))).status, 302);
+  assert.strictEqual((await worker.fetch(get('/hunch?from=share'))).headers.get('Location'), '/hunch/?from=share');
+});
+
+test('a game with its slash is served, not sent round again', async t => {
+  const worker = await load();
+  t.mock.method(globalThis, 'fetch', async () => new Response('<html><head></head></html>'));
+  const res = await worker.fetch(get('/slugle/', { timezone: 'UTC' }));
+  assert.strictEqual(res.status, 200);
+  assert.strictEqual(res.headers.get('Location'), null);
 });
 
 test('other files pass through untouched', async t => {

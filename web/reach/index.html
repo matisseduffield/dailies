@@ -545,7 +545,10 @@
     const rec = state.days[today];
     if (!rec || !rec.done) return;
     const text = rec.won ? `Solved in ${rec.moves.length}, par ${L.daily(today, D).par}` : 'Gave up';
-    try { localStorage.setItem('hub.reach', JSON.stringify({ date: Clock.now().toDateString(), text, card: L.cardText(L.replay(L.daily(today, D).numbers, rec.moves).steps, L.daily(today, D).par, !!rec.gaveUp) })); } catch {}
+    // Its line in Share today; should that ever fail, the result still saves.
+    let card;
+    try { card = L.cardText(L.replay(L.daily(today, D).numbers, rec.moves).steps, L.daily(today, D).par, !rec.won); } catch {}
+    try { localStorage.setItem('hub.reach', JSON.stringify({ date: Clock.now().toDateString(), text, card })); } catch {}
   }
 
   function share() {

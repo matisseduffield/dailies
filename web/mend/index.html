@@ -605,7 +605,10 @@
     const rec = state.days[today];
     if (!rec || !rec.done) return;
     const text = rec.won ? `${rec.left} of ${L.daily(today, D).swaps} swaps left` : rec.gaveUp ? 'Gave up' : 'Out of swaps';
-    try { localStorage.setItem('hub.mend', JSON.stringify({ date: Clock.now().toDateString(), text, card: L.cardText(rec.left, L.daily(today, D).shape.spare, rec) })); } catch {}
+    // Its line in Share today; should that ever fail, the result still saves.
+    let card;
+    try { card = L.cardText(rec.left, L.daily(today, D).shape.spare, rec); } catch {}
+    try { localStorage.setItem('hub.mend', JSON.stringify({ date: Clock.now().toDateString(), text, card })); } catch {}
   }
 
   // The blank square in a share follows the phone's theme, as the big word games do.

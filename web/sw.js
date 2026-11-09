@@ -5,7 +5,7 @@
 const CACHE = 'dailies';
 const at = file => new URL(file, location).href;
 const INDEX = at('index.html');
-const SHELL = ['index.html', 'shared.css', 'clock.js', 'pwa.js', 'fonts/hanken-grotesk-latin.woff2'].map(at);
+const SHELL = ['index.html', 'shared.css', 'clock.js', 'today.js', 'pwa.js', 'fonts/hanken-grotesk-latin.woff2'].map(at);
 
 // A kept page mustn't keep its time: a reading from days ago would hold the games
 // on that day (see clock.js), where no reading goes by the phone's clock.

@@ -124,4 +124,10 @@ test('share text gives nothing away', () => {
   assert.equal(L.cardText(4, ladder), 'Slugle 4 · par 4 🟩🟩🟩🟩');
   assert.equal(L.cardText(3, ladder, 1), 'Slugle 4 · par 3 · 1 hint 🟩🟩🟩🟨');
   assert.equal(L.cardText(4, ladder, 2, [2]), 'Slugle 4 · par 4 · 2 hints 🟩🟨🟩🟩');
+  // Past twenty steps: nine lines of two, then how many more; the card stops at ten squares.
+  const longer = [...Array(26)].map((_, i) => (i % 2 ? 'cord' : 'cold'));
+  const tail = L.shareText({ start: 'cold', target: 'cord', par: 5 }, longer).split('\n').slice(2);
+  assert.equal(tail.length, 10);
+  assert.equal(tail[9], '+7 more steps');
+  assert.match(L.cardText(5, longer), /^Slugle 25 · par 5 🟩{5}🟨{5} \+15$/u);
 });

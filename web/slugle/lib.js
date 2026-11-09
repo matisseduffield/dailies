@@ -163,19 +163,22 @@
       const at = changedAt(ladder[i - 1], ladder[i]), mark = hinted.includes(i) ? '🟨' : '🟩';
       rows.push(Array.from({ length: LEN }, (_, j) => (j === at ? mark : blank)).join(''));
     }
-    // A long climb goes two steps to a line, so it stays a short message.
-    const lines = rows.length > 10 ? rows.reduce((out, r, i) => (i % 2 ? out.push(`${out.pop()}  ${r}`) : out.push(r), out), []) : rows;
+    // A long climb goes two steps to a line, so it stays a short message, and past
+    // twenty steps the first eighteen show with a count of the rest.
+    const shown = rows.length > 20 ? rows.slice(0, 18) : rows;
+    const lines = rows.length > 10 ? shown.reduce((out, r, i) => (i % 2 ? out.push(`${out.pop()}  ${r}`) : out.push(r), out), []) : rows;
+    if (shown.length < rows.length) lines.push(`+${rows.length - shown.length} more ${rows.length - shown.length === 1 ? 'step' : 'steps'}`);
     const title = puzzle.day ? `Slugle ${puzzle.day}` : 'Slugle practice';
     const head = [title, steps(ladder.length - 1), `par ${puzzle.par}`, ...(hints ? [hintsText(hints)] : [])].join(' · ');
     return [head, `${puzzle.start.toUpperCase()} → ${puzzle.target.toUpperCase()}`, ...lines].join('\n');
   }
 
   // A line for the home screen's Share today: a square a step, green up to par
-  // and yellow past it or where a hint found it.
+  // and yellow past it or where a hint found it; ten at most, then how many more.
   function cardText(par, ladder, hints = 0, hinted = []) {
     const n = ladder.length - 1;
     const bar = Array.from({ length: Math.min(n, 10) }, (_, i) => (i < par && !hinted.includes(i + 1) ? '🟩' : '🟨')).join('');
-    return `Slugle ${n} · par ${par}${hints ? ` · ${hintsText(hints)}` : ''} ${bar}`;
+    return `Slugle ${n} · par ${par}${hints ? ` · ${hintsText(hints)}` : ''} ${bar}${n > 10 ? ` +${n - 10}` : ''}`;
   }
 
   const lib = { LEN, split, dictionary, neighbours, oneApart, changedAt, distances, way, nextStep, rng, towards, dayNumber, parForDay, daily, LENGTHS, practice, streak, bestStreak, shareText, cardText };
