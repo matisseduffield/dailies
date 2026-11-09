@@ -12,8 +12,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.EOFException
 import java.io.File
-import java.io.IOException
+import java.net.SocketException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
+import javax.net.ssl.SSLException
 
 /**
  * The self-updater's side of MainActivity: when to check, the page's update
@@ -28,10 +32,16 @@ class AppUpdates(
         const val CHECK_INTERVAL_MS = 6 * 60 * 60 * 1000L
         const val NO_CONNECTION = "No connection. Try again with better signal."
 
-        // A dropped or missing connection (no host, timed out, refused, cut off)
-        // says so plainly; a bad checksum or HTTP status keeps its own words.
-        fun downloadError(e: Exception): String =
-            if (e is IOException) NO_CONNECTION else e.message ?: "The download didn't finish."
+        // A dropped or missing connection (no host, timed out, refused, reset, cut
+        // off mid-file) says so plainly, wherever it is in the cause chain. Anything
+        // else (a full phone, a bad checksum or HTTP status) keeps its own words.
+        fun downloadError(e: Exception): String {
+            val offline = generateSequence<Throwable>(e) { it.cause }.take(5).any {
+                it is UnknownHostException || it is SocketTimeoutException || it is SocketException ||
+                    it is SSLException || it is EOFException
+            }
+            return if (offline) NO_CONNECTION else e.message ?: "The download didn't finish."
+        }
     }
 
     private var lastUpdateCheck = 0L

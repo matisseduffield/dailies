@@ -112,77 +112,88 @@ test('the service worker answers for the app itself', () => {
   for (const url of KEPT) assert.equal(answers({ url: `https://dailies.teloone.au/${url}` }), true, url);
 });
 
-// sw.js answering a page, with the network and the kept copies given, and the
-// waiting done on a mock clock. `ask` sends it another request.
-async function swPage(t, { network, copy }) {
+// sw.js answering a page, with the network and the kept copy given (its text, and
+// the address it was fetched at), and the waiting done on a mock clock. `ask`
+// sends it another request, from a page (clientId) or opening one (resultingClientId).
+async function swPage(t, { network, copy, copyUrl = '' }) {
   t.mock.timers.enable({ apis: ['setTimeout', 'Date'] });
   const on = {}, put = [];
   const caches = {
     open: async () => ({ put: async (key, res) => { put.push([key, await res.text()]); } }),
-    match: async () => (copy == null ? undefined : new Response(copy)),
+    match: async () => (copy == null ? undefined : Object.defineProperty(new Response(copy), 'url', { value: copyUrl })),
   };
   const scope = { addEventListener: (type, fn) => { on[type] = fn; }, location: new URL('https://dailies.teloone.au/sw.js'), URL, Response, console, Date, setTimeout: (fn, ms) => setTimeout(fn, ms), fetch: () => network, caches };
   vm.runInNewContext(read('sw.js').toString(), scope);
   const waits = [];
-  const ask = (url, mode) => {
+  const ask = (url, mode, ids = {}) => {
     let answer;
-    on.fetch({ request: { method: 'GET', mode, url }, respondWith(p) { answer = p; }, waitUntil(p) { waits.push(p); } });
-    return answer;
+    on.fetch({ request: { method: 'GET', mode, url }, clientId: '', resultingClientId: '', ...ids, respondWith(p) { answer = p; }, waitUntil(p) { waits.push(p); } });
+    const got = { text: null };
+    answer.then(res => res.text()).then(s => { got.text = s; });
+    return got;
   };
-  const answer = ask('https://dailies.teloone.au/hunch/', 'navigate');
-  return { answer, ask, waits, put, tick: ms => t.mock.timers.tick(ms) };
+  const answer = ask('https://dailies.teloone.au/hunch/', 'navigate', { resultingClientId: 'page' });
+  const tick = async ms => { t.mock.timers.tick(ms); for (let i = 0; i < 4; i++) await settle(); };
+  return { answer, ask, waits, put, tick };
 }
 const settle = () => new Promise(r => setImmediate(r));
 
 test('a page on a connection that answers nothing opens from its copy after 3 seconds', async t => {
   let answer;
-  const late = new Promise(r => { answer = r; });
-  const sw = await swPage(t, { network: late, copy: 'kept' });
-  let text = null;
-  sw.answer.then(res => res.text()).then(s => { text = s; });
-  sw.tick(2900); await settle();
-  assert.equal(text, null);
-  sw.tick(100); await settle(); await settle();
-  assert.equal(text, 'kept');
+  const sw = await swPage(t, { network: new Promise(r => { answer = r; }), copy: 'kept' });
+  await sw.tick(2900);
+  assert.equal(sw.answer.text, null);
+  await sw.tick(100);
+  assert.equal(sw.answer.text, 'kept');
   // The answer that comes in late still refreshes the copy, without its clock reading.
   answer(new Response('<script>var serverClock={"now":1}</script>new'));
   await Promise.all(sw.waits); await settle(); await settle();
   assert.deepEqual(sw.put, [['https://dailies.teloone.au/hunch/index.html', 'new']]);
 });
 
-test('after a page has waited, its files come from their copies straight away', async t => {
-  const sw = await swPage(t, { network: new Promise(() => {}), copy: 'kept' });
-  sw.tick(3000); await settle(); await settle();
-  assert.equal(await (await sw.answer).text(), 'kept');
-  let text = null;
-  sw.ask('https://dailies.teloone.au/shared.css', 'no-cors').then(res => res.text()).then(s => { text = s; });
-  await settle(); await settle();
-  assert.equal(text, 'kept');
-  // Long after, a file waits its turn again.
-  sw.tick(6000);
-  text = null;
-  sw.ask('https://dailies.teloone.au/clock.js', 'no-cors').then(res => res.text()).then(s => { text = s; });
-  await settle(); await settle();
-  assert.equal(text, null);
-  sw.tick(3000); await settle(); await settle();
-  assert.equal(text, 'kept');
+test('a page that opened from its copy has its files from theirs straight away, and nothing else does', async t => {
+  const sw = await swPage(t, { network: new Promise(() => {}), copy: 'kept', copyUrl: 'https://dailies.teloone.au/shared.css' });
+  await sw.tick(3000);
+  assert.equal(sw.answer.text, 'kept');
+  const own = sw.ask('https://dailies.teloone.au/shared.css', 'no-cors', { clientId: 'page' });
+  const other = sw.ask('https://dailies.teloone.au/shared.css', 'no-cors', { clientId: 'another tab' });
+  const next = sw.ask('https://dailies.teloone.au/index.html', 'navigate', { clientId: 'page', resultingClientId: 'next' });
+  await sw.tick(0);
+  assert.deepEqual([own.text, other.text, next.text], ['kept', null, null]);
+  await sw.tick(3000);
+  assert.deepEqual([other.text, next.text], ['kept', 'kept']);
+});
+
+test('a slow file is never answered with a kept copy of another version', async t => {
+  const sw = await swPage(t, { network: new Promise(() => {}), copy: 'old', copyUrl: 'https://dailies.teloone.au/next.js?v=9' });
+  await sw.tick(3000);
+  const newer = sw.ask('https://dailies.teloone.au/next.js?v=10', 'no-cors', { clientId: 'page' });
+  const same = sw.ask('https://dailies.teloone.au/next.js?v=9', 'no-cors', { clientId: 'another tab' });
+  await sw.tick(10000);
+  assert.deepEqual([newer.text, same.text], [null, 'old']);
+});
+
+test('with no network at all, the kept copy is used whatever its version', async t => {
+  const sw = await swPage(t, { network: Promise.reject(new TypeError('offline')), copy: 'old', copyUrl: 'https://dailies.teloone.au/next.js?v=9' });
+  const file = sw.ask('https://dailies.teloone.au/next.js?v=10', 'no-cors');
+  await sw.tick(0);
+  assert.equal(file.text, 'old');
 });
 
 test('a page that answers in time is the fresh one', async t => {
   const sw = await swPage(t, { network: Promise.resolve(new Response('fresh')), copy: 'kept' });
-  assert.equal(await (await sw.answer).text(), 'fresh');
+  await sw.tick(0);
+  assert.equal(sw.answer.text, 'fresh');
 });
 
 test('with no copy, a slow page is waited for', async t => {
   let answer;
   const sw = await swPage(t, { network: new Promise(r => { answer = r; }), copy: null });
-  let text = null;
-  sw.answer.then(res => res.text()).then(s => { text = s; });
-  sw.tick(5000); await settle(); await settle();
-  assert.equal(text, null);
+  await sw.tick(5000);
+  assert.equal(sw.answer.text, null);
   answer(new Response('slow'));
-  await settle(); await settle();
-  assert.equal(text, 'slow');
+  await sw.tick(0);
+  assert.equal(sw.answer.text, 'slow');
 });
 
 test('every file the service worker keeps exists', () => {
@@ -265,4 +276,25 @@ test('a kept page loses its clock reading', async () => {
   const stripped = served.replace(vm.runInNewContext(rule), '');
   assert.doesNotMatch(stripped, /serverClock/);
   assert.equal(stripped.length, read('index.html').toString().length);
+});
+
+test('the service worker keeps the home page’s files as the page asks for them', async () => {
+  const on = {}, fetched = [], put = [];
+  const scope = {
+    addEventListener: (type, fn) => { on[type] = fn; }, location: new URL('https://dailies.teloone.au/sw.js'), URL, Response, console, setTimeout,
+    fetch: async url => { fetched.push(url); return new Response(url.endsWith('index.html') ? read('index.html') : 'file'); },
+    caches: { open: async () => ({ put: async key => { put.push(key); } }), match: async () => undefined },
+    skipWaiting: () => {},
+  };
+  vm.runInNewContext(read('sw.js').toString(), scope);
+  let done;
+  on.install({ waitUntil(p) { done = p; } });
+  await done;
+  const page = read('index.html').toString();
+  for (const file of ['shared.css', 'clock.js', 'today.js']) {
+    const v = page.split(`"${file}`)[1].match(/^\?v=\d+/)[0];
+    assert.ok(fetched.includes(`https://dailies.teloone.au/${file}${v}`), file);
+    assert.ok(put.includes(`https://dailies.teloone.au/${file}`), file);
+  }
+  assert.ok(fetched.includes('https://dailies.teloone.au/pwa.js'));
 });

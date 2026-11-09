@@ -11,6 +11,7 @@ import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
+import kotlin.math.abs
 
 /**
  * The time from our server, so moving the phone's clock can't bring tomorrow's
@@ -25,7 +26,10 @@ import java.net.URL
  * puzzle early, until a server reading puts it right. Without it, everyone who
  * restarts overnight with no signal is held on yesterday, which is worse. From
  * then on, this boot runs on time since boot again, so moving the clock later
- * changes nothing.
+ * changes nothing. The phone's clock is only kept as a mark while it agrees with
+ * ours: one that's plainly wrong (reset by a flat battery, or set back and later
+ * put right) would make the next restart jump, so then a restart goes by time
+ * since boot alone, as before.
  */
 class TrustedClock(context: Context) {
     private companion object {
@@ -35,6 +39,7 @@ class TrustedClock(context: Context) {
         const val KEY_WALL = "wall"
         const val KEY_BOOTS = "boots"
         const val KEY_OFFSET = "offset"
+        const val WALL_AGREES_MS = 10 * 60 * 1000L
     }
 
     private val saved = context.getSharedPreferences("clock", Context.MODE_PRIVATE)
@@ -45,8 +50,9 @@ class TrustedClock(context: Context) {
     private fun keep(time: Long, edit: SharedPreferences.Editor) {
         edit.putLong(KEY_TIME, time)
             .putLong(KEY_BOOT, SystemClock.elapsedRealtime())
-            .putLong(KEY_WALL, System.currentTimeMillis())
             .putInt(KEY_BOOTS, boots)
+        val wall = System.currentTimeMillis()
+        if (abs(wall - time) <= WALL_AGREES_MS) edit.putLong(KEY_WALL, wall) else edit.remove(KEY_WALL)
     }
 
     /** For web/clock.js: the time and the server's zone, or empty before the first reading. */
@@ -58,8 +64,8 @@ class TrustedClock(context: Context) {
         val then = saved.getLong(KEY_BOOT, 0)
         val sinceBoot = SystemClock.elapsedRealtime()
         val savedBoots = saved.getInt(KEY_BOOTS, -1)
-        // The boot count says for sure; without it, less time since boot than at the reading.
-        val restarted = if (boots >= 0 && savedBoots >= 0) boots != savedBoots else sinceBoot < then
+        // Less time since boot than at the reading, or another boot count.
+        val restarted = sinceBoot < then || (boots >= 0 && savedBoots >= 0 && boots != savedBoots)
         val now = if (!restarted) {
             time + (sinceBoot - then)
         } else {

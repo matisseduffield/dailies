@@ -16,7 +16,7 @@
 <title>Overland</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect x=%223%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2221.4%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%223%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23F4C52E%22/><rect x=%2221.4%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%223%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2212.2%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2221.4%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/></svg>">
 <link rel="preload" href="../fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../shared.css">
+<link rel="stylesheet" href="../shared.css?v=1">
 <style>
 /* Yellow is where you start, blue where you're going, green what's joined up. */
 :root { --from: #F4C52E; --on-from: #14211C; --to: #2C53C4; --on-to: #F7F8F4; --land: var(--key); --loose: var(--line-strong); --way: color-mix(in srgb, var(--pos) 34%, var(--land)); }
@@ -664,7 +664,8 @@
   // Today's game begun: the home screen says Started until it's done.
   function begun() {
     const rec = state.days[today];
-    if (rec && !rec.done && rec.guesses.length > 0 && L.dayNumber(Clock.now(), D.epoch) === today) markStarted('overland');
+    // next.js may be an older copy, kept for offline, that hasn't got it.
+    if (typeof markStarted === 'function' && rec && !rec.done && rec.guesses.length > 0 && L.dayNumber(Clock.now(), D.epoch) === today) markStarted('overland');
   }
 
   // Today's result, for the hub's home screen.
@@ -682,7 +683,7 @@
     // Its line in Share today; should that ever fail, the result still saves.
     let card;
     try { card = L.cardText(M, daily, rec.guesses); } catch {}
-    try { localStorage.setItem('hub.overland', JSON.stringify({ date: Clock.now().toDateString(), text, card })); } catch {}
+    try { localStorage.setItem('hub.overland', JSON.stringify({ date: Clock.now().toDateString(), text, card, lost: !rec.won })); } catch {}
   }
 
   function share() {

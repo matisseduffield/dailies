@@ -16,7 +16,7 @@
 <title>Cluey</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect x=%223%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2221.4%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%223%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23F4C52E%22/><rect x=%2221.4%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%223%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2212.2%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2221.4%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/></svg>">
 <link rel="preload" href="../fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../shared.css">
+<link rel="stylesheet" href="../shared.css?v=1">
 <style>
 /* A printed crossword: paper squares joined by thin rules, with solid blocks.
    Yellow is the square you're on and blue its word. Green is right, red is
@@ -647,7 +647,8 @@
   // Today's game begun: the home screen says Started until it's done.
   function begun() {
     const rec = state.days[today];
-    if (rec && !rec.done && rec.fill !== L.blank(puzzle) && L.dayNumber(Clock.now(), D.epoch) === today) markStarted('cluey');
+    // next.js may be an older copy, kept for offline, that hasn't got it.
+    if (typeof markStarted === 'function' && rec && !rec.done && rec.fill !== L.blank(puzzle) && L.dayNumber(Clock.now(), D.epoch) === today) markStarted('cluey');
   }
 
   // Today's result, for the hub's home screen.
@@ -665,7 +666,7 @@
     // Its line in Share today; should that ever fail, the result still saves.
     let card;
     try { card = L.cardText(rec); } catch {}
-    try { localStorage.setItem('hub.cluey', JSON.stringify({ date: Clock.now().toDateString(), text, card })); } catch {}
+    try { localStorage.setItem('hub.cluey', JSON.stringify({ date: Clock.now().toDateString(), text, card, lost: !rec.won })); } catch {}
   }
 
   function share() {

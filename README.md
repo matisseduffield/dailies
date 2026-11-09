@@ -215,9 +215,9 @@ lists later never changes a day's puzzle. Rebuild with
 
 Give it a folder in `web/` with an `index.html` that links `../shared.css`, add
 it to `GAMES` in `web/index.html` and `web/next.js`, and when today's game ends
-save `{ date: new Date().toDateString(), text, card }` to localStorage as
+save `{ date: new Date().toDateString(), text, card, lost }` to localStorage as
 `hub.<folder>` (`card` is its line in Share today; a result without one shows
-its `text`). On today's first move, call `markStarted('<folder>')` (in `next.js`) so the
+its `text`; `lost: true` shows the line in red instead of green). On today's first move, call `markStarted('<folder>')` (in `next.js`) so the
 home screen says Started; it never writes over a result, and Practice never calls it.
 Call `showNext()` from its result for the link to the next game.
 
@@ -229,7 +229,10 @@ launcher icon), the Apple tags, and `web/pwa.js`, which registers `web/sw.js` an
 hint in Safari on an iPhone. `pwa.js` does nothing on `appassets.androidplatform.net`, so neither
 runs in the Android app. `sw.js` is network-first with a cached copy for offline opening, and only
 touches the files it names. A file that hasn't come in 3 seconds is answered from its copy (the
-network's answer still refreshes it), so a connection that answers nothing doesn't leave a blank page. It strips the `serverClock` reading from pages it keeps, since an old
+network's answer still refreshes it), so a connection that answers nothing doesn't leave a blank page,
+but only a copy of the same `?v=`, so an old file never meets a new page; a real network failure still
+takes whatever copy there is. A page that opened from its copy has its own files from theirs without
+waiting; a new page, or another tab, always gives the network its 3 seconds. It strips the `serverClock` reading from pages it keeps, since an old
 reading would hold the games on an old day; `/now` and `/app` pass through.
 
 ## Layout

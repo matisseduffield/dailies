@@ -16,7 +16,7 @@
 <title>Dated</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect x=%223%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2221.4%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%223%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23F4C52E%22/><rect x=%2221.4%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%223%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2212.2%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2221.4%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/></svg>">
 <link rel="preload" href="../fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../shared.css">
+<link rel="stylesheet" href="../shared.css?v=1">
 <style>
 /* The card being placed is the slug's yellow, so it's the one thing to look at. */
 :root { --card: #F4C52E; --on-card: #14211C; --wrong: color-mix(in srgb, var(--neg) 13%, var(--surface)); }
@@ -651,7 +651,8 @@
   // Today's game begun: the home screen says Started until it's done.
   function begun() {
     const rec = state.days[today];
-    if (rec && !rec.done && rec.moves.length > 0 && L.dayNumber(Clock.now(), D.epoch) === today) markStarted('dated');
+    // next.js may be an older copy, kept for offline, that hasn't got it.
+    if (typeof markStarted === 'function' && rec && !rec.done && rec.moves.length > 0 && L.dayNumber(Clock.now(), D.epoch) === today) markStarted('dated');
   }
 
   // Today's result, for the hub's home screen.
@@ -669,7 +670,7 @@
     // Its line in Share today; should that ever fail, the result still saves.
     let card;
     try { card = L.cardText(L.replay(L.daily(today, D).cards, rec.moves)); } catch {}
-    try { localStorage.setItem('hub.dated', JSON.stringify({ date: Clock.now().toDateString(), text, card })); } catch {}
+    try { localStorage.setItem('hub.dated', JSON.stringify({ date: Clock.now().toDateString(), text, card, lost: !rec.won })); } catch {}
   }
 
   function share() {
