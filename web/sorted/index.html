@@ -178,7 +178,7 @@
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="puzzles.js?v=6"></script>
 <script src="lib.js?v=2"></script>
-<script src="../clock.js?v=3"></script>
+<script src="../clock.js?v=4"></script>
 <script src="../pwa.js"></script>
 <script src="../next.js?v=9"></script>
 <script>
@@ -466,13 +466,17 @@
     // Losing brings in whatever was left, one after another.
     if (!won) { fresh = puzzle.map((g, i) => i).filter(i => !solved.includes(i)); say(''); }
     haptic('tick');
-    report();
+    report(true);
   }
 
   // Today's result, for the hub's home screen.
-  function report() {
+  // finished: the game has just ended, rather than the page opening on it.
+  function report(finished) {
+    const day = L.dayNumber(Clock.now(), D.epoch);
+    // Ended around midnight: its result stays up past it (Clock.keep).
+    if (finished) Clock.keep(today, day);
     // Finished in the moments after midnight: that day's over, so the hub's new day stays open.
-    if (L.dayNumber(Clock.now(), D.epoch) !== today) return;
+    if (day !== today) return;
     const rec = state.days[today];
     if (!rec || !rec.done) return;
     const { mistakes, solved } = L.progress(rec.guesses, puzzle);

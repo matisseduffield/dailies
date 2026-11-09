@@ -217,7 +217,7 @@
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="days.js?v=3"></script>
 <script src="lib.js?v=1"></script>
-<script src="../clock.js?v=3"></script>
+<script src="../clock.js?v=4"></script>
 <script src="../pwa.js"></script>
 <script src="../next.js?v=9"></script>
 <script>
@@ -568,7 +568,7 @@
     say('');
     play.moves.push(slot);
     checked(play);
-    if (play.done) { settling = true; report(); }
+    if (play.done) { settling = true; report(true); }
     save();
     haptic(right ? 'tap' : 'tick');
 
@@ -642,9 +642,13 @@
   }
 
   // Today's result, for the hub's home screen.
-  function report() {
+  // finished: the game has just ended, rather than the page opening on it.
+  function report(finished) {
+    const day = L.dayNumber(Clock.now(), D.epoch);
+    // Ended around midnight: its result stays up past it (Clock.keep).
+    if (finished && state.mode === 'daily') Clock.keep(today, day);
     // Finished in the moments after midnight: that day's over, so the hub's new day stays open.
-    if (L.dayNumber(Clock.now(), D.epoch) !== today) return;
+    if (day !== today) return;
     const rec = state.days[today];
     if (!rec || !rec.done) return;
     const total = L.daily(today, D).cards.length - 1;

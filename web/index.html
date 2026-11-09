@@ -106,7 +106,7 @@
   </footer>
 </div>
 
-<script src="clock.js?v=3"></script>
+<script src="clock.js?v=4"></script>
 <script src="pwa.js"></script>
 <script>
 (() => {
@@ -166,8 +166,11 @@
   }
   // Today's results in one message, the games played so far.
   function shareAll() {
+    // The page may have sat open past midnight: share the day it is now.
+    render();
     const day = Clock.now().toDateString();
     const lines = GAMES.map(g => [g, store.get(g.id)]).filter(([, r]) => r && r.date === day).map(([g, r]) => `${g.name}: ${r.text}`);
+    if (!lines.length) return;
     const text = [`Dailies, ${dateFormat.format(Clock.now())}`, ...lines, SITE].join('\n');
     if (window.ladderApp) return toApp({ type: 'share', title: 'Dailies', text });
     if (navigator.share) return navigator.share({ text }).catch(() => {});

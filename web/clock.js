@@ -53,15 +53,22 @@
   const playing = () => Date.now() - touched < 30 * 6e4;
 
   // Whether a page keeps the day it shows once the clock has moved on: a game
-  // in hand stays to be finished, and one finished after midnight keeps its
-  // result up, so it isn't swapped for an empty board while it's being read
-  // or shared. A game already finished at midnight isn't held. Either lets go
-  // after a long break, or when the player moves on (a reload, Practice).
+  // in hand stays to be finished, and one finished after midnight, or in the
+  // last minutes before it, keeps its result up, so it isn't swapped for an
+  // empty board while it's being read or shared. A game finished earlier isn't
+  // held. Either lets go after a long break, or when the player moves on (a
+  // reload, Practice).
   let held = null;
   function hold(day, started, done) {
     if (!started || !playing()) return false;
     if (!done) held = day;
     return held === day;
+  }
+  // A game has just ended on `day` with the clock on `current`: hold() keeps it
+  // if that was after midnight, even with no check of the day in between.
+  function keepDay(day, current) {
+    const at = now();
+    if (current !== day || (at.getHours() === 23 && at.getMinutes() >= 55)) held = day;
   }
 
   // The result's line about the next game: a countdown to midnight, or, while
@@ -73,7 +80,7 @@
     return `Next ${noun} in ${mins >= 60 ? `${Math.floor(mins / 60)} h ` : ''}${mins % 60} min`;
   }
 
-  const Clock = { now, wall, playing, hold, untilNext };
+  const Clock = { now, wall, playing, hold, keep: keepDay, untilNext };
   root.Clock = Clock;
   if (typeof module === 'object' && module.exports) module.exports = Clock;
 })(globalThis);

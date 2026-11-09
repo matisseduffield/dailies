@@ -247,7 +247,7 @@
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="puzzles.js?v=2"></script>
 <script src="lib.js?v=1"></script>
-<script src="../clock.js?v=3"></script>
+<script src="../clock.js?v=4"></script>
 <script src="../pwa.js"></script>
 <script src="../next.js?v=9"></script>
 <script>
@@ -588,7 +588,7 @@
     play.done = true;
     play.won = won;
     haptic('tick');
-    report();
+    report(true);
     save();
     say('');
     render();
@@ -645,9 +645,13 @@
   }
 
   // Today's result, for the hub's home screen.
-  function report() {
+  // finished: the game has just ended, rather than the page opening on it.
+  function report(finished) {
+    const day = L.dayNumber(Clock.now(), D.epoch);
+    // Ended around midnight: its result stays up past it (Clock.keep).
+    if (finished) Clock.keep(today, day);
     // Finished in the moments after midnight: that day's over, so the hub's new day stays open.
-    if (L.dayNumber(Clock.now(), D.epoch) !== today) return;
+    if (day !== today) return;
     const rec = state.days[today];
     if (!rec || !rec.done) return;
     const n = helps(rec);
@@ -784,7 +788,8 @@
     if (day !== today) {
       // A daily in hand at midnight is finished first and counts for its day;
       // finished after midnight, its result stays up while it's read or shared.
-      if (Clock.hold(today, play.ms > 0 || play.fill !== L.blank(puzzle), play.done)) return tickNext();
+      // In hand means a letter in: the clock runs from the moment the page opens.
+      if (Clock.hold(today, play.done || play.fill !== L.blank(puzzle), play.done)) return tickNext();
       tick();
       save();
       today = day;

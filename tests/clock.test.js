@@ -82,3 +82,29 @@ test('the result says the next game is out while a held day is up', () => {
   assert.strictEqual(Clock.untilNext('word', 4, 5), 'Next word is out');
   assert.match(Clock.untilNext('word', 5, 5), /^Next word in (\d+ h )?\d+ min$/);
 });
+
+// Sydney wall time on 9 Nov 2026 (UTC+11), as the app's reading.
+const at = (h, m) => { globalThis.ladderClock = { read: () => JSON.stringify({ now: Date.UTC(2026, 10, 9, h - 11, m), offset: 660 }) }; };
+
+test('a game finished after midnight with no check in between is kept', () => {
+  const { C, tap } = page();
+  tap();
+  at(24, 0);                       // just past midnight, the page still on day 5
+  C.keep(5, 6);
+  assert.strictEqual(C.hold(5, true, true), true);
+  delete globalThis.ladderClock;
+});
+
+test('a game finished in the last minutes before midnight is kept, earlier ones not', () => {
+  let { C, tap } = page();
+  tap();
+  at(23, 57);
+  C.keep(5, 5);
+  assert.strictEqual(C.hold(5, true, true), true);
+  ({ C, tap } = page());
+  tap();
+  at(22, 0);
+  C.keep(5, 5);
+  assert.strictEqual(C.hold(5, true, true), false);
+  delete globalThis.ladderClock;
+});
