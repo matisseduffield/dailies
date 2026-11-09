@@ -103,7 +103,10 @@ test('a damaged save is cleaned, and nothing is counted twice', () => {
 
 test('the share text gives no names away', () => {
   const text = L.shareText(4, M, portugalToGermany, ['ITA', 'FRA', 'ESP']);
-  assert.equal(text, 'Overland 4 · 3 guesses, best 2\n□■■');
+  // Italy joins up through France but isn't on a shortest way: yellow.
+  assert.equal(text, 'Overland 4 · 3 guesses · best 2\n🟨🟩🟩');
+  assert.equal(L.shareText(4, M, portugalToGermany, ['JPN', 'ESP']), 'Overland 4 · Didn’t make it · best 2\n🟥🟩');
+  assert.equal(L.cardText(M, portugalToGermany, ['ITA', 'FRA', 'ESP']), 'Overland 3 guesses 🟨🟩🟩');
   assert.equal(L.scoreText(portugalToGermany, L.replay(M, portugalToGermany, ['ESP', 'FRA'])), '2 guesses, best 2');
   const lost = L.game(M, 'PRT', 'DEU', 0);
   assert.equal(L.scoreText(lost, L.replay(M, lost, ['JPN', 'AUS'])), 'Lost, best 2');

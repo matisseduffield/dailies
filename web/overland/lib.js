@@ -205,15 +205,28 @@
   const guessesText = n => (n === 1 ? '1 guess' : `${n} guesses`);
   const scoreText = (puzzle, s) => (s.won ? `${guessesText(s.used)}, best ${puzzle.best}` : `Lost, best ${puzzle.best}`);
 
-  // A mark per guess: filled if it lies on a best route. No country names.
-  function shareText(day, map, puzzle, guesses) {
+  // Sharing: a square for each guess, green on a shortest route, yellow joined up
+  // but off it, red never joined. No country names.
+  function marksFor(map, puzzle, guesses) {
     const s = replay(map, puzzle, guesses);
     const best = onBest(map, puzzle.start, puzzle.end);
+    return { s, marks: guesses.map(g => (best.has(g) ? '🟩' : s.joined.has(g) ? '🟨' : '🟥')) };
+  }
+  function shareText(day, map, puzzle, guesses) {
+    const { s, marks } = marksFor(map, puzzle, guesses);
     const head = day ? `Overland ${day}` : 'Overland practice';
-    return `${head} · ${scoreText(puzzle, s)}\n${guesses.map(g => (best.has(g) ? '■' : '□')).join('')}`;
+    const rows = [];
+    for (let i = 0; i < marks.length; i += 8) rows.push(marks.slice(i, i + 8).join(''));
+    return [`${head} · ${s.won ? guessesText(s.used) : 'Didn’t make it'} · best ${puzzle.best}`, ...rows].join('\n');
   }
 
-  const lib = { PRACTICE, rng, dayNumber, weekdayOf, steps, route, onBest, countRoutes, squash, search, game, daily, practice, replay, cleanGuesses, streak, bestStreak, guessesText, scoreText, shareText };
+  // A line for the home screen's Share today.
+  function cardText(map, puzzle, guesses) {
+    const { s, marks } = marksFor(map, puzzle, guesses);
+    return `Overland ${s.won ? guessesText(s.used) : 'didn’t make it'} ${marks.join('')}`;
+  }
+
+  const lib = { PRACTICE, rng, dayNumber, weekdayOf, steps, route, onBest, countRoutes, squash, search, game, daily, practice, replay, cleanGuesses, streak, bestStreak, guessesText, scoreText, shareText, cardText };
   if (typeof module === 'object' && module.exports) module.exports = lib;
   else root.OverlandLib = lib;
 })(this);

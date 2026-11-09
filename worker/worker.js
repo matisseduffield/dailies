@@ -3,6 +3,7 @@
 //
 //   GET  /, /slugle/, ...      the pages, served from the public dailies-releases
 //                              repo, where every release publishes web/
+//   GET  /slugle, ...          on to /slugle/ (the short link a share carries)
 //   GET  /app                  the latest Android app (a redirect to the APK)
 //   GET  /now                  the time, and the time zone of the connection
 //
@@ -39,6 +40,8 @@ export default {
     const url = new URL(request.url);
     if (url.pathname === '/app') return new Response(null, { status: 302, headers: { Location: APK, 'Cache-Control': 'no-store', ...HEADERS } });
     if (url.pathname === '/now') return new Response(reading(request), { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', ...HEADERS } });
+    // Shared results link a game without its slash (dailies.teloone.au/slugle).
+    if (/^\/[a-z]+$/.test(url.pathname)) return new Response(null, { status: 301, headers: { Location: `${url.pathname}/${url.search}`, ...HEADERS } });
     const file = url.pathname.replace(/^\/+/, '').replace(/(^|\/)$/, '$1index.html');
     if (!/^[a-z0-9-]+(\/[a-zA-Z0-9.-]+)*\.(html|css|js|woff2|txt|json|png)$/.test(file)) return new Response('Not found', { status: 404, headers: HEADERS });
     // A ?v= file never changes, so it can sit in the browser for a week. The

@@ -82,9 +82,12 @@ test('sharing gives nothing away', () => {
     moves.push(L.rightSlot(s.line, s.next.year));
   }
   const text = L.shareText(1, L.replay(game, moves));
-  assert.match(text, /^Dated 1 · \d+ of \d+ placed, 3 lives left\n■+$/);
+  assert.match(text, /^Dated 1 · (\d+) of \1 · 3 lives left\n(🟩{1,5}\n)*🟩{1,8}$/u);
+  assert.ok(text.split('\n').slice(1).every(r => [...r].length <= 8));
   assert.ok(!/\b(1[5-9]|20)\d\d\b/.test(text));
-  assert.match(L.shareText(0, L.replay(cards([1950, 1900, 2000, 1975]), [1, 0, 0])), /^Dated practice · 0 of 3 placed, Out of lives\n□□□$/);
+  const lost = L.replay(cards([1950, 1900, 2000, 1975]), [1, 0, 0]);
+  assert.equal(L.shareText(0, lost), 'Dated practice · 0 of 3 · Out of lives\n🟥🟥🟥');
+  assert.equal(L.cardText(lost), 'Dated 0 of 3 🟥🟥🟥');
 });
 
 test('the first days keep their cards', () => {

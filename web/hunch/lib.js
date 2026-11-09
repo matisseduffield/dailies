@@ -95,15 +95,23 @@
     return best;
   }
 
-  // A spoiler-free picture of the game, a row for each guess.
-  function shareText(day, guesses, answer, hard = false) {
-    const mark = { hit: '■', near: '▣', miss: '□' };
+  // Sharing: a row of squares for each guess, in the game's own colours, with the
+  // blank one light or dark to suit the phone's theme. No letters.
+  function shareText(day, guesses, answer, hard = false, blank = '⬜') {
+    const tile = { hit: '🟩', near: '🟨', miss: blank };
     const won = guesses[guesses.length - 1] === answer;
-    const rows = guesses.map(g => marks(g, answer).map(m => mark[m]).join(''));
-    return `${day ? `Hunch ${day}` : 'Hunch practice'} · ${won ? guesses.length : 'X'}/${TRIES}${hard ? ' · Hard' : ''}\n${rows.join('\n')}`;
+    const rows = guesses.map(g => marks(g, answer).map(m => tile[m]).join(''));
+    return [`${day ? `Hunch ${day}` : 'Hunch practice'} · ${won ? guesses.length : 'X'}/${TRIES}${hard ? ' · Hard' : ''}`, ...rows].join('\n');
   }
 
-  const lib = { LEN, TRIES, split, dictionary, marks, letters, missedClue, rng, dayNumber, daily, streak, bestStreak, shareText };
+  // A line for the home screen's Share today: a square a guess, green for the one
+  // that found it.
+  function cardText(guesses, answer) {
+    const won = guesses[guesses.length - 1] === answer;
+    return `Hunch ${won ? guesses.length : 'X'}/${TRIES} ${guesses.map(g => (g === answer ? '🟩' : '⬜')).join('')}`;
+  }
+
+  const lib = { LEN, TRIES, split, dictionary, marks, letters, missedClue, rng, dayNumber, daily, streak, bestStreak, shareText, cardText };
   if (typeof module === 'object' && module.exports) module.exports = lib;
   else root.HunchLib = lib;
 })(this);

@@ -151,22 +151,34 @@
     return best;
   }
 
-  // A spoiler-free picture of the climb: one row per change, with the
-  // letter that changed filled in.
-  function shareText(puzzle, ladder, hints = 0) {
-    const steps = ladder.length - 1;
+  // Sharing. Coloured squares are all plain text can carry: green for the letter
+  // changed at each step, yellow for a step a hint gave away, and the blank one
+  // light or dark to suit the phone's theme. Start words are the same for
+  // everyone and on screen, so they give nothing away.
+  const steps = n => `${n} ${n === 1 ? 'step' : 'steps'}`;
+  const hintsText = n => `${n} ${n === 1 ? 'hint' : 'hints'}`;
+  function shareText(puzzle, ladder, hints = 0, hinted = [], blank = '⬜') {
     const rows = [];
     for (let i = 1; i < ladder.length; i++) {
-      const at = changedAt(ladder[i - 1], ladder[i]);
-      let row = '';
-      for (let j = 0; j < LEN; j++) row += j === at ? '■' : '□';
-      rows.push(row);
+      const at = changedAt(ladder[i - 1], ladder[i]), mark = hinted.includes(i) ? '🟨' : '🟩';
+      rows.push(Array.from({ length: LEN }, (_, j) => (j === at ? mark : blank)).join(''));
     }
+    // A long climb goes two steps to a line, so it stays a short message.
+    const lines = rows.length > 10 ? rows.reduce((out, r, i) => (i % 2 ? out.push(`${out.pop()}  ${r}`) : out.push(r), out), []) : rows;
     const title = puzzle.day ? `Slugle ${puzzle.day}` : 'Slugle practice';
-    return `${title} · ${puzzle.start.toUpperCase()} → ${puzzle.target.toUpperCase()}\n${steps} ${steps === 1 ? 'step' : 'steps'}, par ${puzzle.par}${hints ? `, ${hints} ${hints === 1 ? 'hint' : 'hints'}` : ''}\n${rows.join('\n')}`;
+    const head = [title, steps(ladder.length - 1), `par ${puzzle.par}`, ...(hints ? [hintsText(hints)] : [])].join(' · ');
+    return [head, `${puzzle.start.toUpperCase()} → ${puzzle.target.toUpperCase()}`, ...lines].join('\n');
   }
 
-  const lib = { LEN, split, dictionary, neighbours, oneApart, changedAt, distances, way, nextStep, rng, towards, dayNumber, parForDay, daily, LENGTHS, practice, streak, bestStreak, shareText };
+  // A line for the home screen's Share today: a square a step, green up to par
+  // and yellow past it or where a hint found it.
+  function cardText(par, ladder, hints = 0, hinted = []) {
+    const n = ladder.length - 1;
+    const bar = Array.from({ length: Math.min(n, 10) }, (_, i) => (i < par && !hinted.includes(i + 1) ? '🟩' : '🟨')).join('');
+    return `Slugle ${n} · par ${par}${hints ? ` · ${hintsText(hints)}` : ''} ${bar}`;
+  }
+
+  const lib = { LEN, split, dictionary, neighbours, oneApart, changedAt, distances, way, nextStep, rng, towards, dayNumber, parForDay, daily, LENGTHS, practice, streak, bestStreak, shareText, cardText };
   if (typeof module === 'object' && module.exports) module.exports = lib;
   else root.LadderLib = lib;
 })(this);

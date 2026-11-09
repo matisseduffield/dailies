@@ -283,19 +283,26 @@
     });
   }
 
-  // A mark for each swap by how much it put right, which shows how it went and
-  // gives no letter away.
-  function shareText(day, start, answer, swaps, allowed, { won, gaveUp }) {
+  // Sharing: a square for each swap by how much it put right, green for two
+  // tiles, yellow for one and blank for none, eight to a row. No letters.
+  function shareText(day, start, answer, swaps, allowed, { won, gaveUp }, blank = '⬜') {
     const head = day ? `Mend ${day}` : 'Mend practice';
     const left = allowed - swaps.length;
-    const line = gaveUp ? 'Gave up' : won ? `${left} of ${allowed} swaps left` : 'Out of swaps';
-    const marksOf = gains(start, answer, swaps).map(n => ['□', '▣', '■'][n]);
+    const line = gaveUp ? 'Gave up' : won ? `${left} ${left === 1 ? 'swap' : 'swaps'} left of ${allowed}` : 'Out of swaps';
+    const marksOf = gains(start, answer, swaps).map(n => [blank, '🟨', '🟩'][n]);
     const rows = [];
-    for (let i = 0; i < marksOf.length; i += 12) rows.push(marksOf.slice(i, i + 12).join(''));
+    for (let i = 0; i < marksOf.length; i += 8) rows.push(marksOf.slice(i, i + 8).join(''));
     return [`${head} · ${line}`, ...rows].join('\n');
   }
 
-  const lib = { BOARDS, WEEK, SHAPES, layout, marks, solved, refusal, replay, homes, rng, shuffled, mix, dayNumber, weekdayOf, shapeAt, puzzle, daily, streak, bestStreak, gains, shareText };
+  // A line for the home screen's Share today: one square, green for the best
+  // there was, yellow for solved and red for not.
+  function cardText(left, best, { won, gaveUp }) {
+    if (!won) return gaveUp ? 'Mend gave up 🟥' : 'Mend out of swaps 🟥';
+    return `Mend ${left} ${left === 1 ? 'swap' : 'swaps'} left ${left >= best ? '🟩' : '🟨'}`;
+  }
+
+  const lib = { BOARDS, WEEK, SHAPES, layout, marks, solved, refusal, replay, homes, rng, shuffled, mix, dayNumber, weekdayOf, shapeAt, puzzle, daily, streak, bestStreak, gains, shareText, cardText };
   if (typeof module === 'object' && module.exports) module.exports = lib;
   else root.MendLib = lib;
 })(this);

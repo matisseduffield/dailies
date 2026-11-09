@@ -166,12 +166,19 @@ test('a game can be added to the home screen from its own page', () => {
   }
 });
 
-test('shared results link to the site they came from, and the app keeps its address', () => {
+test('shared results link to the site they came from, short, and the app and old addresses to the new one', () => {
   for (const file of ['index.html', ...GAMES.map(g => `${g}/index.html`)]) {
     const site = read(file).toString().match(/const SITE = .*/)[0];
-    assert.match(site, /location\.origin/, file);
+    assert.match(site, /location\.host\b/, file);
+    assert.match(site, /workers\\\.dev\$/, file);
+    assert.match(site, /'dailies\.teloone\.au'/, file);
+    assert.ok(!/https?:/.test(site), file);
   }
-  for (const game of GAMES) assert.match(read(`${game}/index.html`).toString(), /appassets\.androidplatform\.net' \? 'https:\/\/dailies\.matisseduffield\.workers\.dev'/, game);
+  for (const game of GAMES) {
+    const site = read(`${game}/index.html`).toString().match(/const SITE = .*/)[0];
+    assert.match(site, /appassets\\\.androidplatform\\\.net/, game);
+    assert.ok(site.endsWith(`/${game}\`;`), game);
+  }
 });
 
 test('a kept page loses its clock reading', async () => {

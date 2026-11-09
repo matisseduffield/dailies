@@ -125,14 +125,22 @@
     return best;
   }
 
-  // Shows the operators used and hides the numbers.
+  // Sharing: the operators used, in order, and never the numbers.
+  const OP_TILE = { '+': '➕', '−': '➖', '×': '✖️', '÷': '➗' };
+  const movesText = n => `${n} ${n === 1 ? 'move' : 'moves'}`;
   function shareText(day, steps, par, gaveUp = false) {
     const head = day ? `Reach ${day}` : 'Reach practice';
-    if (gaveUp) return `${head} · Gave up, par ${par}`;
-    return `${head} · ${steps.length} ${steps.length === 1 ? 'move' : 'moves'}, par ${par}\n${steps.map(s => sign(s.op)).join(' ')}`;
+    if (gaveUp) return `${head} · Gave up · par ${par}`;
+    return `${head} · ${movesText(steps.length)} · par ${par}\n${steps.map(s => OP_TILE[sign(s.op)]).join('')}`;
   }
 
-  const lib = { OPS, PAR_BY_WEEKDAY, rng, sign, apply, replay, deal, dayNumber, weekdayOf, parForDay, seedFor, daily, streak, bestStreak, shareText };
+  // A line for the home screen's Share today.
+  function cardText(steps, par, gaveUp = false) {
+    if (gaveUp) return `Reach gave up · par ${par}`;
+    return `Reach ${steps.length} · par ${par} ${steps.map(s => OP_TILE[sign(s.op)]).join('')}`;
+  }
+
+  const lib = { OPS, PAR_BY_WEEKDAY, rng, sign, apply, replay, deal, dayNumber, weekdayOf, parForDay, seedFor, daily, streak, bestStreak, shareText, cardText };
   if (typeof module === 'object' && module.exports) module.exports = lib;
   else root.ReachLib = lib;
 })(this);

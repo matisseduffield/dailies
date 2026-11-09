@@ -222,7 +222,7 @@
 
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="days.js?v=3"></script>
-<script src="lib.js?v=1"></script>
+<script src="lib.js?v=2"></script>
 <script src="../clock.js?v=4"></script>
 <script src="../pwa.js"></script>
 <script src="../next.js?v=9"></script>
@@ -231,8 +231,9 @@
   const L = window.DatedLib, D = window.DatedDays;
   const $ = id => document.getElementById(id);
   const locale = navigator.language || 'en';
-  // Where the game lives on the web; shared results link here.
-  const SITE = `${location.hostname === 'appassets.androidplatform.net' ? 'https://dailies.matisseduffield.workers.dev' : location.origin}/dated/index.html`;
+  // Where the game lives on the web; shared results link here, short, as chat
+  // apps make a link of it. The app and the old addresses send people to the new one.
+  const SITE = `${/^appassets\.androidplatform\.net$|\.workers\.dev$/.test(location.hostname) ? 'dailies.teloone.au' : location.host}/dated`;
 
   const store = {
     get(k) { try { return JSON.parse(localStorage.getItem('dated.' + k)); } catch { return null; } },
@@ -657,7 +658,7 @@
     if (!rec || !rec.done) return;
     const total = L.daily(today, D).cards.length - 1;
     const text = rec.won ? `${rec.placed} of ${total}, ${L.livesText(rec.lives)}` : `${rec.placed} of ${total}, out of lives`;
-    try { localStorage.setItem('hub.dated', JSON.stringify({ date: Clock.now().toDateString(), text })); } catch {}
+    try { localStorage.setItem('hub.dated', JSON.stringify({ date: Clock.now().toDateString(), text, card: L.cardText(L.replay(L.daily(today, D).cards, rec.moves)) })); } catch {}
   }
 
   function share() {

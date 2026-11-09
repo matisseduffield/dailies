@@ -91,16 +91,25 @@
 
   const mistakeText = n => (n ? `${n} ${n === 1 ? 'mistake' : 'mistakes'}` : 'No mistakes');
 
-  // A spoiler-free picture of the game: a row for each guess, and the harder a
-  // word's group, the fuller its square.
+  // Sharing: a row for each guess, each word in its group's colour, easiest to
+  // hardest yellow, green, blue, purple, as on screen. No words.
+  const COLOURS = ['🟨', '🟩', '🟦', '🟪'];
+  const resultText = (won, mistakes, solved, puzzle) => (won ? (mistakes ? mistakeText(mistakes) : 'Perfect') : `${solved.length} of ${puzzle.length} groups`);
   function shareText(day, guesses, puzzle) {
-    const shade = ['□', '▤', '▦', '■'];
     const { won, solved, mistakes } = progress(guesses, puzzle);
-    const rows = guesses.map(g => g.map(w => shade[puzzle[groupOf(w, puzzle)].level]).join(''));
-    return `Sorted ${day} · ${won ? mistakeText(mistakes) : `${solved.length} of ${puzzle.length}`}\n${rows.join('\n')}`;
+    const rows = guesses.map(g => g.map(w => COLOURS[puzzle[groupOf(w, puzzle)].level]).join(''));
+    return [`Sorted ${day} · ${resultText(won, mistakes, solved, puzzle)}`, ...rows].join('\n');
   }
 
-  const lib = { SIZE, MISTAKES, parse, wordsOf, groupOf, check, tried, progress, rng, shuffled, dayNumber, daily, deal, streak, bestStreak, mistakeText, shareText };
+  // A line for the home screen's Share today: a square a guess, the group's
+  // colour when it was right and red when it wasn't.
+  function cardText(guesses, puzzle) {
+    const { won, solved, mistakes } = progress(guesses, puzzle);
+    const bar = guesses.map(g => { const k = check(g, puzzle).group; return k >= 0 ? COLOURS[puzzle[k].level] : '🟥'; }).join('');
+    return `Sorted ${resultText(won, mistakes, solved, puzzle)} ${bar}`;
+  }
+
+  const lib = { SIZE, MISTAKES, parse, wordsOf, groupOf, check, tried, progress, rng, shuffled, dayNumber, daily, deal, streak, bestStreak, mistakeText, shareText, cardText };
   if (typeof module === 'object' && module.exports) module.exports = lib;
   else root.SortedLib = lib;
 })(this);

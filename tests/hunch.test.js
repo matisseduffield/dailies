@@ -86,9 +86,12 @@ test('streaks', () => {
 
 test('share text gives nothing away', () => {
   const text = L.shareText(3, ['nacre', 'crane'], 'crane');
-  assert.equal(text, 'Hunch 3 · 2/6\n▣▣▣▣■\n■■■■■');
-  assert.match(L.shareText(0, ['moldy'], 'crane'), /^Hunch practice · X\/6\n□□□□□$/);
+  assert.equal(text, 'Hunch 3 · 2/6\n🟨🟨🟨🟨🟩\n🟩🟩🟩🟩🟩');
+  assert.equal(L.shareText(0, ['moldy'], 'crane'), 'Hunch practice · X/6\n⬜⬜⬜⬜⬜');
+  assert.equal(L.shareText(0, ['moldy'], 'crane', false, '⬛'), 'Hunch practice · X/6\n⬛⬛⬛⬛⬛');
   assert.match(L.shareText(3, ['crane'], 'crane', true), /^Hunch 3 · 1\/6 · Hard\n/);
+  assert.equal(L.cardText(['moldy', 'nacre', 'crane'], 'crane'), 'Hunch 3/6 ⬜⬜🟩');
+  assert.equal(L.cardText(['moldy', 'nacre'], 'crane'), 'Hunch X/6 ⬜⬜');
 });
 
 test('a clock set before the first day still gets a word', () => {

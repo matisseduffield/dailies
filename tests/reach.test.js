@@ -110,8 +110,10 @@ test('streaks run up to today or yesterday', () => {
 
 test('sharing hides the numbers', () => {
   const steps = [{ a: 7, op: '+', b: 6, value: 13 }, { a: 50, op: '×', b: 2, value: 100 }];
-  assert.equal(L.shareText(3, steps, 2), 'Reach 3 · 2 moves, par 2\n+ ×');
-  assert.equal(L.shareText(0, steps.slice(1), 1), 'Reach practice · 1 move, par 1\n×');
-  assert.equal(L.shareText(3, [], 4, true), 'Reach 3 · Gave up, par 4');
-  assert.equal(L.shareText(3, [{ a: 7, op: '-', b: 6, value: 1 }], 3), 'Reach 3 · 1 move, par 3\n−');
+  assert.equal(L.shareText(3, steps, 2), 'Reach 3 · 2 moves · par 2\n➕✖️');
+  assert.equal(L.shareText(0, steps.slice(1), 1), 'Reach practice · 1 move · par 1\n✖️');
+  assert.equal(L.shareText(3, [], 4, true), 'Reach 3 · Gave up · par 4');
+  assert.equal(L.shareText(3, [{ a: 7, op: '-', b: 6, value: 1 }, { a: 8, op: '÷', b: 2, value: 4 }], 3), 'Reach 3 · 2 moves · par 3\n➖➗');
+  assert.equal(L.cardText(steps, 2), 'Reach 2 · par 2 ➕✖️');
+  assert.equal(L.cardText([], 4, true), 'Reach gave up · par 4');
 });

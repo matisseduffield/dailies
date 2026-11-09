@@ -70,8 +70,12 @@ test('the week grows, and the weekend has the fewest checks', () => {
 });
 
 test('the shared result hides the words', () => {
-  assert.equal(L.shareText(3, [[true, false], [true, true]], true), 'Splice 3 · 2 checks\n●○\n●●');
-  assert.equal(L.shareText(0, [[false]], false), 'Splice practice · Not this time\n○');
+  assert.equal(L.shareText(3, [[true, false], [true, true]], true), 'Splice 3 · 2 checks\n🟩⬜\n🟩🟩');
+  assert.equal(L.shareText(0, [[false]], false), 'Splice practice · Not this time\n⬜');
+  assert.equal(L.shareText(0, [[false, true]], false, '⬛'), 'Splice practice · Not this time\n⬛🟩');
+  assert.equal(L.cardText([[false, false], [true, false], [true, true]], true), 'Splice 3 checks ⬜🟨🟩');
+  assert.equal(L.cardText([[true, false]], false), 'Splice not this time 🟨');
+  assert.equal(L.cardText([], false), 'Splice not this time');
 });
 
 test('every day has exactly one answer, counting every link we know and the proof words', () => {

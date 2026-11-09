@@ -185,8 +185,18 @@ letter at a time, and every step has to be a word.
   medium (6 to 7) or long (8 to 9); New ladder picks the length.
 - How to play (top bar) opens by itself on the first visit.
 - Android app: self-updating from the public `dailies-releases` repo.
-- In a browser: https://dailies.matisseduffield.workers.dev (shared results
-  link here, so friends can play without the app; `/app` gets the APK).
+- In a browser: https://dailies.teloone.au (shared results link here, as
+  `dailies.teloone.au/slugle`, so friends can play without the app; `/app` gets
+  the APK). The old https://dailies.matisseduffield.workers.dev still works.
+
+## Sharing
+
+Every game's share is a header (`Hunch 312 · 4/6`, or `Hunch practice · …`), a
+small grid of coloured squares in the game's own colours, and the short link.
+The squares are the only colour plain text carries; nothing in them gives away an
+answer, a word, a country or a year. The blank square is ⬜ or ⬛ to match the
+phone's theme when shared. Each game's `shareText` is in its `lib.js`, with a
+`cardText` that makes its one line in the home screen's Share today.
 
 ## Words
 
@@ -205,8 +215,9 @@ lists later never changes a day's puzzle. Rebuild with
 
 Give it a folder in `web/` with an `index.html` that links `../shared.css`, add
 it to `GAMES` in `web/index.html` and `web/next.js`, and when today's game ends
-save `{ date: new Date().toDateString(), text }` to localStorage as
-`hub.<folder>`. Call `showNext()` from its result for the link to the next game.
+save `{ date: new Date().toDateString(), text, card }` to localStorage as
+`hub.<folder>` (`card` is its line in Share today; a result without one shows
+its `text`). Call `showNext()` from its result for the link to the next game.
 
 ## On an iPhone
 
@@ -233,7 +244,8 @@ reading would hold the games on an old day; `/now` and `/app` pass through.
   and `words.js`, `puzzles.js` or `days.js` its data.
 - `worker/worker.js`: the Cloudflare Workers `dailies`, `slugle` and `ladder`
   (old addresses) that serve the pages from `dailies-releases/web/` (every
-  release publishes it there) and tell the time at `/now`. No bindings; deployed by hand when it changes,
+  release publishes it there), tell the time at `/now`, and send a share's
+  short link (`/slugle`) on to its page. No bindings; deployed by hand when it changes,
   not on every release.
 - `app/`: Kotlin WebView wrapper (`com.matisseduffield.ladder`) that bundles
   `web/` as assets, with the self-updater from Tally and Bureau.

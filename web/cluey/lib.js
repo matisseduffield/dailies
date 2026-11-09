@@ -226,14 +226,30 @@
     return best;
   }
 
-  // Gives no letters away: the size, the time and what it took.
+  // Sharing: the size, the time and what it took, then the grid's shape with no
+  // letters: blocks black, and each square green, yellow if a check found it
+  // right or red if it was revealed.
   function shareText(day, p, g) {
     const head = `Cluey ${day} · ${p.size}×${p.size}`;
     if (g.gaveUp) return `${head} · Gave up at ${clock(g.ms)}`;
-    return `${head} · ${clock(g.ms)} · ${clean(g) ? 'Clean' : helpText(g)}`;
+    const marks = typeof g.marks === 'string' ? g.marks : '';
+    const rows = [];
+    for (let r = 0; r < p.size; r++) {
+      let row = '';
+      for (let c = r * p.size; c < (r + 1) * p.size; c++) row += p.answer[c] === BLOCK ? '⬛' : marks[c] === 'r' ? '🟥' : marks[c] === 'c' ? '🟨' : '🟩';
+      rows.push(row);
+    }
+    return [`${head} · ${clock(g.ms)} · ${clean(g) ? 'Clean' : helpText(g)}`, ...rows].join('\n');
   }
 
-  const lib = { CHECKS, REVEALS, BLOCK, rng, dayNumber, weekdayOf, parse, rawFor, daily, blank, entryAt, label, locked, wordFull, isFull, isRight, nextGap, firstGap, stepClue, type, erase, arrow, canCheck, check, reveal, clean, helpText, clock, streak, bestStreak, shareText };
+  // A line for the home screen's Share today: one square, green for a clean
+  // solve, yellow for one with help and red for giving up.
+  function cardText(g) {
+    if (g.gaveUp) return 'Cluey gave up 🟥';
+    return clean(g) ? `Cluey ${clock(g.ms)} · clean 🟩` : `Cluey ${clock(g.ms)} · ${helpText(g)} 🟨`;
+  }
+
+  const lib = { CHECKS, REVEALS, BLOCK, rng, dayNumber, weekdayOf, parse, rawFor, daily, blank, entryAt, label, locked, wordFull, isFull, isRight, nextGap, firstGap, stepClue, type, erase, arrow, canCheck, check, reveal, clean, helpText, clock, streak, bestStreak, shareText, cardText };
   if (typeof module === 'object' && module.exports) module.exports = lib;
   else root.ClueyLib = lib;
 })(this);

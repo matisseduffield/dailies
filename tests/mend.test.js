@@ -474,10 +474,17 @@ test('streaks count days in a row', () => {
 test('the share shows how each swap went and gives no letter away', () => {
   const start = [...'badc'], answer = [...'abcd'];
   const won = L.shareText(7, start, answer, [[0, 1], [2, 3]], 4, { won: true });
-  assert.equal(won, 'Mend 7 · 2 of 4 swaps left\n■■');
+  assert.equal(won, 'Mend 7 · 2 swaps left of 4\n🟩🟩');
   const lost = L.shareText(0, [...'bcda'], answer, [[0, 1]], 1, { won: false });
-  assert.equal(lost, 'Mend practice · Out of swaps\n▣');
+  assert.equal(lost, 'Mend practice · Out of swaps\n🟨');
   assert.ok(L.shareText(7, start, answer, [], 4, { won: false, gaveUp: true }).startsWith('Mend 7 · Gave up'));
+  // A swap that put nothing right is blank, light or dark, and rows are eight long.
+  const idle = Array(9).fill([0, 2]);
+  assert.equal(L.shareText(7, [...'bcda'], answer, idle, 12, { won: false, gaveUp: true }, '⬛'), 'Mend 7 · Gave up\n⬛⬛⬛⬛⬛⬛⬛⬛\n⬛');
+  assert.equal(L.cardText(3, 3, { won: true }), 'Mend 3 swaps left 🟩');
+  assert.equal(L.cardText(1, 3, { won: true }), 'Mend 1 swap left 🟨');
+  assert.equal(L.cardText(0, 3, { won: false }), 'Mend out of swaps 🟥');
+  assert.equal(L.cardText(5, 3, { won: false, gaveUp: true }), 'Mend gave up 🟥');
   assert.deepEqual(L.gains([...'bcda'], answer, [[0, 3], [1, 3]]), [1, 1]);
 });
 

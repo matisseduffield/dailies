@@ -255,7 +255,7 @@
 
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="words.js?v=4"></script>
-<script src="lib.js?v=10"></script>
+<script src="lib.js?v=11"></script>
 <script src="../clock.js?v=4"></script>
 <script src="../pwa.js"></script>
 <script src="../next.js?v=9"></script>
@@ -265,8 +265,9 @@
   const dict = L.dictionary(D);
   const $ = id => document.getElementById(id);
   const locale = navigator.language || 'en';
-  // Where the game lives on the web; shared results link here.
-  const SITE = `${location.hostname === 'appassets.androidplatform.net' ? 'https://dailies.matisseduffield.workers.dev' : location.origin}/slugle/index.html`;
+  // Where the game lives on the web; shared results link here, short, as chat
+  // apps make a link of it. The app and the old addresses send people to the new one.
+  const SITE = `${/^appassets\.androidplatform\.net$|\.workers\.dev$/.test(location.hostname) ? 'dailies.teloone.au' : location.host}/slugle`;
 
   const store = {
     get(k) { try { return JSON.parse(localStorage.getItem('ladder.' + k)); } catch { return null; } },
@@ -688,6 +689,8 @@
     if (!dict.all.has(next) && next !== puzzle.target) return reject(`${next.toUpperCase()} isn’t a valid word`, 'wipe');
     if (!L.oneApart(word, next)) return reject(`Change just one letter of ${word.toUpperCase()}`);
     if (play.ladder.includes(next)) return reject(`${next.toUpperCase()} is already on the ladder`);
+    // A step a hint found shows as such in the share.
+    if (hint && hint.word === next) play.hinted = [...(play.hinted || []).filter(i => i < play.ladder.length), play.ladder.length];
     play.ladder.push(next);
     typed = ''; hint = null; fresh = true;
     say('');
@@ -760,11 +763,13 @@
     const rec = state.days[today];
     if (!rec || !rec.done) return;
     const text = `Solved in ${rec.ladder.length - 1}, par ${L.parForDay(today, D.epoch)}${rec.hints ? `, ${hintCount(rec.hints)}` : ''}`;
-    try { localStorage.setItem('hub.slugle', JSON.stringify({ date: Clock.now().toDateString(), text })); } catch {}
+    try { localStorage.setItem('hub.slugle', JSON.stringify({ date: Clock.now().toDateString(), text, card: L.cardText(L.parForDay(today, D.epoch), rec.ladder, rec.hints, rec.hinted || []) })); } catch {}
   }
 
+  // The blank square in a share follows the phone's theme, as the big word games do.
+  const blank = () => (matchMedia('(prefers-color-scheme: dark)').matches ? '⬛' : '⬜');
   function share(p = puzzle, pl = play) {
-    const text = `${L.shareText(p, pl.ladder, pl.hints)}\n${SITE}`;
+    const text = `${L.shareText(p, pl.ladder, pl.hints, pl.hinted || [], blank())}\n${SITE}`;
     if (app) return toApp({ type: 'share', title: 'Slugle', text });
     if (navigator.share) return navigator.share({ text }).catch(() => {});
     navigator.clipboard.writeText(text).then(() => say('Copied to share'), () => {});

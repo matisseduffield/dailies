@@ -267,14 +267,22 @@
     return { board: next };
   }
 
-  // Each check as a line of marks, one per link. No words.
-  function shareText(day, checks, won) {
+  // Sharing: a row for each check, a square for each link, green right and blank
+  // not. No words.
+  function shareText(day, checks, won, blank = '⬜') {
     const head = day ? `Splice ${day}` : 'Splice practice';
     const title = won ? `${head} · ${checks.length} ${checks.length === 1 ? 'check' : 'checks'}` : `${head} · Not this time`;
-    return [title, ...checks.map(c => c.map(ok => (ok ? '●' : '○')).join(''))].join('\n');
+    return [title, ...checks.map(c => c.map(ok => (ok ? '🟩' : blank)).join(''))].join('\n');
   }
 
-  const lib = { SHAPES, WEEK, tree, linksOf, rng, shuffled, shapeKeys, alikeBefore, variants, solutions, check, scramble, dayNumber, weekdayOf, shapeForDay, daily, reads, pairOf, groupOf, relocate, swap, streak, bestStreak, shareText };
+  // A line for the home screen's Share today: a square a check, green when every
+  // link was right, yellow when some were.
+  function cardText(checks, won) {
+    const bar = checks.map(c => (c.every(Boolean) ? '🟩' : c.some(Boolean) ? '🟨' : '⬜')).join('');
+    return `Splice ${won ? `${checks.length} ${checks.length === 1 ? 'check' : 'checks'}` : 'not this time'}${bar ? ` ${bar}` : ''}`;
+  }
+
+  const lib = { SHAPES, WEEK, tree, linksOf, rng, shuffled, shapeKeys, alikeBefore, variants, solutions, check, scramble, dayNumber, weekdayOf, shapeForDay, daily, reads, pairOf, groupOf, relocate, swap, streak, bestStreak, shareText, cardText };
   if (typeof module === 'object' && module.exports) module.exports = lib;
   else root.SpliceLib = lib;
 })(this);

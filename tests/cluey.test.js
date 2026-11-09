@@ -172,12 +172,24 @@ test('the clock reads as minutes and seconds', () => {
 
 test('sharing gives no letters away', () => {
   const p = day(1);
-  const clean = L.shareText(1, p, { ms: 83000, checks: 0, reveals: 0, misses: 0 });
-  assert.equal(clean, `Cluey 1 · ${p.size}×${p.size} · 1:23 · Clean`);
-  const helped = L.shareText(2, p, { ms: 83000, checks: 2, reveals: 1, misses: 0 });
-  assert.match(helped, /2 checks, 1 reveal/);
-  assert.match(L.shareText(3, p, { ms: 83000, gaveUp: true, checks: 0, reveals: 0, misses: 0 }), /Gave up at 1:23/);
-  for (const e of p.entries) assert.ok(!clean.toLowerCase().includes(e.word));
+  const clean = L.shareText(1, p, { ms: 83000, checks: 0, reveals: 0, misses: 0, marks: L.blank(p) });
+  const shape = [...p.answer].map(ch => (ch === L.BLOCK ? '⬛' : '🟩'));
+  const rows = Array.from({ length: p.size }, (_, r) => shape.slice(r * p.size, (r + 1) * p.size).join(''));
+  assert.equal(clean, [`Cluey 1 · ${p.size}×${p.size} · 1:23 · Clean`, ...rows].join('\n'));
+  // A square a check found right is yellow, a revealed one red.
+  const open = [...p.answer].map((ch, i) => (ch === L.BLOCK ? -1 : i)).filter(i => i >= 0);
+  const marks = [...L.blank(p)];
+  marks[open[0]] = 'c'; marks[open[1]] = 'r';
+  const helped = L.shareText(2, p, { ms: 83000, checks: 2, reveals: 1, misses: 0, marks: marks.join('') });
+  assert.match(helped, /2 checks, 1 reveal\n/);
+  const cells = [...helped.split('\n').slice(1).join('')];
+  assert.equal(cells[open[0]], '🟨');
+  assert.equal(cells[open[1]], '🟥');
+  assert.equal(L.shareText(3, p, { ms: 83000, gaveUp: true, checks: 0, reveals: 0, misses: 0 }), `Cluey 3 · ${p.size}×${p.size} · Gave up at 1:23`);
+  for (const e of p.entries) assert.ok(!helped.toLowerCase().includes(e.word));
+  assert.equal(L.cardText({ ms: 83000, checks: 0, reveals: 0, misses: 0 }), 'Cluey 1:23 · clean 🟩');
+  assert.equal(L.cardText({ ms: 83000, checks: 1, reveals: 0, misses: 0 }), `Cluey 1:23 · ${L.helpText({ checks: 1, reveals: 0, misses: 0 })} 🟨`);
+  assert.equal(L.cardText({ ms: 83000, gaveUp: true }), 'Cluey gave up 🟥');
 });
 
 test('streaks count days in a row', () => {

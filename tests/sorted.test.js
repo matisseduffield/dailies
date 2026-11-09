@@ -83,10 +83,12 @@ test('streaks run up to today or yesterday', () => {
 
 test('sharing shows the shape of the game and no words', () => {
   const won = L.shareText(3, [close, fruit, greens, tools, palindromes], sample);
-  assert.equal(won, 'Sorted 3 · 1 mistake\n□□□▤\n□□□□\n▤▤▤▤\n▦▦▦▦\n■■■■');
-  assert.match(L.shareText(3, [fruit, greens, tools, palindromes], sample), /^Sorted 3 · No mistakes\n/);
-  const lost = L.shareText(3, [fruit, wrong, close, ['Mango', 'Plum', 'Olive', 'Jade'], ['Peach', 'Plum', 'Olive', 'Mint']], sample);
-  assert.match(lost, /^Sorted 3 · 1 of 4\n/);
+  assert.equal(won, 'Sorted 3 · 1 mistake\n🟨🟨🟨🟩\n🟨🟨🟨🟨\n🟩🟩🟩🟩\n🟦🟦🟦🟦\n🟪🟪🟪🟪');
+  assert.match(L.shareText(3, [fruit, greens, tools, palindromes], sample), /^Sorted 3 · Perfect\n/);
+  const lostGuesses = [fruit, wrong, close, ['Mango', 'Plum', 'Olive', 'Jade'], ['Peach', 'Plum', 'Olive', 'Mint']];
+  assert.match(L.shareText(3, lostGuesses, sample), /^Sorted 3 · 1 of 4 groups\n/);
+  assert.equal(L.cardText([close, fruit, greens, tools, palindromes], sample), 'Sorted 1 mistake 🟥🟨🟩🟦🟪');
+  assert.equal(L.cardText(lostGuesses, sample), 'Sorted 1 of 4 groups 🟨🟥🟥🟥🟥');
 });
 
 test('a clock set before the first day still gets a puzzle', () => {

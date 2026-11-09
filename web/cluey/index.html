@@ -245,7 +245,7 @@
 
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="puzzles.js?v=2"></script>
-<script src="lib.js?v=1"></script>
+<script src="lib.js?v=2"></script>
 <script src="../clock.js?v=4"></script>
 <script src="../pwa.js"></script>
 <script src="../next.js?v=9"></script>
@@ -254,8 +254,9 @@
   const L = window.ClueyLib, D = window.ClueyPuzzles;
   const $ = id => document.getElementById(id);
   const locale = navigator.language || 'en';
-  // Where the game lives on the web; shared results link here.
-  const SITE = `${location.hostname === 'appassets.androidplatform.net' ? 'https://dailies.matisseduffield.workers.dev' : location.origin}/cluey/index.html`;
+  // Where the game lives on the web; shared results link here, short, as chat
+  // apps make a link of it. The app and the old addresses send people to the new one.
+  const SITE = `${/^appassets\.androidplatform\.net$|\.workers\.dev$/.test(location.hostname) ? 'dailies.teloone.au' : location.host}/cluey`;
 
   const store = {
     get(k) { try { return JSON.parse(localStorage.getItem('cluey.' + k)); } catch { return null; } },
@@ -655,7 +656,7 @@
     if (!rec || !rec.done) return;
     const n = helps(rec);
     const text = rec.won ? `${L.clock(rec.ms)}, ${n ? `${n} ${n === 1 ? 'help' : 'helps'}` : 'clean'}` : 'Gave up';
-    try { localStorage.setItem('hub.cluey', JSON.stringify({ date: Clock.now().toDateString(), text })); } catch {}
+    try { localStorage.setItem('hub.cluey', JSON.stringify({ date: Clock.now().toDateString(), text, card: L.cardText(rec) })); } catch {}
   }
 
   function share() {

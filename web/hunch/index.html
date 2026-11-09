@@ -162,7 +162,7 @@
 
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="words.js?v=2"></script>
-<script src="lib.js?v=3"></script>
+<script src="lib.js?v=4"></script>
 <script src="../clock.js?v=4"></script>
 <script src="../pwa.js"></script>
 <script src="../next.js?v=9"></script>
@@ -172,8 +172,9 @@
   const dict = L.dictionary(D);
   const $ = id => document.getElementById(id);
   const locale = navigator.language || 'en';
-  // Where the game lives on the web; shared results link here.
-  const SITE = `${location.hostname === 'appassets.androidplatform.net' ? 'https://dailies.matisseduffield.workers.dev' : location.origin}/hunch/index.html`;
+  // Where the game lives on the web; shared results link here, short, as chat
+  // apps make a link of it. The app and the old addresses send people to the new one.
+  const SITE = `${/^appassets\.androidplatform\.net$|\.workers\.dev$/.test(location.hostname) ? 'dailies.teloone.au' : location.host}/hunch`;
 
   const store = {
     get(k) { try { return JSON.parse(localStorage.getItem('hunch.' + k)); } catch { return null; } },
@@ -463,11 +464,13 @@
     const rec = state.days[today];
     if (!rec || !rec.done) return;
     const text = rec.won ? `Got it in ${rec.guesses.length}` : 'Out of tries';
-    try { localStorage.setItem('hub.hunch', JSON.stringify({ date: Clock.now().toDateString(), text })); } catch {}
+    try { localStorage.setItem('hub.hunch', JSON.stringify({ date: Clock.now().toDateString(), text, card: L.cardText(rec.guesses, L.daily(today, dict)) })); } catch {}
   }
 
+  // The blank square in a share follows the phone's theme, as the big word games do.
+  const blank = () => (matchMedia('(prefers-color-scheme: dark)').matches ? '⬛' : '⬜');
   function share() {
-    const text = `${L.shareText(state.mode === 'daily' ? today : 0, play.guesses, answer, play.hard)}\n${SITE}`;
+    const text = `${L.shareText(state.mode === 'daily' ? today : 0, play.guesses, answer, play.hard, blank())}\n${SITE}`;
     if (app) return toApp({ type: 'share', title: 'Hunch', text });
     if (navigator.share) return navigator.share({ text }).catch(() => {});
     navigator.clipboard.writeText(text).then(() => say('Copied to share'), () => {});

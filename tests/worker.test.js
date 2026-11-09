@@ -28,6 +28,14 @@ test('pages carry a reading and are not kept', async t => {
   assert.strictEqual(res.headers.get('Cache-Control'), 'no-cache');
 });
 
+test('a game without its slash, the short link a share carries, goes on to the page', async () => {
+  const worker = await load();
+  const res = await worker.fetch(get('/slugle'));
+  assert.strictEqual(res.status, 301);
+  assert.strictEqual(res.headers.get('Location'), '/slugle/');
+  assert.strictEqual((await worker.fetch(get('/app'))).status, 302);
+});
+
 test('other files pass through untouched', async t => {
   const worker = await load();
   t.mock.method(globalThis, 'fetch', async () => new Response('let a;'));

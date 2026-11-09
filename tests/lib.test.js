@@ -110,7 +110,18 @@ test('streaks', () => {
 });
 
 test('share text gives nothing away', () => {
-  const text = L.shareText({ day: 3, start: 'cold', target: 'warm', par: 4 }, ['cold', 'cord', 'card', 'ward', 'warm']);
-  assert.equal(text, 'Slugle 3 · COLD → WARM\n4 steps, par 4\n□□■□\n□■□□\n■□□□\n□□□■');
-  assert.match(L.shareText({ start: 'cold', target: 'cord', par: 1 }, ['cold', 'cord'], 1), /^Slugle practice · COLD → CORD\n1 step, par 1, 1 hint\n/);
+  const ladder = ['cold', 'cord', 'card', 'ward', 'warm'];
+  const text = L.shareText({ day: 3, start: 'cold', target: 'warm', par: 4 }, ladder);
+  assert.equal(text, 'Slugle 3 · 4 steps · par 4\nCOLD → WARM\n⬜⬜🟩⬜\n⬜🟩⬜⬜\n🟩⬜⬜⬜\n⬜⬜⬜🟩');
+  // Dark: the blank square is black. A step a hint found is yellow.
+  assert.equal(L.shareText({ day: 3, start: 'cold', target: 'warm', par: 4 }, ladder, 2, [2], '⬛'), 'Slugle 3 · 4 steps · par 4 · 2 hints\nCOLD → WARM\n⬛⬛🟩⬛\n⬛🟨⬛⬛\n🟩⬛⬛⬛\n⬛⬛⬛🟩');
+  assert.match(L.shareText({ start: 'cold', target: 'cord', par: 1 }, ['cold', 'cord'], 1), /^Slugle practice · 1 step · par 1 · 1 hint\nCOLD → CORD\n⬜⬜🟩⬜$/);
+  // A long climb goes two steps to a line, no wider than eight squares.
+  const long = ['cold', 'cord', 'card', 'ward', 'warm', 'worm', 'word', 'wood', 'good', 'gold', 'bold', 'bolt'];
+  const rows = L.shareText({ start: 'cold', target: 'bolt', par: 8 }, long).split('\n').slice(2);
+  assert.equal(rows.length, 6);
+  assert.ok(rows.every(r => [...r.replace(/ /g, '')].length <= 8));
+  assert.equal(L.cardText(4, ladder), 'Slugle 4 · par 4 🟩🟩🟩🟩');
+  assert.equal(L.cardText(3, ladder, 1), 'Slugle 4 · par 3 · 1 hint 🟩🟩🟩🟨');
+  assert.equal(L.cardText(4, ladder, 2, [2]), 'Slugle 4 · par 4 · 2 hints 🟩🟨🟩🟩');
 });

@@ -134,7 +134,9 @@
     { id: 'splice', name: 'Splice', line: 'Link words into a tree of phrases', icon: TREE },
   ];
   const inApp = location.hostname === 'appassets.androidplatform.net';
-  const SITE = inApp ? 'https://dailies.matisseduffield.workers.dev' : location.origin;
+  // Where shared results link: short, as chat apps make a link of it. The app and
+  // the old addresses send people to the new one.
+  const SITE = inApp || /\.workers\.dev$/.test(location.hostname) ? 'dailies.teloone.au' : location.host;
 
   const $ = id => document.getElementById(id);
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
@@ -143,6 +145,7 @@
     set(k, v) { try { localStorage.setItem('hub.' + k, JSON.stringify(v)); } catch {} },
   };
   const dateFormat = new Intl.DateTimeFormat(navigator.language || 'en', { weekday: 'long', day: 'numeric', month: 'long' });
+  const shortDate = new Intl.DateTimeFormat(navigator.language || 'en', { weekday: 'short', day: 'numeric', month: 'short' });
 
   let shownDay = '';
   function render() {
@@ -167,14 +170,18 @@
     $('progress').textContent = done === GAMES.length ? 'All done. See you tomorrow.' : `${done} of ${GAMES.length} played today`;
     $('shareAll').hidden = !done;
   }
-  // Today's results in one message, the games played so far.
+  // Today's results in one message: a line for each game played so far, as the
+  // game wrote it (an older result without one gives its words), with the blank
+  // square following the phone's theme.
   function shareAll() {
     // The page may have sat open past midnight: share the day it is now.
     render();
     const day = Clock.now().toDateString();
-    const lines = GAMES.map(g => [g, store.get(g.id)]).filter(([, r]) => r && r.date === day).map(([g, r]) => `${g.name}: ${r.text}`);
+    const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+    const lines = GAMES.map(g => [g, store.get(g.id)]).filter(([, r]) => r && r.date === day)
+      .map(([g, r]) => (typeof r.card === 'string' && r.card ? (dark ? r.card.replace(/⬜/g, '⬛') : r.card) : `${g.name} · ${r.text}`));
     if (!lines.length) return;
-    const text = [`Dailies, ${dateFormat.format(Clock.now())}`, ...lines, SITE].join('\n');
+    const text = [`Dailies · ${shortDate.format(Clock.now()).replace(/,/g, '')} · ${lines.length} of ${GAMES.length}`, ...lines, SITE].join('\n');
     if (window.ladderApp) return toApp({ type: 'share', title: 'Dailies', text });
     if (navigator.share) return navigator.share({ text }).catch(() => {});
     navigator.clipboard.writeText(text).then(() => {

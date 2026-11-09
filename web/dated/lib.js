@@ -161,15 +161,24 @@
 
   const livesText = n => (n === 1 ? '1 life left' : `${n} lives left`);
 
-  // Each card as a right or wrong mark, in the order dealt. No events, no years.
+  // Sharing: a square for each card in the order dealt, green placed right and
+  // red wrong, rows of five past eight. No events, no years.
   function shareText(day, state) {
     const head = day ? `Dated ${day}` : 'Dated practice';
     const tail = state.won ? livesText(state.lives) : 'Out of lives';
-    const marks = state.results.map(r => (r ? '■' : '□')).join('');
-    return `${head} · ${state.placed} of ${state.total} placed, ${tail}\n${marks}`;
+    const marks = state.results.map(r => (r ? '🟩' : '🟥'));
+    const rows = [];
+    const per = marks.length > 8 ? 5 : 8;
+    for (let i = 0; i < marks.length; i += per) rows.push(marks.slice(i, i + per).join(''));
+    return [`${head} · ${state.placed} of ${state.total} · ${tail}`, ...rows].join('\n');
   }
 
-  const lib = { LIVES, PRACTICE, rng, shuffled, dayNumber, weekdayOf, names, clash, unpack, pack, daily, practice, rightSlot, replay, finalLine, cleanMoves, streak, bestStreak, livesText, shareText };
+  // A line for the home screen's Share today.
+  function cardText(state) {
+    return `Dated ${state.placed} of ${state.total} ${state.results.map(r => (r ? '🟩' : '🟥')).join('')}`;
+  }
+
+  const lib = { LIVES, PRACTICE, rng, shuffled, dayNumber, weekdayOf, names, clash, unpack, pack, daily, practice, rightSlot, replay, finalLine, cleanMoves, streak, bestStreak, livesText, shareText, cardText };
   if (typeof module === 'object' && module.exports) module.exports = lib;
   else root.DatedLib = lib;
 })(this);

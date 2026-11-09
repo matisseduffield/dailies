@@ -227,7 +227,7 @@
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="map.js?v=1"></script>
 <script src="days.js?v=1"></script>
-<script src="lib.js?v=2"></script>
+<script src="lib.js?v=3"></script>
 <script src="../clock.js?v=4"></script>
 <script src="../pwa.js"></script>
 <script src="../next.js?v=9"></script>
@@ -236,8 +236,9 @@
   const L = window.OverlandLib, D = window.OverlandDays, M = window.OverlandMap;
   const $ = id => document.getElementById(id);
   const locale = navigator.language || 'en';
-  // Where the game lives on the web; shared results link here.
-  const SITE = `${location.hostname === 'appassets.androidplatform.net' ? 'https://dailies.matisseduffield.workers.dev' : location.origin}/overland/index.html`;
+  // Where the game lives on the web; shared results link here, short, as chat
+  // apps make a link of it. The app and the old addresses send people to the new one.
+  const SITE = `${/^appassets\.androidplatform\.net$|\.workers\.dev$/.test(location.hostname) ? 'dailies.teloone.au' : location.host}/overland`;
   const SVG = 'http://www.w3.org/2000/svg';
   const nameOf = code => M.countries[code].name;
 
@@ -669,7 +670,7 @@
     if (!rec || !rec.done) return;
     const daily = L.daily(today, D, M);
     const text = L.scoreText(daily, L.replay(M, daily, rec.guesses));
-    try { localStorage.setItem('hub.overland', JSON.stringify({ date: Clock.now().toDateString(), text })); } catch {}
+    try { localStorage.setItem('hub.overland', JSON.stringify({ date: Clock.now().toDateString(), text, card: L.cardText(M, daily, rec.guesses) })); } catch {}
   }
 
   function share() {
