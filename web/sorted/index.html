@@ -565,9 +565,14 @@
   function haptic(kind = 'tap') { toApp({ type: 'haptic', kind }); }
 
   // ---- boot ----
-  load();
-  report();
-  render();
+  // A save that can't be opened (damaged, or from a build long gone) would leave
+  // the page blank every time: the game it was on is dropped, and it's tried once more.
+  const open = () => { load(); report(); render(); };
+  try { open(); } catch {
+    delete state.days[today];
+    store.set('state', state);
+    open();
+  }
   tellBack();
   if (document.fonts) document.fonts.ready.then(fitWords);
   // First visit: how to play, once.

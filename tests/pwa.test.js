@@ -113,7 +113,8 @@ test('the service worker answers for the app itself', () => {
 });
 
 // sw.js answering a page, with the network and the kept copy given (its text, and
-// the address it was fetched at), and the waiting done on a mock clock. `ask`
+// the address it was fetched at; the network can be a function, for an answer
+// apiece), and the waiting done on a mock clock. `ask`
 // sends it another request, from a page (clientId) or opening one (resultingClientId).
 async function swPage(t, { network, copy, copyUrl = '' }) {
   t.mock.timers.enable({ apis: ['setTimeout', 'Date'] });
@@ -122,7 +123,7 @@ async function swPage(t, { network, copy, copyUrl = '' }) {
     open: async () => ({ put: async (key, res) => { put.push([key, await res.text()]); } }),
     match: async () => (copy == null ? undefined : Object.defineProperty(new Response(copy), 'url', { value: copyUrl })),
   };
-  const scope = { addEventListener: (type, fn) => { on[type] = fn; }, location: new URL('https://dailies.teloone.au/sw.js'), URL, Response, console, Date, setTimeout: (fn, ms) => setTimeout(fn, ms), fetch: () => network, caches };
+  const scope = { addEventListener: (type, fn) => { on[type] = fn; }, location: new URL('https://dailies.teloone.au/sw.js'), URL, Response, console, Date, setTimeout: (fn, ms) => setTimeout(fn, ms), fetch: () => (typeof network === 'function' ? network() : network), caches };
   vm.runInNewContext(read('sw.js').toString(), scope);
   const waits = [];
   const ask = (url, mode, ids = {}) => {
@@ -178,6 +179,27 @@ test('with no network at all, the kept copy is used whatever its version', async
   const file = sw.ask('https://dailies.teloone.au/next.js?v=10', 'no-cors');
   await sw.tick(0);
   assert.equal(file.text, 'old');
+});
+
+test('a page answered with an error opens from its copy, which the error does not replace', async t => {
+  const sw = await swPage(t, { network: Promise.resolve(new Response('Unavailable', { status: 503 })), copy: 'kept' });
+  await sw.tick(0);
+  assert.equal(sw.answer.text, 'kept');
+  assert.deepEqual(sw.put, []);
+});
+
+test('a file answered with an error gives way to its kept copy, of the same version only', async t => {
+  const sw = await swPage(t, { network: async () => new Response('Unavailable', { status: 503 }), copy: 'old', copyUrl: 'https://dailies.teloone.au/next.js?v=9' });
+  const same = sw.ask('https://dailies.teloone.au/next.js?v=9', 'no-cors');
+  const newer = sw.ask('https://dailies.teloone.au/next.js?v=10', 'no-cors');
+  await sw.tick(0);
+  assert.deepEqual([same.text, newer.text], ['old', 'Unavailable']);
+});
+
+test('an error with no copy to stand in for it is passed on', async t => {
+  const sw = await swPage(t, { network: Promise.resolve(new Response('Not found', { status: 404 })), copy: null });
+  await sw.tick(0);
+  assert.equal(sw.answer.text, 'Not found');
 });
 
 test('a page that answers in time is the fresh one', async t => {

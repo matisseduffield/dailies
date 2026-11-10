@@ -281,7 +281,7 @@
   // mode: which one is on screen.
   const saved = store.get('state') || {};
   // A practice ladder from before they all ended on the goal is dropped.
-  if (saved.practice && saved.practice.puzzle.target !== D.goal) saved.practice = null;
+  if (saved.practice && saved.practice.puzzle?.target !== D.goal) saved.practice = null;
   const state = {
     days: saved.days && typeof saved.days === 'object' ? saved.days : {},
     practice: saved.practice || null,
@@ -932,9 +932,14 @@
   // Back on a new day: open on today's ladder, not yesterday's practice.
   if (store.get('lastDay') !== today) { store.set('lastDay', today); state.mode = 'daily'; }
   showHard();
-  report();
-  load();
-  render();
+  // A save that can't be opened (damaged, or from a build long gone) would leave
+  // the page blank every time: the game it was on is dropped, and it's tried once more.
+  const open = () => { report(); load(); render(); };
+  try { open(); } catch {
+    if (state.mode === 'practice') { state.practice = null; state.mode = 'daily'; } else delete state.days[today];
+    store.set('state', state);
+    open();
+  }
   // First visit: how to play, once.
   if (!store.get('seenHelp')) { store.set('seenHelp', true); openSheet('helpSheet'); }
 })();

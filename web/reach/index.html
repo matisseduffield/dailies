@@ -202,7 +202,7 @@
 
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="days.js?v=2"></script>
-<script src="lib.js?v=3"></script>
+<script src="lib.js?v=4"></script>
 <script src="../clock.js?v=4"></script>
 <script src="../pwa.js"></script>
 <script src="../next.js?v=10"></script>
@@ -221,7 +221,8 @@
   };
 
   // ---- state ----
-  // days: { [day]: { moves: [[from, op, to]...], done, won, gaveUp } };
+  // days: { [day]: { moves: [[from, op, to]...], done, won, gaveUp, undone } };
+  // undone: moves taken back with Undo and Restart, absent until there's one;
   // practice: the same plus the day it was dealt from; mode: what's on screen.
   // dealt: which build of the puzzles a practice game came from. Moves only
   // make sense against the numbers they were played on.
@@ -256,6 +257,8 @@
     picked = null; op = null; best = !!play.gaveUp;
   }
   const now = () => L.replay(puzzle.numbers, play.moves);
+  // Moves taken back in this game; a save from before they were counted has none.
+  const back = () => (Number.isInteger(play.undone) && play.undone > 0 ? play.undone : 0);
 
   // ---- toast ----
   let toastTimer = 0;
@@ -346,7 +349,7 @@
     const n = play.moves.length, par = puzzle.par, over = n - par, daily = state.mode === 'daily';
     $('resTitle').textContent = best ? `The ${par}-move way` : `Solved in ${n}`;
     const tag = $('resTag');
-    tag.textContent = play.gaveUp ? 'Gave up' : best ? `Par ${par}` : over ? `${over} over par` : 'On par';
+    tag.textContent = play.gaveUp ? 'Gave up' : best ? `Par ${par}` : `${over ? `${over} over par` : 'On par'}${back() ? ` · ${back()} taken back` : ''}`;
     tag.classList.toggle('good', !play.gaveUp && (best || !over));
     tag.classList.toggle('bad', !!play.gaveUp);
     const note = $('resNote');
@@ -500,6 +503,7 @@
     if (!play.moves.length) return;
     haptic();
     play.moves.pop();
+    play.undone = back() + 1;
     picked = null; op = null;
     say('');
     save(); render();
@@ -507,6 +511,7 @@
   function restart() {
     if (!play.moves.length) return;
     haptic();
+    play.undone = back() + play.moves.length;
     play.moves = [];
     picked = null; op = null;
     say('');
@@ -559,7 +564,7 @@
   }
 
   function share() {
-    const text = `${L.shareText(state.mode === 'daily' ? today : 0, now().steps, puzzle.par, !!play.gaveUp)}\n${SITE}`;
+    const text = `${L.shareText(state.mode === 'daily' ? today : 0, now().steps, puzzle.par, !!play.gaveUp, back())}\n${SITE}`;
     if (app) return toApp({ type: 'share', title: 'Reach', text });
     if (navigator.share) return navigator.share({ text }).catch(() => {});
     navigator.clipboard.writeText(text).then(() => say('Copied to share'), () => {});
@@ -654,9 +659,14 @@
   // ---- boot ----
   // Back on a new day: open on today's puzzle, not yesterday's practice.
   if (store.get('lastDay') !== today) { store.set('lastDay', today); state.mode = 'daily'; }
-  report();
-  load();
-  render();
+  // A save that can't be opened (damaged, or from a build long gone) would leave
+  // the page blank every time: the game it was on is dropped, and it's tried once more.
+  const open = () => { report(); load(); render(); };
+  try { open(); } catch {
+    if (state.mode === 'practice') { state.practice = null; state.mode = 'daily'; } else delete state.days[today];
+    store.set('state', state);
+    open();
+  }
   // First visit: how to play, once.
   if (!store.get('seenHelp')) { store.set('seenHelp', true); openSheet('helpSheet'); }
 })();

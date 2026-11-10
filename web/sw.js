@@ -1,6 +1,6 @@
 // Lets the website open with no signal. Pages and files come from the network
 // first, so a release shows straight away; the copies here are only for when that
-// fails, or for a file that hasn't come in WAIT ms. /now and /app pass straight
+// fails, answers with an error, or for a file that hasn't come in WAIT ms. /now and /app pass straight
 // through. Registered by pwa.js, never in the Android app.
 const CACHE = 'dailies';
 const at = file => new URL(file, location).href;
@@ -69,12 +69,14 @@ addEventListener('fetch', e => {
   e.respondWith(new Promise(resolve => {
     let sent = false;
     const send = res => { if (!sent) { sent = true; resolve(res); } };
-    network.then(send, () => kept().then(send));
     const fromCopy = () => caches.match(key).then(hit => {
       if (!hit || sent || (url.search && new URL(hit.url || location).search !== url.search)) return;
       if (navigate) stale.add(e.resultingClientId);
       send(hit);
     });
+    // An answer that isn't the file (the server in trouble) is no better than
+    // none: the copy is used on the same terms, and the answer only without one.
+    network.then(res => (res.ok ? send(res) : fromCopy().catch(() => {}).then(() => send(res))), () => kept().then(send));
     if (!navigate && stale.has(e.clientId)) fromCopy(); else setTimeout(fromCopy, WAIT);
   }));
 });

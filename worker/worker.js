@@ -48,7 +48,9 @@ export default {
     // version goes upstream too, or an old edge copy could be kept under it.
     const version = /^\?v=\d+$/.test(url.search) ? url.search : '';
     const res = await fetch(WEB + file + version, { cf: { cacheTtl: 300, cacheEverything: true } });
-    if (!res.ok) return new Response('Not found', { status: 404, headers: HEADERS });
+    if (res.status === 404) return new Response('Not found', { status: 404, headers: HEADERS });
+    // Trouble upstream isn't a missing file: said so, and not kept, so the page's own copy is used.
+    if (!res.ok) return new Response('Unavailable', { status: 503, headers: { 'Cache-Control': 'no-store', ...HEADERS } });
     if (file.endsWith('.html')) {
       const html = (await res.text()).replace('</head>', `<script>var serverClock=${reading(request)}</script></head>`);
       return new Response(html, { headers: { 'Content-Type': TYPES.html, 'Cache-Control': 'no-cache', ...HEADERS } });

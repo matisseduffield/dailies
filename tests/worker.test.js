@@ -45,6 +45,19 @@ test('a game with its slash is served, not sent round again', async t => {
   assert.strictEqual(res.headers.get('Location'), null);
 });
 
+test('a file that is not there is a 404, and trouble upstream a 503 nobody keeps', async t => {
+  const worker = await load();
+  let status = 404;
+  t.mock.method(globalThis, 'fetch', async () => new Response('x', { status }));
+  assert.strictEqual((await worker.fetch(get('/reach/nothing.js'))).status, 404);
+  for (status of [429, 500, 503]) {
+    const res = await worker.fetch(get('/reach/'));
+    assert.strictEqual(res.status, 503);
+    assert.strictEqual(res.headers.get('Cache-Control'), 'no-store');
+    assert.strictEqual(res.headers.get('X-Content-Type-Options'), 'nosniff');
+  }
+});
+
 test('other files pass through untouched', async t => {
   const worker = await load();
   t.mock.method(globalThis, 'fetch', async () => new Response('let a;'));

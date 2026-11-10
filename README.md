@@ -228,7 +228,7 @@ The website installs from Safari with Share, then Add to Home Screen: `web/manif
 launcher icon), the Apple tags, and `web/pwa.js`, which registers `web/sw.js` and shows a one-time
 hint in Safari on an iPhone. `pwa.js` does nothing on `appassets.androidplatform.net`, so neither
 runs in the Android app. `sw.js` is network-first with a cached copy for offline opening, and only
-touches the files it names. A file that hasn't come in 3 seconds is answered from its copy (the
+touches the files it names. A file that hasn't come in 3 seconds, or comes back as an error, is answered from its copy (the
 network's answer still refreshes it), so a connection that answers nothing doesn't leave a blank page,
 but only a copy of the same `?v=`, so an old file never meets a new page; a real network failure still
 takes whatever copy there is. A page that opened from its copy has its own files from theirs without

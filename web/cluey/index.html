@@ -290,7 +290,8 @@
     // The day can go back (a flight west): a finished day trimmed for the stats comes back whole.
     if (rec && rec.done && typeof rec.fill !== 'string') {
       const first = puzzle.entries[0];
-      Object.assign(rec, { fill: puzzle.answer, marks: L.blank(puzzle), cell: first.cells[0], across: first.across, missed: '' });
+      const marked = typeof rec.marks === 'string' && rec.marks.replace(/[^#]/g, ' ') === L.blank(puzzle);
+      Object.assign(rec, { fill: puzzle.answer, marks: marked ? rec.marks : L.blank(puzzle), cell: first.cells[0], across: first.across, missed: '' });
     } else if (!fits(rec)) state.days[today] = fresh();
     play = state.days[today];
     buildGrid();
@@ -307,11 +308,12 @@
   }
 
   // ---- the clock ----
-  // It only runs while the game is on screen with the grid in view. Steps come
+  // It only runs while the game is on screen, and waits for How to play, which
+  // opens itself the first time; the stats don't stop it. Steps come
   // from performance.now, so moving the phone's clock can't touch the time, and
   // a long one means the page was asleep, so it doesn't count.
   let mark = null;
-  const covered = () => $('helpSheet').open || $('statsSheet').open;
+  const covered = () => $('helpSheet').open;
   function tick() {
     const at = performance.now();
     if (mark !== null && !play.done && !document.hidden && !covered()) play.ms += Math.min(at - mark, 3000);
@@ -830,11 +832,13 @@
   function haptic(kind = 'tap') { toApp({ type: 'haptic', kind }); }
 
   // ---- boot ----
-  // Days gone by only need what the stats read.
+  // Days gone by only need what the stats read, and the marks a finished grid
+  // shows if its day comes back. A game in hand on a later day (the day went
+  // back under it) is left for that day.
   for (const [d, rec] of Object.entries(state.days)) {
     if (Number(d) === today) continue;
-    if (!rec || !rec.done) { delete state.days[d]; continue; }
-    state.days[d] = { ms: rec.ms, checks: rec.checks, reveals: rec.reveals, misses: rec.misses, done: true, won: !!rec.won, gaveUp: !!rec.gaveUp };
+    if (!rec || !rec.done) { if (!rec || Number(d) < today) delete state.days[d]; continue; }
+    state.days[d] = { ms: rec.ms, checks: rec.checks, reveals: rec.reveals, misses: rec.misses, marks: rec.marks, done: true, won: !!rec.won, gaveUp: !!rec.gaveUp };
   }
   load();
   report();

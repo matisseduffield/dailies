@@ -128,10 +128,11 @@
   // Sharing: the operators used, in order, and never the numbers.
   const OP_TILE = { '+': '➕', '−': '➖', '×': '✖️', '÷': '➗' };
   const movesText = n => `${n} ${n === 1 ? 'move' : 'moves'}`;
-  function shareText(day, steps, par, gaveUp = false) {
+  // back: how many moves were taken back on the way (Undo and Restart), said if any.
+  function shareText(day, steps, par, gaveUp = false, back = 0) {
     const head = day ? `Reach ${day}` : 'Reach practice';
     if (gaveUp) return `${head} · Gave up · par ${par}`;
-    return `${head} · ${movesText(steps.length)} · par ${par}\n${steps.map(s => OP_TILE[sign(s.op)]).join('')}`;
+    return `${head} · ${movesText(steps.length)} · par ${par}${back > 0 ? ` · ${back} taken back` : ''}\n${steps.map(s => OP_TILE[sign(s.op)]).join('')}`;
   }
 
   // A line for the home screen's Share today.
