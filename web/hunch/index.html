@@ -18,13 +18,9 @@
 <link rel="preload" href="../fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../shared.css?v=1">
 <style>
-/* Green is in place, yellow is elsewhere in the word, grey isn't in it. The
-   yellow is the slug's. */
-:root { --hit: #1D7548; --on-hit: #F7F8F4; --near: #F4C52E; --on-near: #14211C; --miss: #6C7670; --on-miss: #F7F8F4; }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --hit: #3E9E6C; --on-hit: #0E1412; --miss: #3B4742; --on-miss: #E4EAE5; }
-}
-:root[data-theme="dark"] { --hit: #3E9E6C; --on-hit: #0E1412; --miss: #3B4742; --on-miss: #E4EAE5; }
+/* Filled is in place, ringed is elsewhere in the word, faded isn't in it:
+   told apart by shape, all in the one blue, which follows the theme. */
+:root { --hit: var(--accent); --on-hit: var(--on-ink); }
 
 /* The guesses: a row for each one so far and one for the next, growing down
    from the top. */
@@ -42,11 +38,11 @@
 .row.entry .tile { background: var(--key); }
 .row.entry .tile:not(:empty) { background: var(--surface); }
 .tile.hit { background: var(--hit); color: var(--on-hit); }
-.tile.near { background: var(--near); color: var(--on-near); }
-.tile.miss { background: var(--miss); color: var(--on-miss); }
+.tile.near { box-shadow: inset 0 0 0 3px var(--hit); }
+.tile.miss { background: none; box-shadow: inset 0 0 0 1.5px var(--line); color: var(--muted); }
 /* A new guess shows its marks one letter at a time */
 .row.new .tile { animation: land .24s ease-out both; animation-delay: calc(var(--i) * 90ms); }
-@keyframes land { from { background: var(--surface); color: var(--ink); transform: scale(.92); } }
+@keyframes land { from { background: var(--surface); color: var(--ink); box-shadow: none; transform: scale(.92); } }
 .row.bad .tile { color: var(--neg); }
 .row.bad { animation: shake .32s; }
 @keyframes shake { 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
@@ -56,13 +52,14 @@
 .count b { font-weight: 600; color: var(--ink); }
 
 .key.hit { background: var(--hit); color: var(--on-hit); }
-.key.near { background: var(--near); color: var(--on-near); }
+.key.near { box-shadow: inset 0 0 0 2px var(--hit); }
 /* A letter ruled out loses its key, so what's left to try stands out */
 .key.miss { background: none; color: var(--line-strong); }
 
 .example { display: grid; justify-items: center; padding: 18px 0 16px; background: var(--bg); border-radius: 10px; }
 .example .row { --tile: 34px; --gap: 5px; }
 .example .tile { border-radius: 5px; }
+.example .tile.near { box-shadow: inset 0 0 0 2px var(--hit); }
 .example-cap { margin-top: 10px; font-size: .8rem; color: var(--muted); text-align: center; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -77,7 +74,7 @@
     <div class="top">
       <a class="brand" href="../index.html" aria-label="All games">
         <svg width="10" height="16" viewBox="0 0 10 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2 2 8l6 6"/></svg>
-        <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#232C66"/><path fill="#FFCF33" d="M32 6.5a13.5 13.5 0 0 0-8.1 24.3c2 1.6 2.7 3.3 2.7 5.2h10.8c0-1.9.7-3.6 2.7-5.2A13.5 13.5 0 0 0 32 6.5Z"/><rect x="27.2" y="33.6" width="9.6" height="4" rx="2" fill="#FFFFFF"/><rect x="7" y="43" width="9.6" height="9.6" rx="2" fill="#7C84A8"/><rect x="17.2" y="43" width="9.6" height="9.6" rx="2" fill="#FFCF33"/><rect x="27.4" y="43" width="9.6" height="9.6" rx="2" fill="#7C84A8"/><rect x="37.599999999999994" y="43" width="9.6" height="9.6" rx="2" fill="#2FA36B"/><rect x="47.8" y="43" width="9.6" height="9.6" rx="2" fill="#2FA36B"/></svg>
+        <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#232C66"/><path fill="#FFCF33" d="M32 6.5a13.5 13.5 0 0 0-8.1 24.3c2 1.6 2.7 3.3 2.7 5.2h10.8c0-1.9.7-3.6 2.7-5.2A13.5 13.5 0 0 0 32 6.5Z"/><rect x="27.2" y="33.6" width="9.6" height="4" rx="2" fill="#FFFFFF"/><rect x="7" y="43" width="9.6" height="9.6" rx="2" fill="#7C84A8"/><rect x="18.4" y="44.2" width="7.2" height="7.2" rx="1" fill="none" stroke="#85A2FF" stroke-width="2.4"/><rect x="27.4" y="43" width="9.6" height="9.6" rx="2" fill="#7C84A8"/><rect x="37.6" y="43" width="9.6" height="9.6" rx="2" fill="#85A2FF"/><rect x="47.8" y="43" width="9.6" height="9.6" rx="2" fill="#85A2FF"/></svg>
         <h1 class="mark">Hunch</h1>
       </a>
       <div class="top-right">
@@ -133,15 +130,15 @@
     </button>
   </div>
   <div class="sheet-body">
-    <p>Find the hidden five-letter word in six tries: type a real word and press <b>Enter</b>, and each letter tells you something.</p>
+    <p>A five-letter word is hidden, and you have six tries at it. Enter any real word and its letters are marked.</p>
     <div class="example">
-      <div class="row" role="img" aria-label="Example: CRANE when the word is HEART"><span class="tile miss">c</span><span class="tile near">r</span><span class="tile hit">a</span><span class="tile miss">n</span><span class="tile near">e</span></div>
-      <p class="example-cap">CRANE, when the word is HEART</p>
+      <div class="row" role="img" aria-label="Example: TIGER when the word is RIVET. T elsewhere, I in place, G not in the word, E in place, R elsewhere"><span class="tile near">t</span><span class="tile hit">i</span><span class="tile miss">g</span><span class="tile hit">e</span><span class="tile near">r</span></div>
+      <p class="example-cap">TIGER, when the word is RIVET</p>
     </div>
     <div class="rules">
-      <div class="rule"><span class="n">1</span><p><b>Green</b> is in the word, in the right spot.</p></div>
-      <div class="rule"><span class="n">2</span><p><b>Yellow</b> is in the word, but somewhere else.</p></div>
-      <div class="rule"><span class="n">3</span><p><b>Grey</b> isn’t in the word.</p></div>
+      <div class="rule"><span class="n">1</span><p><b>Filled</b> letters are where they belong.</p></div>
+      <div class="rule"><span class="n">2</span><p><b>Ringed</b> letters are in the word, in another place.</p></div>
+      <div class="rule"><span class="n">3</span><p><b>Faded</b> letters aren’t in it at all.</p></div>
     </div>
     <button class="mode-row" id="hardBtn" type="button" role="switch" aria-checked="false">
       <span><b>Hard mode</b><small id="hardNote"></small></span>
@@ -162,7 +159,7 @@
 
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="words.js?v=2"></script>
-<script src="lib.js?v=5"></script>
+<script src="lib.js?v=6"></script>
 <script src="../clock.js?v=4"></script>
 <script src="../pwa.js"></script>
 <script src="../next.js?v=10"></script>
@@ -487,10 +484,8 @@
     try { localStorage.setItem('hub.hunch', JSON.stringify({ date: Clock.now().toDateString(), text, card, lost: !rec.won })); } catch {}
   }
 
-  // The blank square in a share follows the phone's theme, as the big word games do.
-  const blank = () => (matchMedia('(prefers-color-scheme: dark)').matches ? '⬛' : '⬜');
   function share() {
-    const text = `${L.shareText(state.mode === 'daily' ? today : 0, play.guesses, answer, play.hard, blank())}\n${SITE}`;
+    const text = `${L.shareText(state.mode === 'daily' ? today : 0, play.guesses, answer, play.hard)}\n${SITE}`;
     if (app) return toApp({ type: 'share', title: 'Hunch', text });
     if (navigator.share) return navigator.share({ text }).catch(() => {});
     navigator.clipboard.writeText(text).then(() => say('Copied to share'), () => {});

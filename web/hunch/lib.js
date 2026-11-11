@@ -95,13 +95,10 @@
     return best;
   }
 
-  // Sharing: a row of squares for each guess, in the game's own colours, with the
-  // blank one light or dark to suit the phone's theme. No letters.
-  function shareText(day, guesses, answer, hard = false, blank = '⬜') {
-    const tile = { hit: '🟩', near: '🟨', miss: blank };
+  // Sharing: one plain line, the day and how many tries it took. No letters.
+  function shareText(day, guesses, answer, hard = false) {
     const won = guesses[guesses.length - 1] === answer;
-    const rows = guesses.map(g => marks(g, answer).map(m => tile[m]).join(''));
-    return [`${day ? `Hunch ${day}` : 'Hunch practice'} · ${won ? guesses.length : 'X'}/${TRIES}${hard ? ' · Hard' : ''}`, ...rows].join('\n');
+    return `${day ? `Hunch ${day}` : 'Hunch practice'} · ${won ? guesses.length : 'X'}/${TRIES}${hard ? ' · Hard' : ''}`;
   }
 
   // A line for the home screen's Share today: a square a guess, green for the one

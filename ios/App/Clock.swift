@@ -16,8 +16,10 @@ enum Clock {
     private static var checking = false
     private static var kept: [String: Double]? = load()
 
+    // Kept out of the phone's backup: time since start means nothing on another
+    // phone, where a restored reading could run ahead.
     private static var file: URL {
-        let folder = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+        let folder = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
         try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
         return folder.appendingPathComponent("clock.json")
     }

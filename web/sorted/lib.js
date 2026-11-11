@@ -92,8 +92,8 @@
   const mistakeText = n => (n ? `${n} ${n === 1 ? 'mistake' : 'mistakes'}` : 'No mistakes');
 
   // Sharing: a row for each guess, each word in its group's colour, easiest to
-  // hardest yellow, green, blue, purple, as on screen. No words.
-  const COLOURS = ['🟨', '🟩', '🟦', '🟪'];
+  // hardest blue, green, yellow, orange, as on screen. No words.
+  const COLOURS = ['🟦', '🟩', '🟨', '🟧'];
   const resultText = (won, mistakes, solved, puzzle) => (won ? (mistakes ? mistakeText(mistakes) : 'Perfect') : `${solved.length} of ${puzzle.length} groups`);
   function shareText(day, guesses, puzzle) {
     const { won, solved, mistakes } = progress(guesses, puzzle);

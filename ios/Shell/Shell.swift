@@ -78,7 +78,7 @@ final class Shell: UIViewController, WKNavigationDelegate, WKUIDelegate, WKScrip
           window.\(config.bridge) = { postMessage: s => out.postMessage(String(s)), onmessage: null };
         })();
         """
-        for source in [Shell.restoreScript(), bridge, Shell.feel] + scripts where !source.isEmpty {
+        for source in [Shell.restore, bridge, Shell.feel] + scripts where !source.isEmpty {
             content.addUserScript(WKUserScript(source: source, injectionTime: .atDocumentStart, forMainFrameOnly: true))
         }
 
@@ -246,7 +246,8 @@ final class Shell: UIViewController, WKNavigationDelegate, WKUIDelegate, WKScrip
     // an answer from the app without waiting for a message back.
     func webView(_ webView: WKWebView, runJavaScriptTextInputPanelWithPrompt prompt: String, defaultText: String?, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping (String?) -> Void) {
         guard frame.isMainFrame, webView.url?.scheme == Shell.scheme, prompt.hasPrefix("shell:") else { return completionHandler(nil) }
-        completionHandler(answer(String(prompt.dropFirst(6))))
+        let what = String(prompt.dropFirst(6))
+        completionHandler(what == "storage" ? Shell.kept() : answer(what))
     }
 
     // MARK: Keeping what the pages store
@@ -260,10 +261,17 @@ final class Shell: UIViewController, WKNavigationDelegate, WKUIDelegate, WKScrip
         return folder.appendingPathComponent("storage.json")
     }
 
-    private static func restoreScript() -> String {
-        guard let saved = try? String(contentsOf: storageFile, encoding: .utf8), saved.hasPrefix("{"), saved.count > 2 else { return "" }
-        return "(() => { try { if (!localStorage.length) { const s = \(saved); for (const k in s) localStorage.setItem(k, s[k]); } } catch (e) {} })();"
+    // Asked for by a page that finds its storage empty, so it gets the copy as
+    // it is now and not as it was when the app opened.
+    private static let restore = "(() => { try { if (!localStorage.length) { const s = JSON.parse(prompt('shell:storage') || '{}'); for (const k in s) localStorage.setItem(k, s[k]); } } catch (e) {} })();"
+
+    private static func kept() -> String? {
+        guard let saved = try? String(contentsOf: storageFile, encoding: .utf8), saved.hasPrefix("{"), saved.count > 2 else { return nil }
+        return saved
     }
+
+    /// One of the app's own pages is up, or on its way.
+    var onAppPage: Bool { isViewLoaded && web.url?.scheme == Shell.scheme }
 
     func keepStorage() {
         guard isViewLoaded, web.url?.scheme == Shell.scheme else { return }
@@ -373,9 +381,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationC
         return scene
     }
 
-    // A reminder that comes due while the app is open still shows.
+    // A reminder that comes due while the app is open isn't shown: they're already here.
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        completionHandler([.banner, .list, .sound])
+        completionHandler([])
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {

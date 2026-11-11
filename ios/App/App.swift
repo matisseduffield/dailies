@@ -27,9 +27,11 @@ enum App {
 
     static func opened(link: URL) {}
 
-    /// A tapped reminder opens the hub.
+    /// A tapped reminder opens the hub, unless a page is already up: a game
+    /// under way stays as it is.
     static func opened(notification: [AnyHashable: Any]) {
-        Shell.current?.show(config.start)
+        guard let shell = Shell.current, !shell.onAppPage else { return }
+        shell.show(config.start)
     }
 }
 
@@ -85,6 +87,45 @@ enum Page {
       };
       addEventListener('pagehide', window.ladderRemind);
       document.addEventListener('visibilitychange', () => { if (document.hidden) window.ladderRemind(); });
+
+      // A swipe from the edge closes an open sheet, or leaves practice, before
+      // it leaves the game. A game says when it has something to go back from
+      // ({ type: 'back' }); while it does, the page holds a step in its history
+      // for the swipe to take, and window.ladderBack() does the going back.
+      let want = false, held = !!(history.state && history.state.held), busy = false;
+      const settle = () => {
+        if (busy || want === held) return;
+        if (want) { history.pushState({ held: true }, ''); held = true; return; }
+        busy = true;
+        history.back();
+      };
+      const app = window.ladderApp, post = app.postMessage;
+      app.postMessage = s => {
+        let m = null;
+        try { m = JSON.parse(s); } catch (e) {}
+        if (!m || m.type !== 'back') return post(s);
+        want = !!m.enabled;
+        settle();
+      };
+      addEventListener('popstate', e => {
+        held = !!(e.state && e.state.held);
+        if (busy) { busy = false; return settle(); }
+        if (!held && want) { want = false; if (window.ladderBack) window.ladderBack(); return; }
+        settle();
+      });
+
+      // The way out of a game goes back to the home screen it came from, so a
+      // swipe from the edge there doesn't lead into the game again.
+      document.addEventListener('click', e => {
+        const a = e.target.closest && e.target.closest('a.brand[href]');
+        if (!a) return;
+        e.preventDefault();
+        const steps = held ? 2 : 1;
+        if (history.length <= steps) return location.replace(a.href);
+        const late = setTimeout(() => location.replace(a.href), 700);
+        addEventListener('pagehide', () => clearTimeout(late), { once: true });
+        history.go(-steps);
+      });
     })();
     """#
 }

@@ -122,7 +122,8 @@
 @media (max-height: 640px) {
   .app { padding-top: 2px; padding-bottom: 6px; }
   .tools { min-height: 36px; }
-  .tool { height: 36px; }
+  .tool { position: relative; height: 36px; }
+  .tool::after { content: ""; position: absolute; inset: -4px 0; }
   .clue-bar { min-height: 50px; margin-bottom: 5px; }
   .say { font-size: .88rem; }
   .result { gap: 9px; padding: 11px 14px; }

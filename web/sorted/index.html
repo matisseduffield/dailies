@@ -18,9 +18,9 @@
 <link rel="preload" href="../fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../shared.css?v=1">
 <style>
-/* A group's colour says how hard it was: yellow, green, blue, then purple.
-   The yellow is the slug's. Ink reads on all four, in either theme. */
-:root { --l0: #F4C52E; --l1: #5DBB85; --l2: #7F9FF0; --l3: #B58CE3; --on-set: #14211C; --pick: #55625B; --on-pick: #F7F8F4; }
+/* A group's colour says how hard it was, cool to warm: blue, green, yellow,
+   then orange. The yellow is the slug's. Ink reads on all four, in either theme. */
+:root { --l0: #8DBDF0; --l1: #6CC7A4; --l2: #F4C52E; --l3: #F0936A; --on-set: #14211C; --pick: #55625B; --on-pick: #F7F8F4; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --pick: #AEB9B2; --on-pick: #0E1412; } }
 :root[data-theme="dark"] { --pick: #AEB9B2; --on-pick: #0E1412; }
 
@@ -166,7 +166,7 @@
     </div>
     <div class="rules">
       <div class="rule"><span class="n">1</span><p>A right group is set aside. A wrong one costs one of your four mistakes.</p></div>
-      <div class="rule"><span class="n">2</span><p><b>One away</b> means three of your four belong together.</p></div>
+      <div class="rule"><span class="n">2</span><p><b>Three of those go together</b> means one of your four is the odd one out.</p></div>
       <div class="rule"><span class="n">3</span><p>Plenty of words seem to fit two groups, but only one way works for all sixteen.</p></div>
     </div>
   </div>
@@ -184,7 +184,7 @@
 
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
 <script src="puzzles.js?v=6"></script>
-<script src="lib.js?v=3"></script>
+<script src="lib.js?v=4"></script>
 <script src="../clock.js?v=4"></script>
 <script src="../pwa.js"></script>
 <script src="../next.js?v=10"></script>
@@ -443,7 +443,7 @@
     if (!now.done) {
       haptic('tick');
       shake();
-      say(near ? 'One away' : '');
+      say(near ? 'Three of those go together' : '');
       // A plain miss only shakes: read it out.
       const left = L.MISTAKES - now.mistakes;
       if (!near) $('toast').textContent = `Not a group. ${left} ${left === 1 ? 'mistake' : 'mistakes'} left`;
