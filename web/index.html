@@ -110,6 +110,7 @@
   </main>
 
   <footer class="foot">
+    <p class="get-app" id="remind" hidden><span id="remindText">Reminder at 6 pm if you haven't played.</span> <button class="link" id="remindToggle" type="button">Turn on</button></p>
     <p class="get-app" id="getApp" hidden>On Android? <a class="link" href="/app">Get the app</a>, free and offline.</p>
     <nav class="legal" aria-label="Legal"><a href="https://teloone.au/apps/dailies/privacy/" rel="noreferrer">Privacy</a><a href="https://teloone.au/apps/dailies/terms/" rel="noreferrer">Terms</a></nav>
   </footer>
@@ -266,6 +267,15 @@
     app.onmessage = e => {
       let m;
       try { m = JSON.parse(e.data); } catch { return; }
+      if (m.type === 'info' && m.platform === 'ios') {
+        // Notifications switched off in Settings: the reminder is off too.
+        if (!m.notifications && store.get('remind')) store.set('remind', false);
+        showRemind();
+      }
+      if (m.type === 'notifications') {
+        if (m.allowed) store.set('remind', true);
+        showRemind(m.allowed ? '' : 'Notifications are off for Dailies in Settings.');
+      }
       if (m.type === 'info') {
         appVersion = m.version;
         selfUpdates = m.updates === true;
@@ -297,6 +307,20 @@
       toApp({ type: 'checkUpdate' });
     });
   }
+
+  // The 6 pm reminder, in the iPhone app: the app plans it (window.ladderRemind).
+  function showRemind(note) {
+    const on = !!store.get('remind');
+    $('remind').hidden = false;
+    $('remindText').textContent = note || (on ? "Reminder at 6 pm if you haven't played: on." : "Reminder at 6 pm if you haven't played.");
+    $('remindToggle').textContent = on ? 'Turn off' : 'Turn on';
+    if (window.ladderRemind) window.ladderRemind();
+  }
+  $('remindToggle').addEventListener('click', () => {
+    if (!store.get('remind')) return toApp({ type: 'askNotifications' });
+    store.set('remind', false);
+    showRemind();
+  });
 
   // ---- boot ----
   $('getApp').hidden = !!app || inApp || !/Android/.test(navigator.userAgent);
