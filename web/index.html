@@ -270,10 +270,12 @@
       if (m.type === 'info' && m.platform === 'ios') {
         // Notifications switched off in Settings: the reminder is off too.
         if (!m.notifications && store.get('remind')) store.set('remind', false);
+        if (m.notifications) remindBlocked = false;
         showRemind();
       }
       if (m.type === 'notifications') {
         if (m.allowed) store.set('remind', true);
+        remindBlocked = !m.allowed;
         showRemind(m.allowed ? '' : 'Notifications are off for Dailies in Settings.');
       }
       if (m.type === 'info') {
@@ -309,15 +311,17 @@
   }
 
   // The 6 pm reminder, in the iPhone app: the app plans it (window.ladderRemind).
+  // Notifications were refused: only the phone's Settings can turn them back on.
+  let remindBlocked = false;
   function showRemind(note) {
     const on = !!store.get('remind');
     $('remind').hidden = false;
     $('remindText').textContent = note || (on ? "Reminder at 6 pm if you haven't played: on." : "Reminder at 6 pm if you haven't played.");
-    $('remindToggle').textContent = on ? 'Turn off' : 'Turn on';
+    $('remindToggle').textContent = on ? 'Turn off' : remindBlocked ? 'Open Settings' : 'Turn on';
     if (window.ladderRemind) window.ladderRemind();
   }
   $('remindToggle').addEventListener('click', () => {
-    if (!store.get('remind')) return toApp({ type: 'askNotifications' });
+    if (!store.get('remind')) return toApp({ type: remindBlocked ? 'openSettings' : 'askNotifications' });
     store.set('remind', false);
     showRemind();
   });
@@ -326,6 +330,8 @@
   $('getApp').hidden = !!app || inApp || !/Android/.test(navigator.userAgent);
   render();
   toApp({ type: 'hello' });
+  // Back in front: notifications may have been switched in Settings meanwhile.
+  window.ladderAsk = () => toApp({ type: 'hello' });
 })();
 </script>
 </body>

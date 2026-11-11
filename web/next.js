@@ -18,6 +18,8 @@
       const result = JSON.parse(localStorage.getItem('hub.' + id));
       if (result && result.date === day) return;
       localStorage.setItem('hub.' + id, JSON.stringify({ date: day, started: true }));
+      // In the iPhone app: today's reminder is no longer wanted.
+      if (root.ladderRemind) root.ladderRemind();
     } catch {}
   };
 

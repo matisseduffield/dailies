@@ -12,7 +12,7 @@ enum App {
         background: UIColor(named: "Page") ?? .systemBackground
     )
 
-    static func launched() { Clock.check() }
+    static func launched() { Clock.check { Shell.current?.run(Page.retake) } }
 
     static func setUp(_ shell: Shell) {
         shell.scripts = [Page.script]
@@ -20,6 +20,7 @@ enum App {
         // Back in front: the day may have changed, or the phone's clock.
         shell.onActive = { [weak shell] in
             shell?.run(Page.retake)
+            shell?.run("window.ladderAsk && ladderAsk()")
             Clock.check { shell?.run(Page.retake) }
         }
     }
