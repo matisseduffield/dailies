@@ -47,8 +47,13 @@
 .get-app .link { font-size: .86rem; text-decoration: none; }
 .install-hint { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 6px 0 0; font-size: .84rem; line-height: 1.35; color: var(--muted); }
 .install-hint button { flex: none; width: 44px; height: 44px; margin: -10px -12px -10px 0; padding: 0; background: none; border: 0; font-size: 1.2rem; color: var(--muted); }
-.legal { display: flex; justify-content: center; gap: 48px; }
-.legal a { padding: 12px 8px; font-size: .84rem; color: var(--muted); text-decoration: none; }
+
+/* About: a short ruled list, with what a row holds at its right */
+.about { display: grid; }
+.about-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; padding: 0; background: none; border: 0; font-size: .95rem; text-align: left; color: inherit; text-decoration: none; }
+.about-row[hidden] { display: none; }
+.about-row:not([hidden]) ~ .about-row:not([hidden]) { border-top: 1px solid var(--line); }
+.about-row span + span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); }
 
 /* App update (Android app only) */
 .update { display: grid; gap: 14px; margin-top: 8px; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
@@ -75,7 +80,7 @@
         <h1 class="mark">Dailies</h1>
       </div>
       <div class="top-right">
-        <button class="version" id="version" type="button" title="Check for updates" hidden></button>
+        <button class="version" id="version" type="button">About</button>
       </div>
     </div>
   </header>
@@ -111,10 +116,28 @@
 
   <footer class="foot">
     <p class="get-app" id="remind" hidden><span id="remindText">Reminder at 6 pm if you haven't played.</span> <button class="link" id="remindToggle" type="button">Turn on</button></p>
-    <p class="get-app" id="getApp" hidden>On Android? <a class="link" href="/app">Get the app</a>, free and offline.</p>
-    <nav class="legal" aria-label="Legal"><a href="https://teloone.au/apps/dailies/privacy/" rel="noreferrer">Privacy</a><a href="https://teloone.au/apps/dailies/terms/" rel="noreferrer">Terms</a></nav>
   </footer>
 </div>
+
+<!-- About: the version, and the way to the policy, the terms and us -->
+<dialog class="sheet" id="aboutSheet" aria-labelledby="aboutTitle">
+  <div class="sheet-head">
+    <h2 id="aboutTitle" tabindex="-1" autofocus>Dailies</h2>
+    <button class="icon-btn" type="button" data-close aria-label="Close">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m4 4 10 10M14 4 4 14"/></svg>
+    </button>
+  </div>
+  <div class="sheet-body">
+    <div class="about">
+      <div class="about-row" id="aboutVerRow" hidden><span>Version</span><span id="aboutVer"></span></div>
+      <button class="about-row" id="aboutCheck" type="button" hidden><span>Check for updates</span><span id="aboutNote" aria-live="polite"></span></button>
+      <a class="about-row" href="https://teloone.au/apps/dailies/privacy/" rel="noreferrer">Privacy</a>
+      <a class="about-row" href="https://teloone.au/apps/dailies/terms/" rel="noreferrer">Terms</a>
+      <a class="about-row" href="mailto:support@teloone.au?subject=Dailies"><span>Contact</span><span>support@teloone.au</span></a>
+      <a class="about-row" id="getApp" href="/app" hidden>Get the Android app</a>
+    </div>
+  </div>
+</dialog>
 
 <script src="clock.js?v=4"></script>
 <script src="today.js?v=2"></script>
@@ -214,24 +237,29 @@
 
   // ---- Android app bridge (absent in a browser) ----
   const app = window.ladderApp || null;
+  const about = $('aboutSheet');
   function toApp(msg) {
     if (!app) return;
     try { app.postMessage(JSON.stringify(msg)); } catch {}
   }
   // selfUpdates is off until the app says otherwise: Play builds update through
-  // the store, so there the version is a plain label with nothing to tap.
+  // the store, so there About has the version and nothing to check.
   let appVersion = '', selfUpdates = false, updateReady = false, versionTimer = 0, updateVersion = '', updateSize = 0;
-  // Not now holds for the version it was said to while the app stays open; the
-  // link at the top right still opens the card.
+  // Not now holds for the version it was said to while the app stays open;
+  // Check for updates in About still opens the card.
   const later = {
     get() { try { return sessionStorage.getItem('updateLater') || ''; } catch { return ''; } },
     set(v) { try { sessionStorage.setItem('updateLater', v); } catch {} },
   };
-  function showVersion(text, st) {
+  // Top right says About, or that an update is waiting; the About sheet has the rest.
+  function showLabel() {
+    $('version').textContent = updateReady ? 'Update available' : 'About';
+    $('version').dataset.state = updateReady ? 'available' : '';
+    if (updateReady) showNote('Available');
+  }
+  function showNote(text) {
     clearTimeout(versionTimer);
-    $('version').hidden = false;
-    $('version').textContent = text;
-    $('version').dataset.state = st || '';
+    $('aboutNote').textContent = text;
   }
   function showUpdate(m) {
     const show = (id, on) => { $(id).hidden = !on; };
@@ -285,21 +313,17 @@
       if (m.type === 'info') {
         appVersion = m.version;
         selfUpdates = m.updates === true;
-        $('version').disabled = !selfUpdates;
-        if (!selfUpdates) $('version').removeAttribute('title');
-        const seen = store.get('seenVersion');
-        store.set('seenVersion', appVersion);
-        if (selfUpdates && !updateReady && seen && seen !== appVersion) {
-          showVersion(`Updated to v${appVersion}`, 'available');
-          versionTimer = setTimeout(() => showVersion(`v${appVersion}`), 4000);
-        } else if (!updateReady) showVersion(`v${appVersion}`);
+        $('aboutVer').textContent = appVersion || '';
+        $('aboutVerRow').hidden = !appVersion;
+        $('aboutCheck').hidden = !selfUpdates;
+        showLabel();
       } else if (m.type === 'updateStatus' && selfUpdates) {
-        if (m.state === 'available') { updateReady = true; return showVersion('Update available', 'available'); }
-        showVersion(m.state === 'latest' ? 'Up to date' : "Couldn't check");
-        versionTimer = setTimeout(() => showVersion(`v${appVersion}`), 2500);
+        if (m.state === 'available') { updateReady = true; return showLabel(); }
+        showNote(m.state === 'latest' ? 'Up to date' : "Couldn't check");
+        versionTimer = setTimeout(() => showNote(''), 4000);
       } else if (m.type === 'update' && selfUpdates) {
         const away = $('updateCard').hidden;
-        if (m.state === 'available') { updateReady = true; showVersion('Update available', 'available'); }
+        if (m.state === 'available') { updateReady = true; showLabel(); }
         showUpdate(m);
         // Put off: the card is filled in for the link, but stays out of the way.
         if (m.state === 'available' && away && m.version && m.version === later.get()) $('updateCard').hidden = true;
@@ -307,12 +331,20 @@
     };
     $('updateGo').addEventListener('click', () => { showUpdate({ state: 'downloading', progress: 0 }); toApp({ type: 'installUpdate' }); });
     $('updateLater').addEventListener('click', () => { $('updateCard').hidden = true; later.set(updateVersion); });
-    $('version').addEventListener('click', () => {
-      if (updateReady) { $('updateCard').hidden = false; return; }
-      showVersion('Checking…');
+    $('aboutCheck').addEventListener('click', () => {
+      if (updateReady) { about.close(); $('updateCard').hidden = false; scrollTo({ top: 0, behavior: 'smooth' }); return; }
+      showNote('Checking…');
       toApp({ type: 'checkUpdate' });
     });
   }
+
+  // ---- About ----
+  // Android Back closes the sheet, as it does a game's.
+  const tellBack = () => toApp({ type: 'back', enabled: about.open });
+  window.ladderBack = () => { if (!about.open) return false; about.close(); return true; };
+  $('version').addEventListener('click', () => { if (!about.open) about.showModal(); tellBack(); });
+  about.addEventListener('click', e => { if (e.target === about || e.target.closest('[data-close]')) about.close(); });
+  about.addEventListener('close', tellBack);
 
   // The 6 pm reminder, in the iPhone app: the app plans it (window.ladderRemind).
   // Notifications were refused: only the phone's Settings can turn them back on.
