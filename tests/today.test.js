@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert');
-const { todayText } = require('../web/today.js');
+const { todayText, dayKey, noteDay, lastDays, dayRun } = require('../web/today.js');
 
 const DAY = 'Mon Nov 09 2026';
 const opts = (extra = {}) => ({ day: DAY, date: 'Mon 9 Nov', total: 9, dark: false, site: 'dailies.teloone.au', ...extra });
@@ -71,4 +71,22 @@ test('the next game link still offers a game only begun', () => {
   const link = {};
   root.showNext(link, 'slugle');
   assert.equal(link.href, '../hunch/index.html');
+});
+
+test('the record of days keeps counts, the last two months, and the run', () => {
+  const key = dayKey(new Date(2026, 10, 13));
+  assert.equal(key, '2026-11-13');
+  let log = noteDay(null, '2026-11-11', 3);
+  log = noteDay(log, '2026-11-12', 9);
+  assert.deepEqual(noteDay(log, key, 0), { '2026-11-11': 3, '2026-11-12': 9 });
+  assert.equal(dayRun(log, key), 2, 'today not played yet keeps the run');
+  log = noteDay(log, key, 2);
+  log = noteDay(log, key, 1);
+  assert.equal(log[key], 2, 'a day only goes up');
+  assert.equal(dayRun(log, key), 3);
+  assert.deepEqual(lastDays(log, key, 4), [0, 3, 9, 2]);
+  assert.equal(dayRun({ '2026-11-10': 1 }, key), 0, 'a gap ends the run');
+  const old = noteDay({ '2026-09-01': 4, '2026-09-20': 5, junk: 1, '2026-12-01': 2 }, key, 1);
+  assert.deepEqual(Object.keys(old).sort(), ['2026-09-20', '2026-11-13']);
+  assert.deepEqual(lastDays(noteDay(null, '2026-03-01', 1), '2026-03-02', 3), [0, 1, 0], 'across a month end');
 });

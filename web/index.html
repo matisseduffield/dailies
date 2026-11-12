@@ -25,6 +25,13 @@
 .today-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 2px; }
 .today h2 { font-size: 1.6rem; font-weight: 600; letter-spacing: -.015em; line-height: 1.2; }
 .today p { min-width: 0; font-size: .92rem; color: var(--muted); }
+/* The last two weeks, a square a day, fuller the more of the day's games were finished; today is on the right */
+.days { display: flex; align-items: center; gap: 4px; margin-top: 12px; }
+.days i { flex: none; width: 14px; height: 14px; border-radius: 3px; border: 1px solid var(--line-strong); }
+.days i.some { border-color: transparent; background: color-mix(in srgb, var(--pos) calc(var(--n) * 8% + 20%), var(--surface)); }
+.days i.all { border-color: transparent; background: var(--pos); }
+.days i.now { outline: 1.5px solid var(--ink); outline-offset: 1.5px; }
+.days span { margin-left: auto; padding-left: 8px; font-size: .84rem; color: var(--muted); white-space: nowrap; }
 
 /* The games, one list: a row each, with a hairline between them that starts after the icon */
 .games { display: grid; margin-top: 16px; background: var(--surface); border-radius: 10px; overflow: hidden; }
@@ -129,6 +136,7 @@ dialog.sheet.aboutpg[open] { display: flex; flex-direction: column; animation: n
         <p id="progress"></p>
         <button class="share-all" id="shareAll" type="button" aria-label="Share today" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span id="shareLabel">Share</span></button>
       </div>
+      <div class="days" id="days" role="img" hidden></div>
     </div>
     <nav class="games" id="games" aria-label="Today's games"></nav>
   </main>
@@ -162,7 +170,7 @@ dialog.sheet.aboutpg[open] { display: flex; flex-direction: column; animation: n
 </dialog>
 
 <script src="clock.js?v=4"></script>
-<script src="today.js?v=2"></script>
+<script src="today.js?v=3"></script>
 <script src="pwa.js"></script>
 <script>
 (() => {
@@ -232,6 +240,24 @@ dialog.sheet.aboutpg[open] { display: flex; flex-direction: column; animation: n
     }));
     $('progress').textContent = done === GAMES.length ? 'All done. See you tomorrow.' : `${done} of ${GAMES.length} played today`;
     $('shareAll').hidden = !done;
+    drawDays(now, done);
+  }
+  // The record under the day: the last two weeks and the run of days played.
+  const DAYS = 14;
+  function drawDays(now, done) {
+    const key = dayKey(now), log = noteDay(store.get('days'), key, done);
+    if (done) store.set('days', log);
+    const days = lastDays(log, key, DAYS), played = days.filter(Boolean).length, run = dayRun(log, key);
+    const box = $('days');
+    box.hidden = !played;
+    if (!played) return;
+    box.setAttribute('aria-label', `Played on ${played} of the last ${DAYS} days${run > 1 ? `, ${run} days in a row` : ''}`);
+    box.replaceChildren(...days.map((n, i) => {
+      const sq = el('i', `${n >= GAMES.length ? 'all' : n ? 'some' : ''}${i === DAYS - 1 ? ' now' : ''}`.trim());
+      sq.style.setProperty('--n', n);
+      sq.setAttribute('aria-hidden', 'true');
+      return sq;
+    }), ...(run > 1 ? [el('span', '', `${run} days in a row`)] : []));
   }
   // Today's results in one message (today.js).
   function shareAll() {
