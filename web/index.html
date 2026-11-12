@@ -49,11 +49,30 @@
 .install-hint button { flex: none; width: 44px; height: 44px; margin: -10px -12px -10px 0; padding: 0; background: none; border: 0; font-size: 1.2rem; color: var(--muted); }
 
 /* About: a short ruled list, with what a row holds at its right */
-.about { display: grid; }
-.about-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; padding: 0; background: none; border: 0; font-size: .95rem; text-align: left; color: inherit; text-decoration: none; }
-.about-row[hidden] { display: none; }
-.about-row:not([hidden]) ~ .about-row:not([hidden]) { border-top: 1px solid var(--line); }
-.about-row span + span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); }
+.about-id { display: grid; justify-items: center; gap: 4px; padding: 4px 0 2px; text-align: center; }
+.about-id img { margin-bottom: 10px; border-radius: 15px; }
+.about-id .about-name { font-size: 1.4rem; font-weight: 600; letter-spacing: -.02em; line-height: 1.2; }
+.about-id .about-tag { color: var(--muted); }
+.about-id .about-ver { margin-top: 8px; padding: 3px 12px; border: 1px solid var(--line-strong); border-radius: 99px; font-size: .82rem; font-variant-numeric: tabular-nums; color: var(--muted); }
+/* About is a page of its own: it fills the screen and Back leaves it */
+dialog.sheet.aboutpg { width: 100%; max-width: none; height: 100dvh; max-height: 100dvh; margin: 0; padding-top: env(safe-area-inset-top, 0px); border-radius: 0; background: var(--bg); }
+dialog.sheet.aboutpg[open] { display: flex; flex-direction: column; animation: none; }
+.aboutpg > * { width: 100%; max-width: 480px; margin-inline: auto; }
+.aboutpg .sheet-head { justify-content: flex-start; gap: 4px; padding: 6px 10px 6px 6px; background: var(--bg); }
+.aboutpg .sheet-head .icon-btn { color: var(--ink); }
+.aboutpg .sheet-body { flex: 1; display: flex; flex-direction: column; gap: 22px; padding-top: 36px; }
+.aboutpg .about-foot { margin-top: auto; }
+/* About's links: plain centred text, no rows */
+.about-links { display: grid; justify-items: center; text-align: center; }
+.about-links a, .about-links button { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 10px; background: none; border: 0; font-size: .95rem; color: var(--ink); text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 30%, transparent); text-underline-offset: 4px; }
+.about-links [hidden] { display: none; }
+.about-links .about-mail { font-weight: 600; }
+.about-legal { display: flex; align-items: center; justify-content: center; }
+.about-legal i { flex: none; width: 3px; height: 3px; border-radius: 50%; background: var(--muted); }
+.about-links .about-upd { min-height: 40px; margin-bottom: 10px; padding: 0 18px; border: 1px solid color-mix(in srgb, currentColor 30%, transparent); border-radius: 99px; text-decoration: none; }
+.about-upd span { color: var(--muted); }
+.about-upd span:empty { display: none; }
+.sheet-body .about-foot { text-align: center; font-size: .8rem; color: var(--muted); }
 
 /* App update (Android app only) */
 .update { display: grid; gap: 14px; margin-top: 8px; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
@@ -120,22 +139,25 @@
 </div>
 
 <!-- About: the version, and the way to the policy, the terms and us -->
-<dialog class="sheet" id="aboutSheet" aria-labelledby="aboutTitle">
+<dialog class="sheet aboutpg" id="aboutSheet" aria-labelledby="aboutTitle">
   <div class="sheet-head">
-    <h2 id="aboutTitle" tabindex="-1" autofocus>Dailies</h2>
-    <button class="icon-btn" type="button" data-close aria-label="Close">
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m4 4 10 10M14 4 4 14"/></svg>
-    </button>
+    <button class="icon-btn" type="button" data-close aria-label="Back"><svg width="10" height="16" viewBox="0 0 10 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2 2 8l6 6"/></svg></button>
+    <h2 id="aboutTitle" tabindex="-1" autofocus>About</h2>
   </div>
   <div class="sheet-body">
-    <div class="about">
-      <div class="about-row" id="aboutVerRow" hidden><span>Version</span><span id="aboutVer"></span></div>
-      <button class="about-row" id="aboutCheck" type="button" hidden><span>Check for updates</span><span id="aboutNote" aria-live="polite"></span></button>
-      <a class="about-row" href="https://teloone.au/apps/dailies/privacy/" rel="noreferrer">Privacy</a>
-      <a class="about-row" href="https://teloone.au/apps/dailies/terms/" rel="noreferrer">Terms</a>
-      <a class="about-row" href="mailto:support@teloone.au?subject=Dailies"><span>Contact</span><span>support@teloone.au</span></a>
-      <a class="about-row" id="getApp" href="/app" hidden>Get the Android app</a>
+    <div class="about-id">
+      <img src="icons/icon-192.png" width="64" height="64" alt="" onerror="this.hidden=true">
+      <p class="about-name">Dailies</p>
+      <p class="about-tag">Nine small puzzles, new every day.</p>
+      <p class="about-ver" id="aboutVer" hidden></p>
     </div>
+    <div class="about-links">
+      <button class="about-upd" type="button" id="aboutCheck" hidden>Check for updates<span id="aboutNote" aria-live="polite"></span></button>
+      <a class="about-mail" href="mailto:support@teloone.au?subject=Dailies">support@teloone.au</a>
+      <div class="about-legal"><a href="https://teloone.au/apps/dailies/privacy/" rel="noreferrer">Privacy policy</a><i aria-hidden="true"></i><a href="https://teloone.au/apps/dailies/terms/" rel="noreferrer">Terms of use</a></div>
+      <a id="getApp" href="/app" hidden>Get the Android app</a>
+    </div>
+    <p class="about-foot">Made in Adelaide by Telo One</p>
   </div>
 </dialog>
 
@@ -245,6 +267,14 @@
   // selfUpdates is off until the app says otherwise: Play builds update through
   // the store, so there About has the version and nothing to check.
   let appVersion = '', selfUpdates = false, updateReady = false, versionTimer = 0, updateVersion = '', updateSize = 0;
+  // The app says which build it is. The website's copy is stamped with its version when it is published.
+  const WEB_VERSION = '__VERSION__';
+  function showVersion() {
+    const v = appVersion || (WEB_VERSION.startsWith('__') ? '' : WEB_VERSION);
+    $('aboutVer').textContent = v ? 'Version ' + v : '';
+    $('aboutVer').hidden = !v;
+  }
+  showVersion();
   // Not now holds for the version it was said to while the app stays open;
   // Check for updates in About still opens the card.
   const later = {
@@ -313,8 +343,7 @@
       if (m.type === 'info') {
         appVersion = m.version;
         selfUpdates = m.updates === true;
-        $('aboutVer').textContent = appVersion || '';
-        $('aboutVerRow').hidden = !appVersion;
+        showVersion();
         $('aboutCheck').hidden = !selfUpdates;
         showLabel();
       } else if (m.type === 'updateStatus' && selfUpdates) {
