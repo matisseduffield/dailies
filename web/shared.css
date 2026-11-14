@@ -113,7 +113,7 @@ a.brand { min-height: 44px; }
 a.brand > svg:first-child { flex: none; box-sizing: border-box; width: 44px; height: 44px; padding: 12px; border-radius: 50%; }
 a.brand > svg:first-child, .top .icon-btn, .sheet-head .icon-btn { background: linear-gradient(var(--key-hi), var(--key)); color: var(--ink); }
 a.brand:active > svg:first-child, .top .icon-btn:active, .sheet-head .icon-btn:active { background: var(--key-down); }
-.mark { font-size: 1.3rem; font-weight: 600; letter-spacing: -.015em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mark { font-size: 1.35rem; font-weight: 500; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .top-right { flex: none; display: flex; align-items: center; gap: 10px; }
 .icon-btn {
   position: relative; display: grid; place-items: center; flex: none; width: 44px; height: 44px; padding: 0;
@@ -126,7 +126,7 @@ a.brand:active > svg:first-child, .top .icon-btn:active, .sheet-head .icon-btn:a
 .tabs { display: flex; gap: 2px; padding: 3px; border-radius: 99px; background: var(--surface); }
 .tab {
   position: relative; min-height: 34px; padding: 0 15px; background: none; border: 0; border-radius: 99px;
-  font-size: .9rem; font-weight: 600; color: var(--muted);
+  font-size: .92rem; font-weight: 500; color: var(--muted);
 }
 @media (hover: hover) { .tab:hover { color: var(--ink); } }
 .tab::before { content: ""; position: absolute; inset: -8px 0; }
@@ -148,7 +148,7 @@ a.brand:active > svg:first-child, .top .icon-btn:active, .sheet-head .icon-btn:a
 .key {
   flex: 1 1 0; max-width: 44px; height: 54px; padding: 0;
   background: linear-gradient(var(--key-hi), var(--key)); border: 0; border-radius: 99px;
-  font-size: 1.08rem; font-weight: 600; text-transform: uppercase;
+  font-size: 1.12rem; font-weight: 500; text-transform: uppercase;
   touch-action: manipulation;
 }
 .key:active { background: var(--key-down); }
