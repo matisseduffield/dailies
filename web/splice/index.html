@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#F0F1F3" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#151619" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#171719" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="../manifest.json">
 <link rel="apple-touch-icon" sizes="180x180" href="../icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -16,7 +16,7 @@
 <title>Splice</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect x=%223%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2221.4%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%223%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23F4C52E%22/><rect x=%2221.4%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%223%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2212.2%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2221.4%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/></svg>">
 <link rel="preload" href="../fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../shared.css?v=3">
+<link rel="stylesheet" href="../shared.css?v=4">
 <style>
 :root { --lock: #1D7548; --on-lock: #FFFFFF; --aim: #2C53C4; --tile-edge: #D6D8DC; --pair: #E39A14; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --lock: #2E8A5C; --aim: #85A2FF; --tile-edge: #0B0C0E; --pair: #F2B33D; } }
@@ -67,8 +67,8 @@
 
 /* The checks left, and Give up */
 .tools { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; min-height: 44px; margin-bottom: 4px; }
-.tools-right { display: flex; justify-content: flex-end; margin-right: -10px; }
-.tool { display: inline-flex; align-items: center; height: 44px; padding: 0 10px; background: none; border: 0; border-radius: 99px; font-size: .86rem; font-weight: 600; color: var(--muted); }
+.tools-right { display: flex; justify-content: flex-end; }
+.tool { display: inline-flex; align-items: center; height: 40px; padding: 0 14px; background: var(--key); border: 0; border-radius: 99px; font-size: .86rem; font-weight: 500; color: var(--ink); }
 @media (hover: hover) { .tool:hover { color: var(--ink); background: var(--key); } }
 .tool.sure { color: var(--neg); }
 .count { font-size: .86rem; color: var(--muted); text-align: center; white-space: nowrap; }
@@ -86,7 +86,7 @@
 .example span { margin-top: 8px; font-size: .88rem; color: var(--muted); }
 
 @keyframes grow { from { opacity: .2; } }
-.check:disabled { opacity: .45; }
+.check:disabled { background: var(--key); border-color: transparent; color: var(--faint); }
 
 @media (prefers-reduced-motion: reduce) {
   .word, .link path { transition: none; }
@@ -99,7 +99,7 @@
   <header>
     <div class="top">
       <a class="brand" href="../index.html" aria-label="All games">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16.5 10h-13M9 4.5 3.5 10 9 15.5"/></svg>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12H3M10.5 4.5 3 12l7.5 7.5"/></svg>
         <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#C8682A"/><path d="M32,22C32,30 18,29 18,38M32,22C32,30 46,29 46,38" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity=".9"/><rect x="19" y="10" width="26" height="13" rx="6.5" fill="#FFCF33"/><text x="32" y="19.6" font-size="8.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">SUN</text><rect x="5" y="38" width="26" height="13" rx="6.5" fill="#FFFFFF"/><text x="18" y="47.6" font-size="8.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">SET</text><rect x="33" y="38" width="26" height="13" rx="6.5" fill="#FFFFFF"/><text x="46" y="47.6" font-size="8.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">RISE</text></svg>
         <h1 class="mark">Splice</h1>
       </a>

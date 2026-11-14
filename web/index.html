@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#F0F1F3" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#151619" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#171719" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -16,41 +16,39 @@
 <title>Dailies</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect x=%223%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2221.4%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%223%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23F4C52E%22/><rect x=%2221.4%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%223%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2212.2%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2221.4%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/></svg>">
 <link rel="preload" href="fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="shared.css?v=3">
+<link rel="stylesheet" href="shared.css?v=4">
 <style>
 /* The list runs past a short screen: the page grows, so the bottom padding stays clear of the home bar */
-.app { height: auto; min-height: 100dvh; }
+.app { height: auto; min-height: 100dvh; padding-left: max(18px, env(safe-area-inset-left, 0px)); padding-right: max(18px, env(safe-area-inset-right, 0px)); }
 /* The day in a card: the date as its label, how far along you are as its value,
-   and at the right the last two weeks as a small calendar of dots, today last. */
-.today { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; min-height: 100px; margin-top: 8px; padding: 18px 22px; background: var(--surface); border-radius: 24px; }
+   and at the right the last week as a row of dots, today last: white for a day
+   with every game played, grey for some, dim for none. */
+.today { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; min-height: 100px; margin-top: 18px; padding: 18px 22px; background: var(--surface); border-radius: 24px; }
 .today > div:first-child { min-width: 0; }
 .today-label { font-size: 1rem; line-height: 1.4; color: var(--muted); }
 .today h2 { margin-top: 2px; font-size: 1.75rem; font-weight: 400; letter-spacing: -.015em; line-height: 1.25; white-space: nowrap; }
 .today h2 b { font-weight: 400; color: var(--accent); }
-.days { flex: none; display: grid; grid-template-columns: repeat(7, 8px); gap: 5px; }
-.days i { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
-.days i.some { background: color-mix(in srgb, var(--pos) calc(var(--n) * 8% + 25%), var(--line)); }
-.days i.all { background: var(--pos); }
-.days i.now { outline: 1.5px solid var(--muted); outline-offset: 2px; }
+.days { flex: none; display: flex; gap: 7px; }
+.days i { width: 6px; height: 6px; border-radius: 50%; background: var(--line-strong); }
+.days i.some { background: var(--muted); }
+.days i.all { background: var(--ink); }
 
-/* The games, a tile each, three to a row: its picture and its name, and once it's begun, how today's went */
-.games { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: 10px; margin-top: 10px; }
-.game { display: grid; justify-items: center; align-content: start; min-height: 128px; padding: 22px 6px 14px; background: var(--surface); border-radius: 24px; color: inherit; text-decoration: none; text-align: center; }
-.game svg { margin-bottom: 10px; }
+/* The games, a tile each, three to a row: its picture and its name, and once it's begun, how today's went.
+   The pictures are the only colour here, so that line stays grey; its words say if it was lost. */
+.games { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: 14px; margin-top: 14px; }
+.game { display: grid; justify-items: center; align-content: start; min-height: 136px; padding: 30px 6px 12px; background: var(--surface); border-radius: 22px; color: inherit; text-decoration: none; text-align: center; }
+.game svg { margin-bottom: 14px; }
 .game:active { background: var(--key); }
 @media (hover: hover) { .game:hover { background: var(--key); } }
-.game b { font-size: 1rem; font-weight: 500; line-height: 1.3; }
+.game b { font-size: 1rem; font-weight: 400; line-height: 1.3; }
 .game span { font-size: .8rem; line-height: 1.3; color: var(--muted); overflow-wrap: anywhere; }
-/* Played today: the line under the name is how it went, in green, or red if it was lost */
-.game.done span { color: var(--pos); }
-.game.done.lost span { color: var(--neg); }
 /* Said to a screen reader, as the colour or a picture can't be */
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 /* More: a small dark panel that drops from its button, a picture and a word for each thing */
-.menu { position: absolute; z-index: 5; top: calc(68px + env(safe-area-inset-top, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); min-width: 200px; max-width: calc(100% - 32px); padding: 8px; background: var(--pop); border: 1px solid var(--pop-line); border-radius: 26px; box-shadow: 0 16px 40px rgba(0, 0, 0, .3); transform-origin: top right; animation: pop .14s ease-out; }
+.menu { position: absolute; z-index: 5; top: calc(68px + env(safe-area-inset-top, 0px)); right: max(18px, env(safe-area-inset-right, 0px)); min-width: 192px; max-width: calc(100% - 36px); padding: 9px 8px; background: var(--pop); border: 1px solid var(--pop-line); border-radius: 28px; box-shadow: 0 12px 32px rgba(0, 0, 0, .4); transform-origin: top right; animation: pop .14s ease-out; }
 @keyframes pop { from { opacity: 0; transform: scale(.94); } }
-.menu-row { display: flex; align-items: center; gap: 16px; width: 100%; min-height: 50px; padding: 0 20px 0 16px; background: none; border: 0; border-radius: 18px; font-size: 1.06rem; text-align: left; white-space: nowrap; }
+.menu-row { display: flex; align-items: center; gap: 15px; width: 100%; min-height: 46px; padding: 0 20px 0 16px; background: none; border: 0; border-radius: 18px; font-size: 1.06rem; text-align: left; white-space: nowrap; }
 .menu-row:active { background: var(--key); }
 @media (hover: hover) { .menu-row:not(:disabled):hover { background: var(--key); } }
 .menu-row:disabled { opacity: .38; cursor: default; }
@@ -70,24 +68,27 @@
 /* About: who this is, then one rounded list, a row for each thing, with a hairline between them */
 .about-id { display: grid; justify-items: center; gap: 4px; padding: 4px 0 2px; text-align: center; }
 .about-id img { margin-bottom: 10px; border-radius: 15px; }
-.about-id .about-name { font-size: 1.4rem; font-weight: 600; letter-spacing: -.02em; line-height: 1.2; }
+.about-id .about-name { font-size: 1.4rem; font-weight: 500; letter-spacing: -.02em; line-height: 1.2; }
 .about-id .about-tag { color: var(--muted); }
 /* About is a page of its own: it fills the screen and Back leaves it */
 dialog.sheet.aboutpg { width: 100%; max-width: none; height: 100dvh; max-height: 100dvh; margin: 0; padding-top: env(safe-area-inset-top, 0px); border-radius: 0; background: var(--bg); }
 dialog.sheet.aboutpg[open] { display: flex; flex-direction: column; animation: none; }
 .aboutpg > * { width: 100%; max-width: 480px; margin-inline: auto; }
-.aboutpg .sheet-head { justify-content: flex-start; gap: 10px; padding: 14px 16px 6px; background: var(--bg); }
-.aboutpg .sheet-head h2 { font-size: 1.3rem; }
-.aboutpg .sheet-body { flex: 1; display: flex; flex-direction: column; gap: 22px; padding: 30px 16px max(22px, env(safe-area-inset-bottom, 0px)); }
+.aboutpg .sheet-head { justify-content: flex-start; gap: 10px; padding: 14px 18px 6px; background: var(--bg); }
+.aboutpg .sheet-head h2 { font-size: 1.35rem; font-weight: 500; }
+.aboutpg .sheet-body { flex: 1; display: flex; flex-direction: column; gap: 18px; padding: 30px 18px max(22px, env(safe-area-inset-bottom, 0px)); }
 .aboutpg .about-foot { margin-top: auto; }
 .about-links { display: grid; padding: 0 20px; background: var(--surface); border-radius: 24px; }
+/* A card with nothing to show (the version, on a page that has none) isn't drawn */
+.about-links:not(:has(> .about-row:not([hidden]))) { display: none; }
+.about-id { margin-bottom: 8px; }
 .about-legal { display: contents; }
-.about-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 62px; margin: 0; padding: 9px 0; background: none; border: 0; font-size: 1.02rem; line-height: 1.3; color: var(--ink); text-align: left; text-decoration: none; }
+.about-links .about-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; margin: 0; padding: 8px 0; background: none; border: 0; font-size: 1.125rem; line-height: 1.3; color: var(--ink); text-align: left; text-decoration: none; }
 .about-links > :not([hidden]) ~ .about-row, .about-legal .about-row { border-top: 1px solid var(--line); }
-.about-row small { display: block; font-size: .86rem; color: var(--muted); }
+.about-row small { display: block; font-size: .9rem; color: var(--muted); }
 .about-row > span + span { flex: none; font-size: .9rem; color: var(--muted); }
 .about-row > span + span:empty { display: none; }
-a.about-row::after { content: ""; flex: none; width: 8px; height: 8px; margin-right: 3px; border: solid var(--faint); border-width: 2px 2px 0 0; transform: rotate(45deg); }
+a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-right: 3px; border: solid var(--line-strong); border-width: 1.5px 1.5px 0 0; transform: rotate(45deg); }
 .sheet-body .about-foot { text-align: center; font-size: .8rem; color: var(--muted); }
 
 /* App update (Android app only) */
@@ -116,9 +117,9 @@ a.about-row::after { content: ""; flex: none; width: 8px; height: 8px; margin-ri
     </div>
   </header>
   <div class="menu" id="menu" role="menu" hidden>
-    <button class="menu-row" id="shareAll" type="button" role="menuitem" disabled><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3.5M7.5 8 12 3.5 16.5 8M5 13v5.5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V13"/></svg><span id="shareLabel">Share today</span></button>
-    <button class="menu-row" id="remindToggle" type="button" role="menuitemcheckbox" aria-checked="false" hidden><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 10a6 6 0 0 1 12 0c0 4.5 1.6 6 2 6.5H4c.4-.5 2-2 2-6.5ZM10 20a2.2 2.2 0 0 0 4 0"/></svg><span id="remindText">Remind me at 6 pm</span><svg class="tick" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 10.5 4 4 8-9"/></svg></button>
-    <button class="menu-row" id="version" type="button" role="menuitem"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><circle cx="12" cy="7.7" r=".5" fill="currentColor"/></svg><span id="versionLabel">About</span></button>
+    <button class="menu-row" id="shareAll" type="button" role="menuitem" disabled><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3.5M7.5 8 12 3.5 16.5 8M5 13v5.5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V13"/></svg><span id="shareLabel">Share today</span></button>
+    <button class="menu-row" id="remindToggle" type="button" role="menuitemcheckbox" aria-checked="false" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 10a6 6 0 0 1 12 0c0 4.5 1.6 6 2 6.5H4c.4-.5 2-2 2-6.5ZM10 20a2.2 2.2 0 0 0 4 0"/></svg><span id="remindText">Remind me at 6 pm</span><svg class="tick" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 10.5 4 4 8-9"/></svg></button>
+    <button class="menu-row" id="version" type="button" role="menuitem"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><circle cx="12" cy="7.7" r=".5" fill="currentColor"/></svg><span id="versionLabel">About</span></button>
   </div>
 
   <section class="update" id="updateCard" aria-label="App update" hidden>
@@ -154,7 +155,7 @@ a.about-row::after { content: ""; flex: none; width: 8px; height: 8px; margin-ri
 <!-- About: the version, and the way to the policy, the terms and us -->
 <dialog class="sheet aboutpg" id="aboutSheet" aria-labelledby="aboutTitle">
   <div class="sheet-head">
-    <button class="icon-btn" type="button" data-close aria-label="Back"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16.5 10h-13M9 4.5 3.5 10 9 15.5"/></svg></button>
+    <button class="icon-btn" type="button" data-close aria-label="Back"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12H3M10.5 4.5 3 12l7.5 7.5"/></svg></button>
     <h2 id="aboutTitle" tabindex="-1" autofocus>About</h2>
   </div>
   <div class="sheet-body">
@@ -166,6 +167,8 @@ a.about-row::after { content: ""; flex: none; width: 8px; height: 8px; margin-ri
     <div class="about-links">
       <p class="about-row" id="aboutVer" hidden></p>
       <button class="about-row" type="button" id="aboutCheck" hidden><span>Check for updates</span><span id="aboutNote" aria-live="polite"></span></button>
+    </div>
+    <div class="about-links">
       <a class="about-row" href="mailto:support@teloone.au?subject=Dailies"><span>Contact support<small>support@teloone.au</small></span></a>
       <div class="about-legal"><a class="about-row" href="https://teloone.au/apps/dailies/privacy/" rel="noreferrer">Privacy policy</a><a class="about-row" href="https://teloone.au/apps/dailies/terms/" rel="noreferrer">Terms of use</a></div>
       <a class="about-row" id="getApp" href="/app" hidden>Get the Android app</a>
@@ -235,7 +238,7 @@ a.about-row::after { content: ""; flex: none; width: 8px; height: 8px; margin-ri
       const lost = played && lostIt(result);
       const a = el('a', played ? (lost ? 'game done lost' : 'game done') : 'game');
       a.href = `${g.id}/index.html`;
-      a.innerHTML = `<svg width="44" height="44" viewBox="0 0 64 64" fill="none" aria-hidden="true">${g.icon}</svg>`;
+      a.innerHTML = `<svg width="40" height="40" viewBox="0 0 64 64" fill="none" aria-hidden="true">${g.icon}</svg>`;
       // Under the name once it's begun: how today's went. Until then the tile is its picture and name, and what it is, is said to a screen reader.
       const line = today ? el('span', '', played ? result.text : 'Started') : el('span', 'sr', `. ${g.line}`);
       if (played) line.append(el('span', 'sr', lost ? ', lost' : ', played'));
@@ -247,8 +250,8 @@ a.about-row::after { content: ""; flex: none; width: 8px; height: 8px; margin-ri
     $('shareAll').disabled = !done;
     drawDays(now, done);
   }
-  // The record beside the day: the last two weeks, a dot each, a week to a row.
-  const DAYS = 14;
+  // The record beside the day: the last week, a dot each.
+  const DAYS = 7;
   function drawDays(now, done) {
     const key = dayKey(now), log = noteDay(store.get('days'), key, done);
     if (done) store.set('days', log);
@@ -258,8 +261,7 @@ a.about-row::after { content: ""; flex: none; width: 8px; height: 8px; margin-ri
     if (!played) return;
     box.setAttribute('aria-label', `Played on ${played} of the last ${DAYS} days${run > 1 ? `, ${run} days in a row` : ''}`);
     box.replaceChildren(...days.map((n, i) => {
-      const sq = el('i', `${n >= GAMES.length ? 'all' : n ? 'some' : ''}${i === DAYS - 1 ? ' now' : ''}`.trim());
-      sq.style.setProperty('--n', n);
+      const sq = el('i', n >= GAMES.length ? 'all' : n ? 'some' : '');
       sq.setAttribute('aria-hidden', 'true');
       return sq;
     }));

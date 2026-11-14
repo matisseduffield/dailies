@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#F0F1F3" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#151619" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#171719" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="../manifest.json">
 <link rel="apple-touch-icon" sizes="180x180" href="../icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -16,7 +16,7 @@
 <title>Cluey</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect x=%223%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2221.4%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%223%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23F4C52E%22/><rect x=%2221.4%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%223%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2212.2%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2221.4%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/></svg>">
 <link rel="preload" href="../fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../shared.css?v=3">
+<link rel="stylesheet" href="../shared.css?v=4">
 <style>
 /* A printed crossword: paper squares joined by thin rules, with solid blocks.
    Yellow is the square you're on and blue its word. Green is right, red is
@@ -31,9 +31,9 @@
   --on-word: #2A4FBC; --on-word-dim: var(--muted);
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --paper: #2E2F33; --rule: #151619; --frame: #696B72; --block: #08090A; --word: #3C5488; --shown: #5A4E20; --on-shown: #F7E7A6; --on-word: #C2D0FF; --on-word-dim: #B4B5BB; }
+  :root:not([data-theme="light"]) { --paper: #2E2F33; --rule: #171719; --frame: #696B72; --block: #171719; --word: #3C5488; --shown: #5A4E20; --on-shown: #F7E7A6; --on-word: #C2D0FF; --on-word-dim: #B4B5BB; }
 }
-:root[data-theme="dark"] { --paper: #2E2F33; --rule: #151619; --frame: #696B72; --block: #08090A; --word: #3C5488; --shown: #5A4E20; --on-shown: #F7E7A6; --on-word: #C2D0FF; --on-word-dim: #B4B5BB; }
+:root[data-theme="dark"] { --paper: #2E2F33; --rule: #171719; --frame: #696B72; --block: #171719; --word: #3C5488; --shown: #5A4E20; --on-shown: #F7E7A6; --on-word: #C2D0FF; --on-word-dim: #B4B5BB; }
 
 .top { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; grid-template-rows: auto auto; align-items: center; gap: 0; }
 a.brand { display: contents; }
@@ -48,7 +48,7 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
 /* The grid: the rules are the board showing through a one pixel gap */
 .stage-wrap { position: relative; flex: 1; min-height: 0; display: flex; }
 .stage { flex: 1; min-width: 0; display: grid; place-items: center; padding: 4px 0; overflow: hidden; }
-.grid { --cell: 44px; display: grid; gap: 1px; grid-template-columns: repeat(var(--n, 5), var(--cell)); grid-auto-rows: var(--cell); background: var(--rule); border: 2px solid var(--frame); user-select: none; -webkit-user-select: none; }
+.grid { --cell: 44px; display: grid; gap: 1px; grid-template-columns: repeat(var(--n, 5), var(--cell)); grid-auto-rows: var(--cell); background: var(--rule); border-radius: 12px; overflow: hidden; user-select: none; -webkit-user-select: none; }
 .block { background: var(--block); }
 .cell {
   position: relative; display: grid; place-items: center; padding: 0;
@@ -79,21 +79,20 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
 .toast.warn { color: var(--on-ink); }
 
 /* The time, then the help on offer */
-.tools { display: flex; flex-wrap: wrap; align-items: center; min-height: 40px; }
+.tools { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; min-height: 40px; margin-bottom: 4px; }
 .time { flex: 1; font-size: 1rem; font-weight: 600; letter-spacing: .01em; }
-.tool { display: inline-flex; align-items: center; gap: 5px; height: 44px; padding: 0 9px; background: none; border: 0; border-radius: 99px; font-size: .86rem; font-weight: 600; color: var(--muted); white-space: nowrap; }
-.tool:last-child { margin-right: -9px; }
-@media (hover: hover) { .tool:hover:not(:disabled) { color: var(--ink); background: var(--key); } }
+.tool { display: inline-flex; align-items: center; gap: 5px; height: 40px; padding: 0 10px; background: var(--key); border: 0; border-radius: 99px; font-size: .86rem; font-weight: 500; color: var(--ink); white-space: nowrap; }
+@media (hover: hover) { .tool:hover:not(:disabled) { background: var(--key-down); } }
 .tool:disabled { opacity: .4; cursor: default; }
 .tool.sure { color: var(--neg); }
 /* The count takes the label's colour: --faint is under 4.5:1 on the page in light mode */
 .tool b { font-weight: 600; }
 .tool.sure b { display: none; }
 .tools { container-type: inline-size; }
-@container (max-width: 21.25em) { .tool { padding: 0 6px; font-size: .82rem; } .tool:last-child { margin-right: -6px; } }
+@container (max-width: 21.25em) { .tool { padding: 0 7px; font-size: .82rem; } .tools { gap: 3px; } }
 
 /* The clue, with the way to the one before and after it */
-.clue-bar { display: grid; grid-template-columns: 42px 1fr 42px; align-items: stretch; min-height: 56px; margin-bottom: 7px; padding: 0 8px; background: var(--word); border-radius: 18px; font-weight: 600; user-select: none; -webkit-user-select: none; }
+.clue-bar { display: grid; grid-template-columns: 42px 1fr 42px; align-items: stretch; min-height: 56px; margin-bottom: 7px; padding: 0 8px; background: var(--surface); border-radius: 22px; font-weight: 500; user-select: none; -webkit-user-select: none; }
 .clue-bar button { padding: 0; background: none; border: 0; touch-action: manipulation; }
 .step { display: grid; place-items: center; color: var(--on-word-dim); border-radius: 14px; }
 @media (hover: hover) { .step:hover { color: var(--ink); } }
@@ -147,7 +146,7 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
   <header>
     <div class="top">
       <a class="brand" href="../index.html" aria-label="All games">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16.5 10h-13M9 4.5 3.5 10 9 15.5"/></svg>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12H3M10.5 4.5 3 12l7.5 7.5"/></svg>
         <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#2C53C4"/><rect x="10" y="10" width="44" height="44" rx="4" fill="#17181B"/><rect x="11.4" y="11.4" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/><rect x="21.9" y="11.4" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/><rect x="32.4" y="11.4" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/><rect x="11.4" y="21.9" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/><rect x="32.4" y="21.9" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/><rect x="42.9" y="21.9" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/><rect x="11.4" y="32.4" width="9.7" height="9.7" rx="1" fill="#BFD2F8"/><rect x="21.9" y="32.4" width="9.7" height="9.7" rx="1" fill="#FFCF33"/><rect x="32.4" y="32.4" width="9.7" height="9.7" rx="1" fill="#BFD2F8"/><rect x="42.9" y="32.4" width="9.7" height="9.7" rx="1" fill="#BFD2F8"/><rect x="21.9" y="42.9" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/><rect x="32.4" y="42.9" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/><rect x="42.9" y="42.9" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/></svg>
         <h1 class="mark">Cluey</h1>
       </a>

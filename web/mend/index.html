@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#F0F1F3" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#151619" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#171719" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="../manifest.json">
 <link rel="apple-touch-icon" sizes="180x180" href="../icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -16,16 +16,16 @@
 <title>Mend</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect x=%223%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2221.4%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%223%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23F4C52E%22/><rect x=%2221.4%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%223%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2212.2%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2221.4%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/></svg>">
 <link rel="preload" href="../fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../shared.css?v=3">
+<link rel="stylesheet" href="../shared.css?v=4">
 <style>
 /* Hunch's colours: green is in place, yellow is wanted elsewhere, grey is neither.
    A tile that's been picked up goes dark, and tiles the answer put there after a
    loss go plain. */
 :root { --hit: #1D7548; --on-hit: #FFFFFF; --near: #F4C52E; --on-near: #17181B; --miss: #6E7077; --on-miss: #FFFFFF; --pick: #17181B; --on-pick: #FFFFFF; }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --hit: #3E9E6C; --on-hit: #151619; --miss: #3F4045; --on-miss: #F1F1F3; --pick: #F1F1F3; --on-pick: #151619; }
+  :root:not([data-theme="light"]) { --hit: #3E9E6C; --on-hit: #171719; --miss: #3F4045; --on-miss: #F1F1F3; --pick: #F1F1F3; --on-pick: #171719; }
 }
-:root[data-theme="dark"] { --hit: #3E9E6C; --on-hit: #151619; --miss: #3F4045; --on-miss: #F1F1F3; --pick: #F1F1F3; --on-pick: #151619; }
+:root[data-theme="dark"] { --hit: #3E9E6C; --on-hit: #171719; --miss: #3F4045; --on-miss: #F1F1F3; --pick: #F1F1F3; --on-pick: #171719; }
 
 /* The board */
 .stage-wrap { position: relative; flex: 1; min-height: 0; display: flex; }
@@ -66,7 +66,7 @@
 
 /* The swaps left, and Give up. A message takes the place of the count, then gives it back */
 .tools { position: relative; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; min-height: 44px; margin-bottom: 4px; }
-.tools-right { display: flex; justify-content: flex-end; margin-right: -10px; }
+.tools-right { display: flex; justify-content: flex-end; }
 .count { font-size: .86rem; line-height: 1.25; color: var(--muted); text-align: center; white-space: nowrap; }
 .count b { font-weight: 600; color: var(--ink); transition: color .2s; }
 .count.low b { color: var(--neg); }
@@ -84,7 +84,7 @@
   .count .par::before { content: none; }
   .toast { left: 0; }
 }
-.tool { flex: none; height: 44px; padding: 0 10px; background: none; border: 0; border-radius: 99px; font-size: .86rem; font-weight: 600; color: var(--muted); }
+.tool { flex: none; height: 40px; padding: 0 14px; background: var(--key); border: 0; border-radius: 99px; font-size: .86rem; font-weight: 500; color: var(--ink); }
 @media (hover: hover) { .tool:hover { color: var(--ink); background: var(--key); } }
 .tool.sure { color: var(--neg); }
 
@@ -116,7 +116,7 @@
   <header>
     <div class="top">
       <a class="brand" href="../index.html" aria-label="All games">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16.5 10h-13M9 4.5 3.5 10 9 15.5"/></svg>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12H3M10.5 4.5 3 12l7.5 7.5"/></svg>
         <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#12838E"/><rect x="7" y="32" width="11.6" height="11.6" rx="2.4" fill="#FFFFFF"/><text x="12.8" y="41.8" font-size="10.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">M</text><rect x="19.7" y="32" width="11.6" height="11.6" rx="2.4" fill="#FFCF33"/><text x="25.5" y="41.8" font-size="10.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">N</text><rect x="32.4" y="32" width="11.6" height="11.6" rx="2.4" fill="#FFCF33"/><text x="38.2" y="41.8" font-size="10.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">E</text><rect x="45.099999999999994" y="32" width="11.6" height="11.6" rx="2.4" fill="#FFFFFF"/><text x="50.89999999999999" y="41.8" font-size="10.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">D</text><path d="M25.5,27.5C25.5,14 38.5,14 38.5,27.5" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/><path d="M21.6,24L25.5,28.5L29.4,24M34.6,24L38.5,28.5L42.4,24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <h1 class="mark">Mend</h1>
       </a>

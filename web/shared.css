@@ -9,7 +9,8 @@
 
 /* Plain greys, and one colour: a near-black page (pale grey by day), one lighter
    grey for everything that sits on it, blue for the one thing being pointed out
-   and green for what's already right. Keys are lit a little from above. */
+   and green for what's already right. Keys are lit a little from above, with a
+   thin rim; the round buttons in a header are flat discs, quieter than keys. */
 :root {
   --bg: #F0F1F3;
   --surface: #FFFFFF;
@@ -24,58 +25,76 @@
   --pos-soft: rgba(29, 117, 72, .12);
   --neg: #B0392D;
   --on-ink: #FFFFFF;
-  --key: #E2E3E7;
-  --key-hi: #ECEDF0;
-  --key-down: #D0D2D7;
+  --key: #D6D8DE;
+  --key-hi: #E4E5EA;
+  --key-down: #C6C8CF;
   --pop: #FFFFFF;
   --pop-line: rgba(0, 0, 0, .06);
+  --disc: #FFFFFF;
+  --disc-edge: inset 0 0 0 1px rgba(0, 0, 0, .05), 0 2px 6px rgba(0, 0, 0, .08);
+  --op-hi: #D3D5DB;
+  --op-lo: #C4C6CD;
+  --rim: inset 0 0 0 1px rgba(0, 0, 0, .04), inset 0 1px 0 rgba(255, 255, 255, .6);
+  --lift: 0 1px 3px rgba(0, 0, 0, .12);
   --backdrop: rgba(12, 13, 16, .4);
   --font: "Hanken Grotesk", "Segoe UI", Roboto, system-ui, -apple-system, sans-serif;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #151619;
-    --surface: #26272B;
-    --ink: #F1F1F3;
-    --muted: #9B9CA3;
-    --faint: #8E9097;
-    --line: #37383D;
-    --line-strong: #696A71;
+    --bg: #171719;
+    --surface: #2F2F2F;
+    --ink: #EAEAEA;
+    --muted: #A0A0A3;
+    --faint: #949497;
+    --line: #434345;
+    --line-strong: #6E6E72;
     --accent: #85A2FF;
     --accent-soft: rgba(133, 162, 255, .12);
     --pos: #5FC890;
     --pos-soft: rgba(95, 200, 144, .14);
     --neg: #F08476;
-    --on-ink: #151619;
-    --key: #2F3034;
-    --key-hi: #3E3F44;
-    --key-down: #47484D;
-    --pop: #1E1F22;
-    --pop-line: rgba(255, 255, 255, .07);
+    --on-ink: #171719;
+    --key: #303132;
+    --key-hi: #47484A;
+    --key-down: #555658;
+    --pop: #121213;
+    --pop-line: rgba(255, 255, 255, .14);
+    --disc: #252526;
+    --disc-edge: inset 0 0 0 1px rgba(255, 255, 255, .08), 0 4px 10px rgba(0, 0, 0, .35);
+    --op-hi: #343537;
+    --op-lo: #222223;
+    --rim: inset 0 0 0 1px rgba(255, 255, 255, .05), inset 0 1px 0 rgba(255, 255, 255, .1);
+    --lift: 0 2px 5px rgba(0, 0, 0, .35);
     --backdrop: rgba(0, 0, 0, .6);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #151619;
-  --surface: #26272B;
-  --ink: #F1F1F3;
-  --muted: #9B9CA3;
-  --faint: #8E9097;
-  --line: #37383D;
-  --line-strong: #696A71;
+  --bg: #171719;
+  --surface: #2F2F2F;
+  --ink: #EAEAEA;
+  --muted: #A0A0A3;
+  --faint: #949497;
+  --line: #434345;
+  --line-strong: #6E6E72;
   --accent: #85A2FF;
   --accent-soft: rgba(133, 162, 255, .12);
   --pos: #5FC890;
   --pos-soft: rgba(95, 200, 144, .14);
   --neg: #F08476;
-  --on-ink: #151619;
-  --key: #2F3034;
-  --key-hi: #3E3F44;
-  --key-down: #47484D;
-  --pop: #1E1F22;
-  --pop-line: rgba(255, 255, 255, .07);
+  --on-ink: #171719;
+  --key: #303132;
+  --key-hi: #47484A;
+  --key-down: #555658;
+  --pop: #121213;
+  --pop-line: rgba(255, 255, 255, .14);
+    --disc: #252526;
+    --disc-edge: inset 0 0 0 1px rgba(255, 255, 255, .08), 0 4px 10px rgba(0, 0, 0, .35);
+    --op-hi: #343537;
+    --op-lo: #222223;
+    --rim: inset 0 0 0 1px rgba(255, 255, 255, .05), inset 0 1px 0 rgba(255, 255, 255, .1);
+    --lift: 0 2px 5px rgba(0, 0, 0, .35);
   --backdrop: rgba(0, 0, 0, .6);
   color-scheme: dark;
 }
@@ -110,8 +129,9 @@ p, h1, h2, h3 { margin: 0; }
 .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 56px; }
 .brand { display: flex; align-items: center; gap: 10px; min-width: 0; color: inherit; text-decoration: none; }
 a.brand { min-height: 44px; }
-a.brand > svg:first-child { flex: none; box-sizing: border-box; width: 44px; height: 44px; padding: 12px; border-radius: 50%; }
-a.brand > svg:first-child, .top .icon-btn, .sheet-head .icon-btn { background: linear-gradient(var(--key-hi), var(--key)); color: var(--ink); }
+a.brand > svg:first-child { flex: none; box-sizing: border-box; width: 44px; height: 44px; padding: 10px; border-radius: 50%; }
+a.brand > svg:nth-child(2) { display: none; }
+a.brand > svg:first-child, .top .icon-btn, .sheet-head .icon-btn { background: var(--disc); box-shadow: var(--disc-edge); color: var(--ink); }
 a.brand:active > svg:first-child, .top .icon-btn:active, .sheet-head .icon-btn:active { background: var(--key-down); }
 .mark { font-size: 1.35rem; font-weight: 500; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .top-right { flex: none; display: flex; align-items: center; gap: 10px; }
@@ -130,7 +150,7 @@ a.brand:active > svg:first-child, .top .icon-btn:active, .sheet-head .icon-btn:a
 }
 @media (hover: hover) { .tab:hover { color: var(--ink); } }
 .tab::before { content: ""; position: absolute; inset: -8px 0; }
-.tab[aria-selected="true"] { background: linear-gradient(var(--key-hi), var(--key)); color: var(--ink); }
+.tab[aria-selected="true"] { background: linear-gradient(var(--key-hi), var(--key)); box-shadow: var(--rim); color: var(--ink); }
 .tab .dot { display: inline-block; width: 6px; height: 6px; margin-left: 6px; border-radius: 50%; background: var(--accent); vertical-align: 2px; }
 .meta { font-size: .84rem; color: var(--muted); white-space: nowrap; }
 .meta .link { font-size: .84rem; }
@@ -143,15 +163,17 @@ a.brand:active > svg:first-child, .top .icon-btn:active, .sheet-head .icon-btn:a
 .meta-btn svg { color: var(--faint); }
 
 /* Keyboard */
-.keys { display: grid; gap: 7px; padding-bottom: 4px; user-select: none; -webkit-user-select: none; }
-.krow { display: flex; gap: 5px; justify-content: center; }
+.keys { display: grid; gap: 10px; padding-bottom: 4px; user-select: none; -webkit-user-select: none; }
+.krow { display: flex; gap: 6px; justify-content: center; }
 .key {
   flex: 1 1 0; max-width: 44px; height: 54px; padding: 0;
-  background: linear-gradient(var(--key-hi), var(--key)); border: 0; border-radius: 99px;
-  font-size: 1.12rem; font-weight: 500; text-transform: uppercase;
+  background: linear-gradient(var(--key-hi), var(--key)); border: 0; border-radius: 99px; box-shadow: var(--rim), var(--lift);
+  font-size: 1rem; font-weight: 500; text-transform: uppercase;
   touch-action: manipulation;
 }
 .key:active { background: var(--key-down); }
+/* A short phone: lower keys, so the board keeps its room */
+@media (max-height: 640px) { .key { height: 46px; } .keys { gap: 7px; } }
 .krow .spacer { flex: .5 1 0; max-width: 22px; }
 .key.wide { flex: 1.5 1 0; max-width: 66px; display: grid; place-items: center; font-size: .78rem; letter-spacing: .02em; }
 
@@ -195,7 +217,7 @@ a.brand:active > svg:first-child, .top .icon-btn:active, .sheet-head .icon-btn:a
 .btn { min-height: 52px; padding: 0 18px; border-radius: 99px; font-size: .95rem; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
 .btn-primary { background: var(--accent); border: 1px solid var(--accent); color: var(--on-ink); }
 @media (hover: hover) { .btn-primary:hover { opacity: .9; } }
-.btn-secondary { background: linear-gradient(var(--key-hi), var(--key)); border: 1px solid transparent; }
+.btn-secondary { background: linear-gradient(var(--key-hi), var(--key)); border: 1px solid transparent; box-shadow: var(--rim); }
 .btn-secondary:active { background: var(--key-down); }
 @media (hover: hover) { .btn-secondary:hover { background: var(--key-down); } }
 .link { position: relative; padding: 0; background: none; border: 0; font-weight: 600; color: var(--accent); }
@@ -227,7 +249,7 @@ dialog.sheet::backdrop { background: var(--backdrop); }
 .num b { display: block; font-size: 1.45rem; font-weight: 600; line-height: 1.15; letter-spacing: -.01em; }
 .num span { display: block; font-size: .76rem; line-height: 1.3; color: var(--muted); }
 .dist { display: grid; gap: 7px; }
-.dist-title { font-size: .78rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.dist-title { font-size: .84rem; font-weight: 500; color: var(--muted); }
 .bar-row { display: grid; grid-template-columns: 64px 1fr; align-items: center; gap: 10px; font-size: .84rem; }
 .bar-row > span { color: var(--muted); }
 .bar { height: 24px; min-width: 26px; padding: 0 8px; border-radius: 12px; background: var(--key); display: flex; align-items: center; justify-content: flex-end; font-size: .8rem; font-weight: 600; }
