@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
 <meta name="referrer" content="no-referrer">
-<meta name="theme-color" content="#E8ECE5" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0E1412" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F0F1F3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#151619" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="../manifest.json">
 <link rel="apple-touch-icon" sizes="180x180" href="../icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -16,17 +16,21 @@
 <title>Sorted</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect x=%223%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2221.4%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%223%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23F4C52E%22/><rect x=%2221.4%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%223%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2212.2%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2221.4%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/></svg>">
 <link rel="preload" href="../fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../shared.css?v=1">
+<link rel="stylesheet" href="../shared.css?v=2">
 <style>
 /* A group's colour says how hard it was, cool to warm: blue, green, yellow,
    then orange. The yellow is the slug's. Ink reads on all four, in either theme. */
-:root { --l0: #8DBDF0; --l1: #6CC7A4; --l2: #F4C52E; --l3: #F0936A; --on-set: #14211C; --pick: #55625B; --on-pick: #F7F8F4; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --pick: #AEB9B2; --on-pick: #0E1412; } }
-:root[data-theme="dark"] { --pick: #AEB9B2; --on-pick: #0E1412; }
+:root { --l0: #8DBDF0; --l1: #6CC7A4; --l2: #F4C52E; --l3: #F0936A; --on-set: #17181B; --pick: #5A5C63; --on-pick: #FFFFFF; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --pick: #B4B5BB; --on-pick: #151619; } }
+:root[data-theme="dark"] { --pick: #B4B5BB; --on-pick: #151619; }
 
-/* No Practice, so no tabs: the date sits in the top bar, as in Cluey */
-.top { min-height: 44px; }
-.meta { min-width: 0; margin-left: auto; padding: 0; font-size: .84rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* No Practice, so no tabs: the date sits under the name, as in Cluey */
+.top { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; grid-template-rows: auto auto; align-items: center; gap: 0; }
+a.brand { display: contents; }
+a.brand > svg { grid-row: 1 / 3; margin-right: 10px; }
+a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.25; }
+.meta { grid-column: 3; grid-row: 2; align-self: start; min-width: 0; padding: 0; font-size: .84rem; line-height: 1.3; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.top-right { grid-column: 4; grid-row: 1 / 3; margin-left: 8px; }
 /* Small phones or large text (in em, so a bigger font size counts too) */
 .top { container-type: inline-size; }
 @container (max-width: 21.25em) { a.brand > svg:nth-child(2) { display: none; } }
@@ -42,7 +46,7 @@
 .board { --cell: 72px; --w: 80px; --gap: 7px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: minmax(var(--cell), auto); gap: var(--gap); }
 .word {
   display: grid; place-items: center; min-width: 0; padding: 0 3px;
-  background: var(--surface); border: 0; border-radius: 8px;
+  background: var(--surface); border: 0; border-radius: 16px;
   font-size: min(15px, calc((var(--w) - 8px) / (var(--len) * .7))); font-weight: 600; line-height: 1.15; text-align: center; text-transform: uppercase;
   touch-action: manipulation; user-select: none; -webkit-user-select: none;
   transition: background .12s, color .12s, transform .12s;
@@ -57,7 +61,7 @@
 
 .set {
   grid-column: 1 / -1; display: grid; place-content: center; gap: 2px; padding: 0 10px;
-  border-radius: 8px; color: var(--on-set); text-align: center; text-transform: uppercase;
+  border-radius: 16px; color: var(--on-set); text-align: center; text-transform: uppercase;
 }
 .set b { font-size: 1rem; font-weight: 600; line-height: 1.2; letter-spacing: .02em; }
 .set span { font-size: .84rem; line-height: 1.25; }
@@ -71,7 +75,7 @@
 /* Shuffle and Clear, the mistakes left, then Check under them */
 .tools { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; min-height: 44px; margin-bottom: 4px; }
 .tools-left { display: flex; gap: 2px; margin-left: -10px; }
-.tool { display: inline-flex; align-items: center; height: 44px; padding: 0 10px; background: none; border: 0; border-radius: 6px; font-size: .86rem; font-weight: 600; color: var(--muted); }
+.tool { display: inline-flex; align-items: center; height: 44px; padding: 0 10px; background: none; border: 0; border-radius: 99px; font-size: .86rem; font-weight: 600; color: var(--muted); }
 @media (hover: hover) { .tool:hover:not(:disabled) { color: var(--ink); background: var(--key); } }
 .tool:disabled { opacity: .4; cursor: default; }
 .count { font-size: .86rem; color: var(--muted); text-align: center; white-space: nowrap; }
@@ -81,7 +85,7 @@
 /* Stats is in the top bar, so the result has the one button */
 .result .actions { grid-template-columns: 1fr; }
 
-.example { padding: 14px; background: var(--bg); border-radius: 10px; }
+.example { padding: 14px; background: var(--bg); border-radius: 18px; }
 .scale { display: grid; gap: 6px; }
 .scale-bars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
 .scale-bars i { height: 22px; border-radius: 5px; }
@@ -102,7 +106,7 @@
   <header>
     <div class="top">
       <a class="brand" href="../index.html" aria-label="All games">
-        <svg width="10" height="16" viewBox="0 0 10 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2 2 8l6 6"/></svg>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16.5 10h-13M9 4.5 3.5 10 9 15.5"/></svg>
         <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#C2407A"/><rect x="9" y="9" width="9.5" height="9.5" rx="2.2" fill="#FFCF33"/><rect x="20.5" y="9" width="9.5" height="9.5" rx="2.2" fill="#FFCF33"/><rect x="9" y="20.5" width="9.5" height="9.5" rx="2.2" fill="#FFCF33"/><rect x="20.5" y="20.5" width="9.5" height="9.5" rx="2.2" fill="#FFCF33"/><rect x="34" y="9" width="9.5" height="9.5" rx="2.2" fill="#FFFFFF"/><rect x="45.5" y="9" width="9.5" height="9.5" rx="2.2" fill="#FFFFFF"/><rect x="34" y="20.5" width="9.5" height="9.5" rx="2.2" fill="#FFFFFF"/><rect x="45.5" y="20.5" width="9.5" height="9.5" rx="2.2" fill="#FFFFFF"/><rect x="9" y="34" width="9.5" height="9.5" rx="2.2" fill="#8FE3B4"/><rect x="20.5" y="34" width="9.5" height="9.5" rx="2.2" fill="#8FE3B4"/><rect x="9" y="45.5" width="9.5" height="9.5" rx="2.2" fill="#8FE3B4"/><rect x="20.5" y="45.5" width="9.5" height="9.5" rx="2.2" fill="#8FE3B4"/><rect x="34" y="34" width="9.5" height="9.5" rx="2.2" fill="#BFD2F8"/><rect x="45.5" y="34" width="9.5" height="9.5" rx="2.2" fill="#BFD2F8"/><rect x="34" y="45.5" width="9.5" height="9.5" rx="2.2" fill="#BFD2F8"/><rect x="45.5" y="45.5" width="9.5" height="9.5" rx="2.2" fill="#BFD2F8"/></svg>
         <h1 class="mark">Sorted</h1>
       </a>

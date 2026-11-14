@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
-<meta name="theme-color" content="#E8ECE5" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0E1412" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F0F1F3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#151619" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -16,80 +16,89 @@
 <title>Dailies</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect x=%223%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2221.4%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%223%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23F4C52E%22/><rect x=%2221.4%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%223%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2212.2%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2221.4%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/></svg>">
 <link rel="preload" href="fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="shared.css?v=1">
+<link rel="stylesheet" href="shared.css?v=2">
 <style>
 /* The list runs past a short screen: the page grows, so the bottom padding stays clear of the home bar */
 .app { height: auto; min-height: 100dvh; }
-/* The day, and how it's going, with Share today beside that once a game is played, so the list fits a screen */
-.today { padding-top: 14px; }
-.today-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 2px; }
-.today h2 { font-size: 1.6rem; font-weight: 600; letter-spacing: -.015em; line-height: 1.2; }
-.today p { min-width: 0; font-size: .92rem; color: var(--muted); }
+/* The day in a card: the date as its label, how far along you are as its value.
+   Once a game is played, Share today stands beside it as a tall key. */
+.day { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; margin-top: 8px; }
+.day.shared { grid-template-columns: minmax(0, 1fr) 76px; }
+.today { display: grid; align-content: center; min-height: 104px; padding: 16px 20px; background: var(--surface); border-radius: 24px; }
+.today-label { font-size: .92rem; color: var(--muted); }
+.today h2 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 9px; font-size: 1.9rem; font-weight: 500; letter-spacing: -.02em; line-height: 1.25; }
+.today h2 b { font-weight: 500; color: var(--accent); }
+.today h2 small { font-size: .92rem; font-weight: 400; letter-spacing: 0; color: var(--muted); }
+.share-all { display: grid; place-content: center; justify-items: center; gap: 7px; padding: 0; border: 0; border-radius: 24px; background: var(--surface); color: var(--ink); font-size: .8rem; }
+.share-all:active { background: var(--key); }
+@media (hover: hover) { .share-all:hover { background: var(--key); } }
 /* The last two weeks, a square a day, fuller the more of the day's games were finished; today is on the right */
-.days { display: flex; align-items: center; gap: 4px; margin-top: 12px; }
-.days i { flex: none; width: 14px; height: 14px; border-radius: 3px; border: 1px solid var(--line-strong); }
+.days { display: flex; align-items: center; gap: 4px; margin-top: 10px; }
+.days i { flex: none; width: 13px; height: 13px; border-radius: 4px; border: 1px solid var(--line-strong); }
 .days i.some { border-color: transparent; background: color-mix(in srgb, var(--pos) calc(var(--n) * 8% + 20%), var(--surface)); }
 .days i.all { border-color: transparent; background: var(--pos); }
 .days i.now { outline: 1.5px solid var(--ink); outline-offset: 1.5px; }
-.days span { margin-left: auto; padding-left: 8px; font-size: .84rem; color: var(--muted); white-space: nowrap; }
+.days span { margin-left: auto; padding-left: 8px; font-size: .8rem; color: var(--muted); white-space: nowrap; }
 
-/* The games, one list: a row each, with a hairline between them that starts after the icon */
-.games { display: grid; margin-top: 16px; background: var(--surface); border-radius: 10px; overflow: hidden; }
-.game { display: grid; grid-template-columns: 40px 1fr; align-items: center; gap: 12px; padding-left: 12px; color: inherit; text-decoration: none; }
-.game > div { display: grid; align-content: center; min-height: 64px; padding: 9px 14px 9px 0; }
-.game + .game > div { border-top: 1px solid var(--line); }
-.game:focus-visible { outline-offset: -2px; }
-@media (hover: hover) { .game:hover { background: var(--bg); } }
+/* The games, a tile each, three to a row: its picture, its name, then what kind of puzzle it is or how today's went */
+.games { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: 10px; margin-top: 10px; }
+.game { display: grid; justify-items: center; align-content: start; min-height: 128px; padding: 18px 6px 14px; background: var(--surface); border-radius: 24px; color: inherit; text-decoration: none; text-align: center; }
+.game svg { margin-bottom: 9px; }
 .game:active { background: var(--key); }
-.game b { display: block; font-size: 1.05rem; font-weight: 600; line-height: 1.3; }
-.game span { display: block; font-size: .88rem; line-height: 1.35; color: var(--muted); }
+@media (hover: hover) { .game:hover { background: var(--key); } }
+.game b { font-size: 1rem; font-weight: 600; line-height: 1.3; }
+.game span { font-size: .8rem; line-height: 1.3; color: var(--muted); overflow-wrap: anywhere; }
 /* Played today: the line under the name is how it went, in green, or red if it was lost */
 .game.done span { color: var(--pos); }
 .game.done.lost span { color: var(--neg); }
-/* Said to a screen reader, as the colour can't be */
-.game span .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+/* Said to a screen reader, as the colour or a picture can't be */
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
-.foot { margin-top: auto; padding: 18px 0 8px; text-align: center; }
-.get-app { margin: 0 0 4px; font-size: .86rem; color: var(--muted); }
-.get-app .link { font-size: .86rem; text-decoration: none; }
+/* More: a small panel that drops from its button, a row for each thing */
+.menu { position: absolute; z-index: 5; top: calc(66px + env(safe-area-inset-top, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); min-width: 216px; max-width: calc(100% - 32px); padding: 6px; background: var(--pop); border: 1px solid var(--pop-line); border-radius: 24px; box-shadow: 0 14px 34px rgba(0, 0, 0, .26); transform-origin: top right; animation: pop .14s ease-out; }
+@keyframes pop { from { opacity: 0; transform: scale(.94); } }
+.menu-row { display: flex; align-items: center; gap: 14px; width: 100%; min-height: 52px; padding: 6px 16px 6px 14px; background: none; border: 0; border-radius: 18px; font-size: 1rem; text-align: left; }
+.menu-row:active { background: var(--key); }
+@media (hover: hover) { .menu-row:hover { background: var(--key); } }
+.menu-row svg { flex: none; }
+.menu-row span { flex: 1; min-width: 0; line-height: 1.3; }
+.menu-row small { display: block; font-size: .8rem; color: var(--muted); }
+.menu-row i { flex: none; font-style: normal; font-size: .9rem; color: var(--muted); }
+.menu-row[data-state="available"] span { font-weight: 600; color: var(--accent); }
+/* An update is waiting: a dot on the button */
+#menuBtn[data-state="available"]::after { content: ""; position: absolute; top: 9px; right: 9px; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+
 .install-hint { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 6px 0 0; font-size: .84rem; line-height: 1.35; color: var(--muted); }
 .install-hint button { flex: none; width: 44px; height: 44px; margin: -10px -12px -10px 0; padding: 0; background: none; border: 0; font-size: 1.2rem; color: var(--muted); }
 
-/* About: a short ruled list, with what a row holds at its right */
+/* About: who this is, then one rounded list, a row for each thing, with a hairline between them */
 .about-id { display: grid; justify-items: center; gap: 4px; padding: 4px 0 2px; text-align: center; }
 .about-id img { margin-bottom: 10px; border-radius: 15px; }
 .about-id .about-name { font-size: 1.4rem; font-weight: 600; letter-spacing: -.02em; line-height: 1.2; }
 .about-id .about-tag { color: var(--muted); }
-.about-id .about-ver { margin-top: 8px; padding: 3px 12px; border: 1px solid var(--line-strong); border-radius: 99px; font-size: .82rem; font-variant-numeric: tabular-nums; color: var(--muted); }
 /* About is a page of its own: it fills the screen and Back leaves it */
 dialog.sheet.aboutpg { width: 100%; max-width: none; height: 100dvh; max-height: 100dvh; margin: 0; padding-top: env(safe-area-inset-top, 0px); border-radius: 0; background: var(--bg); }
 dialog.sheet.aboutpg[open] { display: flex; flex-direction: column; animation: none; }
 .aboutpg > * { width: 100%; max-width: 480px; margin-inline: auto; }
-.aboutpg .sheet-head { justify-content: flex-start; gap: 4px; padding: 6px 10px 6px 6px; background: var(--bg); }
-.aboutpg .sheet-head .icon-btn { color: var(--ink); }
-.aboutpg .sheet-body { flex: 1; display: flex; flex-direction: column; gap: 22px; padding-top: 36px; }
+.aboutpg .sheet-head { justify-content: flex-start; gap: 10px; padding: 14px 16px 6px; background: var(--bg); }
+.aboutpg .sheet-head h2 { font-size: 1.3rem; }
+.aboutpg .sheet-body { flex: 1; display: flex; flex-direction: column; gap: 22px; padding: 30px 16px max(22px, env(safe-area-inset-bottom, 0px)); }
 .aboutpg .about-foot { margin-top: auto; }
-/* About's links: plain centred text, no rows */
-.about-links { display: grid; justify-items: center; text-align: center; }
-.about-links a, .about-links button { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 10px; background: none; border: 0; font-size: .95rem; color: var(--ink); text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 30%, transparent); text-underline-offset: 4px; }
-.about-links [hidden] { display: none; }
-.about-links .about-mail { font-weight: 600; }
-.about-legal { display: flex; align-items: center; justify-content: center; }
-.about-legal i { flex: none; width: 3px; height: 3px; border-radius: 50%; background: var(--muted); }
-.about-links .about-upd { min-height: 40px; margin-bottom: 10px; padding: 0 18px; border: 1px solid color-mix(in srgb, currentColor 30%, transparent); border-radius: 99px; text-decoration: none; }
-.about-upd span { color: var(--muted); }
-.about-upd span:empty { display: none; }
+.about-links { display: grid; padding: 0 20px; background: var(--surface); border-radius: 24px; }
+.about-legal { display: contents; }
+.about-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 62px; margin: 0; padding: 9px 0; background: none; border: 0; font-size: 1.02rem; line-height: 1.3; color: var(--ink); text-align: left; text-decoration: none; }
+.about-links > :not([hidden]) ~ .about-row, .about-legal .about-row { border-top: 1px solid var(--line); }
+.about-row small { display: block; font-size: .86rem; color: var(--muted); }
+.about-row > span + span { flex: none; font-size: .9rem; color: var(--muted); }
+.about-row > span + span:empty { display: none; }
+a.about-row::after { content: ""; flex: none; width: 8px; height: 8px; margin-right: 3px; border: solid var(--faint); border-width: 2px 2px 0 0; transform: rotate(45deg); }
 .sheet-body .about-foot { text-align: center; font-size: .8rem; color: var(--muted); }
 
 /* App update (Android app only) */
-.update { display: grid; gap: 14px; margin-top: 8px; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+.update { display: grid; gap: 14px; margin-top: 8px; padding: 20px; background: var(--surface); border-radius: 24px; }
 .update-title { font-weight: 600; line-height: 1.3; }
 .update-sub, .update-msg { font-size: .84rem; color: var(--muted); }
 .update-notes { margin: 0; padding: 0 0 0 16px; font-size: .88rem; line-height: 1.4; }
-.share-all { position: relative; flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 14px 0 12px; border: 0; border-radius: 18px; background: var(--key); color: var(--ink); font-size: .88rem; font-weight: 600; }
-.share-all::after { content: ""; position: absolute; inset: -6px -4px; }
-@media (hover: hover) { .share-all:hover { background: var(--key-down); } }
-.share-all:active { background: var(--key-down); }
 .update-progress { display: flex; align-items: center; gap: 12px; min-height: 46px; }
 .update-track { flex: 1; height: 6px; border-radius: 3px; background: var(--accent-soft); overflow: hidden; }
 .update-track span { display: block; height: 100%; width: 0; border-radius: 3px; background: var(--accent); transition: width .2s; }
@@ -106,10 +115,14 @@ dialog.sheet.aboutpg[open] { display: flex; flex-direction: column; animation: n
         <h1 class="mark">Dailies</h1>
       </div>
       <div class="top-right">
-        <button class="version" id="version" type="button">About</button>
+        <button class="icon-btn" id="menuBtn" type="button" aria-label="More" aria-haspopup="menu" aria-expanded="false" aria-controls="menu"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="3.6" r="1.7"/><circle cx="10" cy="10" r="1.7"/><circle cx="10" cy="16.4" r="1.7"/></svg></button>
       </div>
     </div>
   </header>
+  <div class="menu" id="menu" role="menu" hidden>
+    <button class="menu-row" id="remindToggle" type="button" role="menuitem" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 10a6 6 0 0 1 12 0c0 4.5 1.6 6 2 6.5H4c.4-.5 2-2 2-6.5ZM10 20a2.2 2.2 0 0 0 4 0"/></svg><span>Daily reminder<small id="remindText"></small></span><i id="remindState"></i></button>
+    <button class="menu-row" id="version" type="button" role="menuitem"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><circle cx="12" cy="7.7" r=".6" fill="currentColor"/></svg><span id="versionLabel">About</span></button>
+  </div>
 
   <section class="update" id="updateCard" aria-label="App update" hidden>
     <div>
@@ -130,26 +143,22 @@ dialog.sheet.aboutpg[open] { display: flex; flex-direction: column; animation: n
 
   <p class="install-hint" id="installHint" hidden><span>Keep Dailies on your iPhone: tap Share, then Add to Home Screen.</span><button type="button" aria-label="Dismiss">×</button></p>
   <main>
-    <div class="today">
-      <h2 id="date"></h2>
-      <div class="today-row">
-        <p id="progress"></p>
-        <button class="share-all" id="shareAll" type="button" aria-label="Share today" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span id="shareLabel">Share</span></button>
+    <div class="day" id="day">
+      <div class="today">
+        <p class="today-label" id="date"></p>
+        <h2 id="progress"></h2>
+        <div class="days" id="days" role="img" hidden></div>
       </div>
-      <div class="days" id="days" role="img" hidden></div>
+      <button class="share-all" id="shareAll" type="button" aria-label="Share today" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span id="shareLabel">Share</span></button>
     </div>
     <nav class="games" id="games" aria-label="Today's games"></nav>
   </main>
-
-  <footer class="foot">
-    <p class="get-app" id="remind" hidden><span id="remindText">Reminder at 6 pm if you haven't played.</span> <button class="link" id="remindToggle" type="button">Turn on</button></p>
-  </footer>
 </div>
 
 <!-- About: the version, and the way to the policy, the terms and us -->
 <dialog class="sheet aboutpg" id="aboutSheet" aria-labelledby="aboutTitle">
   <div class="sheet-head">
-    <button class="icon-btn" type="button" data-close aria-label="Back"><svg width="10" height="16" viewBox="0 0 10 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2 2 8l6 6"/></svg></button>
+    <button class="icon-btn" type="button" data-close aria-label="Back"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16.5 10h-13M9 4.5 3.5 10 9 15.5"/></svg></button>
     <h2 id="aboutTitle" tabindex="-1" autofocus>About</h2>
   </div>
   <div class="sheet-body">
@@ -157,13 +166,13 @@ dialog.sheet.aboutpg[open] { display: flex; flex-direction: column; animation: n
       <img src="icons/icon-192.png" width="64" height="64" alt="" onerror="this.hidden=true">
       <p class="about-name">Dailies</p>
       <p class="about-tag">Nine small puzzles, new every day.</p>
-      <p class="about-ver" id="aboutVer" hidden></p>
     </div>
     <div class="about-links">
-      <button class="about-upd" type="button" id="aboutCheck" hidden>Check for updates<span id="aboutNote" aria-live="polite"></span></button>
-      <a class="about-mail" href="mailto:support@teloone.au?subject=Dailies">support@teloone.au</a>
-      <div class="about-legal"><a href="https://teloone.au/apps/dailies/privacy/" rel="noreferrer">Privacy policy</a><i aria-hidden="true"></i><a href="https://teloone.au/apps/dailies/terms/" rel="noreferrer">Terms of use</a></div>
-      <a id="getApp" href="/app" hidden>Get the Android app</a>
+      <p class="about-row" id="aboutVer" hidden></p>
+      <button class="about-row" type="button" id="aboutCheck" hidden><span>Check for updates</span><span id="aboutNote" aria-live="polite"></span></button>
+      <a class="about-row" href="mailto:support@teloone.au?subject=Dailies"><span>Contact support<small>support@teloone.au</small></span></a>
+      <div class="about-legal"><a class="about-row" href="https://teloone.au/apps/dailies/privacy/" rel="noreferrer">Privacy policy</a><a class="about-row" href="https://teloone.au/apps/dailies/terms/" rel="noreferrer">Terms of use</a></div>
+      <a class="about-row" id="getApp" href="/app" hidden>Get the Android app</a>
     </div>
     <p class="about-foot">Made in Adelaide by Telo One</p>
   </div>
@@ -176,25 +185,25 @@ dialog.sheet.aboutpg[open] { display: flex; flex-direction: column; animation: n
 (() => {
   // Every game in the hub: its folder, its name and a line about it. A game
   // tells the hub how today went by saving { date, text, lost } as hub.<id>.
-  const SLUG = '<rect width="64" height="64" rx="14" fill="#1F6F54"/><g transform="translate(13.5 3.5) scale(.57)"><path d="M43 29 38 13M52 28l4-16" stroke="#F4C52E" stroke-width="4.5" stroke-linecap="round"/><path fill="#F4C52E" d="M3 53C3 48 12 47 19 45 27 43 30 35 36 30 42 25 54 25 58 33 61 39 60 48 55 52 53 54 50 55 46 55H7C4 55 3 54 3 53Z"/><g fill="#D99F14"><circle cx="24" cy="49.5" r="2.4"/><circle cx="33.5" cy="44" r="3"/><circle cx="14" cy="51" r="1.7"/><circle cx="37" cy="51" r="1.6"/></g><path d="M43 39.5Q50 48 57.5 38" fill="none" stroke="#14211C" stroke-width="2.6" stroke-linecap="round"/><path fill="#EE6A7C" stroke="#14211C" stroke-width="1.6" stroke-linejoin="round" d="M47.5 43.6c.3 4.6 1.8 7 4 6.8 2.1-.2 3-3 2.4-7.4"/><g stroke="#14211C" stroke-width="1.8"><circle cx="38" cy="11" r="7.4" fill="#fff"/><circle cx="56.5" cy="10" r="7.4" fill="#fff"/></g><circle cx="40.4" cy="13.2" r="3.1" fill="#14211C"/><circle cx="54.4" cy="7.8" r="3.1" fill="#14211C"/></g><rect x="7" y="41" width="11.6" height="11.6" rx="2.4" fill="#FFFFFF"/><text x="12.8" y="50.6" font-size="10" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#14211C">S</text><rect x="19.7" y="41" width="11.6" height="11.6" rx="2.4" fill="#FFFFFF"/><text x="25.5" y="50.6" font-size="10" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#14211C">L</text><rect x="32.4" y="41" width="11.6" height="11.6" rx="2.4" fill="#FFFFFF"/><text x="38.2" y="50.6" font-size="10" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#14211C">U</text><rect x="45.099999999999994" y="41" width="11.6" height="11.6" rx="2.4" fill="#FFFFFF"/><text x="50.89999999999999" y="50.6" font-size="10" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#14211C">G</text>';
+  const SLUG = '<rect width="64" height="64" rx="14" fill="#1F6F54"/><g transform="translate(13.5 3.5) scale(.57)"><path d="M43 29 38 13M52 28l4-16" stroke="#F4C52E" stroke-width="4.5" stroke-linecap="round"/><path fill="#F4C52E" d="M3 53C3 48 12 47 19 45 27 43 30 35 36 30 42 25 54 25 58 33 61 39 60 48 55 52 53 54 50 55 46 55H7C4 55 3 54 3 53Z"/><g fill="#D99F14"><circle cx="24" cy="49.5" r="2.4"/><circle cx="33.5" cy="44" r="3"/><circle cx="14" cy="51" r="1.7"/><circle cx="37" cy="51" r="1.6"/></g><path d="M43 39.5Q50 48 57.5 38" fill="none" stroke="#17181B" stroke-width="2.6" stroke-linecap="round"/><path fill="#EE6A7C" stroke="#17181B" stroke-width="1.6" stroke-linejoin="round" d="M47.5 43.6c.3 4.6 1.8 7 4 6.8 2.1-.2 3-3 2.4-7.4"/><g stroke="#17181B" stroke-width="1.8"><circle cx="38" cy="11" r="7.4" fill="#fff"/><circle cx="56.5" cy="10" r="7.4" fill="#fff"/></g><circle cx="40.4" cy="13.2" r="3.1" fill="#17181B"/><circle cx="54.4" cy="7.8" r="3.1" fill="#17181B"/></g><rect x="7" y="41" width="11.6" height="11.6" rx="2.4" fill="#FFFFFF"/><text x="12.8" y="50.6" font-size="10" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">S</text><rect x="19.7" y="41" width="11.6" height="11.6" rx="2.4" fill="#FFFFFF"/><text x="25.5" y="50.6" font-size="10" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">L</text><rect x="32.4" y="41" width="11.6" height="11.6" rx="2.4" fill="#FFFFFF"/><text x="38.2" y="50.6" font-size="10" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">U</text><rect x="45.099999999999994" y="41" width="11.6" height="11.6" rx="2.4" fill="#FFFFFF"/><text x="50.89999999999999" y="50.6" font-size="10" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">G</text>';
   const BULB = '<rect width="64" height="64" rx="14" fill="#232C66"/><path fill="#FFCF33" d="M32 6.5a13.5 13.5 0 0 0-8.1 24.3c2 1.6 2.7 3.3 2.7 5.2h10.8c0-1.9.7-3.6 2.7-5.2A13.5 13.5 0 0 0 32 6.5Z"/><rect x="27.2" y="33.6" width="9.6" height="4" rx="2" fill="#FFFFFF"/><rect x="7" y="43" width="9.6" height="9.6" rx="2" fill="#7C84A8"/><rect x="18.4" y="44.2" width="7.2" height="7.2" rx="1" fill="none" stroke="#85A2FF" stroke-width="2.4"/><rect x="27.4" y="43" width="9.6" height="9.6" rx="2" fill="#7C84A8"/><rect x="37.6" y="43" width="9.6" height="9.6" rx="2" fill="#85A2FF"/><rect x="47.8" y="43" width="9.6" height="9.6" rx="2" fill="#85A2FF"/>';
   const BARS = '<rect width="64" height="64" rx="14" fill="#C2407A"/><rect x="9" y="9" width="9.5" height="9.5" rx="2.2" fill="#FFCF33"/><rect x="20.5" y="9" width="9.5" height="9.5" rx="2.2" fill="#FFCF33"/><rect x="9" y="20.5" width="9.5" height="9.5" rx="2.2" fill="#FFCF33"/><rect x="20.5" y="20.5" width="9.5" height="9.5" rx="2.2" fill="#FFCF33"/><rect x="34" y="9" width="9.5" height="9.5" rx="2.2" fill="#FFFFFF"/><rect x="45.5" y="9" width="9.5" height="9.5" rx="2.2" fill="#FFFFFF"/><rect x="34" y="20.5" width="9.5" height="9.5" rx="2.2" fill="#FFFFFF"/><rect x="45.5" y="20.5" width="9.5" height="9.5" rx="2.2" fill="#FFFFFF"/><rect x="9" y="34" width="9.5" height="9.5" rx="2.2" fill="#8FE3B4"/><rect x="20.5" y="34" width="9.5" height="9.5" rx="2.2" fill="#8FE3B4"/><rect x="9" y="45.5" width="9.5" height="9.5" rx="2.2" fill="#8FE3B4"/><rect x="20.5" y="45.5" width="9.5" height="9.5" rx="2.2" fill="#8FE3B4"/><rect x="34" y="34" width="9.5" height="9.5" rx="2.2" fill="#BFD2F8"/><rect x="45.5" y="34" width="9.5" height="9.5" rx="2.2" fill="#BFD2F8"/><rect x="34" y="45.5" width="9.5" height="9.5" rx="2.2" fill="#BFD2F8"/><rect x="45.5" y="45.5" width="9.5" height="9.5" rx="2.2" fill="#BFD2F8"/>';
-  const RINGS = '<rect width="64" height="64" rx="14" fill="#E5533D"/><text x="32" y="31" font-size="24" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#FFFFFF">578</text><rect x="9" y="38" width="14" height="14" rx="3" fill="#FFFFFF"/><text x="16" y="49.4" font-size="14" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#14211C">+</text><rect x="25" y="38" width="14" height="14" rx="3" fill="#FFFFFF"/><text x="32" y="49.4" font-size="14" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#14211C">×</text><rect x="41" y="38" width="14" height="14" rx="3" fill="#FFFFFF"/><text x="48" y="49.4" font-size="14" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#14211C">÷</text>';
-  const GRID = '<rect width="64" height="64" rx="14" fill="#2C53C4"/><rect x="10" y="10" width="44" height="44" rx="4" fill="#14211C"/><rect x="11.4" y="11.4" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/><rect x="21.9" y="11.4" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/><rect x="32.4" y="11.4" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/><rect x="11.4" y="21.9" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/><rect x="32.4" y="21.9" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/><rect x="42.9" y="21.9" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/><rect x="11.4" y="32.4" width="9.7" height="9.7" rx="1" fill="#BFD2F8"/><rect x="21.9" y="32.4" width="9.7" height="9.7" rx="1" fill="#FFCF33"/><rect x="32.4" y="32.4" width="9.7" height="9.7" rx="1" fill="#BFD2F8"/><rect x="42.9" y="32.4" width="9.7" height="9.7" rx="1" fill="#BFD2F8"/><rect x="21.9" y="42.9" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/><rect x="32.4" y="42.9" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/><rect x="42.9" y="42.9" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/>';
-  const WEAVE = '<rect width="64" height="64" rx="14" fill="#12838E"/><rect x="7" y="32" width="11.6" height="11.6" rx="2.4" fill="#FFFFFF"/><text x="12.8" y="41.8" font-size="10.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#14211C">M</text><rect x="19.7" y="32" width="11.6" height="11.6" rx="2.4" fill="#FFCF33"/><text x="25.5" y="41.8" font-size="10.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#14211C">N</text><rect x="32.4" y="32" width="11.6" height="11.6" rx="2.4" fill="#FFCF33"/><text x="38.2" y="41.8" font-size="10.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#14211C">E</text><rect x="45.099999999999994" y="32" width="11.6" height="11.6" rx="2.4" fill="#FFFFFF"/><text x="50.89999999999999" y="41.8" font-size="10.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#14211C">D</text><path d="M25.5,27.5C25.5,14 38.5,14 38.5,27.5" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/><path d="M21.6,24L25.5,28.5L29.4,24M34.6,24L38.5,28.5L42.4,24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>';
-  const ROWS = '<rect width="64" height="64" rx="14" fill="#6A48C8"/><rect x="8" y="9" width="40" height="13" rx="3" fill="#FFFFFF"/><text x="28" y="19.2" font-size="10.5" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#1D7548">1958</text><rect x="16" y="25.5" width="40" height="13" rx="3" fill="#FFCF33"/><text x="36" y="35.7" font-size="10.5" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#14211C">????</text><rect x="8" y="42" width="40" height="13" rx="3" fill="#FFFFFF"/><text x="28" y="52.2" font-size="10.5" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#1D7548">1984</text>';
+  const RINGS = '<rect width="64" height="64" rx="14" fill="#E5533D"/><text x="32" y="31" font-size="24" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#FFFFFF">578</text><rect x="9" y="38" width="14" height="14" rx="3" fill="#FFFFFF"/><text x="16" y="49.4" font-size="14" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">+</text><rect x="25" y="38" width="14" height="14" rx="3" fill="#FFFFFF"/><text x="32" y="49.4" font-size="14" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">×</text><rect x="41" y="38" width="14" height="14" rx="3" fill="#FFFFFF"/><text x="48" y="49.4" font-size="14" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">÷</text>';
+  const GRID = '<rect width="64" height="64" rx="14" fill="#2C53C4"/><rect x="10" y="10" width="44" height="44" rx="4" fill="#17181B"/><rect x="11.4" y="11.4" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/><rect x="21.9" y="11.4" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/><rect x="32.4" y="11.4" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/><rect x="11.4" y="21.9" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/><rect x="32.4" y="21.9" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/><rect x="42.9" y="21.9" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/><rect x="11.4" y="32.4" width="9.7" height="9.7" rx="1" fill="#BFD2F8"/><rect x="21.9" y="32.4" width="9.7" height="9.7" rx="1" fill="#FFCF33"/><rect x="32.4" y="32.4" width="9.7" height="9.7" rx="1" fill="#BFD2F8"/><rect x="42.9" y="32.4" width="9.7" height="9.7" rx="1" fill="#BFD2F8"/><rect x="21.9" y="42.9" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/><rect x="32.4" y="42.9" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/><rect x="42.9" y="42.9" width="9.7" height="9.7" rx="1" fill="#FFFFFF"/>';
+  const WEAVE = '<rect width="64" height="64" rx="14" fill="#12838E"/><rect x="7" y="32" width="11.6" height="11.6" rx="2.4" fill="#FFFFFF"/><text x="12.8" y="41.8" font-size="10.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">M</text><rect x="19.7" y="32" width="11.6" height="11.6" rx="2.4" fill="#FFCF33"/><text x="25.5" y="41.8" font-size="10.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">N</text><rect x="32.4" y="32" width="11.6" height="11.6" rx="2.4" fill="#FFCF33"/><text x="38.2" y="41.8" font-size="10.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">E</text><rect x="45.099999999999994" y="32" width="11.6" height="11.6" rx="2.4" fill="#FFFFFF"/><text x="50.89999999999999" y="41.8" font-size="10.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">D</text><path d="M25.5,27.5C25.5,14 38.5,14 38.5,27.5" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/><path d="M21.6,24L25.5,28.5L29.4,24M34.6,24L38.5,28.5L42.4,24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>';
+  const ROWS = '<rect width="64" height="64" rx="14" fill="#6A48C8"/><rect x="8" y="9" width="40" height="13" rx="3" fill="#FFFFFF"/><text x="28" y="19.2" font-size="10.5" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#1D7548">1958</text><rect x="16" y="25.5" width="40" height="13" rx="3" fill="#FFCF33"/><text x="36" y="35.7" font-size="10.5" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">????</text><rect x="8" y="42" width="40" height="13" rx="3" fill="#FFFFFF"/><text x="28" y="52.2" font-size="10.5" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#1D7548">1984</text>';
   const ROUTE = '<rect width="64" height="64" rx="14" fill="#3C9BE0"/><path d="M8,9L30,7L27,23L9,30Z" fill="#CFE6F7" stroke="#3C9BE0" stroke-width="2.2" stroke-linejoin="round"/><path d="M30,38L42,42L56,29L57,56L27,57Z" fill="#CFE6F7" stroke="#3C9BE0" stroke-width="2.2" stroke-linejoin="round"/><path d="M9,30L26,22L29,41L27,57L8,55Z" fill="#FFCF33" stroke="#3C9BE0" stroke-width="2.2" stroke-linejoin="round"/><path d="M26,22L46,27L45,47L29,41Z" fill="#2FA36B" stroke="#3C9BE0" stroke-width="2.2" stroke-linejoin="round"/><path d="M30,7L57,9L56,31L46,27L26,22Z" fill="#232C66" stroke="#3C9BE0" stroke-width="2.2" stroke-linejoin="round"/><path d="M18,44L37,34L44,17" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="44" r="4" fill="#FFFFFF"/><circle cx="44" cy="17" r="4" fill="#FFFFFF"/>';
-  const TREE = '<rect width="64" height="64" rx="14" fill="#C8682A"/><path d="M32,22C32,30 18,29 18,38M32,22C32,30 46,29 46,38" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity=".9"/><rect x="19" y="10" width="26" height="13" rx="6.5" fill="#FFCF33"/><text x="32" y="19.6" font-size="8.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#14211C">SUN</text><rect x="5" y="38" width="26" height="13" rx="6.5" fill="#FFFFFF"/><text x="18" y="47.6" font-size="8.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#14211C">SET</text><rect x="33" y="38" width="26" height="13" rx="6.5" fill="#FFFFFF"/><text x="46" y="47.6" font-size="8.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#14211C">RISE</text>';
+  const TREE = '<rect width="64" height="64" rx="14" fill="#C8682A"/><path d="M32,22C32,30 18,29 18,38M32,22C32,30 46,29 46,38" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity=".9"/><rect x="19" y="10" width="26" height="13" rx="6.5" fill="#FFCF33"/><text x="32" y="19.6" font-size="8.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">SUN</text><rect x="5" y="38" width="26" height="13" rx="6.5" fill="#FFFFFF"/><text x="18" y="47.6" font-size="8.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">SET</text><rect x="33" y="38" width="26" height="13" rx="6.5" fill="#FFFFFF"/><text x="46" y="47.6" font-size="8.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">RISE</text>';
   const GAMES = [
-    { id: 'slugle', name: 'Slugle', line: 'Turn today’s word into SLUG', icon: SLUG },
-    { id: 'hunch', name: 'Hunch', line: 'Find the hidden word in six tries', icon: BULB },
-    { id: 'sorted', name: 'Sorted', line: 'Find four groups of four words', icon: BARS },
-    { id: 'reach', name: 'Reach', line: 'Hit the target with six numbers', icon: RINGS },
-    { id: 'cluey', name: 'Cluey', line: 'A small crossword, slyer each day', icon: GRID },
-    { id: 'mend', name: 'Mend', line: 'Swap letters back into words', icon: WEAVE },
-    { id: 'dated', name: 'Dated', line: 'Put history in order, blind', icon: ROWS },
-    { id: 'overland', name: 'Overland', line: 'Cross the map, border by border', icon: ROUTE },
-    { id: 'splice', name: 'Splice', line: 'Link words into a tree of phrases', icon: TREE },
+    { id: 'slugle', name: 'Slugle', kind: 'Word ladder', line: 'Turn today’s word into SLUG', icon: SLUG },
+    { id: 'hunch', name: 'Hunch', kind: 'Hidden word', line: 'Find the hidden word in six tries', icon: BULB },
+    { id: 'sorted', name: 'Sorted', kind: 'Groups', line: 'Find four groups of four words', icon: BARS },
+    { id: 'reach', name: 'Reach', kind: 'Numbers', line: 'Hit the target with six numbers', icon: RINGS },
+    { id: 'cluey', name: 'Cluey', kind: 'Crossword', line: 'A small crossword, slyer each day', icon: GRID },
+    { id: 'mend', name: 'Mend', kind: 'Letter swaps', line: 'Swap letters back into words', icon: WEAVE },
+    { id: 'dated', name: 'Dated', kind: 'History', line: 'Put history in order, blind', icon: ROWS },
+    { id: 'overland', name: 'Overland', kind: 'Borders', line: 'Cross the map, border by border', icon: ROUTE },
+    { id: 'splice', name: 'Splice', kind: 'Phrases', line: 'Link words into a tree of phrases', icon: TREE },
   ];
   const inApp = location.hostname === 'appassets.androidplatform.net';
   // Where shared results link: short, as chat apps make a link of it. The app and
@@ -230,16 +239,18 @@ dialog.sheet.aboutpg[open] { display: flex; flex-direction: column; animation: n
       const lost = played && lostIt(result);
       const a = el('a', played ? (lost ? 'game done lost' : 'game done') : 'game');
       a.href = `${g.id}/index.html`;
-      a.innerHTML = `<svg width="40" height="40" viewBox="0 0 64 64" fill="none" aria-hidden="true">${g.icon}</svg>`;
-      const text = el('div');
-      const line = el('span', '', played ? result.text : today ? 'Started' : g.line);
+      a.innerHTML = `<svg width="44" height="44" viewBox="0 0 64 64" fill="none" aria-hidden="true">${g.icon}</svg>`;
+      // Under the name: how today's went, or the kind of puzzle it is. The longer line is for a screen reader.
+      const line = el('span', '', played ? result.text : today ? 'Started' : g.kind);
       if (played) line.append(el('span', 'sr', lost ? ', lost' : ', played'));
-      text.append(el('b', '', g.name), line);
-      a.append(text);
+      else if (!today) line.append(el('span', 'sr', `. ${g.line}`));
+      a.append(el('b', '', g.name), line);
       return a;
     }));
-    $('progress').textContent = done === GAMES.length ? 'All done. See you tomorrow.' : `${done} of ${GAMES.length} played today`;
+    const all = done === GAMES.length;
+    $('progress').replaceChildren(el('b', '', all ? 'All done' : `${done} of ${GAMES.length}`), el('small', '', all ? 'See you tomorrow' : 'played today'));
     $('shareAll').hidden = !done;
+    $('day').classList.toggle('shared', !!done);
     drawDays(now, done);
   }
   // The record under the day: the last two weeks and the run of days played.
@@ -297,7 +308,9 @@ dialog.sheet.aboutpg[open] { display: flex; flex-direction: column; animation: n
   const WEB_VERSION = '__VERSION__';
   function showVersion() {
     const v = appVersion || (WEB_VERSION.startsWith('__') ? '' : WEB_VERSION);
-    $('aboutVer').textContent = v ? 'Version ' + v : '';
+    const row = el('span', '', 'Version');
+    row.append(el('small', '', v));
+    $('aboutVer').replaceChildren(row);
     $('aboutVer').hidden = !v;
   }
   showVersion();
@@ -307,10 +320,10 @@ dialog.sheet.aboutpg[open] { display: flex; flex-direction: column; animation: n
     get() { try { return sessionStorage.getItem('updateLater') || ''; } catch { return ''; } },
     set(v) { try { sessionStorage.setItem('updateLater', v); } catch {} },
   };
-  // Top right says About, or that an update is waiting; the About sheet has the rest.
+  // The menu's row says About, or that an update is waiting, with a dot on its button; the About page has the rest.
   function showLabel() {
-    $('version').textContent = updateReady ? 'Update available' : 'About';
-    $('version').dataset.state = updateReady ? 'available' : '';
+    $('versionLabel').textContent = updateReady ? 'Update available' : 'About';
+    $('version').dataset.state = $('menuBtn').dataset.state = updateReady ? 'available' : '';
     if (updateReady) showNote('Available');
   }
   function showNote(text) {
@@ -397,7 +410,24 @@ dialog.sheet.aboutpg[open] { display: flex; flex-direction: column; animation: n
   // Android Back closes the sheet, as it does a game's.
   const tellBack = () => toApp({ type: 'back', enabled: about.open });
   window.ladderBack = () => { if (!about.open) return false; about.close(); return true; };
-  $('version').addEventListener('click', () => { if (!about.open) about.showModal(); tellBack(); });
+  const openAbout = () => { if (!about.open) about.showModal(); tellBack(); };
+  $('version').addEventListener('click', () => { showMenu(false); openAbout(); });
+
+  // ---- More ----
+  // The button drops a menu when there is more than About to offer (the reminder, in the iPhone app); otherwise it goes straight there.
+  const menu = $('menu');
+  function showMenu(on) {
+    menu.hidden = !on;
+    $('menuBtn').setAttribute('aria-expanded', on);
+  }
+  $('menuBtn').addEventListener('click', () => {
+    if (!menu.hidden) return showMenu(false);
+    if ($('remindToggle').hidden) return openAbout();
+    showMenu(true);
+  });
+  // A tap anywhere else, or Escape, puts it away
+  document.addEventListener('pointerdown', e => { if (!menu.hidden && !e.target.closest('#menu, #menuBtn')) showMenu(false); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !menu.hidden) { showMenu(false); $('menuBtn').focus(); } });
   about.addEventListener('click', e => { if (e.target === about || e.target.closest('[data-close]')) about.close(); });
   about.addEventListener('close', tellBack);
 
@@ -406,9 +436,10 @@ dialog.sheet.aboutpg[open] { display: flex; flex-direction: column; animation: n
   let remindBlocked = false;
   function showRemind(note) {
     const on = !!store.get('remind');
-    $('remind').hidden = false;
-    $('remindText').textContent = note || (on ? "Reminder at 6 pm if you haven't played: on." : "Reminder at 6 pm if you haven't played.");
-    $('remindToggle').textContent = on ? 'Turn off' : remindBlocked ? 'Open Settings' : 'Turn on';
+    $('remindToggle').hidden = false;
+    $('remindText').textContent = note || "At 6 pm if you haven't played";
+    $('remindState').textContent = on ? 'On' : remindBlocked ? 'Open Settings' : 'Off';
+    $('remindToggle').setAttribute('aria-pressed', on);
     if (window.ladderRemind) window.ladderRemind();
   }
   $('remindToggle').addEventListener('click', () => {

@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
 <meta name="referrer" content="no-referrer">
-<meta name="theme-color" content="#E8ECE5" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0E1412" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F0F1F3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#151619" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="../manifest.json">
 <link rel="apple-touch-icon" sizes="180x180" href="../icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -16,24 +16,24 @@
 <title>Overland</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect x=%223%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2221.4%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%223%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23F4C52E%22/><rect x=%2221.4%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%223%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2212.2%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2221.4%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/></svg>">
 <link rel="preload" href="../fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../shared.css?v=1">
+<link rel="stylesheet" href="../shared.css?v=2">
 <style>
 /* Yellow is where you start, blue where you're going, green what's joined up. */
-:root { --from: #F4C52E; --on-from: #14211C; --to: #2C53C4; --on-to: #F7F8F4; --land: var(--key); --loose: var(--line-strong); --way: color-mix(in srgb, var(--pos) 34%, var(--land)); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --land: var(--key-down); --to: #5C7FE8; --on-to: #0E1412; } }
-:root[data-theme="dark"] { --land: var(--key-down); --to: #5C7FE8; --on-to: #0E1412; }
+:root { --from: #F4C52E; --on-from: #17181B; --to: #2C53C4; --on-to: #FFFFFF; --land: var(--key); --loose: var(--line-strong); --way: color-mix(in srgb, var(--pos) 34%, var(--land)); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --land: var(--key-down); --to: #5C7FE8; --on-to: #151619; } }
+:root[data-theme="dark"] { --land: var(--key-down); --to: #5C7FE8; --on-to: #151619; }
 
 .stage { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 8px; padding-top: 10px; }
 
 /* The two ends */
 .ends { display: grid; grid-template-columns: minmax(0, 1fr) 18px minmax(0, 1fr); align-items: center; gap: 6px; }
-.end { min-width: 0; padding: 7px 10px; border-radius: 7px; font-size: .92rem; font-weight: 600; line-height: 1.2; text-align: center; overflow-wrap: anywhere; }
+.end { min-width: 0; padding: 7px 10px; border-radius: 14px; font-size: .92rem; font-weight: 600; line-height: 1.2; text-align: center; overflow-wrap: anywhere; }
 .end.from { background: var(--from); color: var(--on-from); }
 .end.to { background: var(--to); color: var(--on-to); }
 .ends svg { color: var(--muted); }
 
 /* The map: land with no borders on it, and only the countries named so far */
-.map { position: relative; flex: 1; min-height: 120px; background: var(--surface); border-radius: 10px; overflow: hidden; }
+.map { position: relative; flex: 1; min-height: 120px; background: var(--surface); border-radius: 22px; overflow: hidden; }
 .map svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 /* Pinch and drag move the map, not the page */
 .map { touch-action: none; user-select: none; -webkit-user-select: none; cursor: grab; }
@@ -89,7 +89,7 @@
 .picks.more { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); }
 /* A finger's height to tap, whatever the height drawn */
 .pick::after { content: ""; position: absolute; inset: -4px 0; }
-.pick { position: relative; flex: none; min-height: 40px; padding: 0 13px; background: var(--key); border: 0; border-radius: 7px; font-size: .92rem; font-weight: 600; white-space: nowrap; touch-action: manipulation; }
+.pick { position: relative; flex: none; min-height: 40px; padding: 0 13px; background: var(--key); border: 0; border-radius: 14px; font-size: .92rem; font-weight: 600; white-space: nowrap; touch-action: manipulation; }
 .pick:first-child { background: var(--ink); color: var(--on-ink); }
 .pick:active { background: var(--key-down); color: var(--ink); }
 .key { height: 48px; }
@@ -99,7 +99,7 @@
 .best b { font-weight: 600; color: var(--ink); }
 
 /* The worked example in How to play */
-.example { display: grid; gap: 8px; padding: 12px 14px; background: var(--bg); border-radius: 10px; font-size: .92rem; line-height: 1.4; }
+.example { display: grid; gap: 8px; padding: 12px 14px; background: var(--bg); border-radius: 18px; font-size: .92rem; line-height: 1.4; }
 .mini { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
 .mini span { padding: 3px 9px; border-radius: 6px; background: var(--pos); color: var(--on-ink); font-size: .84rem; font-weight: 600; }
 .mini span.from { background: var(--from); color: var(--on-from); }
@@ -133,7 +133,7 @@
   <header>
     <div class="top">
       <a class="brand" href="../index.html" aria-label="All games">
-        <svg width="10" height="16" viewBox="0 0 10 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2 2 8l6 6"/></svg>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16.5 10h-13M9 4.5 3.5 10 9 15.5"/></svg>
         <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#3C9BE0"/><path d="M8,9L30,7L27,23L9,30Z" fill="#CFE6F7" stroke="#3C9BE0" stroke-width="2.2" stroke-linejoin="round"/><path d="M30,38L42,42L56,29L57,56L27,57Z" fill="#CFE6F7" stroke="#3C9BE0" stroke-width="2.2" stroke-linejoin="round"/><path d="M9,30L26,22L29,41L27,57L8,55Z" fill="#FFCF33" stroke="#3C9BE0" stroke-width="2.2" stroke-linejoin="round"/><path d="M26,22L46,27L45,47L29,41Z" fill="#2FA36B" stroke="#3C9BE0" stroke-width="2.2" stroke-linejoin="round"/><path d="M30,7L57,9L56,31L46,27L26,22Z" fill="#232C66" stroke="#3C9BE0" stroke-width="2.2" stroke-linejoin="round"/><path d="M18,44L37,34L44,17" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="44" r="4" fill="#FFFFFF"/><circle cx="44" cy="17" r="4" fill="#FFFFFF"/></svg>
         <h1 class="mark">Overland</h1>
       </a>
