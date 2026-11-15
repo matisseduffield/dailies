@@ -33,9 +33,8 @@
 .days i.some { background: var(--muted); }
 .days i.all { background: var(--ink); }
 
-/* The games, a tile each, three to a row: its picture, its name, then the kind of puzzle it is
-   in grey, or once it's begun, how today's went in white. The pictures are the only colour here;
-   the words say if it was lost. */
+/* The games, a tile each, three to a row: its picture, its name, then where it stands today:
+   "To play" or "Started" in grey, and once it's over, how it went, green if won and red if lost. */
 .games { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: 14px; margin-top: 14px; }
 .game { display: grid; justify-items: center; align-content: start; min-height: 136px; padding: 30px 6px 12px; background: var(--surface); border-radius: 22px; color: inherit; text-decoration: none; text-align: center; }
 .game svg { margin-bottom: 14px; }
@@ -43,7 +42,8 @@
 @media (hover: hover) { .game:hover { background: var(--key); } }
 .game b { font-size: 1rem; font-weight: 400; line-height: 1.3; }
 .game span { font-size: .8rem; line-height: 1.3; color: var(--muted); overflow-wrap: anywhere; }
-.game.done > span { color: var(--ink); }
+.game.done > span { color: var(--pos); }
+.game.done.lost > span { color: var(--neg); }
 /* Said to a screen reader, as the colour or a picture can't be */
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
@@ -196,15 +196,15 @@ a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-ri
   const ROUTE = '<rect width="64" height="64" rx="14" fill="#3C9BE0"/><path d="M8,9L30,7L27,23L9,30Z" fill="#CFE6F7" stroke="#3C9BE0" stroke-width="2.2" stroke-linejoin="round"/><path d="M30,38L42,42L56,29L57,56L27,57Z" fill="#CFE6F7" stroke="#3C9BE0" stroke-width="2.2" stroke-linejoin="round"/><path d="M9,30L26,22L29,41L27,57L8,55Z" fill="#FFCF33" stroke="#3C9BE0" stroke-width="2.2" stroke-linejoin="round"/><path d="M26,22L46,27L45,47L29,41Z" fill="#2FA36B" stroke="#3C9BE0" stroke-width="2.2" stroke-linejoin="round"/><path d="M30,7L57,9L56,31L46,27L26,22Z" fill="#232C66" stroke="#3C9BE0" stroke-width="2.2" stroke-linejoin="round"/><path d="M18,44L37,34L44,17" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="44" r="4" fill="#FFFFFF"/><circle cx="44" cy="17" r="4" fill="#FFFFFF"/>';
   const TREE = '<rect width="64" height="64" rx="14" fill="#C8682A"/><path d="M32,22C32,30 18,29 18,38M32,22C32,30 46,29 46,38" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity=".9"/><rect x="19" y="10" width="26" height="13" rx="6.5" fill="#FFCF33"/><text x="32" y="19.6" font-size="8.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">SUN</text><rect x="5" y="38" width="26" height="13" rx="6.5" fill="#FFFFFF"/><text x="18" y="47.6" font-size="8.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">SET</text><rect x="33" y="38" width="26" height="13" rx="6.5" fill="#FFFFFF"/><text x="46" y="47.6" font-size="8.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">RISE</text>';
   const GAMES = [
-    { id: 'slugle', name: 'Slugle', kind: 'Word ladder', line: 'Turn today’s word into SLUG', icon: SLUG },
-    { id: 'hunch', name: 'Hunch', kind: 'Hidden word', line: 'Find the hidden word in six tries', icon: BULB },
-    { id: 'sorted', name: 'Sorted', kind: 'Groups', line: 'Find four groups of four words', icon: BARS },
-    { id: 'reach', name: 'Reach', kind: 'Numbers', line: 'Hit the target with six numbers', icon: RINGS },
-    { id: 'cluey', name: 'Cluey', kind: 'Crossword', line: 'A small crossword, slyer each day', icon: GRID },
-    { id: 'mend', name: 'Mend', kind: 'Letter swaps', line: 'Swap letters back into words', icon: WEAVE },
-    { id: 'dated', name: 'Dated', kind: 'History', line: 'Put history in order, blind', icon: ROWS },
-    { id: 'overland', name: 'Overland', kind: 'Borders', line: 'Cross the map, border by border', icon: ROUTE },
-    { id: 'splice', name: 'Splice', kind: 'Phrases', line: 'Link words into a tree of phrases', icon: TREE },
+    { id: 'slugle', name: 'Slugle', line: 'Turn today’s word into SLUG', icon: SLUG },
+    { id: 'hunch', name: 'Hunch', line: 'Find the hidden word in six tries', icon: BULB },
+    { id: 'sorted', name: 'Sorted', line: 'Find four groups of four words', icon: BARS },
+    { id: 'reach', name: 'Reach', line: 'Hit the target with six numbers', icon: RINGS },
+    { id: 'cluey', name: 'Cluey', line: 'A small crossword, slyer each day', icon: GRID },
+    { id: 'mend', name: 'Mend', line: 'Swap letters back into words', icon: WEAVE },
+    { id: 'dated', name: 'Dated', line: 'Put history in order, blind', icon: ROWS },
+    { id: 'overland', name: 'Overland', line: 'Cross the map, border by border', icon: ROUTE },
+    { id: 'splice', name: 'Splice', line: 'Link words into a tree of phrases', icon: TREE },
   ];
   const inApp = location.hostname === 'appassets.androidplatform.net';
   // Where shared results link: short, as chat apps make a link of it. The app and
@@ -241,8 +241,8 @@ a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-ri
       const a = el('a', played ? (lost ? 'game done lost' : 'game done') : 'game');
       a.href = `${g.id}/index.html`;
       a.innerHTML = `<svg width="40" height="40" viewBox="0 0 64 64" fill="none" aria-hidden="true">${g.icon}</svg>`;
-      // Under the name: how today's went, or until it's begun, the kind of puzzle it is. The longer line is for a screen reader.
-      const line = el('span', '', played ? result.text : today ? 'Started' : g.kind);
+      // Under the name, where it stands today: still to play, started, or how it went. What the game is, is said to a screen reader.
+      const line = el('span', '', played ? result.text : today ? 'Started' : 'To play');
       if (played) line.append(el('span', 'sr', lost ? ', lost' : ', played'));
       else if (!today) line.append(el('span', 'sr', `. ${g.line}`));
       a.append(el('b', '', g.name), line);
