@@ -421,7 +421,17 @@ a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-ri
     showMenu(menu.hidden);
   });
   // A tap anywhere else, or Escape, puts it away
-  document.addEventListener('pointerdown', e => { if (!menu.hidden && !e.target.closest('#menu, #menuBtn')) showMenu(false); });
+  // A tap anywhere else puts the menu away, and like the phone's own menus that tap does nothing else.
+  let swallow = false;
+  document.addEventListener('pointerdown', e => {
+    swallow = false;
+    if (menu.hidden || e.target.closest('#menu, #menuBtn')) return;
+    showMenu(false);
+    swallow = true;
+    e.stopPropagation();
+  }, true);
+  for (const type of ['pointerup', 'pointercancel']) document.addEventListener(type, () => setTimeout(() => { swallow = false; }), true);
+  document.addEventListener('click', e => { if (swallow) { swallow = false; e.stopPropagation(); e.preventDefault(); } }, true);
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !menu.hidden) { showMenu(false); $('menuBtn').focus(); } });
   about.addEventListener('click', e => { if (e.target === about || e.target.closest('[data-close]')) about.close(); });
   about.addEventListener('close', tellBack);
