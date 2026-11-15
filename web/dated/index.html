@@ -16,32 +16,54 @@
 <title>Dated</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect x=%223%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2221.4%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%223%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23F4C52E%22/><rect x=%2221.4%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%223%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2212.2%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2221.4%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/></svg>">
 <link rel="preload" href="../fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../shared.css?v=4">
+<link rel="stylesheet" href="../shared.css?v=5">
 <style>
-/* The card being placed is the slug's yellow, so it's the one thing to look at. */
-:root { --card: #F4C52E; --on-card: #17181B; --wrong: color-mix(in srgb, var(--neg) 13%, var(--surface)); }
+/* The card to place is a card like the rows, told from them by its blue ring and
+   the grip at its edge, which says it can be dragged. */
+:root { --wrong: color-mix(in srgb, var(--neg) 13%, var(--surface)); --raised: var(--key); }
+/* In dark the key grey is the card's own, so what sits on a card or a sheet is a shade lighter;
+   and the wrong row is tinted from the page's black, so its red year still reads on it (4.8:1) */
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --wrong: color-mix(in srgb, var(--neg) 22%, var(--bg)); --raised: var(--key-hi); } }
+:root[data-theme="dark"] { --wrong: color-mix(in srgb, var(--neg) 22%, var(--bg)); --raised: var(--key-hi); }
+.result .btn-secondary, .result-tag, .rule .n { background: var(--raised); }
+.result-tag { color: var(--ink); }
+.result .btn-secondary:active { background: var(--key-down); }
+@media (hover: hover) { .result .btn-secondary:hover { background: var(--key-down); } }
 
-/* The timeline: one list that scrolls by itself, oldest at the top. Rows sit on the
+/* The timeline: one list that scrolls by itself, oldest at the top. It stands on
+   the card being placed, so its gaps are within a thumb's reach. Rows sit on the
    track by transform, so a card really slides to its place. */
 .stage-wrap { position: relative; flex: 1; min-height: 0; display: flex; }
-.line { flex: 1; min-width: 0; padding-top: 8px; overflow: hidden auto; overscroll-behavior: contain; scrollbar-width: none; touch-action: pan-y; }
+.line { flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 8px 0 6px; overflow: hidden auto; overscroll-behavior: contain; scrollbar-width: none; touch-action: pan-y; }
 .line::-webkit-scrollbar { display: none; }
+/* Cut off at an edge, the list fades there, so it reads as one that scrolls */
+.line.cut-top { -webkit-mask-image: linear-gradient(to bottom, transparent, #000 28px); mask-image: linear-gradient(to bottom, transparent, #000 28px); }
+.line.cut-end { -webkit-mask-image: linear-gradient(to top, transparent, #000 28px); mask-image: linear-gradient(to top, transparent, #000 28px); }
+.line.cut-top.cut-end { -webkit-mask-image: linear-gradient(to bottom, transparent, #000 28px, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to bottom, transparent, #000 28px, #000 calc(100% - 28px), transparent); }
 /* A row holds two lines of an event at the phone's text size; sizes() makes
    it taller if the day has a longer one. */
-.track { --row: max(46px, calc(2.1rem + 12px)); --gap: 14px; --end: 34px; position: relative; user-select: none; -webkit-user-select: none; transition: height .26s ease; }
+.track { --row: max(48px, calc(2.1rem + 14px)); --gap: 14px; --end: 52px; position: relative; flex: none; margin-top: auto; user-select: none; -webkit-user-select: none; transition: height .26s ease; }
+/* Over (the script marks the list): nothing left to tap, so the list goes back to
+   the top, laid out without the room the two end keys took, and the result keeps
+   clear of it */
+.line.over { padding-bottom: 0; }
+.line.over .track { --end: 0px; margin-top: 6px; }
+.result { margin-top: 10px; }
 .row {
   position: absolute; top: 0; left: 0; right: 0; height: var(--row);
-  display: grid; grid-template-columns: minmax(50px, max-content) 1fr; align-items: center; gap: 8px; padding: 0 10px;
-  background: var(--surface); border-radius: 16px; pointer-events: none;
+  display: grid; grid-template-columns: minmax(50px, max-content) 1fr; align-items: center; gap: 10px; padding: 0 16px;
+  background: var(--surface); border-radius: 18px; pointer-events: none;
   transform: translate(var(--x, 0), var(--y, 0));
   transition: transform .34s cubic-bezier(.3, .7, .25, 1), background-color .3s ease, opacity .3s ease;
 }
-.row b { font-size: 1.02rem; font-weight: 600; letter-spacing: -.01em; transition: color .25s ease; }
-.row span { font-size: .84rem; line-height: 1.24; }
+.row b { font-size: 1.02rem; font-weight: 500; letter-spacing: -.01em; transition: color .25s ease; }
+.row span { font-size: .86rem; line-height: 1.24; }
 .row.right b { color: var(--pos); }
-.row.wrong { background: var(--wrong); }
+/* Wrong wears a ring as well as its tint, so it's told from right without the colour */
+.row.wrong, .mini.wrong { background: var(--wrong); box-shadow: inset 0 0 0 1.5px var(--neg); }
 .row.wrong b { color: var(--neg); }
-.row.unseen { background: var(--key); }
+/* Never played: an outline with nothing in it, as a letter ruled out is in Hunch */
+.row.unseen { background: none; box-shadow: inset 0 0 0 1.5px var(--line); }
 .row.unseen b { color: var(--muted); }
 .row.moving { z-index: 1; }
 .row.bump { animation: shake .32s; }
@@ -49,34 +71,38 @@
 .track.still, .track.still .row, .track.still .slot { transition: none; }
 @keyframes shake { 20%, 60% { translate: -4px 0; } 40%, 80% { translate: 4px 0; } }
 
-/* A slot is the gap between two rows. The bar shows it, and the tap target runs to
-   the middle of the rows either side, so anywhere on the list lands in a slot. */
+/* A slot is the gap between two rows. A short mark shows it, and the tap target runs
+   to the middle of the rows either side, so anywhere on the list lands in a slot. */
 .slot {
   position: absolute; top: 0; left: 0; right: 0; z-index: 2; height: var(--gap); padding: 0;
-  display: grid; place-items: center; background: none; border: 0; border-radius: 4px; touch-action: pan-y;
+  display: grid; place-items: center; background: none; border: 0; border-radius: 99px; touch-action: pan-y;
   transform: translateY(var(--y, 0));
   transition: transform .34s cubic-bezier(.3, .7, .25, 1);
 }
-.slot::before { content: ""; width: 100%; height: 4px; border-radius: 2px; background: var(--line); transition: background-color .12s, height .12s; }
+.slot::before { content: ""; width: 72px; height: 4px; border-radius: 99px; background: var(--key-down); transition: background-color .12s, width .12s, height .12s; }
 .slot::after { content: ""; position: absolute; left: 0; right: 0; top: calc(var(--row) / -2); bottom: calc(var(--row) / -2); }
-.slot.end { height: var(--end); font-size: .78rem; font-weight: 600; color: var(--muted); }
+/* The two ends are keys: Earlier above the oldest row, Later under the newest */
+.slot.end { height: var(--end); font-size: .92rem; font-weight: 500; color: var(--ink); }
 .slot.end::before { display: none; }
 .slot.end.first::after { top: 0; }
 .slot.end.last::after { bottom: 0; }
-.slot.end span { display: grid; place-items: center; width: 100%; height: calc(var(--end) - 8px); border-radius: 6px; background: var(--key); transition: background-color .12s, color .12s; }
-.slot.end.first span { margin-bottom: 8px; }
-.slot.end.last span { margin-top: 8px; }
-.slot.on::before, .slot:active::before { background: var(--accent); height: 6px; }
+.slot.end span { display: grid; place-items: center; min-width: 9.5rem; height: calc(var(--end) - 10px); padding: 0 22px; border-radius: 99px; background: linear-gradient(var(--key-hi), var(--key)); box-shadow: var(--rim), var(--lift); transition: color .12s; }
+.slot.end.first span { margin-bottom: 10px; }
+.slot.end.last span { margin-top: 10px; }
+.slot.on::before, .slot:active::before { width: 100%; height: 6px; background: var(--accent); }
 .slot.end.on span, .slot.end:active span { background: var(--accent); color: var(--on-ink); }
 @media (hover: hover) {
-  .slot:hover::before { background: var(--accent); height: 6px; }
+  .slot:hover::before { width: 100%; height: 6px; background: var(--accent); }
   .slot.end:hover span { background: var(--accent); color: var(--on-ink); }
 }
+/* The ring goes round the key, not the strip it sits in */
+.slot.end:focus-visible { outline: none; }
+.slot.end:focus-visible span { outline: 2px solid var(--accent); outline-offset: 2px; }
 .slot.new { transition: none; }
 .track.closed .slot { display: none; }
 
 /* Lives left and the count; a message takes their place, then gives it back */
-.tools { position: relative; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; min-height: 36px; }
+.tools { position: relative; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; min-height: 40px; }
 .count { font-size: .86rem; line-height: 1.25; color: var(--muted); text-align: center; white-space: nowrap; }
 .count b { font-weight: 600; color: var(--ink); }
 .count .more::before { content: " · "; }
@@ -91,31 +117,33 @@
 
 /* The card to place */
 .deal {
-  position: relative; z-index: 5; display: flex; align-items: center; min-height: 78px; padding: 10px 16px; margin-bottom: 4px;
-  background: var(--card); color: var(--on-card); border-radius: 18px;
-  font-size: 1.04rem; font-weight: 600; line-height: 1.26;
+  position: relative; z-index: 5; display: flex; align-items: center; gap: 14px; min-height: 80px; padding: 14px 20px; margin-bottom: 4px;
+  background: var(--surface); color: var(--ink); border-radius: 24px; box-shadow: inset 0 0 0 1.5px var(--accent);
+  font-size: 1.08rem; font-weight: 500; line-height: 1.3;
   touch-action: none; cursor: grab; user-select: none; -webkit-user-select: none;
   transform: translate(var(--dx, 0), var(--dy, 0)) scale(var(--s, 1));
   transition: transform .22s cubic-bezier(.3, .7, .25, 1), opacity .16s ease;
 }
-.deal.dragging { --s: .94; cursor: grabbing; transition: none; }
+/* The grip: two short lines at the right edge */
+.deal::after, .mini.card::after { content: ""; flex: none; width: 18px; height: 2px; margin: 0 0 6px auto; border-radius: 2px; background: var(--muted); box-shadow: 0 6px 0 var(--muted); }
+/* In the air: a thicker ring, and lifted off the list */
+.deal.dragging { --s: .94; cursor: grabbing; transition: none; box-shadow: inset 0 0 0 2.5px var(--accent), 0 8px 20px rgba(0, 0, 0, .22); }
 .deal.gone { opacity: 0; transition: none; pointer-events: none; }
 .deal.new { animation: rise .2s ease-out; }
 @keyframes rise { from { opacity: 0; transform: translateY(6px); } }
 
 /* The worked example in How to play */
-.example { display: grid; gap: 8px; padding: 12px 14px; background: var(--bg); border-radius: 18px; font-size: .94rem; }
-.mini { display: grid; grid-template-columns: 44px 1fr; align-items: center; gap: 6px; padding: 7px 10px; background: var(--surface); border-radius: 7px; font-size: .86rem; line-height: 1.25; }
-.mini b { font-weight: 600; }
-.mini.card { grid-template-columns: 1fr; background: var(--card); color: var(--on-card); font-weight: 600; }
-.mini.wrong { background: var(--wrong); }
+.example { display: grid; gap: 8px; padding: 14px; background: var(--bg); border-radius: 18px; font-size: .94rem; }
+.mini { display: grid; grid-template-columns: 44px 1fr; align-items: center; gap: 8px; min-height: 44px; padding: 8px 14px; background: var(--surface); border-radius: 14px; font-size: .86rem; line-height: 1.25; }
+.mini b { font-weight: 500; }
+.mini.card { display: flex; gap: 12px; box-shadow: inset 0 0 0 1.5px var(--accent); font-size: .92rem; font-weight: 500; }
 .mini.wrong b { color: var(--neg); }
 
 /* Short phones: tighter rows, and the result leaves the list more room */
 @media (max-height: 640px) {
-  .track { --row: max(42px, calc(2.1rem + 8px)); --gap: 10px; --end: 30px; }
-  .deal { min-height: 66px; padding: 8px 14px; font-size: .98rem; }
-  .tools { min-height: 30px; }
+  .track { --row: max(42px, calc(2.1rem + 8px)); --gap: 10px; --end: 46px; }
+  .deal { min-height: 64px; padding: 10px 18px; font-size: 1rem; }
+  .tools { min-height: 32px; }
   .result { gap: 8px; padding: 10px 12px; }
   .result-title { font-size: 1.2rem; }
   .result .btn { min-height: 44px; }
@@ -123,7 +151,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .row, .slot, .track, .deal { transition: none; }
+  .row, .slot, .slot::before, .slot.end span, .track, .deal { transition: none; }
   .row.bump, .deal.new { animation: none; }
 }
 </style>
@@ -202,7 +230,7 @@
       <div class="mini"><b>1876</b><span>Alexander Graham Bell patents the telephone</span></div>
     </div>
     <div class="rules">
-      <div class="rule"><span class="n">1</span><p>Tap a gap, or drag the yellow card there. Its year shows once it’s placed.</p></div>
+      <div class="rule"><span class="n">1</span><p>Tap a gap, or drag the card there. Its year shows once it’s placed.</p></div>
       <div class="rule"><span class="n">2</span><p>A wrong card costs a life, then slides to its true place and stays there to help you.</p></div>
       <div class="rule"><span class="n">3</span><p>It’s over when every card is placed or your three lives are gone. Your score is the cards you got right and the lives you kept.</p></div>
     </div>
@@ -414,8 +442,29 @@
     layout();
     void track.offsetWidth;
     track.classList.remove('still');
-    if (play.done) readable();
+    if (play.done) { readable(); edges(); } else toEnd();
   }
+
+  // In play the list stands on the card: taller than its box, it shows its foot,
+  // with Later. Where it's cut off, top or bottom, that edge fades.
+  function edges() {
+    const box = $('line');
+    box.classList.toggle('cut-top', box.scrollTop > 2);
+    box.classList.toggle('cut-end', box.scrollHeight - box.clientHeight - box.scrollTop > 2);
+  }
+  function toEnd(glide = false) {
+    const box = $('line');
+    const top = box.scrollHeight - box.clientHeight;
+    if (top > 0) box.scrollTo({ top, behavior: glide && !still() ? 'smooth' : 'auto' });
+    edges();
+  }
+  // A game in play rests on its foot; a finished one starts at the top.
+  function rest() {
+    if (!play.done) return toEnd();
+    $('line').scrollTop = 0;
+    edges();
+  }
+  $('line').addEventListener('scroll', edges, { passive: true });
 
   // Over: rows go in timeline order for a screen reader, which no one can see.
   function readable() {
@@ -499,6 +548,8 @@
     renderHeader();
     renderStatus();
     const over = play.done && !settling;
+    // Marked for the styles: an over list is laid out from the top, with no end keys.
+    $('line').classList.toggle('over', over);
     $('play').hidden = over;
     $('result').hidden = !over;
     if (over) renderResult(); else renderCard(false);
@@ -621,6 +672,7 @@
     if (!play.done) {
       buildSlots();
       renderCard();
+      toEnd(true);
       if (document.activeElement && document.activeElement.classList.contains('slot')) slots[Math.min(cursor, slots.length - 1)].focus();
       return;
     }
@@ -635,6 +687,9 @@
     for (const c of added) { markRow(c, c.mark); rows.get(c.id).classList.add('fresh'); }
     const track = $('track');
     track.classList.add('still');
+    // Laid out again as an over list (see render), which has no end keys to leave room for.
+    $('line').classList.add('over');
+    size = null;
     layout();
     void track.offsetWidth;
     track.classList.remove('still');
@@ -645,6 +700,7 @@
     renderResult();
     buildSlots();
     readable();
+    edges();
     tellBack();
   }
 
@@ -690,7 +746,7 @@
     state.mode = 'practice';
     settling = false;
     save(); load(); say(''); render();
-    $('line').scrollTop = 0;
+    rest();
   }
   function setMode(mode) {
     if (state.mode === mode) return;
@@ -698,7 +754,7 @@
     state.mode = mode;
     settling = false;
     save(); load(); say(''); render();
-    $('line').scrollTop = 0;
+    rest();
   }
 
   // ---- tap, drag and keys ----

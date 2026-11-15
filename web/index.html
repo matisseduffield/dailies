@@ -16,7 +16,7 @@
 <title>Dailies</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect x=%223%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2221.4%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%223%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23F4C52E%22/><rect x=%2221.4%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%223%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2212.2%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2221.4%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/></svg>">
 <link rel="preload" href="fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="shared.css?v=4">
+<link rel="stylesheet" href="shared.css?v=5">
 <style>
 /* The list runs past a short screen: the page grows, so the bottom padding stays clear of the home bar */
 .app { height: auto; min-height: 100dvh; padding-left: max(18px, env(safe-area-inset-left, 0px)); padding-right: max(18px, env(safe-area-inset-right, 0px)); }
@@ -38,8 +38,8 @@
 .games { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: 14px; margin-top: 14px; }
 .game { display: grid; justify-items: center; align-content: start; min-height: 136px; padding: 30px 6px 12px; background: var(--surface); border-radius: 22px; color: inherit; text-decoration: none; text-align: center; }
 .game svg { margin-bottom: 14px; }
-.game:active { background: var(--key); }
-@media (hover: hover) { .game:hover { background: var(--key); } }
+.game:active { background: var(--card-key); }
+@media (hover: hover) { .game:hover { background: var(--card-key); } }
 .game b { font-size: 1rem; font-weight: 400; line-height: 1.3; }
 .game span { font-size: .8rem; line-height: 1.3; color: var(--muted); overflow-wrap: anywhere; }
 .game.done > span { color: var(--pos); }
@@ -68,27 +68,27 @@
 .install-hint button { flex: none; width: 44px; height: 44px; margin: -10px -12px -10px 0; padding: 0; background: none; border: 0; font-size: 1.2rem; color: var(--muted); }
 
 /* About: who this is, then one rounded list, a row for each thing, with a hairline between them */
-.about-id { display: grid; justify-items: center; gap: 4px; padding: 4px 0 2px; text-align: center; }
-.about-id img { margin-bottom: 10px; border-radius: 15px; }
-.about-id .about-name { font-size: 1.4rem; font-weight: 500; letter-spacing: -.02em; line-height: 1.2; }
-.about-id .about-tag { color: var(--muted); }
+/* What this is, on a card of its own: the icon, with the name and a line about it beside it */
+.about-id { display: grid; grid-template-columns: auto 1fr; align-items: center; column-gap: 16px; row-gap: 2px; padding: 18px 20px; background: var(--surface); border-radius: 24px; text-align: left; }
+.about-id img { grid-row: 1 / 3; border-radius: 13px; }
+.about-id .about-name { align-self: end; font-size: 1.25rem; font-weight: 500; letter-spacing: -.01em; line-height: 1.25; }
+.about-id .about-tag { align-self: start; font-size: .95rem; line-height: 1.35; color: var(--muted); }
 /* About is a page of its own: it fills the screen and Back leaves it */
 dialog.sheet.aboutpg { width: 100%; max-width: none; height: 100dvh; max-height: 100dvh; margin: 0; padding-top: env(safe-area-inset-top, 0px); border-radius: 0; background: var(--bg); }
 dialog.sheet.aboutpg[open] { display: flex; flex-direction: column; animation: none; }
 .aboutpg > * { width: 100%; max-width: 480px; margin-inline: auto; }
 .aboutpg .sheet-head { justify-content: flex-start; gap: 10px; padding: 14px 18px 6px; background: var(--bg); }
 .aboutpg .sheet-head h2 { font-size: 1.35rem; font-weight: 500; }
-.aboutpg .sheet-body { flex: 1; display: flex; flex-direction: column; gap: 18px; padding: 30px 18px max(22px, env(safe-area-inset-bottom, 0px)); }
+.aboutpg .sheet-body { flex: 1; display: flex; flex-direction: column; gap: 14px; padding: 14px 18px max(22px, env(safe-area-inset-bottom, 0px)); }
 .aboutpg .about-foot { margin-top: auto; }
 .about-links { display: grid; padding: 0 20px; background: var(--surface); border-radius: 24px; }
 /* A card with nothing to show (the version, on a page that has none) isn't drawn */
 .about-links:not(:has(> .about-row:not([hidden]))) { display: none; }
-.about-id { margin-bottom: 8px; }
 .about-legal { display: contents; }
-.about-links .about-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; margin: 0; padding: 8px 0; background: none; border: 0; font-size: 1.125rem; line-height: 1.3; color: var(--ink); text-align: left; text-decoration: none; }
+.about-links .about-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; margin: 0; padding: 12px 0; background: none; border: 0; font-size: 1.06rem; line-height: 1.3; color: var(--ink); text-align: left; text-decoration: none; }
 .about-links > :not([hidden]) ~ .about-row, .about-legal .about-row { border-top: 1px solid var(--line); }
-.about-row small { display: block; font-size: .9rem; color: var(--muted); }
-.about-row > span + span { flex: none; font-size: .9rem; color: var(--muted); }
+.about-row small { display: block; margin-top: 2px; font-size: .9rem; color: var(--muted); }
+.about-row > span + span { flex: none; font-size: 1rem; color: var(--muted); }
 .about-row > span + span:empty { display: none; }
 a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-right: 3px; border: solid var(--line-strong); border-width: 1.5px 1.5px 0 0; transform: rotate(45deg); }
 .sheet-body .about-foot { text-align: center; font-size: .8rem; color: var(--muted); }
@@ -162,7 +162,7 @@ a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-ri
   </div>
   <div class="sheet-body">
     <div class="about-id">
-      <img src="icons/icon-192.png" width="64" height="64" alt="" onerror="this.hidden=true">
+      <img src="icons/icon-192.png" width="52" height="52" alt="" onerror="this.hidden=true">
       <p class="about-name">Dailies</p>
       <p class="about-tag">Nine small puzzles, new every day.</p>
     </div>
@@ -308,9 +308,7 @@ a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-ri
   const WEB_VERSION = '__VERSION__';
   function showVersion() {
     const v = appVersion || (WEB_VERSION.startsWith('__') ? '' : WEB_VERSION);
-    const row = el('span', '', 'Version');
-    row.append(el('small', '', v));
-    $('aboutVer').replaceChildren(row);
+    $('aboutVer').replaceChildren(el('span', '', 'Version'), el('span', '', v));
     $('aboutVer').hidden = !v;
   }
   showVersion();

@@ -16,7 +16,7 @@
 <title>Hunch</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect x=%223%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2221.4%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%223%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23F4C52E%22/><rect x=%2221.4%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%223%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2212.2%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2221.4%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/></svg>">
 <link rel="preload" href="../fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../shared.css?v=4">
+<link rel="stylesheet" href="../shared.css?v=5">
 <style>
 /* Filled is in place, ringed is elsewhere in the word, faded isn't in it:
    told apart by shape, all in the one blue, which follows the theme. */
@@ -54,7 +54,7 @@
 .key.hit { background: var(--hit); color: var(--on-hit); }
 .key.near { box-shadow: inset 0 0 0 2px var(--hit); }
 /* A letter ruled out loses its key, so what's left to try stands out */
-.key.miss { background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); color: var(--faint); }
+.key.miss { background: none; color: var(--line-strong); }
 
 .example { display: grid; justify-items: center; padding: 18px 0 16px; background: var(--bg); border-radius: 18px; }
 .example .row { --tile: 34px; --gap: 5px; }
@@ -519,9 +519,7 @@
     if (i === 1) row.append(el('span', 'spacer'));
     // Enter and delete either side of the bottom row, as on a phone.
     if (i === 2) {
-      const go = el('button', 'key wide');
-      go.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 5v7a3 3 0 0 1-3 3H5M9 11l-4 4 4 4"/></svg>';
-      go.setAttribute('aria-label', 'Enter');
+      const go = el('button', 'key wide', 'Enter');
       go.type = 'button'; go.dataset.key = 'enter';
       const del = el('button', 'key wide');
       del.type = 'button'; del.dataset.key = 'erase'; del.setAttribute('aria-label', 'Delete');
