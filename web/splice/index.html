@@ -56,7 +56,7 @@
 .word.locked { background: var(--lock); color: var(--on-lock); box-shadow: 0 3px 0 rgba(0, 0, 0, .18); cursor: default; }
 .word.root.locked { background: var(--lock); color: var(--on-lock); }
 .word.lit { animation: lit .45s ease-out both; animation-delay: calc(var(--row) * 90ms); }
-.tree.shown .word:not(.locked) { background: var(--key); box-shadow: none; }
+.tree.shown .word:not(.locked) { background: var(--key); color: var(--ink); box-shadow: none; }
 @keyframes lit { 40% { transform: translate(-50%, -50%) scale(1.08); } }
 .tree.won .link { animation: grow .5s ease-out both; animation-delay: calc(var(--row) * 90ms); }
 
@@ -75,9 +75,9 @@
 .count b { font-weight: 600; color: var(--ink); }
 .check { width: 100%; }
 
-/* Found words, after the game */
-.found { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 2px 0 0; padding: 0; list-style: none; }
-.found li { padding: 4px 10px; background: var(--surface); border-radius: 12px; font-size: .86rem; font-weight: 600; text-transform: lowercase; }
+/* After the game the tree is the result: the card under it only says how it went, on one line */
+.result { gap: 12px; padding: 18px 20px; }
+.result-title { font-size: 1.3rem; }
 
 .example { display: grid; justify-items: center; padding: 14px 14px 12px; background: var(--bg); border-radius: 18px; }
 .example b { display: grid; place-items: center; min-width: 72px; height: 34px; padding: 0 8px; background: var(--surface); border-radius: 8px; font-weight: 600; }
@@ -140,7 +140,6 @@
         <p class="result-title" id="resTitle"></p>
         <p class="result-tag" id="resTag"></p>
       </div>
-      <ul class="found" id="found" aria-label="The joined words"></ul>
       <div class="actions">
         <button class="btn btn-secondary" id="resSecond" type="button"></button>
         <button class="btn btn-primary" id="resFirst" type="button"></button>
@@ -295,7 +294,8 @@
     const longest = Math.max(...board.map(w => w.length));
     // As tall as the screen allows, within reason, so the links have room to read.
     const room = box.parentElement.clientHeight - 24;
-    box.style.height = `${Math.round(Math.min(rows * 118, Math.max(rows * 70, room)))}px`;
+    // Once it's over nothing is tapped, so on a short screen the rows may sit closer and the whole tree still shows.
+    box.style.height = `${Math.round(Math.min(rows * 118, Math.max(rows * (play.done ? 58 : 70), room)))}px`;
     box.style.setProperty('--w', `min(${Math.floor(94 / widest)}%, 108px)`);
     box.style.setProperty('--fs', longest > 6 ? '.9rem' : longest > 5 ? '.98rem' : '1.06rem');
     box.classList.toggle('shown', shown);
@@ -395,7 +395,6 @@
     tag.textContent = play.won ? (n === 1 ? 'First check' : `${puzzle.checks - n} to spare`) : play.gaveUp ? 'Gave up' : 'Out of checks';
     tag.classList.toggle('good', !!play.won);
     tag.classList.toggle('bad', !play.won);
-    $('found').replaceChildren(...links().map(([p, k]) => el('li', '', L.reads(puzzle.answer[p], puzzle.answer[k], D))));
     $('resFirst').textContent = daily ? 'Share' : 'New puzzle';
     $('resSecond').textContent = daily ? 'Practice' : 'Share';
     showNext($('resNext'), 'splice', daily);
