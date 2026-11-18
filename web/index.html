@@ -41,6 +41,14 @@
 .game svg { width: 62px; height: 62px; margin-bottom: 10px; }
 .game:active { opacity: .6; }
 @media (hover: hover) { .game:hover { opacity: .8; } }
+/* A short screen: the rows sit closer, so all four are in view with their results.
+   The pictures stay the size they are. */
+@media (max-height: 700px) {
+  .today { margin-top: 10px; }
+  .games { gap: 14px 8px; margin-top: 20px; }
+  .game { padding-bottom: 0; }
+  .game svg { margin-bottom: 6px; }
+}
 .game b { font-size: 1rem; font-weight: 400; line-height: 1.3; }
 .game span { font-size: .82rem; line-height: 1.3; color: var(--muted); overflow-wrap: anywhere; }
 .game.done > span { color: var(--pos); }
@@ -165,7 +173,7 @@ a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-ri
     <div class="about-id">
       <img src="icons/icon-192.png" width="52" height="52" alt="" onerror="this.hidden=true">
       <p class="about-name">Dailies</p>
-      <p class="about-tag">Nine small puzzles, new every day.</p>
+      <p class="about-tag">Ten small puzzles, new every day.</p>
     </div>
     <div class="about-links">
       <p class="about-row" id="aboutVer" hidden></p>
@@ -181,7 +189,7 @@ a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-ri
 </dialog>
 
 <script src="clock.js?v=4"></script>
-<script src="today.js?v=3"></script>
+<script src="today.js?v=5"></script>
 <script src="pwa.js"></script>
 <script>
 (() => {
@@ -196,6 +204,7 @@ a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-ri
   const ROWS = '<rect width="64" height="64" rx="14" fill="#6A48C8"/><rect x="8" y="9" width="40" height="13" rx="3" fill="#FFFFFF"/><text x="28" y="19.2" font-size="10.5" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#1D7548">1958</text><rect x="16" y="25.5" width="40" height="13" rx="3" fill="#FFCF33"/><text x="36" y="35.7" font-size="10.5" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">????</text><rect x="8" y="42" width="40" height="13" rx="3" fill="#FFFFFF"/><text x="28" y="52.2" font-size="10.5" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#1D7548">1984</text>';
   const ROUTE = '<rect width="64" height="64" rx="14" fill="#3C9BE0"/><path d="M8,9L30,7L27,23L9,30Z" fill="#CFE6F7" stroke="#3C9BE0" stroke-width="2.2" stroke-linejoin="round"/><path d="M30,38L42,42L56,29L57,56L27,57Z" fill="#CFE6F7" stroke="#3C9BE0" stroke-width="2.2" stroke-linejoin="round"/><path d="M9,30L26,22L29,41L27,57L8,55Z" fill="#FFCF33" stroke="#3C9BE0" stroke-width="2.2" stroke-linejoin="round"/><path d="M26,22L46,27L45,47L29,41Z" fill="#2FA36B" stroke="#3C9BE0" stroke-width="2.2" stroke-linejoin="round"/><path d="M30,7L57,9L56,31L46,27L26,22Z" fill="#232C66" stroke="#3C9BE0" stroke-width="2.2" stroke-linejoin="round"/><path d="M18,44L37,34L44,17" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="44" r="4" fill="#FFFFFF"/><circle cx="44" cy="17" r="4" fill="#FFFFFF"/>';
   const TREE = '<rect width="64" height="64" rx="14" fill="#C8682A"/><path d="M32,22C32,30 18,29 18,38M32,22C32,30 46,29 46,38" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity=".9"/><rect x="19" y="10" width="26" height="13" rx="6.5" fill="#FFCF33"/><text x="32" y="19.6" font-size="8.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">SUN</text><rect x="5" y="38" width="26" height="13" rx="6.5" fill="#FFFFFF"/><text x="18" y="47.6" font-size="8.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">SET</text><rect x="33" y="38" width="26" height="13" rx="6.5" fill="#FFFFFF"/><text x="46" y="47.6" font-size="8.4" font-weight="600" font-family="Hanken Grotesk,Segoe UI,sans-serif" text-anchor="middle" fill="#17181B">RISE</text>';
+  const TRAY = '<rect width="64" height="64" rx="14" fill="#5C6F94"/><rect x="7" y="7" width="50" height="50" rx="8" fill="#27314A"/><rect x="50" y="20" width="14" height="12" fill="#27314A"/><rect x="9.5" y="9.5" width="21.5" height="10" rx="3" fill="#AEBBD6"/><rect x="32.5" y="9.5" width="10" height="21.5" rx="3" fill="#FFFFFF"/><rect x="9.5" y="21" width="21.5" height="10" rx="3" fill="#FFCF33"/><path d="M16.5 23.4 19 26l-2.5 2.6M21.5 23.4 24 26l-2.5 2.6" fill="none" stroke="#17181B" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><rect x="44" y="32.5" width="10" height="21.5" rx="3" fill="#AEBBD6"/><rect x="9.5" y="44" width="21.5" height="10" rx="3" fill="#FFFFFF"/>';
   const GAMES = [
     { id: 'slugle', name: 'Slugle', line: 'Turn today’s word into SLUG', icon: SLUG },
     { id: 'hunch', name: 'Hunch', line: 'Find the hidden word in six tries', icon: BULB },
@@ -206,6 +215,10 @@ a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-ri
     { id: 'dated', name: 'Dated', line: 'Put history in order, blind', icon: ROWS },
     { id: 'overland', name: 'Overland', line: 'Cross the map, border by border', icon: ROUTE },
     { id: 'splice', name: 'Splice', line: 'Link words into a tree of phrases', icon: TREE },
+    // since: the day a game came out, for one added after the rest. A day before it
+    // with every other game played still counts as a full day in the week's dots.
+    // Shunt's is a week after its epoch (shunt/days.js), which a test holds it to.
+    { id: 'shunt', name: 'Shunt', line: 'Slide the blocks to free the marked one', icon: TRAY, since: '2026-11-18' },
   ];
   const inApp = location.hostname === 'appassets.androidplatform.net';
   // Where shared results link: short, as chat apps make a link of it. The app and
@@ -257,15 +270,19 @@ a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-ri
   // The record beside the day: the last week, a dot each.
   const DAYS = 7;
   function drawDays(now, done) {
-    const key = dayKey(now), log = noteDay(store.get('days'), key, done);
-    if (done) store.set('days', log);
+    // A day played and left from inside a game was never drawn here: its results, still saved, say so.
+    const key = dayKey(now), seen = resultDays(GAMES.map(g => store.get(g.id)));
+    const log = noteDay(store.get('days'), key, done, seen);
+    if (done || Object.keys(seen).some(k => k < key)) store.set('days', log);
     const days = lastDays(log, key, DAYS), played = days.filter(Boolean).length, run = dayRun(log, key);
     const box = $('days');
     box.hidden = !played;
     if (!played) return;
     box.setAttribute('aria-label', `Played on ${played} of the last ${DAYS} days${run > 1 ? `, ${run} days in a row` : ''}`);
+    const keys = dayKeys(key, DAYS), since = GAMES.map(g => g.since);
     box.replaceChildren(...days.map((n, i) => {
-      const sq = el('i', n >= GAMES.length ? 'all' : n ? 'some' : '');
+      // Every game there was that day, which before Shunt came out was nine.
+      const sq = el('i', n >= gamesOn(keys[i], since) ? 'all' : n ? 'some' : '');
       sq.setAttribute('aria-hidden', 'true');
       return sq;
     }));

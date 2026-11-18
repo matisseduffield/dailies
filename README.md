@@ -156,6 +156,46 @@ Every one of the 840 days has been read through as a player after its last chang
 A test checks each day uses only reviewed answers, written their way, and has
 exactly one answer. The list goes round in February 2029.
 
+## Shunt
+
+A six-by-six tray packed with blocks two or three cells long, each of which only
+slides along its own length. Slide them aside until the marked block (yellow, with
+arrows) reaches the gap in the wall, at one end of the line it sits on. The gap is in
+a different wall from day to day. A slide of any length is one move, and the block that
+moved last is still in hand: sliding it again is the same move going on, so a finger
+and the arrow keys count alike. Slid back to where that move began, the move was never
+made and comes off the count, as it would had the finger never left the block. That is
+the only way the count goes down, and it only reaches the move in hand. Undo and
+Restart put blocks back but never give a move back, or the limit would mean nothing,
+and a move Undo has laid bare is settled, not in hand, so moves can't be walked back
+one at a time for nothing (`step` and `undo` in `web/shunt/lib.js`).
+
+Par is the fewest moves possible, found by trying every board in order of how far it
+is from the start. The day allows par and ten more (`SPARE` in `web/shunt/lib.js`):
+room for a few wrong turns, not for feeling the way out. Out of moves, Give up, or
+over par, the best way can be watched on the board. Par climbs through the week: 18 or
+19 on Monday, two more each day, and 30 to 40 on Sunday. No Practice. A day that's
+finished stays as it was first recorded, however many tabs the game is open in.
+
+Every board is made by `node scripts/build-shunt.mjs` (about 12 min) and none comes
+from anywhere else: blocks are dropped at random, then changed one at a time for as long
+as the hardest place they can be slid into gets no nearer the gap, and a place the
+right number of moves away becomes the day. `scripts/shunt-rules.cjs` says what a day
+has to be: par in its weekday's range, nine to thirteen blocks, nothing else along the
+marked block's line, and no block that could be lifted off without making it easier.
+No two days are the same board, a turn or mirror image of one another, the same blocks
+on the same lines, or the same arrangement of blocks with a different one marked, and
+no two share more than eight blocks in the same place.
+
+`web/shunt/days.js` holds 791 days, a line each, counted from 11 November 2026: a week
+before the game came out, so nobody is ever on day 0 whatever their clock says, and the
+first board anyone plays is No. 8. The list goes round on 10 January 2029. A test pins
+the days: `--more <weeks>` adds days at the end and leaves the rest alone, and
+`--replace <day>` deals one day again, which is only for a day nobody has played yet.
+The home screen's week of dots counts Shunt from the day it came out (`since` in
+`GAMES`, `web/index.html`), so a day before it with the other nine played is still a
+full day.
+
 ## Slugle
 
 A daily word ladder. Turn a new four-letter word into SLUG by changing one
@@ -245,7 +285,7 @@ reading would hold the games on an old day; `/now` and `/app` pass through.
   finished and its result has been seen, and `Clock.untilNext()` is the
   result's countdown.
 - `web/shared.css`: the palette, keyboard, sheets and so on that every page uses.
-- `web/slugle/`, `web/hunch/`, `web/sorted/`, `web/reach/`, `web/cluey/`, `web/mend/`, `web/dated/`, `web/overland/`, `web/splice/`: a game each. `index.html` is the whole game (no
+- `web/slugle/`, `web/hunch/`, `web/sorted/`, `web/reach/`, `web/cluey/`, `web/mend/`, `web/dated/`, `web/overland/`, `web/splice/`, `web/shunt/`: a game each. `index.html` is the whole game (no
   build step), `lib.js` its pure logic, tested by `node --test "tests/*.test.js"`,
   and `words.js`, `puzzles.js` or `days.js` its data.
 - `worker/worker.js`: the Cloudflare Workers `dailies`, `slugle` and `ladder`

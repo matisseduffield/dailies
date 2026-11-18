@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert');
-const { todayText, dayKey, noteDay, lastDays, dayRun } = require('../web/today.js');
+const { todayText, dayKey, noteDay, resultDays, gamesOn, dayKeys, lastDays, dayRun } = require('../web/today.js');
 
 const DAY = 'Mon Nov 09 2026';
 const opts = (extra = {}) => ({ day: DAY, date: 'Mon 9 Nov', total: 9, dark: false, site: 'dailies.teloone.au', ...extra });
@@ -89,4 +89,42 @@ test('the record of days keeps counts, the last two months, and the run', () => 
   const old = noteDay({ '2026-09-01': 4, '2026-09-20': 5, junk: 1, '2026-12-01': 2 }, key, 1);
   assert.deepEqual(Object.keys(old).sort(), ['2026-09-20', '2026-11-13']);
   assert.deepEqual(lastDays(noteDay(null, '2026-03-01', 1), '2026-03-02', 3), [0, 1, 0], 'across a month end');
+});
+
+test('a day played and never seen on the home screen is still recorded, from its saved results', () => {
+  const key = '2026-11-13', YESTERDAY = 'Thu Nov 12 2026', TODAY = 'Fri Nov 13 2026';
+  // All ten games yesterday, the app closed from inside the last one.
+  const ten = Array.from({ length: 10 }, () => ({ date: YESTERDAY, text: 'x' }));
+  assert.deepEqual(resultDays(ten), { '2026-11-12': 10 });
+  const log = noteDay({ '2026-11-11': 3 }, key, 0, resultDays(ten));
+  assert.deepEqual(log, { '2026-11-11': 3, '2026-11-12': 10 });
+  assert.equal(dayRun(log, key), 2, 'the run goes on');
+  assert.deepEqual(lastDays(log, key, 3), [3, 10, 0]);
+  // Only what the results prove: one begun, one missing and one unreadable are no day played.
+  const mixed = [{ date: YESTERDAY, started: true }, null, { date: 'yesterday', text: 'x' }, { text: 'x' }, { date: TODAY, text: 'x' }, { date: 'Tue Nov 10 2026', text: 'x' }];
+  assert.deepEqual(resultDays(mixed), { '2026-11-13': 1, '2026-11-10': 1 });
+  // What's on record is never lowered, today's count comes from the home screen alone, and a
+  // date after today (the clock went back) or older than two months is left out.
+  const kept = noteDay({ '2026-11-12': 9, '2026-11-10': 4 }, key, 2, { '2026-11-12': 1, '2026-11-10': 5, '2026-11-13': 7, '2026-11-14': 3, '2026-09-01': 2 });
+  assert.deepEqual(kept, { '2026-11-12': 9, '2026-11-10': 5, '2026-11-13': 2 });
+  assert.deepEqual(noteDay(kept, key, 0, {}), kept);
+  assert.deepEqual(noteDay(kept, key, 0), kept);
+});
+
+test('a full day is every game there was that day, not every game there is now', () => {
+  // Nine games from the start, and a tenth that came out on the 18th.
+  const since = [...Array(9).fill(undefined), '2026-11-18'];
+  assert.equal(gamesOn('2026-11-17', since), 9);
+  assert.equal(gamesOn('2026-11-18', since), 10);
+  assert.equal(gamesOn('2026-12-01', since), 10);
+  assert.equal(gamesOn('2026-10-31', since), 9, 'across a month end');
+  assert.equal(gamesOn('2026-11-17', Array(9).fill(undefined)), 9);
+  // The week's keys line up with its counts, today last.
+  const key = '2026-11-19';
+  assert.deepEqual(dayKeys(key, 4), ['2026-11-16', '2026-11-17', '2026-11-18', '2026-11-19']);
+  assert.deepEqual(dayKeys('2026-12-01', 3), ['2026-11-29', '2026-11-30', '2026-12-01']);
+  // Nine on the 17th was a full day and still is; nine on the 18th is one short.
+  const log = { '2026-11-16': 4, '2026-11-17': 9, '2026-11-18': 9, '2026-11-19': 10 };
+  const full = lastDays(log, key, 4).map((n, i) => n >= gamesOn(dayKeys(key, 4)[i], since));
+  assert.deepEqual(full, [false, true, false, true]);
 });

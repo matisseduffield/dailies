@@ -31,9 +31,9 @@
   --on-word: #2A4FBC; --on-word-dim: var(--muted);
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --paper: #2E2F33; --rule: #171719; --frame: #696B72; --block: #171719; --word: #3C5488; --shown: #5A4E20; --on-shown: #F7E7A6; --on-word: #C2D0FF; --on-word-dim: #B4B5BB; }
+  :root:not([data-theme="light"]) { --paper: #2E2F33; --rule: #171719; --frame: #696B72; --block: #58595C; --word: #3C5488; --shown: #5A4E20; --on-shown: #F7E7A6; --on-word: #C2D0FF; --on-word-dim: #B4B5BB; }
 }
-:root[data-theme="dark"] { --paper: #2E2F33; --rule: #171719; --frame: #696B72; --block: #171719; --word: #3C5488; --shown: #5A4E20; --on-shown: #F7E7A6; --on-word: #C2D0FF; --on-word-dim: #B4B5BB; }
+:root[data-theme="dark"] { --paper: #2E2F33; --rule: #171719; --frame: #696B72; --block: #58595C; --word: #3C5488; --shown: #5A4E20; --on-shown: #F7E7A6; --on-word: #C2D0FF; --on-word-dim: #B4B5BB; }
 
 .top { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; grid-template-rows: auto auto; align-items: center; gap: 0; }
 a.brand { display: contents; }
@@ -252,7 +252,7 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
 <script src="lib.js?v=3"></script>
 <script src="../clock.js?v=4"></script>
 <script src="../pwa.js"></script>
-<script src="../next.js?v=10"></script>
+<script src="../next.js?v=11"></script>
 <script>
 (() => {
   const L = window.ClueyLib, D = window.ClueyPuzzles;
@@ -598,6 +598,22 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
     save();
     say('');
     render();
+    hush();
+  }
+
+  // The finger that typed the last letter is still down, where the result's
+  // buttons now are: the result takes no taps until a moment after it lifts.
+  let down = false, hushTimer = 0;
+  function hush() {
+    clearTimeout(hushTimer);
+    $('result').style.pointerEvents = 'none';
+    if (!down) hushTimer = setTimeout(() => { $('result').style.pointerEvents = ''; }, 400);
+  }
+  function lifted() {
+    stopHolding();
+    const was = down;
+    down = false;
+    if (was && play.done) hush();
   }
 
   // Help that would end a clean solve, and giving up, take two taps. Once the
@@ -722,12 +738,13 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
   $('keys').addEventListener('pointerdown', e => {
     const k = e.target.closest('.key');
     if (!k) return;
+    down = true;
     hit(k);
     // Holding delete keeps deleting, as on a phone's own keyboard.
     stopHolding();
     if (k.dataset.key === 'erase') holding = setTimeout(() => { holding = setInterval(erase, 90); }, 380);
   });
-  for (const type of ['pointerup', 'pointercancel']) addEventListener(type, stopHolding);
+  for (const type of ['pointerup', 'pointercancel']) addEventListener(type, lifted);
   $('keys').addEventListener('click', e => {
     const k = e.target.closest('.key');
     if (k && (e.detail === 0 || e.pointerType === '')) hit(k);

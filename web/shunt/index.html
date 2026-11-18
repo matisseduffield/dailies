@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#F0F1F3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171719" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="../manifest.json">
+<link rel="apple-touch-icon" sizes="180x180" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Dailies">
+<meta name="description" content="Shunt: slide the blocks aside and get the marked one out through the gap. A new board every day.">
+<title>Shunt</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect x=%223%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2221.4%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%223%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23F4C52E%22/><rect x=%2221.4%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%223%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2212.2%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2221.4%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/></svg>">
+<link rel="preload" href="../fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../shared.css?v=5">
+<style>
+/* The board is a tray with a wall round it. Blocks are plain slabs, darker than the
+   tray by day and lighter by night; the marked one is the slug's yellow, with arrows
+   pointing at the gap, so it isn't told apart by colour alone. */
+:root {
+  --tray: #FFFFFF; --well: #ECEDF1; --wall: #A4A8B3;
+  --slab-hi: #5D6069; --slab-lo: #4E5159; --slab-edge: #3B3D44; --slab-rim: rgba(255, 255, 255, .16); --groove: rgba(255, 255, 255, .3);
+  --mark-hi: #FFD84F; --mark-lo: #F4C52E; --mark-edge: #C99A12; --on-mark: #17181B;
+  --pad: 6px; --wall-w: 8px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --tray: #2A2A2B; --well: #212122; --wall: #55565A; --slab-hi: #8A8B90; --slab-lo: #77787D; --slab-edge: #515257; --slab-rim: rgba(255, 255, 255, .2); --groove: rgba(0, 0, 0, .3); } }
+:root[data-theme="dark"] { --tray: #2A2A2B; --well: #212122; --wall: #55565A; --slab-hi: #8A8B90; --slab-lo: #77787D; --slab-edge: #515257; --slab-rim: rgba(255, 255, 255, .2); --groove: rgba(0, 0, 0, .3); }
+
+/* No Practice, so no tabs: the date sits under the name, as in Sorted and Cluey */
+.top { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; grid-template-rows: auto auto; align-items: center; gap: 0; }
+a.brand { display: contents; }
+a.brand > svg { grid-row: 1 / 3; margin-right: 10px; }
+a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.25; }
+.meta { grid-column: 3; grid-row: 2; align-self: start; min-width: 0; padding: 0; font-size: .84rem; line-height: 1.3; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.top-right { grid-column: 4; grid-row: 1 / 3; margin-left: 8px; }
+
+/* The sum so far, as a calculator shows it: moves made, large, with par and what's
+   left of the limit beside it */
+.score { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-top: 14px; padding: 0 4px; }
+.score p { white-space: nowrap; }
+.used { color: var(--muted); }
+.used b { margin-right: 6px; font-size: 2.15rem; font-weight: 400; letter-spacing: -.02em; line-height: 1.1; color: var(--ink); }
+.limits { font-size: .95rem; color: var(--muted); }
+.limits b { font-weight: 500; color: var(--ink); }
+.limits .low, .limits .low b { color: var(--neg); }
+.limits span + span::before { content: "·"; margin: 0 7px; color: var(--muted); }
+
+.stage-wrap { position: relative; flex: 1; min-height: 0; display: flex; }
+.stage { flex: 1 1 0; min-width: 0; min-height: 0; display: grid; place-items: center; padding: 10px 0; overflow: hidden; }
+/* Nothing on the board scrolls, selects or calls up a menu under a finger */
+.board {
+  position: relative; box-sizing: border-box; border: var(--wall-w) solid var(--wall); border-radius: 22px; background: var(--tray);
+  touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+}
+.cells { position: absolute; inset: var(--pad); }
+.wells { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(6, 1fr); }
+.wells i { margin: 2.5px; border-radius: 9px; background: var(--well); }
+/* The gap: the wall is missing for the width of one line, and the tray runs out through it */
+.gap { position: absolute; background: var(--tray); }
+.gap.R, .gap.L { top: calc(var(--line) * 100% / 6 + 2.5px); height: calc(100% / 6 - 5px); width: calc(var(--pad) + var(--wall-w) + 1px); }
+.gap.D, .gap.U { left: calc(var(--line) * 100% / 6 + 2.5px); width: calc(100% / 6 - 5px); height: calc(var(--pad) + var(--wall-w) + 1px); }
+.gap.R { left: 100%; } .gap.L { right: 100%; } .gap.D { top: 100%; } .gap.U { bottom: 100%; }
+
+/* A block is a button the size of its cells; the slab drawn on it sits a little inside */
+.block {
+  position: absolute; z-index: 1; padding: 0; background: none; border: 0; border-radius: 12px; touch-action: none; cursor: grab;
+  left: calc(var(--c) * 100% / 6 + var(--ox, 0px)); top: calc(var(--r) * 100% / 6 + var(--oy, 0px));
+  width: calc(var(--w) * 100% / 6); height: calc(var(--h) * 100% / 6);
+}
+.block::before { content: ""; position: absolute; inset: 2.5px; border-radius: 10px; background: linear-gradient(var(--slab-hi), var(--slab-lo)); box-shadow: inset 0 1px 0 var(--slab-rim), 0 2px 0 var(--slab-edge); }
+/* A groove along the way it slides */
+.block::after { content: ""; position: absolute; border-radius: 2px; background: var(--groove); }
+.block.across::after { left: 26%; right: 26%; top: calc(50% - 1.5px); height: 3px; }
+.block.down::after { top: 26%; bottom: 26%; left: calc(50% - 1.5px); width: 3px; }
+.block.marked::before { background: linear-gradient(var(--mark-hi), var(--mark-lo)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), 0 2px 0 var(--mark-edge); }
+.block.marked::after { content: none; }
+.block svg { position: absolute; inset: 0; margin: auto; color: var(--on-mark); pointer-events: none; }
+.block.L svg { transform: rotate(180deg); } .block.D svg { transform: rotate(90deg); } .block.U svg { transform: rotate(-90deg); }
+.block:focus-visible { outline: none; }
+.block:focus-visible::before { outline: 3px solid var(--accent); outline-offset: 1px; }
+/* In hand: lifted off the tray */
+.block.held { z-index: 3; cursor: grabbing; }
+.block.held::before { box-shadow: inset 0 1px 0 var(--slab-rim), 0 2px 0 var(--slab-edge), 0 8px 18px rgba(0, 0, 0, .3); filter: brightness(1.08); }
+.block.marked.held::before { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), 0 2px 0 var(--mark-edge), 0 8px 18px rgba(0, 0, 0, .3); }
+.block:disabled { cursor: default; }
+/* Put back by Undo or Restart, moved by a key, or shown the best way: it glides */
+.cells.glide .block { transition: left .17s ease-out, top .17s ease-out; }
+.cells.slow .block { transition: left .3s ease-in-out, top .3s ease-in-out; }
+/* Something in its way */
+.block.stuck::before { animation: stuck .22s ease-out; }
+@keyframes stuck { 35% { transform: scale(.96); } }
+
+/* Messages sit over the top of the stage */
+.toast { top: 4px; left: 50%; right: auto; width: max-content; max-width: 100%; padding: 7px 16px; border-radius: 18px; background: var(--ink); color: var(--on-ink); font-size: .95rem; font-weight: 500; transform: translate(-50%, -4px); z-index: 4; }
+.toast.show { transform: translate(-50%, 0); }
+
+/* Under the board, in reach of a thumb: Undo and Restart, and Give up */
+.tools { display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 0 2px 4px; }
+.tools .tool { margin-left: auto; }
+.aux { display: grid; place-items: center; flex: none; width: 54px; height: 54px; padding: 0; background: linear-gradient(var(--op-hi), var(--op-lo)); border: 0; border-radius: 50%; box-shadow: var(--rim), var(--lift); color: var(--ink); touch-action: manipulation; }
+.aux:active:not(:disabled) { background: var(--key-down); }
+.aux:disabled { opacity: .4; cursor: default; }
+.tool { display: inline-flex; align-items: center; height: 40px; padding: 0 14px; background: var(--key); border: 0; border-radius: 99px; font-size: .86rem; font-weight: 500; color: var(--ink); }
+.tool.sure { color: var(--neg); }
+
+.result .actions { grid-template-columns: 1fr; }
+/* The result takes focus when a game ends from the keyboard: no ring round the whole card */
+.result:focus { outline: none; }
+.reveal { position: relative; display: inline-flex; align-items: center; gap: 6px; padding: 0; background: none; border: 0; font-size: .9rem; font-weight: 600; color: var(--accent); }
+.reveal::after { content: ""; position: absolute; inset: -12px -8px; }
+
+.example { display: grid; justify-items: center; gap: 8px; padding: 14px 14px 12px; background: var(--bg); border-radius: 18px; }
+.example svg { display: block; }
+.example span { font-size: .88rem; color: var(--muted); text-align: center; text-wrap: balance; }
+/* Said to a screen reader, as a picture can't be */
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* A short phone: a smaller sum, so the board keeps its room */
+@media (max-height: 600px) {
+  .score { margin-top: 6px; }
+  .used b { font-size: 1.7rem; }
+  .aux { width: 48px; height: 48px; }
+  .tools { min-height: 50px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cells.glide .block, .cells.slow .block { transition: none; }
+  .block.stuck::before { animation: none; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="top">
+      <a class="brand" href="../index.html" aria-label="All games">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12H3M10.5 4.5 3 12l7.5 7.5"/></svg>
+        <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#5C6F94"/><rect x="7" y="7" width="50" height="50" rx="8" fill="#27314A"/><rect x="50" y="20" width="14" height="12" fill="#27314A"/><rect x="9.5" y="9.5" width="21.5" height="10" rx="3" fill="#AEBBD6"/><rect x="32.5" y="9.5" width="10" height="21.5" rx="3" fill="#FFFFFF"/><rect x="9.5" y="21" width="21.5" height="10" rx="3" fill="#FFCF33"/><path d="M16.5 23.4 19 26l-2.5 2.6M21.5 23.4 24 26l-2.5 2.6" fill="none" stroke="#17181B" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><rect x="44" y="32.5" width="10" height="21.5" rx="3" fill="#AEBBD6"/><rect x="9.5" y="44" width="21.5" height="10" rx="3" fill="#FFFFFF"/></svg>
+        <h1 class="mark">Shunt</h1>
+      </a>
+      <p class="meta" id="meta"></p>
+      <div class="top-right">
+        <button class="icon-btn" id="statsBtn" type="button" aria-label="Stats">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 16.5V11M10 16.5V4M16 16.5V8"/></svg>
+        </button>
+        <button class="icon-btn" id="helpBtn" type="button" aria-label="How to play">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M7.7 7.6a2.4 2.4 0 1 1 3.3 2.2c-.6.3-1 .8-1 1.5v.5"/><circle cx="10" cy="14.6" r=".4" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="score">
+      <p class="used"><b id="used"></b><span id="usedWord"></span></p>
+      <p class="limits" id="limits"></p>
+    </div>
+  </header>
+
+  <main class="stage-wrap">
+    <p class="toast" id="toast" role="status"></p>
+    <div class="stage" id="stage">
+      <div class="board" id="board" role="group" aria-label="The board, six by six">
+        <div class="cells" id="cells"></div>
+      </div>
+    </div>
+    <p class="sr" id="live" aria-live="polite"></p>
+  </main>
+
+  <footer>
+    <div class="tools" id="play">
+      <button class="aux" id="undoBtn" type="button" aria-label="Undo a move"><svg width="24" height="24" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 4 3 7.5 6.5 11"/><path d="M3.5 7.5h7a4.5 4.5 0 0 1 0 9H8"/></svg></button>
+      <button class="aux" id="restartBtn" type="button" aria-label="Start over"><svg width="24" height="24" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.2 9a5.8 5.8 0 1 0 1.9-4.3"/><path d="M4.6 1.8v3.4H8"/></svg></button>
+      <button class="tool" id="giveUpBtn" type="button">Give up</button>
+    </div>
+    <section class="result" id="result" aria-live="polite" tabindex="-1" hidden>
+      <div class="result-head">
+        <p class="result-title" id="resTitle"></p>
+        <p class="result-tag" id="resTag"></p>
+      </div>
+      <p class="result-note" id="resNote"></p>
+      <div class="actions">
+        <button class="btn btn-primary" id="resShare" type="button">Share</button>
+      </div>
+      <a class="next" id="resNext" hidden></a>
+      <p class="result-foot" id="resFoot"></p>
+    </section>
+  </footer>
+</div>
+
+<dialog class="sheet" id="helpSheet" aria-labelledby="helpTitle">
+  <div class="sheet-head">
+    <h2 id="helpTitle" tabindex="-1" autofocus>How to play</h2>
+    <button class="icon-btn" type="button" data-close aria-label="Close">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m4 4 10 10M14 4 4 14"/></svg>
+    </button>
+  </div>
+  <div class="sheet-body">
+    <p>Slide the blocks aside until the marked block, the yellow one with the arrows, can leave through the gap in the wall.</p>
+    <div class="example">
+      <svg width="170" height="116" viewBox="0 0 170 116" role="img" aria-label="A tall block stands between the marked block and the gap. Slid down, it leaves the way clear.">
+        <rect x="3.5" y="3.5" width="147" height="109" rx="13" fill="var(--tray)" stroke="var(--wall)" stroke-width="7"/>
+        <rect x="144" y="35" width="14" height="24" fill="var(--tray)"/>
+        <g fill="var(--well)"><rect x="9" y="9" width="24" height="24" rx="5"/><rect x="35" y="9" width="24" height="24" rx="5"/><rect x="61" y="9" width="24" height="24" rx="5"/><rect x="113" y="9" width="24" height="24" rx="5"/><rect x="61" y="35" width="24" height="24" rx="5"/><rect x="113" y="35" width="24" height="24" rx="5"/><rect x="9" y="61" width="24" height="24" rx="5"/><rect x="35" y="61" width="24" height="24" rx="5"/><rect x="61" y="61" width="24" height="24" rx="5"/><rect x="87" y="61" width="24" height="24" rx="5"/><rect x="113" y="61" width="24" height="24" rx="5"/><rect x="87" y="87" width="24" height="24" rx="5"/><rect x="113" y="87" width="24" height="24" rx="5"/></g>
+        <rect x="9" y="35" width="50" height="24" rx="6" fill="var(--mark-lo)"/>
+        <path d="M27 42l5 5-5 5M36 42l5 5-5 5" fill="none" stroke="var(--on-mark)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="87" y="9" width="24" height="50" rx="6" fill="var(--slab-lo)"/>
+        <rect x="9" y="87" width="76" height="24" rx="6" fill="var(--slab-lo)"/>
+        <path d="M99 66v14M94 75.5l5 5 5-5" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Slide the tall block down to clear the way</span>
+    </div>
+    <div class="rules">
+      <div class="rule"><span class="n">1</span><p>Drag a block along its length. It goes as far as the way is clear, and a slide of any length is one move.</p></div>
+      <div class="rule"><span class="n">2</span><p><b>Par</b> is the fewest moves it can possibly be done in. You have ten more than that, and then the day is lost.</p></div>
+      <div class="rule"><span class="n">3</span><p><b>Undo</b> and <b>Restart</b> put blocks back, but a move made stays spent.</p></div>
+    </div>
+    <p class="muted">Par climbs through the week, from 18 on Monday to 30 or more on Sunday.</p>
+  </div>
+</dialog>
+
+<dialog class="sheet" id="statsSheet" aria-labelledby="statsTitle">
+  <div class="sheet-head">
+    <h2 id="statsTitle" tabindex="-1" autofocus>Stats</h2>
+    <button class="icon-btn" type="button" data-close aria-label="Close">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m4 4 10 10M14 4 4 14"/></svg>
+    </button>
+  </div>
+  <div class="sheet-body" id="statsBody"></div>
+</dialog>
+
+<!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
+<script src="days.js?v=1"></script>
+<script src="lib.js?v=1"></script>
+<script src="../clock.js?v=4"></script>
+<script src="../pwa.js"></script>
+<script src="../next.js?v=11"></script>
+<script>
+(() => {
+  const L = window.ShuntLib, D = window.ShuntDays;
+  const $ = id => document.getElementById(id);
+  const locale = navigator.language || 'en';
+  // Where the game lives on the web; shared results link here, short, as chat
+  // apps make a link of it. The app and the old addresses send people to the new one.
+  const SITE = `${/^appassets\.androidplatform\.net$|\.workers\.dev$/.test(location.hostname) ? 'dailies.teloone.au' : location.host}/shunt`;
+
+  const store = {
+    get(k) { try { return JSON.parse(localStorage.getItem('shunt.' + k)); } catch { return null; } },
+    set(k, v) { try { localStorage.setItem('shunt.' + k, JSON.stringify(v)); } catch {} },
+  };
+
+  // ---- state ----
+  // days: { [day]: { moves: [[block, from, to]...], spent, firm, done, won, gaveUp } }.
+  // moves: the slides that stand on the board; spent: the moves paid for, which Undo
+  // and Restart never give back; firm: how many of the moves are settled (see lib.js).
+  // Only days that are what a day should be are kept: one bad entry, from a damaged
+  // save, is dropped by itself and takes nothing else with it.
+  const sound = rec => !!rec && typeof rec === 'object' && Array.isArray(rec.moves) && Number.isInteger(rec.spent) && rec.spent >= 0;
+  function read() {
+    const saved = store.get('state'), days = {};
+    if (saved && saved.days && typeof saved.days === 'object') {
+      for (const day of Object.keys(saved.days)) if (/^-?\d+$/.test(day) && sound(saved.days[day])) days[day] = saved.days[day];
+    }
+    return days;
+  }
+  const state = { days: read() };
+  // A day that's finished stays as it was first recorded. The game may be open
+  // twice (two tabs, or the app and the site in one browser), each with its own
+  // copy of the day: what's already saved as finished is never written over, here
+  // or in the hub's result. True if today's game was replaced by the saved one.
+  function keepFinished() {
+    const kept = read();
+    let changed = false;
+    for (const day of Object.keys(kept)) {
+      const theirs = kept[day], ours = state.days[day];
+      if (!theirs.done) continue;
+      if (!ours || JSON.stringify(ours) !== JSON.stringify(theirs)) {
+        state.days[day] = theirs;
+        if (Number(day) === today) changed = true;
+      }
+    }
+    return changed;
+  }
+  function save() {
+    // Finished elsewhere in the meantime: that result stands, and this page shows it.
+    if (keepFinished()) { store.set('state', state); load(); render(); return false; }
+    store.set('state', state);
+    begun();
+    return true;
+  }
+
+  let today = L.dayNumber(Clock.now(), D.epoch);
+  let puzzle, play;            // the puzzle on screen and its progress
+  let drag = null;             // the block in hand
+  let view = null;             // the board on screen while the best way is shown, in place of the player's
+  let viewTimer = 0;
+  let endTimer = 0;            // the result waits for the last slide to land
+
+  function load() {
+    puzzle = L.daily(today, D);
+    play = state.days[today] || (state.days[today] = { ...L.fresh(), done: false, won: false });
+    // Only moves this board allows: a save from another list of boards starts again.
+    Object.assign(play, L.clean(puzzle, play));
+    const s = now();
+    if (!play.gaveUp) { play.done = s.done; play.won = s.won; }
+    stopView();
+    letGo();
+    build();
+  }
+  const now = () => L.status(puzzle, play);
+  // The side the gap is on, as days.js writes it.
+  const side = () => Object.keys(L.SIDES).find(k => L.SIDES[k][0] === puzzle.blocks[0].across && L.SIDES[k][1] === puzzle.exit);
+
+  // The same game open somewhere else has saved: take what it saved and show it.
+  addEventListener('storage', e => {
+    if (e.key !== null && e.key !== 'shunt.state') return;
+    const mine = JSON.stringify(state.days[today] || null);
+    const theirs = read();
+    // Anything of this page's that's finished stays; the rest is as saved.
+    for (const day of Object.keys(state.days)) if (state.days[day].done && !(theirs[day] && theirs[day].done)) theirs[day] = state.days[day];
+    state.days = theirs;
+    if (JSON.stringify(state.days[today] || null) === mine) { state.days[today] = play; return; }
+    load();
+    say('');
+    render();
+  });
+
+  // ---- toast ----
+  let toastTimer = 0;
+  function say(text, ms = 2200) {
+    clearTimeout(toastTimer);
+    const t = $('toast');
+    t.textContent = text;
+    t.classList.toggle('show', !!text);
+    if (text && ms) toastTimer = setTimeout(() => t.classList.remove('show'), ms);
+  }
+
+  // ---- drawing ----
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  const svg = (w, h, d) => {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('width', w); s.setAttribute('height', h); s.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    s.setAttribute('fill', 'none'); s.setAttribute('stroke', 'currentColor'); s.setAttribute('stroke-width', '1.6');
+    s.setAttribute('stroke-linecap', 'round'); s.setAttribute('stroke-linejoin', 'round'); s.setAttribute('aria-hidden', 'true');
+    const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    p.setAttribute('d', d);
+    s.append(p);
+    return s;
+  };
+
+  // The board's furniture, once for each puzzle: the wells, the gap and a button
+  // for each block. Blocks keep their buttons as they move, so focus stays put.
+  let buttons = [];
+  function build() {
+    const wells = el('div', 'wells');
+    wells.setAttribute('aria-hidden', 'true');
+    for (let i = 0; i < L.SIZE * L.SIZE; i++) wells.append(el('i'));
+    const gap = el('i', `gap ${side()}`);
+    gap.style.setProperty('--line', puzzle.blocks[0].line);
+    gap.setAttribute('aria-hidden', 'true');
+    buttons = puzzle.blocks.map((b, i) => {
+      const btn = el('button', `block ${b.across ? 'across' : 'down'}${i ? '' : ` marked ${side()}`}`);
+      btn.type = 'button';
+      btn.dataset.block = i;
+      btn.setAttribute('aria-keyshortcuts', b.across ? 'ArrowLeft ArrowRight' : 'ArrowUp ArrowDown');
+      btn.style.setProperty('--w', b.across ? b.len : 1);
+      btn.style.setProperty('--h', b.across ? 1 : b.len);
+      if (!i) {
+        const arrows = svg(24, 24, 'M6.5 6.5 12 12l-5.5 5.5M13 6.5l5.5 5.5-5.5 5.5');
+        arrows.setAttribute('stroke-width', '2.4');
+        btn.append(arrows);
+      }
+      return btn;
+    });
+    // In reading order, so Tab goes through the board the way it's seen.
+    const order = buttons.map((_, i) => i).sort((x, y) => {
+      const at = i => { const b = puzzle.blocks[i], p = puzzle.start[i]; return b.across ? b.line * L.SIZE + p : p * L.SIZE + b.line; };
+      return at(x) - at(y);
+    });
+    $('cells').replaceChildren(wells, gap, ...order.map(i => buttons[i]));
+    $('board').setAttribute('aria-label', `The board, six by six. The gap is in the ${{ R: 'right', L: 'left', D: 'bottom', U: 'top' }[side()]} wall`);
+  }
+
+  // Every block where the board has it. Once it's out, the marked block sits in the gap.
+  function place(glide = '') {
+    const s = now();
+    const board = view ? view.state : s.state;
+    const out = view ? view.out : s.won;
+    $('cells').classList.toggle('glide', glide === 'glide');
+    $('cells').classList.toggle('slow', glide === 'slow');
+    const still = play.done || !!view;
+    buttons.forEach((btn, i) => {
+      const b = puzzle.blocks[i];
+      btn.style.setProperty('--r', b.across ? b.line : board[i]);
+      btn.style.setProperty('--c', b.across ? board[i] : b.line);
+      btn.style.removeProperty('--ox'); btn.style.removeProperty('--oy');
+      if (!i && out) btn.style.setProperty(b.across ? '--ox' : '--oy', `calc(${puzzle.exit} * (var(--pad) + var(--wall-w)))`);
+      btn.disabled = still;
+      btn.setAttribute('aria-label', L.describe(puzzle, board, i));
+    });
+  }
+
+  // As big as the room it has, and square.
+  function fit() {
+    const stage = $('stage');
+    const size = Math.floor(Math.min(stage.clientWidth, stage.clientHeight - 20, 440));
+    $('board').style.width = $('board').style.height = `${Math.max(120, size)}px`;
+  }
+
+  function renderScore() {
+    const s = now();
+    $('used').textContent = s.used;
+    $('usedWord').textContent = s.used === 1 ? 'move' : 'moves';
+    const par = el('span');
+    par.append('Par ', el('b', '', String(puzzle.par)));
+    const left = el('span', !play.done && s.left <= 3 ? 'low' : '');
+    left.append(el('b', '', String(s.left)), ' left');
+    // Once it's over there's nothing left to count down.
+    $('limits').replaceChildren(...(play.done ? [par] : [par, left]));
+    $('undoBtn').disabled = $('restartBtn').disabled = !play.moves.length;
+  }
+
+  const dateOf = day => { const [y, m, d] = D.epoch.split('-').map(Number); return new Date(y, m - 1, d + day - 1); };
+  const dayFormat = new Intl.DateTimeFormat(locale, { weekday: 'short', day: 'numeric', month: 'short' });
+  const wonDays = () => Object.keys(state.days).filter(d => state.days[d].won).map(Number);
+
+  function renderResult() {
+    const s = now();
+    $('resTitle').textContent = play.won ? `Solved in ${s.used}` : play.gaveUp ? 'Gave up' : 'Out of moves';
+    const tag = $('resTag');
+    tag.textContent = !play.won ? `Par ${puzzle.par}` : s.over > 0 ? `${s.over} over par` : 'On par';
+    tag.classList.toggle('good', !!play.won && s.over <= 0);
+    tag.classList.toggle('bad', !play.won);
+    // Lost, or over par: the par way can be watched on the board.
+    const note = $('resNote');
+    note.replaceChildren();
+    if (!play.won || s.over > 0) {
+      const b = el('button', 'reveal', view ? 'Back to your board' : 'Show the best way');
+      b.type = 'button';
+      b.prepend(view ? svg(14, 14, 'M5 3 2 6l3 3M2.5 6H9a3 3 0 0 1 0 6H6') : svg(14, 14, 'M1 7s2.2-4 6-4 6 4 6 4-2.2 4-6 4-6-4-6-4zM7 8.6a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2z'));
+      b.addEventListener('click', () => { if (view) { stopView(); place('glide'); } else showBest(); renderResult(); });
+      note.append(b);
+    }
+    showNext($('resNext'), 'shunt', true);
+    tickNext();
+  }
+
+  function tickNext() {
+    const foot = $('resFoot');
+    if (!play.done) return;
+    const left = el('span');
+    left.append(el('b', '', String(L.streak(wonDays(), today))), ' day streak');
+    foot.replaceChildren(left, el('span', '', Clock.untilNext('puzzle', today, L.dayNumber(Clock.now(), D.epoch))));
+  }
+
+  function render() {
+    clearTimeout(endTimer);
+    $('meta').textContent = `No. ${today} · ${dayFormat.format(dateOf(today))}`;
+    renderScore();
+    resetGiveUp();
+    $('play').hidden = play.done;
+    $('result').hidden = !play.done;
+    if (play.done) renderResult();
+    // After the footer, so the board sizes itself to the room that leaves.
+    fit();
+    place();
+    tellBack();
+  }
+
+  // The best way, played out on the board from the start, a move at a time.
+  function showBest() {
+    const way = L.solve(puzzle);
+    view = { state: [...puzzle.start], out: false };
+    place('glide');
+    let k = 0;
+    viewTimer = setInterval(() => {
+      if (!view) return clearInterval(viewTimer);
+      if (k < way.length) { const [i, , to] = way[k++]; view.state[i] = to; }
+      else { view.out = true; clearInterval(viewTimer); }
+      place('slow');
+    }, 560);
+  }
+  function stopView() {
+    clearInterval(viewTimer);
+    view = null;
+  }
+
+  // ---- stats ----
+  function renderStats() {
+    const days = Object.keys(state.days).map(Number).filter(d => state.days[d].done);
+    const body = $('statsBody');
+    if (!days.length) return body.replaceChildren(el('p', 'empty', 'Finish a daily puzzle to start your stats.'));
+    const won = wonDays();
+    const nums = el('div', 'numbers');
+    for (const [v, label] of [
+      [days.length, 'Played'],
+      [Math.round(won.length / days.length * 100) + '%', 'Solved'],
+      [L.streak(won, today), 'Streak'],
+      [L.bestStreak(won), 'Best streak'],
+    ]) {
+      const n = el('p', 'num');
+      n.append(el('b', '', String(v)), el('span', '', label));
+      nums.append(n);
+    }
+    // How each day went: moves over par, in bands, or not solved.
+    const LABELS = ['On par', '1 to 3', '4 to 6', `7 to ${L.SPARE}`, 'Lost'];
+    const slot = d => (state.days[d].won ? L.band(state.days[d].spent - L.daily(d, D).par) : LABELS.length - 1);
+    const counts = Array(LABELS.length).fill(0);
+    for (const d of days) counts[slot(d)]++;
+    const max = Math.max(...counts, 1);
+    const dist = el('div', 'dist');
+    dist.append(el('p', 'dist-title', 'Moves over par'));
+    counts.forEach((c, i) => {
+      const row = el('div', 'bar-row');
+      const bar = el('div', 'bar', String(c));
+      bar.style.width = `${Math.max(8, c / max * 100)}%`;
+      if (days.includes(today) && slot(today) === i) bar.classList.add('today');
+      row.append(el('span', '', LABELS[i]), el('div'));
+      row.lastChild.append(bar);
+      dist.append(row);
+    });
+    body.replaceChildren(nums, dist);
+  }
+
+  // ---- sheets ----
+  function openSheet(id) {
+    if (id === 'statsSheet') renderStats();
+    const d = $(id);
+    if (!d.open) d.showModal();
+    tellBack();
+  }
+  for (const d of document.querySelectorAll('dialog.sheet')) {
+    d.addEventListener('click', e => { if (e.target === d || e.target.closest('[data-close]')) d.close(); });
+    d.addEventListener('close', tellBack);
+  }
+  const openDialog = () => document.querySelector('dialog.sheet[open]');
+
+  // ---- playing ----
+  // Block i to `to`, if the board and the limit allow it. True if it went.
+  function move(i, to, glide) {
+    if (play.done) return false;
+    const next = L.step(puzzle, play, i, to);
+    if (!next) return false;
+    play.moves = next.moves;
+    play.spent = next.spent;
+    play.firm = next.firm;
+    say('');
+    const s = now();
+    if (s.done) {
+      play.done = true;
+      play.won = s.won;
+      haptic('tick');
+    } else haptic();
+    // Finished in another tab first: that result is up now, and this move never was.
+    if (!save()) return false;
+    if (s.done) report(true);
+    renderScore();
+    place(glide);
+    $('live').textContent = s.won ? '' : `${L.describe(puzzle, s.state, i).split(', slides')[0]}. ${L.movesText(s.used)}, ${s.left} left.`;
+    // The result comes once the last slide has landed.
+    if (s.done) endTimer = setTimeout(() => { render(); if (glide) toResult(); }, s.won ? 480 : 260);
+    return true;
+  }
+  // A game ended from the keyboard: the block that had focus can't keep it, so
+  // the result takes it, rather than leaving it nowhere.
+  function toResult() {
+    if (play.done && !$('result').hidden) $('result').focus({ preventScroll: true });
+  }
+  // The drag in hand is dropped where it began, as if it had never been picked up.
+  function letGo() {
+    if (!drag) return;
+    const d = drag;
+    drag = null;
+    d.btn.classList.remove('held');
+    d.btn.style.transform = '';
+    try { d.btn.releasePointerCapture(d.id); } catch {}
+  }
+  // With no moves left, only the block in hand can go on with its slide.
+  const usedUp = i => now().left <= 0 && L.inHand(play) !== i;
+  function refuse(btn, text) {
+    haptic('tick');
+    if (text) say(text);
+    btn.classList.remove('stuck');
+    void btn.offsetWidth;
+    btn.classList.add('stuck');
+  }
+
+  // A block follows the finger along its line, as far as the way is clear, and
+  // settles on the nearest cell when it's let go. One finger at a time.
+  const board = $('board');
+  board.addEventListener('pointerdown', e => {
+    const btn = e.target.closest('.block');
+    if (!btn || drag || play.done || view || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    e.preventDefault();
+    const i = Number(btn.dataset.block), s = now();
+    if (usedUp(i)) return refuse(btn, 'No moves left');
+    const [lo, hi] = L.reach(puzzle, s.state, i);
+    if (lo === hi) return refuse(btn);
+    const b = puzzle.blocks[i], cell = $('cells').getBoundingClientRect().width / L.SIZE;
+    // The marked block, with the way open, can be pulled on into the gap.
+    const through = i === 0 && L.goal(puzzle) >= lo && L.goal(puzzle) <= hi ? cell * .45 : 0;
+    drag = {
+      id: e.pointerId, i, btn, across: b.across, cell, from: s.state[i], lo, hi, off: 0,
+      x: e.clientX, y: e.clientY,
+      min: (lo - s.state[i]) * cell - (puzzle.exit < 0 ? through : 0),
+      max: (hi - s.state[i]) * cell + (puzzle.exit > 0 ? through : 0),
+    };
+    try { btn.setPointerCapture(e.pointerId); } catch {}
+    btn.classList.add('held');
+    btn.style.transition = '';
+  });
+  board.addEventListener('pointermove', e => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const d = drag.across ? e.clientX - drag.x : e.clientY - drag.y;
+    drag.off = Math.max(drag.min, Math.min(drag.max, d));
+    drag.btn.style.transform = drag.across ? `translateX(${drag.off}px)` : `translateY(${drag.off}px)`;
+  });
+  function drop(e, cancelled) {
+    if (!drag || e.pointerId !== drag.id) return;
+    const d = drag;
+    drag = null;
+    d.btn.classList.remove('held');
+    try { d.btn.releasePointerCapture(d.id); } catch {}
+    // A drag the phone took away goes back where it began.
+    const to = cancelled ? d.from : Math.max(d.lo, Math.min(d.hi, Math.round(d.from + d.off / d.cell)));
+    const before = d.btn.getBoundingClientRect();
+    d.btn.style.transform = '';
+    if (to !== d.from) move(d.i, to); else place();
+    // From where it was let go to where it belongs, without a jump.
+    const after = d.btn.getBoundingClientRect();
+    const dx = before.left - after.left, dy = before.top - after.top;
+    if (!dx && !dy) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    d.btn.style.transform = `translate(${dx}px, ${dy}px)`;
+    void d.btn.offsetWidth;
+    d.btn.style.transition = 'transform .14s ease-out';
+    d.btn.style.transform = '';
+    d.btn.addEventListener('transitionend', () => { d.btn.style.transition = ''; }, { once: true });
+  }
+  board.addEventListener('pointerup', e => drop(e, false));
+  board.addEventListener('pointercancel', e => drop(e, true));
+  board.addEventListener('lostpointercapture', e => drop(e, true));
+  board.addEventListener('contextmenu', e => e.preventDefault());
+  // A press that isn't a drag does nothing, and mustn't scroll or select either.
+  board.addEventListener('dragstart', e => e.preventDefault());
+
+  // By keyboard: Tab to a block, and the arrow keys along its line slide it a cell.
+  // Cells gone in a row are one move, as they are under a finger.
+  board.addEventListener('keydown', e => {
+    const btn = e.target.closest('.block');
+    const step = { ArrowLeft: [true, -1], ArrowRight: [true, 1], ArrowUp: [false, -1], ArrowDown: [false, 1] }[e.key];
+    if (!btn || !step || e.ctrlKey || e.metaKey || e.altKey || play.done || view || drag) return;
+    e.preventDefault();
+    const i = Number(btn.dataset.block), b = puzzle.blocks[i];
+    if (b.across !== step[0]) return;
+    if (usedUp(i)) return refuse(btn, 'No moves left');
+    if (!move(i, now().state[i] + step[1], 'glide')) refuse(btn);
+  });
+
+  function undo() {
+    const next = L.undo(play);
+    if (!next || play.done) return;
+    haptic();
+    play.moves = next.moves;
+    play.firm = next.firm;
+    if (!save()) return;
+    renderScore(); place('glide');
+    // Out of moves with the last slide taken back: that was the game.
+    settle();
+  }
+  function restart() {
+    const next = L.restart(play);
+    if (!next || play.done) return;
+    haptic();
+    play.moves = next.moves;
+    play.firm = next.firm;
+    if (!save()) return;
+    renderScore(); place('glide');
+    settle();
+  }
+  function settle() {
+    const s = now();
+    if (!s.done || play.done) return;
+    play.done = true;
+    play.won = s.won;
+    if (!save()) return;
+    report(true);
+    render();
+    // Undo or Restart was the button in focus, and it has just gone.
+    if (!document.activeElement || document.activeElement === document.body) toResult();
+  }
+
+  // Giving up takes two taps.
+  let sureTimer = 0;
+  function resetGiveUp() {
+    clearTimeout(sureTimer);
+    $('giveUpBtn').textContent = 'Give up';
+    $('giveUpBtn').classList.remove('sure');
+  }
+  function giveUp(e) {
+    if (play.done) return;
+    if (!$('giveUpBtn').classList.contains('sure')) {
+      $('giveUpBtn').textContent = 'Sure?';
+      $('giveUpBtn').classList.add('sure');
+      sureTimer = setTimeout(resetGiveUp, 3000);
+      return;
+    }
+    // A block still held in the other hand goes back: giving up is the end of it.
+    letGo();
+    play.gaveUp = true;
+    play.done = true;
+    play.won = false;
+    say('');
+    haptic('tick');
+    if (!save()) return;
+    report(true);
+    render();
+    // Pressed from the keyboard, the button has gone from under the focus.
+    if (e && e.detail === 0) toResult();
+  }
+
+  // Today's game begun: the home screen says Started until it's done.
+  function begun() {
+    const rec = state.days[today];
+    // next.js may be an older copy, kept for offline, that hasn't got it.
+    if (typeof markStarted === 'function' && rec && !rec.done && rec.spent > 0 && L.dayNumber(Clock.now(), D.epoch) === today) markStarted('shunt');
+  }
+
+  // Today's result, for the hub's home screen.
+  // finished: the game has just ended, rather than the page opening on it.
+  function report(finished) {
+    const day = L.dayNumber(Clock.now(), D.epoch);
+    // Ended around midnight: its result stays up past it (Clock.keep).
+    if (finished) Clock.keep(today, day);
+    // Finished in the moments after midnight: that day's over, so the hub's new day stays open.
+    if (day !== today) return;
+    const rec = state.days[today];
+    if (!rec || !rec.done) return;
+    const par = L.daily(today, D).par, how = { won: !!rec.won, gaveUp: !!rec.gaveUp };
+    const text = L.scoreText(rec.spent, par, how);
+    // Its line in Share today; should that ever fail, the result still saves.
+    let card;
+    try { card = L.cardText(rec.spent, par, how); } catch {}
+    const date = Clock.now().toDateString();
+    try {
+      // Today's result is already there: the first one recorded stands.
+      const there = JSON.parse(localStorage.getItem('hub.shunt'));
+      if (there && there.date === date && !there.started) return;
+    } catch {}
+    try { localStorage.setItem('hub.shunt', JSON.stringify({ date, text, card, lost: !rec.won })); } catch {}
+  }
+
+  // The blank square in a share follows the phone's theme, as the big word games do.
+  const blank = () => (matchMedia('(prefers-color-scheme: dark)').matches ? '⬛' : '⬜');
+  function share() {
+    const text = `${L.shareText(today, play.spent, puzzle.par, { won: !!play.won, gaveUp: !!play.gaveUp }, blank())}\n${SITE}`;
+    if (app) return toApp({ type: 'share', title: 'Shunt', text });
+    if (navigator.share) return navigator.share({ text }).catch(() => {});
+    navigator.clipboard.writeText(text).then(() => say('Copied to share'), () => {});
+  }
+
+  // ---- controls ----
+  $('undoBtn').addEventListener('click', undo);
+  $('restartBtn').addEventListener('click', restart);
+  $('giveUpBtn').addEventListener('click', giveUp);
+  $('resShare').addEventListener('click', share);
+  $('helpBtn').addEventListener('click', () => openSheet('helpSheet'));
+  $('statsBtn').addEventListener('click', () => openSheet('statsSheet'));
+
+  // Android Back: close a sheet. After that the app goes back to the hub.
+  window.ladderBack = () => {
+    const d = openDialog();
+    if (!d) return false;
+    d.close();
+    return true;
+  };
+  function tellBack() { toApp({ type: 'back', enabled: !!openDialog() }); }
+
+  // A new day while the game sits open (or comes back from the background).
+  function checkDay() {
+    const day = L.dayNumber(Clock.now(), D.epoch);
+    if (day !== today) {
+      // A daily in hand at midnight is finished first and counts for its day;
+      // finished after midnight, its result stays up while it's read or shared.
+      if (Clock.hold(today, play.spent > 0, play.done)) return tickNext();
+      today = day;
+      load();
+      say('');
+      render();
+    } else if (play.done) tickNext();
+  }
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) checkDay(); });
+  // The board sizes itself to the screen: again when the screen changes.
+  let resizeTimer = 0;
+  addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(fit, 120); });
+  addEventListener('clock', checkDay);
+  setInterval(() => { if (!document.hidden) checkDay(); }, 30000);
+
+  // ---- Android app bridge (absent in a browser) ----
+  const app = window.ladderApp || null;
+  function toApp(msg) {
+    if (!app) return;
+    try { app.postMessage(JSON.stringify(msg)); } catch {}
+  }
+  function haptic(kind = 'tap') { toApp({ type: 'haptic', kind }); }
+
+  // ---- boot ----
+  // A save that can't be opened (damaged, or from a build long gone) would leave
+  // the page blank every time: the game it was on is dropped, and it's tried once more.
+  const open = () => { load(); report(); render(); };
+  try { open(); } catch {
+    // Never a finished day: its result is kept whatever else is wrong.
+    if (!(state.days[today] && state.days[today].done)) delete state.days[today];
+    store.set('state', state);
+    open();
+  }
+  // First visit: how to play, once.
+  if (!store.get('seenHelp')) { store.set('seenHelp', true); openSheet('helpSheet'); }
+})();
+</script>
+</body>
+</html>
