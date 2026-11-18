@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
+<!-- ios:cut -->
 <meta name="theme-color" content="#F0F1F3" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#171719" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="manifest.json">
@@ -13,8 +14,11 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Dailies">
 <meta name="description" content="Dailies: a few small daily games, new every day. Free, no ads.">
+<!-- ios:end -->
 <title>Dailies</title>
+<!-- ios:cut -->
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect x=%223%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2221.4%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%223%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23F4C52E%22/><rect x=%2221.4%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%223%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2212.2%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2221.4%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/></svg>">
+<!-- ios:end -->
 <link rel="preload" href="fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="shared.css?v=5">
 <style>
@@ -68,13 +72,17 @@
 /* The reminder is ticked while it's on */
 .menu-row .tick { display: none; color: var(--accent); }
 .menu-row[aria-checked="true"] .tick { display: block; }
+/* ios:cut */
 .menu-row[data-state="available"] span { color: var(--accent); }
 /* An update is waiting: a dot on the button */
 #menuBtn[data-state="available"]::after { content: ""; position: absolute; top: 9px; right: 9px; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+/* ios:end */
 @media (prefers-reduced-motion: reduce) { .menu { animation: none; } }
 
+/* ios:cut */
 .install-hint { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 6px 0 0; font-size: .84rem; line-height: 1.35; color: var(--muted); }
 .install-hint button { flex: none; width: 44px; height: 44px; margin: -10px -12px -10px 0; padding: 0; background: none; border: 0; font-size: 1.2rem; color: var(--muted); }
+/* ios:end */
 
 /* About: who this is, then one rounded list, a row for each thing, with a hairline between them */
 /* What this is, on a card of its own: the icon, with the name and a line about it beside it */
@@ -102,6 +110,7 @@ dialog.sheet.aboutpg[open] { display: flex; flex-direction: column; animation: n
 a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-right: 3px; border: solid var(--line-strong); border-width: 1.5px 1.5px 0 0; transform: rotate(45deg); }
 .sheet-body .about-foot { text-align: center; font-size: .8rem; color: var(--muted); }
 
+/* ios:cut */
 /* App update (Android app only) */
 .update { display: grid; gap: 14px; margin-top: 8px; padding: 20px; background: var(--surface); border-radius: 24px; }
 .update-title { font-weight: 600; line-height: 1.3; }
@@ -112,6 +121,7 @@ a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-ri
 .update-track span { display: block; height: 100%; width: 0; border-radius: 3px; background: var(--accent); transition: width .2s; }
 .update-pct { min-width: 3.2ch; text-align: right; font-size: .86rem; font-weight: 600; }
 @media (prefers-reduced-motion: reduce) { .update-track span { transition: none; } }
+/* ios:end */
 </style>
 </head>
 <body>
@@ -133,6 +143,7 @@ a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-ri
     <button class="menu-row" id="version" type="button" role="menuitem"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><circle cx="12" cy="7.7" r=".5" fill="currentColor"/></svg><span id="versionLabel">About</span></button>
   </div>
 
+  <!-- ios:cut -->
   <section class="update" id="updateCard" aria-label="App update" hidden>
     <div>
       <p class="update-title" id="updateTitle">Update available</p>
@@ -151,6 +162,7 @@ a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-ri
   </section>
 
   <p class="install-hint" id="installHint" hidden><span>Keep Dailies on your iPhone: tap Share, then Add to Home Screen.</span><button type="button" aria-label="Dismiss">×</button></p>
+  <!-- ios:end -->
   <main>
     <div class="today">
       <div>
@@ -177,12 +189,16 @@ a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-ri
     </div>
     <div class="about-links">
       <p class="about-row" id="aboutVer" hidden></p>
+      <!-- ios:cut -->
       <button class="about-row" type="button" id="aboutCheck" hidden><span>Check for updates</span><span id="aboutNote" aria-live="polite"></span></button>
+      <!-- ios:end -->
     </div>
     <div class="about-links">
       <a class="about-row" href="mailto:support@teloone.au?subject=Dailies"><span>Contact support<small>support@teloone.au</small></span></a>
       <div class="about-legal"><a class="about-row" href="https://teloone.au/apps/dailies/privacy/" rel="noreferrer">Privacy policy</a><a class="about-row" href="https://teloone.au/apps/dailies/terms/" rel="noreferrer">Terms of use</a></div>
+      <!-- ios:cut -->
       <a class="about-row" id="getApp" href="/app" hidden>Get the Android app</a>
+      <!-- ios:end -->
     </div>
     <p class="about-foot">Made in Adelaide by Telo One</p>
   </div>
@@ -190,7 +206,9 @@ a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-ri
 
 <script src="clock.js?v=4"></script>
 <script src="today.js?v=5"></script>
+<!-- ios:cut -->
 <script src="pwa.js"></script>
+<!-- ios:end -->
 <script>
 (() => {
   // Every game in the hub: its folder, its name and a line about it. A game
@@ -218,12 +236,14 @@ a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-ri
     // since: the day a game came out, for one added after the rest. A day before it
     // with every other game played still counts as a full day in the week's dots.
     // Shunt's is a week after its epoch (shunt/days.js), which a test holds it to.
-    { id: 'shunt', name: 'Shunt', line: 'Slide the blocks to free the marked one', icon: TRAY, since: '2026-11-18' },
+    { id: 'shunt', name: 'Shunt', line: 'Slide the cars to free the yellow one', icon: TRAY, since: '2026-11-18' },
   ];
+  /* ios:cut */
   const inApp = location.hostname === 'appassets.androidplatform.net';
   // Where shared results link: short, as chat apps make a link of it. The app and
   // the old addresses send people to the new one.
-  const SITE = inApp || /\.workers\.dev$/.test(location.hostname) ? 'dailies.teloone.au' : location.host;
+  /* ios:end */
+  const SITE = /* ios:cut */ inApp || /\.workers\.dev$/.test(location.hostname) ? /* ios:end */ 'dailies.teloone.au' /* ios:cut */ : location.host /* ios:end */;
 
   const $ = id => document.getElementById(id);
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
@@ -296,13 +316,15 @@ a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-ri
       dark: matchMedia('(prefers-color-scheme: dark)').matches, site: SITE,
     });
     if (!text) return;
-    if (window.ladderApp) { showMenu(false); return toApp({ type: 'share', title: 'Dailies', text }); }
+    /* ios:cut */ if (window.ladderApp) { /* ios:end */ showMenu(false); return toApp({ type: 'share', title: 'Dailies', text }); /* ios:cut */ } /* ios:end */
+    /* ios:cut */
     if (navigator.share) { showMenu(false); return navigator.share({ text }).catch(() => {}); }
     // Copied instead: the row says so before the menu goes
     navigator.clipboard.writeText(text).then(() => {
       $('shareLabel').textContent = 'Copied';
       setTimeout(() => { $('shareLabel').textContent = 'Share today'; showMenu(false); }, 1100);
     }, () => showMenu(false));
+    /* ios:end */
   }
   $('shareAll').addEventListener('click', shareAll);
 
@@ -312,24 +334,34 @@ a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-ri
   addEventListener('clock', render);
   setInterval(() => { if (!document.hidden && Clock.now().toDateString() !== shownDay) render(); }, 30000);
 
+  /* ios:cut */
   // ---- Android app bridge (absent in a browser) ----
-  const app = window.ladderApp || null;
+  /* ios:end */
+  const app = window.ladderApp/* ios:cut */ || null/* ios:end */;
   const about = $('aboutSheet');
   function toApp(msg) {
+    /* ios:cut */
     if (!app) return;
+    /* ios:end */
     try { app.postMessage(JSON.stringify(msg)); } catch {}
   }
+  /* ios:cut */
   // selfUpdates is off until the app says otherwise: Play builds update through
   // the store, so there About has the version and nothing to check.
-  let appVersion = '', selfUpdates = false, updateReady = false, versionTimer = 0, updateVersion = '', updateSize = 0;
-  // The app says which build it is. The website's copy is stamped with its version when it is published.
+  /* ios:end */
+  let appVersion = ''/* ios:cut */, selfUpdates = false, updateReady = false, versionTimer = 0, updateVersion = '', updateSize = 0/* ios:end */;
+  // The app says which build it is.
+  /* ios:cut */
+  // The website's copy is stamped with its version when it is published.
   const WEB_VERSION = '__VERSION__';
+  /* ios:end */
   function showVersion() {
-    const v = appVersion || (WEB_VERSION.startsWith('__') ? '' : WEB_VERSION);
+    const v = appVersion/* ios:cut */ || (WEB_VERSION.startsWith('__') ? '' : WEB_VERSION)/* ios:end */;
     $('aboutVer').replaceChildren(el('span', '', 'Version'), el('span', '', v));
     $('aboutVer').hidden = !v;
   }
   showVersion();
+  /* ios:cut */
   // Not now holds for the version it was said to while the app stays open;
   // Check for updates in About still opens the card.
   const later = {
@@ -376,11 +408,14 @@ a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-ri
       $('updatePct').textContent = p + '%';
     }
   }
+  /* ios:end */
+  /* ios:cut */
   if (app) {
+  /* ios:end */
     app.onmessage = e => {
       let m;
       try { m = JSON.parse(e.data); } catch { return; }
-      if (m.type === 'info' && m.platform === 'ios') {
+      if (m.type === 'info'/* ios:cut */ && m.platform === 'ios'/* ios:end */) {
         // Notifications switched off in Settings: the reminder is off too.
         if (!m.notifications && store.get('remind')) store.set('remind', false);
         if (m.notifications) remindBlocked = false;
@@ -397,8 +432,11 @@ a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-ri
       }
       if (m.type === 'info') {
         appVersion = m.version;
+        /* ios:cut */
         selfUpdates = m.updates === true;
+        /* ios:end */
         showVersion();
+        /* ios:cut */
         $('aboutCheck').hidden = !selfUpdates;
         showLabel();
       } else if (m.type === 'updateStatus' && selfUpdates) {
@@ -411,8 +449,10 @@ a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-ri
         showUpdate(m);
         // Put off: the card is filled in for the link, but stays out of the way.
         if (m.state === 'available' && away && m.version && m.version === later.get()) $('updateCard').hidden = true;
+        /* ios:end */
       }
     };
+    /* ios:cut */
     $('updateGo').addEventListener('click', () => { showUpdate({ state: 'downloading', progress: 0 }); toApp({ type: 'installUpdate' }); });
     $('updateLater').addEventListener('click', () => { $('updateCard').hidden = true; later.set(updateVersion); });
     $('aboutCheck').addEventListener('click', () => {
@@ -421,9 +461,12 @@ a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-ri
       toApp({ type: 'checkUpdate' });
     });
   }
+  /* ios:end */
 
   // ---- About ----
+  /* ios:cut */
   // Android Back closes the sheet, as it does a game's.
+  /* ios:end */
   const tellBack = () => toApp({ type: 'back', enabled: about.open });
   window.ladderBack = () => { if (!about.open) return false; about.close(); return true; };
   const openAbout = () => { if (!about.open) about.showModal(); tellBack(); };
@@ -454,7 +497,7 @@ a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-ri
   about.addEventListener('click', e => { if (e.target === about || e.target.closest('[data-close]')) about.close(); });
   about.addEventListener('close', tellBack);
 
-  // The 6 pm reminder, in the iPhone app: the app plans it (window.ladderRemind).
+  // The 6 pm reminder/* ios:cut */, in the iPhone app/* ios:end */: the app plans it (window.ladderRemind).
   // Notifications were refused: only the phone's Settings can turn them back on.
   let remindBlocked = false;
   function showRemind() {
@@ -463,7 +506,7 @@ a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-ri
     // Refused: the row leads to the phone's Settings instead
     $('remindText').textContent = !on && remindBlocked ? 'Turn on notifications' : 'Remind me at 6 pm';
     $('remindToggle').setAttribute('aria-checked', on);
-    if (window.ladderRemind) window.ladderRemind();
+    /* ios:cut */ if (window.ladderRemind) /* ios:end */ window.ladderRemind();
   }
   $('remindToggle').addEventListener('click', () => {
     if (!store.get('remind')) return toApp({ type: remindBlocked ? 'openSettings' : 'askNotifications' });
@@ -472,7 +515,9 @@ a.about-row::after { content: ""; flex: none; width: 9px; height: 9px; margin-ri
   });
 
   // ---- boot ----
+  /* ios:cut */
   $('getApp').hidden = !!app || inApp || !/Android/.test(navigator.userAgent);
+  /* ios:end */
   render();
   toApp({ type: 'hello' });
   // Back in front: notifications may have been switched in Settings meanwhile.

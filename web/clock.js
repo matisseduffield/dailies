@@ -1,8 +1,11 @@
 // The time the games go by. Moving the phone's clock or time zone mustn't bring
-// tomorrow's puzzle early, so the day comes from our server: the app keeps a
-// server reading (see TrustedClock.kt), and on the site the Worker writes one
-// into each page. The phone's own clock is only used before any reading exists,
-// such as a first open with no connection or a local preview.
+// tomorrow's puzzle early, so the day comes from our server.
+/* ios:cut */
+// The app keeps a server reading (see TrustedClock.kt), and on the site the Worker
+// writes one into each page.
+/* ios:end */
+// The phone's own clock is only used before any reading exists, such as a first
+// open with no connection.
 (function (root) {
   const zoneAt = time => -new Date(time).getTimezoneOffset();
 
@@ -16,14 +19,20 @@
       at.getUTCHours(), at.getUTCMinutes(), at.getUTCSeconds());
   }
 
+  /* ios:cut */
   let site = null;   // the page's reading, and when it was taken
   const keep = reading => { site = { ...reading, mark: performance.now() }; };
 
+  /* ios:end */
   function reading() {
+    /* ios:cut */
     if (root.ladderClock) {
+    /* ios:end */
       try { return JSON.parse(root.ladderClock.read()); } catch { return null; }
+    /* ios:cut */
     }
     return site && { now: site.now + performance.now() - site.mark, offset: site.offset };
+    /* ios:end */
   }
 
   function now() {
@@ -31,6 +40,7 @@
     return known ? wall(known) : new Date();
   }
 
+  /* ios:cut */
   // A page left open on the site can sleep through midnight.
   async function refresh() {
     try {
@@ -46,10 +56,11 @@
     root.addEventListener('pageshow', e => { if (e.persisted) refresh(); });
   }
 
+  /* ios:end */
   // Someone mid-game at midnight finishes the day they're on before the new one
   // takes its place; coming back to it hours later, they get the new day.
   let touched = -Infinity;
-  if (root.addEventListener) for (const type of ['pointerdown', 'keydown']) root.addEventListener(type, () => { touched = Date.now(); }, true);
+  /* ios:cut */ if (root.addEventListener) /* ios:end */ for (const type of ['pointerdown', 'keydown']) root.addEventListener(type, () => { touched = Date.now(); }, true);
   const playing = () => Date.now() - touched < 30 * 6e4;
 
   // Whether a page keeps the day it shows once the clock has moved on: a game

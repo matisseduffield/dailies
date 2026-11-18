@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
 <meta name="referrer" content="no-referrer">
+<!-- ios:cut -->
 <meta name="theme-color" content="#F0F1F3" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#171719" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="../manifest.json">
@@ -12,35 +13,33 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Dailies">
-<meta name="description" content="Shunt: slide the blocks aside and get the marked one out through the gap. A new board every day.">
+<meta name="description" content="Shunt: slide the cars and trucks aside and get the yellow car out through the gap. A new board every day.">
+<!-- ios:end -->
 <title>Shunt</title>
+<!-- ios:cut -->
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect x=%223%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2221.4%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%223%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23F4C52E%22/><rect x=%2221.4%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%223%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2212.2%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2221.4%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/></svg>">
+<!-- ios:end -->
 <link rel="preload" href="../fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../shared.css?v=5">
 <style>
-/* The board is a tray with a wall round it. Blocks are plain slabs, darker than the
-   tray by day and lighter by night; the marked one is the slug's yellow, with arrows
-   pointing at the gap, so it isn't told apart by colour alone. */
+/* The board is a yard with a wall round it, seen from above. Two cells is a car,
+   blue; three is a truck, coral, with a cab and a load. The marked one is a yellow
+   car with arrows on its roof pointing at the gap, so it isn't told apart by colour
+   alone, and nor are the lengths. */
 :root {
   --tray: #FFFFFF; --well: #ECEDF1; --wall: #A4A8B3;
-  --slab-hi: #5D6069; --slab-lo: #4E5159; --slab-edge: #3B3D44; --slab-rim: rgba(255, 255, 255, .16); --groove: rgba(255, 255, 255, .3);
+  --car-hi: #5A8FF2; --car-lo: #3F73DE; --car-edge: #2A52A8;
+  --truck-hi: #F27C63; --truck-lo: #DF5E45; --truck-edge: #A83F2C;
   --mark-hi: #FFD84F; --mark-lo: #F4C52E; --mark-edge: #C99A12; --on-mark: #17181B;
+  --glass: rgba(14, 22, 40, .66); --lamp: #FFF8DC;
   --pad: 6px; --wall-w: 8px;
 }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --tray: #2A2A2B; --well: #212122; --wall: #55565A; --slab-hi: #8A8B90; --slab-lo: #77787D; --slab-edge: #515257; --slab-rim: rgba(255, 255, 255, .2); --groove: rgba(0, 0, 0, .3); } }
-:root[data-theme="dark"] { --tray: #2A2A2B; --well: #212122; --wall: #55565A; --slab-hi: #8A8B90; --slab-lo: #77787D; --slab-edge: #515257; --slab-rim: rgba(255, 255, 255, .2); --groove: rgba(0, 0, 0, .3); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --tray: #2A2A2B; --well: #212122; --wall: #55565A; --car-hi: #5F93F4; --car-lo: #4577E0; --car-edge: #284C9C; --truck-hi: #F0785F; --truck-lo: #DB5B43; --truck-edge: #963625; } }
+:root[data-theme="dark"] { --tray: #2A2A2B; --well: #212122; --wall: #55565A; --car-hi: #5F93F4; --car-lo: #4577E0; --car-edge: #284C9C; --truck-hi: #F0785F; --truck-lo: #DB5B43; --truck-edge: #963625; }
 
-/* No Practice, so no tabs: the date sits under the name, as in Sorted and Cluey */
-.top { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; grid-template-rows: auto auto; align-items: center; gap: 0; }
-a.brand { display: contents; }
-a.brand > svg { grid-row: 1 / 3; margin-right: 10px; }
-a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.25; }
-.meta { grid-column: 3; grid-row: 2; align-self: start; min-width: 0; padding: 0; font-size: .84rem; line-height: 1.3; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.top-right { grid-column: 4; grid-row: 1 / 3; margin-left: 8px; }
-
-/* The sum so far, as a calculator shows it: moves made, large, with par and what's
-   left of the limit beside it */
-.score { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-top: 14px; padding: 0 4px; }
+/* The sum so far, as a calculator shows it: moves made, large, with par beside it
+   and, in hard mode, what's left of the limit */
+.score { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-top: 10px; padding: 0 4px; }
 .score p { white-space: nowrap; }
 .used { color: var(--muted); }
 .used b { margin-right: 6px; font-size: 2.15rem; font-weight: 400; letter-spacing: -.02em; line-height: 1.1; color: var(--ink); }
@@ -71,28 +70,41 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
   left: calc(var(--c) * 100% / 6 + var(--ox, 0px)); top: calc(var(--r) * 100% / 6 + var(--oy, 0px));
   width: calc(var(--w) * 100% / 6); height: calc(var(--h) * 100% / 6);
 }
-.block::before { content: ""; position: absolute; inset: 2.5px; border-radius: 10px; background: linear-gradient(var(--slab-hi), var(--slab-lo)); box-shadow: inset 0 1px 0 var(--slab-rim), 0 2px 0 var(--slab-edge); }
-/* A groove along the way it slides */
-.block::after { content: ""; position: absolute; border-radius: 2px; background: var(--groove); }
-.block.across::after { left: 26%; right: 26%; top: calc(50% - 1.5px); height: 3px; }
-.block.down::after { top: 26%; bottom: 26%; left: calc(50% - 1.5px); width: 3px; }
-.block.marked::before { background: linear-gradient(var(--mark-hi), var(--mark-lo)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), 0 2px 0 var(--mark-edge); }
-.block.marked::after { content: none; }
+.block { --hi: var(--car-hi); --lo: var(--car-lo); --edge: var(--car-edge); }
+.block.long { --hi: var(--truck-hi); --lo: var(--truck-lo); --edge: var(--truck-edge); }
+.block.marked { --hi: var(--mark-hi); --lo: var(--mark-lo); --edge: var(--mark-edge); }
+.block::before { content: ""; position: absolute; inset: 2.5px; border-radius: 12px; background: linear-gradient(var(--hi), var(--lo)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .3), 0 2px 0 var(--edge); }
+.block.long::before { border-radius: 8px; }
+/* What makes it a car, drawn lying across with its nose to the right and turned to
+   suit: glass, a roof, lamps at the nose and the tail. --cell comes from fit(). */
+.car { position: absolute; left: 50%; top: 50%; width: calc(var(--len) * var(--cell)); height: var(--cell); transform: translate(-50%, -50%) rotate(var(--turn, 0deg)); pointer-events: none; }
+.car i { position: absolute; }
+.car .glass { left: 21%; right: 19%; top: 17%; bottom: 17%; border-radius: 9px; background: var(--glass); }
+.car .roof { left: 34%; right: 36%; top: 21%; bottom: 21%; border-radius: 5px; background: var(--lo); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16); }
+.car .lamp { right: 5.5px; width: 3.5px; height: 14%; border-radius: 2px; background: var(--lamp); }
+.car .tail { left: 5.5px; width: 3px; height: 14%; border-radius: 2px; background: rgba(0, 0, 0, .3); }
+.car .a { top: 19%; } .car .b { bottom: 19%; }
+/* A truck: the cab at the nose, and the load behind it under a ribbed cover */
+.car.truck .glass { left: 74%; right: 5%; border-radius: 7px; }
+.car.truck .roof { left: 74%; right: 12.5%; }
+.car.truck .load { left: 9.5px; right: 29%; top: 13%; bottom: 13%; border-radius: 5px; background: repeating-linear-gradient(90deg, rgba(255, 255, 255, .3) 0 11px, rgba(255, 255, 255, .16) 11px 13px); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .1); }
+.car.truck .tail { left: 4px; }
+/* The marked car's roof is wide enough to carry its arrows */
+.block.marked .roof { left: 30%; right: 30%; }
 .block svg { position: absolute; inset: 0; margin: auto; color: var(--on-mark); pointer-events: none; }
 .block.L svg { transform: rotate(180deg); } .block.D svg { transform: rotate(90deg); } .block.U svg { transform: rotate(-90deg); }
 .block:focus-visible { outline: none; }
 .block:focus-visible::before { outline: 3px solid var(--accent); outline-offset: 1px; }
 /* In hand: lifted off the tray */
 .block.held { z-index: 3; cursor: grabbing; }
-.block.held::before { box-shadow: inset 0 1px 0 var(--slab-rim), 0 2px 0 var(--slab-edge), 0 8px 18px rgba(0, 0, 0, .3); filter: brightness(1.08); }
-.block.marked.held::before { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), 0 2px 0 var(--mark-edge), 0 8px 18px rgba(0, 0, 0, .3); }
+.block.held::before { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .3), 0 2px 0 var(--edge), 0 8px 18px rgba(0, 0, 0, .3); filter: brightness(1.08); }
 .block:disabled { cursor: default; }
 /* Put back by Undo or Restart, moved by a key, or shown the best way: it glides */
 .cells.glide .block { transition: left .17s ease-out, top .17s ease-out; }
 .cells.slow .block { transition: left .3s ease-in-out, top .3s ease-in-out; }
 /* Something in its way */
-.block.stuck::before { animation: stuck .22s ease-out; }
-@keyframes stuck { 35% { transform: scale(.96); } }
+.block.stuck::before, .block.stuck .car { animation: stuck .22s ease-out; }
+@keyframes stuck { 35% { scale: .96; } }
 
 /* Messages sit over the top of the stage */
 .toast { top: 4px; left: 50%; right: auto; width: max-content; max-width: 100%; padding: 7px 16px; border-radius: 18px; background: var(--ink); color: var(--on-ink); font-size: .95rem; font-weight: 500; transform: translate(-50%, -4px); z-index: 4; }
@@ -107,7 +119,6 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
 .tool { display: inline-flex; align-items: center; height: 40px; padding: 0 14px; background: var(--key); border: 0; border-radius: 99px; font-size: .86rem; font-weight: 500; color: var(--ink); }
 .tool.sure { color: var(--neg); }
 
-.result .actions { grid-template-columns: 1fr; }
 /* The result takes focus when a game ends from the keyboard: no ring round the whole card */
 .result:focus { outline: none; }
 .reveal { position: relative; display: inline-flex; align-items: center; gap: 6px; padding: 0; background: none; border: 0; font-size: .9rem; font-weight: 600; color: var(--accent); }
@@ -125,10 +136,13 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
   .used b { font-size: 1.7rem; }
   .aux { width: 48px; height: 48px; }
   .tools { min-height: 50px; }
+  /* The result says the moves and par itself: the room goes to the board */
+  .over .score { display: none; }
 }
+.modes .meta { white-space: nowrap; }
 @media (prefers-reduced-motion: reduce) {
   .cells.glide .block, .cells.slow .block { transition: none; }
-  .block.stuck::before { animation: none; }
+  .block.stuck::before, .block.stuck .car { animation: none; }
 }
 </style>
 </head>
@@ -141,7 +155,6 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
         <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#5C6F94"/><rect x="7" y="7" width="50" height="50" rx="8" fill="#27314A"/><rect x="50" y="20" width="14" height="12" fill="#27314A"/><rect x="9.5" y="9.5" width="21.5" height="10" rx="3" fill="#AEBBD6"/><rect x="32.5" y="9.5" width="10" height="21.5" rx="3" fill="#FFFFFF"/><rect x="9.5" y="21" width="21.5" height="10" rx="3" fill="#FFCF33"/><path d="M16.5 23.4 19 26l-2.5 2.6M21.5 23.4 24 26l-2.5 2.6" fill="none" stroke="#17181B" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><rect x="44" y="32.5" width="10" height="21.5" rx="3" fill="#AEBBD6"/><rect x="9.5" y="44" width="21.5" height="10" rx="3" fill="#FFFFFF"/></svg>
         <h1 class="mark">Shunt</h1>
       </a>
-      <p class="meta" id="meta"></p>
       <div class="top-right">
         <button class="icon-btn" id="statsBtn" type="button" aria-label="Stats">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 16.5V11M10 16.5V4M16 16.5V8"/></svg>
@@ -150,6 +163,13 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M7.7 7.6a2.4 2.4 0 1 1 3.3 2.2c-.6.3-1 .8-1 1.5v.5"/><circle cx="10" cy="14.6" r=".4" fill="currentColor"/></svg>
         </button>
       </div>
+    </div>
+    <div class="modes">
+      <div class="tabs" role="tablist" aria-label="Mode">
+        <button class="tab" id="tabToday" role="tab" type="button">Today</button>
+        <button class="tab" id="tabPractice" role="tab" type="button">Practice</button>
+      </div>
+      <p class="meta" id="meta"></p>
     </div>
     <div class="score">
       <p class="used"><b id="used"></b><span id="usedWord"></span></p>
@@ -180,7 +200,8 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
       </div>
       <p class="result-note" id="resNote"></p>
       <div class="actions">
-        <button class="btn btn-primary" id="resShare" type="button">Share</button>
+        <button class="btn btn-secondary" id="resSecond" type="button"></button>
+        <button class="btn btn-primary" id="resFirst" type="button"></button>
       </div>
       <a class="next" id="resNext" hidden></a>
       <p class="result-foot" id="resFoot"></p>
@@ -196,26 +217,37 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
     </button>
   </div>
   <div class="sheet-body">
-    <p>Slide the blocks aside until the marked block, the yellow one with the arrows, can leave through the gap in the wall.</p>
+    <p>Slide the cars and trucks aside until the yellow car, the one with the arrows, can leave through the gap in the wall.</p>
     <div class="example">
-      <svg width="170" height="116" viewBox="0 0 170 116" role="img" aria-label="A tall block stands between the marked block and the gap. Slid down, it leaves the way clear.">
+      <svg width="170" height="116" viewBox="0 0 170 116" role="img" aria-label="A blue car stands between the yellow car and the gap. Slid down, it leaves the way clear.">
         <rect x="3.5" y="3.5" width="147" height="109" rx="13" fill="var(--tray)" stroke="var(--wall)" stroke-width="7"/>
         <rect x="144" y="35" width="14" height="24" fill="var(--tray)"/>
         <g fill="var(--well)"><rect x="9" y="9" width="24" height="24" rx="5"/><rect x="35" y="9" width="24" height="24" rx="5"/><rect x="61" y="9" width="24" height="24" rx="5"/><rect x="113" y="9" width="24" height="24" rx="5"/><rect x="61" y="35" width="24" height="24" rx="5"/><rect x="113" y="35" width="24" height="24" rx="5"/><rect x="9" y="61" width="24" height="24" rx="5"/><rect x="35" y="61" width="24" height="24" rx="5"/><rect x="61" y="61" width="24" height="24" rx="5"/><rect x="87" y="61" width="24" height="24" rx="5"/><rect x="113" y="61" width="24" height="24" rx="5"/><rect x="87" y="87" width="24" height="24" rx="5"/><rect x="113" y="87" width="24" height="24" rx="5"/></g>
-        <rect x="9" y="35" width="50" height="24" rx="6" fill="var(--mark-lo)"/>
-        <path d="M27 42l5 5-5 5M36 42l5 5-5 5" fill="none" stroke="var(--on-mark)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-        <rect x="87" y="9" width="24" height="50" rx="6" fill="var(--slab-lo)"/>
-        <rect x="9" y="87" width="76" height="24" rx="6" fill="var(--slab-lo)"/>
+        <rect x="9" y="35" width="50" height="24" rx="7" fill="var(--mark-lo)"/>
+        <rect x="19.5" y="39" width="30" height="16" rx="4.5" fill="var(--glass)"/>
+        <rect x="23" y="40" width="22" height="14" rx="3" fill="var(--mark-lo)"/>
+        <path d="M30 43.6l3.4 3.4-3.4 3.4M35 43.6l3.4 3.4-3.4 3.4" fill="none" stroke="var(--on-mark)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="87" y="9" width="24" height="50" rx="7" fill="var(--car-lo)"/>
+        <rect x="91" y="18.5" width="16" height="30" rx="4.5" fill="var(--glass)"/>
+        <rect x="92" y="26" width="14" height="15" rx="3" fill="var(--car-lo)"/>
+        <rect x="9" y="87" width="76" height="24" rx="5" fill="var(--truck-lo)"/>
+        <rect x="14" y="90" width="48" height="18" rx="3" fill="#FFFFFF" fill-opacity=".28"/>
+        <rect x="65" y="91" width="16" height="16" rx="4" fill="var(--glass)"/>
+        <rect x="65" y="92" width="10.5" height="14" rx="3" fill="var(--truck-lo)"/>
         <path d="M99 66v14M94 75.5l5 5 5-5" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      <span>Slide the tall block down to clear the way</span>
+      <span>Slide the blue car down to clear the way</span>
     </div>
     <div class="rules">
-      <div class="rule"><span class="n">1</span><p>Drag a block along its length. It goes as far as the way is clear, and a slide of any length is one move.</p></div>
-      <div class="rule"><span class="n">2</span><p><b>Par</b> is the fewest moves it can possibly be done in. You have ten more than that, and then the day is lost.</p></div>
-      <div class="rule"><span class="n">3</span><p><b>Undo</b> and <b>Restart</b> put blocks back, but a move made stays spent.</p></div>
+      <div class="rule"><span class="n">1</span><p>Drag a car or truck along its length. It goes as far as the way is clear, and a slide of any length is one move.</p></div>
+      <div class="rule"><span class="n">2</span><p><b>Par</b> is the fewest moves it can possibly be done in. Take as many as you need: the closer to par, the better.</p></div>
+      <div class="rule"><span class="n">3</span><p><b>Undo</b> and <b>Restart</b> put cars and trucks back, but a move made stays spent.</p></div>
     </div>
     <p class="muted">Par climbs through the week, from 18 on Monday to 30 or more on Sunday.</p>
+    <button class="mode-row" id="hardBtn" type="button" role="switch" aria-checked="false">
+      <span><b>Hard mode</b><small id="hardNote"></small></span>
+      <span class="switch" aria-hidden="true"></span>
+    </button>
   </div>
 </dialog>
 
@@ -229,20 +261,27 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
   <div class="sheet-body" id="statsBody"></div>
 </dialog>
 
+<!-- ios:cut -->
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
+<!-- ios:end -->
 <script src="days.js?v=1"></script>
-<script src="lib.js?v=1"></script>
+<script src="practice.js?v=1"></script>
+<script src="lib.js?v=2"></script>
 <script src="../clock.js?v=4"></script>
+<!-- ios:cut -->
 <script src="../pwa.js"></script>
+<!-- ios:end -->
 <script src="../next.js?v=11"></script>
 <script>
 (() => {
-  const L = window.ShuntLib, D = window.ShuntDays;
+  const L = window.ShuntLib, D = window.ShuntDays, P = window.ShuntPractice || { boards: [] };
   const $ = id => document.getElementById(id);
   const locale = navigator.language || 'en';
+  /* ios:cut */
   // Where the game lives on the web; shared results link here, short, as chat
   // apps make a link of it. The app and the old addresses send people to the new one.
-  const SITE = `${/^appassets\.androidplatform\.net$|\.workers\.dev$/.test(location.hostname) ? 'dailies.teloone.au' : location.host}/shunt`;
+  /* ios:end */
+  const SITE = `${/* ios:cut */ /^appassets\.androidplatform\.net$|\.workers\.dev$/.test(location.hostname) ? /* ios:end */ 'dailies.teloone.au' /* ios:cut */ : location.host /* ios:end */}/shunt`;
 
   const store = {
     get(k) { try { return JSON.parse(localStorage.getItem('shunt.' + k)); } catch { return null; } },
@@ -250,24 +289,45 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
   };
 
   // ---- state ----
-  // days: { [day]: { moves: [[block, from, to]...], spent, firm, done, won, gaveUp } }.
+  // days: { [day]: { moves: [[block, from, to]...], spent, firm, done, won, gaveUp, hard } }.
   // moves: the slides that stand on the board; spent: the moves paid for, which Undo
-  // and Restart never give back; firm: how many of the moves are settled (see lib.js).
+  // and Restart never give back; firm: how many of the moves are settled (see lib.js);
+  // hard: played under the limit. A game not yet begun goes by the switch.
+  // practice: the same plus `at`, its place among the practice boards; seen: the
+  // practice boards played so far, so none comes round again before the rest have;
+  // hard: the switch, for games still to begin; mode: which is on screen.
   // Only days that are what a day should be are kept: one bad entry, from a damaged
   // save, is dropped by itself and takes nothing else with it.
   const sound = rec => !!rec && typeof rec === 'object' && Array.isArray(rec.moves) && Number.isInteger(rec.spent) && rec.spent >= 0;
+  const inPool = at => Number.isInteger(at) && at >= 0 && at < P.boards.length;
   function read() {
     const saved = store.get('state'), days = {};
     if (saved && saved.days && typeof saved.days === 'object') {
-      for (const day of Object.keys(saved.days)) if (/^-?\d+$/.test(day) && sound(saved.days[day])) days[day] = saved.days[day];
+      for (const day of Object.keys(saved.days)) {
+        if (!/^-?\d+$/.test(day) || !sound(saved.days[day])) continue;
+        days[day] = saved.days[day];
+        // A day saved before there were modes (see lib.js).
+        days[day].hard = L.wasHard(days[day]);
+      }
     }
     return days;
   }
-  const state = { days: read() };
-  // A day that's finished stays as it was first recorded. The game may be open
-  // twice (two tabs, or the app and the site in one browser), each with its own
-  // copy of the day: what's already saved as finished is never written over, here
-  // or in the hub's result. True if today's game was replaced by the saved one.
+  const saved = store.get('state') || {};
+  const practice = sound(saved.practice) && inPool(saved.practice.at) ? saved.practice : null;
+  const state = {
+    days: read(),
+    practice,
+    seen: Array.isArray(saved.seen) ? saved.seen.filter(inPool) : [],
+    hard: !!saved.hard,
+    mode: saved.mode === 'practice' && practice ? 'practice' : 'daily',
+  };
+  // A day that's finished stays as it was first recorded: what's already saved as
+  // finished is never written over, here or in the hub's result. True if today's
+  // game was replaced by the saved one.
+  /* ios:cut */
+  // The game may be open twice (two tabs, or the app and the site in one browser),
+  // each with its own copy of the day.
+  /* ios:end */
   function keepFinished() {
     const kept = read();
     let changed = false;
@@ -276,13 +336,15 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
       if (!theirs.done) continue;
       if (!ours || JSON.stringify(ours) !== JSON.stringify(theirs)) {
         state.days[day] = theirs;
-        if (Number(day) === today) changed = true;
+        if (Number(day) === today && state.mode === 'daily') changed = true;
       }
     }
     return changed;
   }
   function save() {
+    /* ios:cut */
     // Finished elsewhere in the meantime: that result stands, and this page shows it.
+    /* ios:end */
     if (keepFinished()) { store.set('state', state); load(); render(); return false; }
     store.set('state', state);
     begun();
@@ -297,8 +359,17 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
   let endTimer = 0;            // the result waits for the last slide to land
 
   function load() {
-    puzzle = L.daily(today, D);
-    play = state.days[today] || (state.days[today] = { ...L.fresh(), done: false, won: false });
+    let board;
+    if (state.mode === 'practice') {
+      play = state.practice;
+      board = L.parse(P.boards[play.at]);
+    } else {
+      board = L.daily(today, D);
+      play = state.days[today] || (state.days[today] = { ...L.fresh(), done: false, won: false });
+    }
+    // Not begun: it goes by the switch as that stands now.
+    play.hard = begunGame() ? !!play.hard : state.hard;
+    puzzle = L.inMode(board, play.hard);
     // Only moves this board allows: a save from another list of boards starts again.
     Object.assign(play, L.clean(puzzle, play));
     const s = now();
@@ -308,9 +379,12 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
     build();
   }
   const now = () => L.status(puzzle, play);
+  // The game on screen has a move made in it, or is over: its mode is its own.
+  const begunGame = () => !!play.done || play.spent > 0;
   // The side the gap is on, as days.js writes it.
   const side = () => Object.keys(L.SIDES).find(k => L.SIDES[k][0] === puzzle.blocks[0].across && L.SIDES[k][1] === puzzle.exit);
 
+  /* ios:cut */
   // The same game open somewhere else has saved: take what it saved and show it.
   addEventListener('storage', e => {
     if (e.key !== null && e.key !== 'shunt.state') return;
@@ -319,11 +393,14 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
     // Anything of this page's that's finished stays; the rest is as saved.
     for (const day of Object.keys(state.days)) if (state.days[day].done && !(theirs[day] && theirs[day].done)) theirs[day] = state.days[day];
     state.days = theirs;
+    // A practice game on screen is this page's own, and stays as it is.
+    if (state.mode !== 'daily') return;
     if (JSON.stringify(state.days[today] || null) === mine) { state.days[today] = play; return; }
     load();
     say('');
     render();
   });
+  /* ios:end */
 
   // ---- toast ----
   let toastTimer = 0;
@@ -359,15 +436,24 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
     gap.style.setProperty('--line', puzzle.blocks[0].line);
     gap.setAttribute('aria-hidden', 'true');
     buttons = puzzle.blocks.map((b, i) => {
-      const btn = el('button', `block ${b.across ? 'across' : 'down'}${i ? '' : ` marked ${side()}`}`);
+      const btn = el('button', `block ${b.across ? 'across' : 'down'}${b.len > 2 ? ' long' : ''}${i ? '' : ` marked ${side()}`}`);
       btn.type = 'button';
       btn.dataset.block = i;
       btn.setAttribute('aria-keyshortcuts', b.across ? 'ArrowLeft ArrowRight' : 'ArrowUp ArrowDown');
       btn.style.setProperty('--w', b.across ? b.len : 1);
       btn.style.setProperty('--h', b.across ? 1 : b.len);
+      // Two cells is a car and three a truck. The marked car noses at the gap; the
+      // rest face one way or the other along their line, by turns.
+      const car = el('span', `car${b.len > 2 ? ' truck' : ''}`);
+      const nose = i ? i % 2 === 1 : puzzle.exit > 0;
+      car.style.setProperty('--len', b.len);
+      car.style.setProperty('--turn', `${(b.across ? 0 : 90) + (nose ? 0 : 180)}deg`);
+      for (const part of [...(b.len > 2 ? ['load'] : []), 'glass', 'roof', 'lamp a', 'lamp b', 'tail a', 'tail b']) car.append(el('i', part));
+      btn.append(car);
       if (!i) {
         const arrows = svg(24, 24, 'M6.5 6.5 12 12l-5.5 5.5M13 6.5l5.5 5.5-5.5 5.5');
         arrows.setAttribute('stroke-width', '2.4');
+        arrows.setAttribute('width', '20'); arrows.setAttribute('height', '20');
         btn.append(arrows);
       }
       return btn;
@@ -405,6 +491,8 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
     const stage = $('stage');
     const size = Math.floor(Math.min(stage.clientWidth, stage.clientHeight - 20, 440));
     $('board').style.width = $('board').style.height = `${Math.max(120, size)}px`;
+    // A cell's side, for the cars drawn on the blocks.
+    $('cells').style.setProperty('--cell', `${$('cells').getBoundingClientRect().width / L.SIZE}px`);
   }
 
   function renderScore() {
@@ -415,20 +503,36 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
     par.append('Par ', el('b', '', String(puzzle.par)));
     const left = el('span', !play.done && s.left <= 3 ? 'low' : '');
     left.append(el('b', '', String(s.left)), ' left');
-    // Once it's over there's nothing left to count down.
-    $('limits').replaceChildren(...(play.done ? [par] : [par, left]));
+    // Only hard mode counts down, and once it's over there's nothing left to.
+    $('limits').replaceChildren(...(play.done || !play.hard ? [par] : [par, left]));
     $('undoBtn').disabled = $('restartBtn').disabled = !play.moves.length;
   }
 
   const dateOf = day => { const [y, m, d] = D.epoch.split('-').map(Number); return new Date(y, m - 1, d + day - 1); };
   const dayFormat = new Intl.DateTimeFormat(locale, { weekday: 'short', day: 'numeric', month: 'short' });
+  const shortFormat = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short' });
   const wonDays = () => Object.keys(state.days).filter(d => state.days[d].won).map(Number);
 
+  function renderHeader() {
+    const daily = state.mode === 'daily';
+    $('tabToday').setAttribute('aria-selected', String(daily));
+    $('tabPractice').setAttribute('aria-selected', String(!daily));
+    const meta = $('meta');
+    // A narrow phone has room for the number and the date, not the weekday too.
+    if (daily) return meta.replaceChildren(`No. ${today} · ${(innerWidth < 350 ? shortFormat : dayFormat).format(dateOf(today))}`);
+    // The button stays the one it was, so it keeps the focus when it's pressed.
+    if (meta.querySelector('.meta-btn')) return;
+    const b = el('button', 'meta-btn', 'New puzzle');
+    b.type = 'button';
+    b.addEventListener('click', startPractice);
+    meta.replaceChildren(b);
+  }
+
   function renderResult() {
-    const s = now();
+    const s = now(), daily = state.mode === 'daily';
     $('resTitle').textContent = play.won ? `Solved in ${s.used}` : play.gaveUp ? 'Gave up' : 'Out of moves';
     const tag = $('resTag');
-    tag.textContent = !play.won ? `Par ${puzzle.par}` : s.over > 0 ? `${s.over} over par` : 'On par';
+    tag.textContent = (!play.won ? `Par ${puzzle.par}` : s.over > 0 ? `${s.over} over par` : 'On par') + (play.hard ? ' · Hard' : '');
     tag.classList.toggle('good', !!play.won && s.over <= 0);
     tag.classList.toggle('bad', !play.won);
     // Lost, or over par: the par way can be watched on the board.
@@ -441,13 +545,17 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
       b.addEventListener('click', () => { if (view) { stopView(); place('glide'); } else showBest(); renderResult(); });
       note.append(b);
     }
-    showNext($('resNext'), 'shunt', true);
+    $('resFirst').textContent = daily ? 'Share' : 'New puzzle';
+    $('resSecond').textContent = daily ? 'Practice' : 'Share';
+    showNext($('resNext'), 'shunt', daily);
     tickNext();
   }
 
   function tickNext() {
     const foot = $('resFoot');
     if (!play.done) return;
+    const rec = state.days[today];
+    if (!rec || !rec.done) return foot.replaceChildren(el('span', '', 'Today’s puzzle is still to do'));
     const left = el('span');
     left.append(el('b', '', String(L.streak(wonDays(), today))), ' day streak');
     foot.replaceChildren(left, el('span', '', Clock.untilNext('puzzle', today, L.dayNumber(Clock.now(), D.epoch))));
@@ -455,11 +563,13 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
 
   function render() {
     clearTimeout(endTimer);
-    $('meta').textContent = `No. ${today} · ${dayFormat.format(dateOf(today))}`;
+    renderHeader();
     renderScore();
+    showHard();
     resetGiveUp();
     $('play').hidden = play.done;
     $('result').hidden = !play.done;
+    document.body.classList.toggle('over', !!play.done);
     if (play.done) renderResult();
     // After the footer, so the board sizes itself to the room that leaves.
     fit();
@@ -502,8 +612,8 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
       n.append(el('b', '', String(v)), el('span', '', label));
       nums.append(n);
     }
-    // How each day went: moves over par, in bands, or not solved.
-    const LABELS = ['On par', '1 to 3', '4 to 6', `7 to ${L.SPARE}`, 'Lost'];
+    // How each day went: moves over par, in bands (lib.js), or not solved.
+    const LABELS = ['On par', '1 to 3', '4 to 6', `7 to ${L.SPARE}`, `Over ${L.SPARE}`, 'Lost'];
     const slot = d => (state.days[d].won ? L.band(state.days[d].spent - L.daily(d, D).par) : LABELS.length - 1);
     const counts = Array(LABELS.length).fill(0);
     for (const d of days) counts[slot(d)]++;
@@ -522,9 +632,35 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
     body.replaceChildren(nums, dist);
   }
 
+  // ---- hard mode ----
+  // The switch is for the game on screen. Once that game has a move made in it,
+  // its mode is fixed until it ends (lib.js): the switch shows it and can't be
+  // moved, either way. Before a first move, and after the end, it's free, and
+  // sets the mode for games still to begin. Today's game and the practice game
+  // each keep their own: a change made on a fresh practice board leaves a daily
+  // that's begun as it was, and the other way about.
+  const inPlay = () => L.modeFixed(play);
+  function showHard() {
+    $('hardBtn').setAttribute('aria-checked', String(inPlay() ? !!play.hard : state.hard));
+    $('hardBtn').disabled = inPlay();
+    $('hardNote').textContent = inPlay() ? 'Can only be changed before your first move.' : 'Ten moves over par and the game is lost.';
+  }
+  $('hardBtn').addEventListener('click', () => {
+    if (inPlay()) return;
+    state.hard = !state.hard;
+    if (!play.done) {
+      play.hard = state.hard;
+      puzzle = L.inMode(puzzle, play.hard);
+    }
+    if (!save()) return;
+    renderScore(); showHard();
+  });
+
   // ---- sheets ----
   function openSheet(id) {
     if (id === 'statsSheet') renderStats();
+    // The switch as the game stands now: a move may have been made since it was drawn.
+    if (id === 'helpSheet') showHard();
     const d = $(id);
     if (!d.open) d.showModal();
     tellBack();
@@ -551,12 +687,14 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
       play.won = s.won;
       haptic('tick');
     } else haptic();
+    /* ios:cut */
     // Finished in another tab first: that result is up now, and this move never was.
+    /* ios:end */
     if (!save()) return false;
     if (s.done) report(true);
     renderScore();
     place(glide);
-    $('live').textContent = s.won ? '' : `${L.describe(puzzle, s.state, i).split(', slides')[0]}. ${L.movesText(s.used)}, ${s.left} left.`;
+    $('live').textContent = s.won ? '' : `${L.describe(puzzle, s.state, i).split(', slides')[0]}. ${L.movesText(s.used)}${play.hard ? `, ${s.left} left` : ''}.`;
     // The result comes once the last slide has landed.
     if (s.done) endTimer = setTimeout(() => { render(); if (glide) toResult(); }, s.won ? 480 : 260);
     return true;
@@ -722,8 +860,10 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
   // Today's game begun: the home screen says Started until it's done.
   function begun() {
     const rec = state.days[today];
+    /* ios:cut */
     // next.js may be an older copy, kept for offline, that hasn't got it.
-    if (typeof markStarted === 'function' && rec && !rec.done && rec.spent > 0 && L.dayNumber(Clock.now(), D.epoch) === today) markStarted('shunt');
+    /* ios:end */
+    if (/* ios:cut */ typeof markStarted === 'function' && /* ios:end */ rec && !rec.done && rec.spent > 0 && L.dayNumber(Clock.now(), D.epoch) === today) markStarted('shunt');
   }
 
   // Today's result, for the hub's home screen.
@@ -731,12 +871,12 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
   function report(finished) {
     const day = L.dayNumber(Clock.now(), D.epoch);
     // Ended around midnight: its result stays up past it (Clock.keep).
-    if (finished) Clock.keep(today, day);
+    if (finished && state.mode === 'daily') Clock.keep(today, day);
     // Finished in the moments after midnight: that day's over, so the hub's new day stays open.
     if (day !== today) return;
     const rec = state.days[today];
     if (!rec || !rec.done) return;
-    const par = L.daily(today, D).par, how = { won: !!rec.won, gaveUp: !!rec.gaveUp };
+    const par = L.daily(today, D).par, how = { won: !!rec.won, gaveUp: !!rec.gaveUp, hard: !!rec.hard };
     const text = L.scoreText(rec.spent, par, how);
     // Its line in Share today; should that ever fail, the result still saves.
     let card;
@@ -753,28 +893,59 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
   // The blank square in a share follows the phone's theme, as the big word games do.
   const blank = () => (matchMedia('(prefers-color-scheme: dark)').matches ? '⬛' : '⬜');
   function share() {
-    const text = `${L.shareText(today, play.spent, puzzle.par, { won: !!play.won, gaveUp: !!play.gaveUp }, blank())}\n${SITE}`;
-    if (app) return toApp({ type: 'share', title: 'Shunt', text });
+    const text = `${L.shareText(state.mode === 'daily' ? today : 0, play.spent, puzzle.par, { won: !!play.won, gaveUp: !!play.gaveUp, hard: !!play.hard }, blank())}\n${SITE}`;
+    /* ios:cut */ if (app) return /* ios:end */ toApp({ type: 'share', title: 'Shunt', text });
+    /* ios:cut */
     if (navigator.share) return navigator.share({ text }).catch(() => {});
     navigator.clipboard.writeText(text).then(() => say('Copied to share'), () => {});
+    /* ios:end */
+  }
+
+  // ---- practice ----
+  // A board of Practice's own (practice.js), never a day's, and one not played
+  // yet while there are any. It takes the place of the practice game before it.
+  function startPractice(e) {
+    if (state.seen.length >= P.boards.length) state.seen = state.seen.slice(-1);
+    const at = L.nextBoard(P.boards.length, state.seen);
+    state.seen.push(at);
+    state.practice = { at, ...L.fresh(), done: false, won: false };
+    state.mode = 'practice';
+    if (!save()) return;
+    load(); say(''); render();
+    // Pressed from the keyboard on the result, which has gone: on to the board.
+    if (e && e.detail === 0 && e.currentTarget === $('resFirst')) $('cells').querySelector('.block').focus({ preventScroll: true });
+  }
+  function setMode(mode) {
+    if (state.mode === mode || (mode === 'practice' && !P.boards.length)) return;
+    if (mode === 'practice' && (!state.practice || state.practice.done)) return startPractice();
+    state.mode = mode;
+    if (!save()) return;
+    load(); say(''); render();
   }
 
   // ---- controls ----
   $('undoBtn').addEventListener('click', undo);
   $('restartBtn').addEventListener('click', restart);
   $('giveUpBtn').addEventListener('click', giveUp);
-  $('resShare').addEventListener('click', share);
+  $('resFirst').addEventListener('click', e => state.mode === 'daily' ? share() : startPractice(e));
+  $('resSecond').addEventListener('click', () => state.mode === 'daily' ? setMode('practice') : share());
+  $('tabToday').addEventListener('click', () => setMode('daily'));
+  $('tabPractice').addEventListener('click', () => setMode('practice'));
   $('helpBtn').addEventListener('click', () => openSheet('helpSheet'));
   $('statsBtn').addEventListener('click', () => openSheet('statsSheet'));
 
-  // Android Back: close a sheet. After that the app goes back to the hub.
+  /* ios:cut */
+  // Android Back: close a sheet, then leave practice. After that the app
+  // goes back to the hub.
+  /* ios:end */
   window.ladderBack = () => {
     const d = openDialog();
-    if (!d) return false;
-    d.close();
+    if (d) { d.close(); return true; }
+    if (state.mode !== 'practice') return false;
+    setMode('daily');
     return true;
   };
-  function tellBack() { toApp({ type: 'back', enabled: !!openDialog() }); }
+  function tellBack() { toApp({ type: 'back', enabled: !!openDialog() || state.mode === 'practice' }); }
 
   // A new day while the game sits open (or comes back from the background).
   function checkDay() {
@@ -782,8 +953,10 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
     if (day !== today) {
       // A daily in hand at midnight is finished first and counts for its day;
       // finished after midnight, its result stays up while it's read or shared.
-      if (Clock.hold(today, play.spent > 0, play.done)) return tickNext();
+      if (state.mode === 'daily' && Clock.hold(today, play.spent > 0, play.done)) return tickNext();
       today = day;
+      // A practice game goes on as it is: only what its result says of today changes.
+      if (state.mode !== 'daily') return tickNext();
       load();
       say('');
       render();
@@ -796,10 +969,14 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
   addEventListener('clock', checkDay);
   setInterval(() => { if (!document.hidden) checkDay(); }, 30000);
 
+  /* ios:cut */
   // ---- Android app bridge (absent in a browser) ----
-  const app = window.ladderApp || null;
+  /* ios:end */
+  const app = window.ladderApp/* ios:cut */ || null/* ios:end */;
   function toApp(msg) {
+    /* ios:cut */
     if (!app) return;
+    /* ios:end */
     try { app.postMessage(JSON.stringify(msg)); } catch {}
   }
   function haptic(kind = 'tap') { toApp({ type: 'haptic', kind }); }
@@ -807,10 +984,13 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
   // ---- boot ----
   // A save that can't be opened (damaged, or from a build long gone) would leave
   // the page blank every time: the game it was on is dropped, and it's tried once more.
+  // Back on a new day: open on today's puzzle, not yesterday's practice.
+  if (store.get('lastDay') !== today) { store.set('lastDay', today); state.mode = 'daily'; }
   const open = () => { load(); report(); render(); };
   try { open(); } catch {
     // Never a finished day: its result is kept whatever else is wrong.
-    if (!(state.days[today] && state.days[today].done)) delete state.days[today];
+    if (state.mode === 'practice') { state.practice = null; state.mode = 'daily'; }
+    else if (!(state.days[today] && state.days[today].done)) delete state.days[today];
     store.set('state', state);
     open();
   }

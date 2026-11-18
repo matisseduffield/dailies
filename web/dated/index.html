@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
 <meta name="referrer" content="no-referrer">
+<!-- ios:cut -->
 <meta name="theme-color" content="#F0F1F3" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#171719" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="../manifest.json">
@@ -13,8 +14,11 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Dailies">
 <meta name="description" content="Dated: put each event in its place on the timeline, without seeing the years. A new game every day.">
+<!-- ios:end -->
 <title>Dated</title>
+<!-- ios:cut -->
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect x=%223%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2221.4%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%223%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23F4C52E%22/><rect x=%2221.4%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%223%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2212.2%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2221.4%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/></svg>">
+<!-- ios:end -->
 <link rel="preload" href="../fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../shared.css?v=5">
 <style>
@@ -248,20 +252,26 @@
   <div class="sheet-body" id="statsBody"></div>
 </dialog>
 
+<!-- ios:cut -->
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
+<!-- ios:end -->
 <script src="days.js?v=3"></script>
 <script src="lib.js?v=2"></script>
 <script src="../clock.js?v=4"></script>
+<!-- ios:cut -->
 <script src="../pwa.js"></script>
+<!-- ios:end -->
 <script src="../next.js?v=11"></script>
 <script>
 (() => {
   const L = window.DatedLib, D = window.DatedDays;
   const $ = id => document.getElementById(id);
   const locale = navigator.language || 'en';
+  /* ios:cut */
   // Where the game lives on the web; shared results link here, short, as chat
   // apps make a link of it. The app and the old addresses send people to the new one.
-  const SITE = `${/^appassets\.androidplatform\.net$|\.workers\.dev$/.test(location.hostname) ? 'dailies.teloone.au' : location.host}/dated`;
+  /* ios:end */
+  const SITE = `${/* ios:cut */ /^appassets\.androidplatform\.net$|\.workers\.dev$/.test(location.hostname) ? /* ios:end */ 'dailies.teloone.au' /* ios:cut */ : location.host /* ios:end */}/dated`;
 
   const store = {
     get(k) { try { return JSON.parse(localStorage.getItem('dated.' + k)); } catch { return null; } },
@@ -707,8 +717,10 @@
   // Today's game begun: the home screen says Started until it's done.
   function begun() {
     const rec = state.days[today];
+    /* ios:cut */
     // next.js may be an older copy, kept for offline, that hasn't got it.
-    if (typeof markStarted === 'function' && rec && !rec.done && rec.moves.length > 0 && L.dayNumber(Clock.now(), D.epoch) === today) markStarted('dated');
+    /* ios:end */
+    if (/* ios:cut */ typeof markStarted === 'function' && /* ios:end */ rec && !rec.done && rec.moves.length > 0 && L.dayNumber(Clock.now(), D.epoch) === today) markStarted('dated');
   }
 
   // Today's result, for the hub's home screen.
@@ -731,7 +743,8 @@
 
   function share() {
     const text = `${L.shareText(state.mode === 'daily' ? today : 0, now())}\n${SITE}`;
-    if (app) return toApp({ type: 'share', title: 'Dated', text });
+    /* ios:cut */ if (app) return /* ios:end */ toApp({ type: 'share', title: 'Dated', text });
+    /* ios:cut */
     if (navigator.share) return navigator.share({ text }).catch(() => {});
     navigator.clipboard.writeText(text).then(() => {
       // The toast is hidden on the result screen, so the button says it.
@@ -739,6 +752,7 @@
       b.textContent = 'Copied';
       setTimeout(() => { b.textContent = 'Share'; }, 1600);
     }, () => {});
+    /* ios:end */
   }
 
   function startPractice() {
@@ -861,8 +875,10 @@
   $('helpBtn').addEventListener('click', () => openSheet('helpSheet'));
   $('statsBtn').addEventListener('click', () => openSheet('statsSheet'));
 
+  /* ios:cut */
   // Android Back: close a sheet, then leave practice. After that the app
   // goes back to the hub.
+  /* ios:end */
   window.ladderBack = () => {
     const d = openDialog();
     if (d) { d.close(); return true; }
@@ -892,10 +908,14 @@
   addEventListener('clock', checkDay);
   setInterval(() => { if (!document.hidden) checkDay(); }, 30000);
 
+  /* ios:cut */
   // ---- Android app bridge (absent in a browser) ----
-  const app = window.ladderApp || null;
+  /* ios:end */
+  const app = window.ladderApp/* ios:cut */ || null/* ios:end */;
   function toApp(msg) {
+    /* ios:cut */
     if (!app) return;
+    /* ios:end */
     try { app.postMessage(JSON.stringify(msg)); } catch {}
   }
   function haptic(kind = 'tap') { toApp({ type: 'haptic', kind }); }

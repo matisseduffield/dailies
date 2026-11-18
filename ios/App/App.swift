@@ -3,12 +3,13 @@ import UIKit
 /// Dailies on iPhone: the hub and its games, kept in the app.
 @MainActor
 enum App {
-    // The pages already know this address as "inside the app".
+    // The pages are the bundled folder ios/bundle/web (made by scripts/ios-bundle.mjs),
+    // shown at app://dailies/.
     static let config = ShellConfig(
         bridge: "ladderApp",
-        host: "appassets.androidplatform.net",
-        root: "/assets/",
-        start: "/assets/index.html",
+        host: "dailies",
+        root: "/",
+        start: "/index.html",
         background: UIColor(named: "Page") ?? .systemBackground
     )
 
@@ -25,11 +26,9 @@ enum App {
         }
     }
 
-    static func opened(link: URL) {}
-
     /// A tapped reminder opens the hub, unless a page is already up: a game
     /// under way stays as it is.
-    static func opened(notification: [AnyHashable: Any]) {
+    static func openedReminder() {
         guard let shell = Shell.current, !shell.onAppPage else { return }
         shell.show(config.start)
     }

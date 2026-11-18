@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
 const L = require('../web/shunt/lib.js');
 const D = require('../web/shunt/days.js');
+const P = require('../web/shunt/practice.js');
 const R = require('../scripts/shunt-rules.cjs');
 
 // A small board, gap on the right:
@@ -330,29 +331,242 @@ test('no run of slides, undos and restarts wins under par, overspends or gets a 
 
 test('results are graded by how far over par they were', () => {
   assert.deepEqual([0, 1, 3, 4, 6, 7, 10].map(L.band), [0, 1, 1, 2, 2, 3, 3]);
-  assert.equal(L.BANDS.length, 4);
+  // Past the limit, which only a Normal game can be and still be won.
+  assert.deepEqual([11, 12, 80].map(L.band), [4, 4, 4]);
+  assert.equal(L.BANDS.length, 5);
   assert.equal(L.scoreText(24, 22, { won: true }), '24 moves, par 22');
   assert.equal(L.scoreText(32, 22, { won: false }), 'Out of moves');
   assert.equal(L.scoreText(12, 22, { won: false, gaveUp: true }), 'Gave up');
 });
 
 test('the share text says moves and par, and nothing about the board', () => {
-  assert.equal(L.shareText(4, 22, 22, { won: true }), 'Shunt 4 · 22 moves · par 22\n🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩');
-  assert.equal(L.shareText(4, 25, 22, { won: true }), 'Shunt 4 · 25 moves · par 22\n🟩🟩🟩🟩🟩🟩🟩⬜⬜⬜');
-  assert.equal(L.shareText(4, 32, 22, { won: true }, '⬛'), 'Shunt 4 · 32 moves · par 22\n⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛');
-  assert.equal(L.shareText(4, 32, 22, { won: false }), 'Shunt 4 · Out of moves · par 22\n⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜');
+  // Hard: it says so, with a square for each move there was to spare.
+  assert.equal(L.shareText(4, 22, 22, { won: true, hard: true }), 'Shunt 4 · 22 moves · par 22 · Hard\n🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩');
+  assert.equal(L.shareText(4, 25, 22, { won: true, hard: true }), 'Shunt 4 · 25 moves · par 22 · Hard\n🟩🟩🟩🟩🟩🟩🟩⬜⬜⬜');
+  assert.equal(L.shareText(4, 32, 22, { won: true, hard: true }, '⬛'), 'Shunt 4 · 32 moves · par 22 · Hard\n⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛');
+  assert.equal(L.shareText(4, 32, 22, { won: false, hard: true }), 'Shunt 4 · Out of moves · par 22 · Hard\n⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜');
+  assert.equal(L.shareText(4, 9, 22, { won: false, gaveUp: true, hard: true }), 'Shunt 4 · Gave up · par 22 · Hard');
+  // Normal: no moves to spare, so no row of them. How far over par, behind one square.
+  assert.equal(L.shareText(4, 22, 22, { won: true }), 'Shunt 4 · 22 moves · par 22\n🟩 On par');
+  assert.equal(L.shareText(4, 25, 22, { won: true }), 'Shunt 4 · 25 moves · par 22\n🟨 3 over par');
+  assert.equal(L.shareText(4, 61, 22, { won: true, hard: false }, '⬛'), 'Shunt 4 · 61 moves · par 22\n🟨 39 over par');
   assert.equal(L.shareText(4, 9, 22, { won: false, gaveUp: true }), 'Shunt 4 · Gave up · par 22');
+  // A practice game has no number.
+  assert.equal(L.shareText(0, 25, 22, { won: true }), 'Shunt practice · 25 moves · par 22\n🟨 3 over par');
+  assert.equal(L.shareText(0, 22, 22, { won: true, hard: true }), 'Shunt practice · 22 moves · par 22 · Hard\n🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩');
+  assert.equal(L.shareText(0, 3, 22, { won: false, gaveUp: true }), 'Shunt practice · Gave up · par 22');
+  for (const how of [{ won: true }, { won: true, hard: true }, { won: false, hard: true }, { won: false, gaveUp: true }]) {
+    assert.ok(!/[\u2013\u2014]/.test(L.shareText(4, 30, 22, how)));
+  }
   assert.equal(L.cardText(22, 22, { won: true }), 'Shunt 22 · par 22 🟩');
   assert.equal(L.cardText(27, 22, { won: true }), 'Shunt 27 · par 22 🟨');
-  assert.equal(L.cardText(32, 22, { won: false }), 'Shunt out of moves · par 22 🟥');
+  assert.equal(L.cardText(40, 22, { won: true }), 'Shunt 40 · par 22 🟨');
   assert.equal(L.cardText(5, 22, { won: false, gaveUp: true }), 'Shunt gave up · par 22 🟥');
+  assert.equal(L.cardText(22, 22, { won: true, hard: true }), 'Shunt 22 · par 22 · Hard 🟩');
+  assert.equal(L.cardText(27, 22, { won: true, hard: true }), 'Shunt 27 · par 22 · Hard 🟨');
+  assert.equal(L.cardText(32, 22, { won: false, hard: true }), 'Shunt out of moves · par 22 · Hard 🟥');
+  assert.equal(L.cardText(5, 22, { won: false, gaveUp: true, hard: true }), 'Shunt gave up · par 22 · Hard 🟥');
+});
+
+test('Normal has no limit, and Hard is the limit there always was', () => {
+  const p = small();
+  const normal = L.inMode(p, false), hard = L.inMode(p, true);
+  assert.equal(hard.budget, p.par + L.SPARE);
+  assert.deepEqual(hard, p);
+  assert.equal(normal.budget, Infinity);
+  assert.equal(normal.par, p.par);
+  // The puzzle handed in is left as it was.
+  assert.equal(p.budget, p.par + L.SPARE);
+  // Blocks 1 and 2 shuffled about for far longer than Hard allows.
+  const shuffle = [[1, 0], [2, 2], [1, 1], [2, 3]];
+  let n = L.fresh(), h = L.fresh();
+  for (let k = 0; k < 40; k++) {
+    const [i, to] = shuffle[k % 4];
+    n = L.step(normal, n, i, to);
+    assert.ok(n, `move ${k + 1} in Normal`);
+    const s = L.status(normal, n);
+    assert.ok(!s.done && !s.lost && !s.won);
+    assert.equal(s.used, k + 1);
+    assert.equal(s.left, Infinity);
+    if (h) h = L.step(hard, h, i, to);
+  }
+  // Hard stopped at par and ten: lost, and nothing more would go.
+  assert.equal(h, null);
+  let g = L.fresh();
+  for (let k = 0; k < p.par + L.SPARE; k++) g = L.step(hard, g, ...shuffle[k % 4]);
+  assert.ok(L.status(hard, g).lost);
+  assert.equal(L.status(hard, g).used, 13);
+  // The same game in Normal is still going, and can be won from there, well over par.
+  assert.ok(!L.status(normal, g).done);
+  assert.equal(n.spent, 40);
+  for (const [i, to] of [[2, 0], [1, 3], [0, 4]]) n = L.step(normal, n, i, to);
+  const won = L.status(normal, n);
+  assert.ok(won.won && won.done && !won.lost);
+  // Block 2 was still in hand from the last of the shuffling: its slide went on.
+  assert.equal(won.used, 42);
+  assert.equal(won.over, 39);
+  assert.equal(L.band(won.over), 4);
+  assert.equal(L.step(normal, n, 2, 3), null);
+  // Undo and Restart are what they were: blocks back, the count kept.
+  assert.equal(L.restart(g).spent, 13);
+  assert.equal(L.status(normal, L.restart(g)).used, 13);
+  // A save read back keeps its count in Normal, however high; Hard still stops at the limit.
+  assert.equal(L.clean(normal, { moves: [], spent: 57 }).spent, 57);
+  assert.equal(L.clean(hard, { moves: [], spent: 57 }).spent, 13);
+  assert.deepEqual(L.clean(normal, JSON.parse(JSON.stringify(n))), n);
+});
+
+test('a day saved before there were modes is Hard if it was finished, and Normal if not', () => {
+  const p = L.daily(8, D);
+  // Lost by running out, as only the limit could do: still Hard, still lost.
+  const lost = { moves: [], spent: p.budget, firm: 0, done: true, won: false };
+  assert.equal(L.wasHard(lost), true);
+  let s = L.status(L.inMode(p, L.wasHard(lost)), L.clean(L.inMode(p, L.wasHard(lost)), lost));
+  assert.ok(s.lost && s.done && !s.won);
+  // Won, or given up: Hard, as it was played.
+  assert.equal(L.wasHard({ moves: [], spent: 20, done: true, won: true }), true);
+  assert.equal(L.wasHard({ moves: [], spent: 4, done: true, won: false, gaveUp: true }), true);
+  // Left unfinished, even on its last move: Normal from here, and no longer about to be lost.
+  const open = { moves: [], spent: p.budget - 1, firm: 0, done: false, won: false };
+  assert.equal(L.wasHard(open), false);
+  s = L.status(L.inMode(p, false), L.clean(L.inMode(p, false), open));
+  assert.ok(!s.done);
+  assert.equal(s.used, p.budget - 1);
+  assert.equal(L.wasHard({ moves: [], spent: 0, done: false }), false);
+  // A day that says which it was is taken at its word.
+  assert.equal(L.wasHard({ moves: [], spent: 30, done: true, won: true, hard: false }), false);
+  assert.equal(L.wasHard({ moves: [], spent: 2, done: false, hard: true }), true);
+  // A Normal win past the limit, read back as Normal, is still a win.
+  const far = L.inMode(small(), false);
+  let g = L.fresh();
+  for (let k = 0; k < 20; k++) g = L.step(far, g, ...[[1, 0], [2, 2], [1, 1], [2, 3]][k % 4]);
+  for (const [i, to] of [[2, 0], [1, 3], [0, 4]]) g = L.step(far, g, i, to);
+  const rec = JSON.parse(JSON.stringify({ ...g, done: true, won: true, hard: false }));
+  assert.ok(L.status(L.inMode(small(), L.wasHard(rec)), L.clean(L.inMode(small(), L.wasHard(rec)), rec)).won);
+});
+
+test('practice has boards of its own: each solvable in exactly its par, and none a day’s', () => {
+  const boards = P.boards;
+  assert.ok(boards.length >= 200, `${boards.length} practice boards`);
+  assert.equal(boards.length % 7, 0);
+  const days = D.days.map(text => L.parse(text));
+  const dayShapes = new Set(days.map(R.shape)), dayFrames = new Set(days.map(R.frame)), dayLayouts = new Set(days.map(R.layout));
+  const dayTexts = new Set(D.days);
+  const shapes = new Set(), frames = new Set(), layouts = new Set();
+  // As many for each weekday's par as for any other, so practice is as hard as the week is.
+  const per = boards.length / 7, bands = [1, 2, 3, 4, 5, 6, 0].map(d => R.WEEK[d]), filled = bands.map(() => 0);
+  boards.forEach((text, at) => {
+    const name = `practice board ${at + 1}`;
+    assert.match(text, /^[RLDU]([0-9a-z][abcd]){9,13} \d+$/, name);
+    const p = L.parse(text);
+    assert.equal(L.format(p), text, name);
+    assert.ok(L.cells(p, p.start), name);
+    const way = L.solve(p);
+    assert.ok(way, `${name} has no way out`);
+    assert.equal(way.length, p.par, name);
+    const band = bands.findIndex(([lo, hi]) => p.par >= lo && p.par <= hi);
+    assert.ok(band >= 0, `${name}: par ${p.par}`);
+    // Every rule a day is held to, for the weekday whose par it has.
+    assert.deepEqual(R.problems(p, [1, 2, 3, 4, 5, 6, 0][band]), [], name);
+    filled[band]++;
+    // Not a day's board, however it's turned, begun or marked.
+    assert.ok(!dayTexts.has(text), `${name} is a day's board`);
+    assert.ok(!dayShapes.has(R.shape(p)), `${name} is a day's board, turned`);
+    assert.ok(!dayFrames.has(R.frame(p)), `${name} is a day's blocks begun elsewhere`);
+    assert.ok(!dayLayouts.has(R.layout(p)), `${name} is a day's blocks with another marked`);
+    shapes.add(R.shape(p)); frames.add(R.frame(p)); layouts.add(R.layout(p));
+  });
+  assert.deepEqual(filled, bands.map(() => per));
+  // Nor any two of its own alike.
+  assert.equal(shapes.size, boards.length);
+  assert.equal(frames.size, boards.length);
+  assert.equal(layouts.size, boards.length);
+  // Laid the same way up, none shares more than a few blocks with a day or with another.
+  const level = p => Array.from({ length: 8 }, (_, how) => R.turned(p, how)).find(t => t.blocks[0].across && t.exit > 0 && t.blocks[0].line === 2);
+  const laidDays = days.map(level), laid = boards.map(text => level(L.parse(text)));
+  let most = 0;
+  laid.forEach((a, i) => {
+    for (const b of laidDays) most = Math.max(most, R.shared(a, b));
+    for (let k = i + 1; k < laid.length; k++) most = Math.max(most, R.shared(a, laid[k]));
+  });
+  assert.ok(most <= R.SHARED, `${most} blocks shared`);
+  // Gaps in every wall.
+  for (const side of 'RLDU') assert.ok(boards.filter(t => t[0] === side).length > boards.length / 8, side);
+});
+
+test('practice deals every board once before any comes round again, and never the same twice running', () => {
+  const random = L.rng(7);
+  let seen = [];
+  for (let k = 0; k < 12; k++) {
+    const at = L.nextBoard(12, seen, random);
+    assert.ok(Number.isInteger(at) && at >= 0 && at < 12);
+    assert.ok(!seen.includes(at));
+    seen.push(at);
+  }
+  assert.equal(new Set(seen).size, 12);
+  // All played: any but the one just played.
+  for (let k = 0; k < 200; k++) assert.notEqual(L.nextBoard(12, seen, random), seen[seen.length - 1]);
+  // The page starts its list again from the last one, so that one waits its turn.
+  const last = seen[seen.length - 1];
+  seen = seen.slice(-1);
+  for (let k = 0; k < 50; k++) assert.notEqual(L.nextBoard(12, seen, random), last);
+  // The ends of chance, and a pool of one.
+  assert.equal(L.nextBoard(3, [], () => 0), 0);
+  assert.equal(L.nextBoard(3, [], () => 0.999999), 2);
+  assert.equal(L.nextBoard(3, [0, 2], () => 0.999999), 1);
+  assert.equal(L.nextBoard(1, [0], random), 0);
+  // With the real pool, on the page's own chance.
+  assert.ok(L.nextBoard(P.boards.length, []) < P.boards.length);
+});
+
+test('the page loads the practice boards, and the copy for the iPhone app has them', () => {
+  const fs = require('node:fs');
+  const page = fs.readFileSync(`${__dirname}/../web/shunt/index.html`, 'utf8');
+  assert.match(page, /<script src="practice\.js\?v=\d+"><\/script>/);
+  assert.match(page, /<script src="lib\.js\?v=([2-9]|\d\d+)"><\/script>/);
+  assert.match(fs.readFileSync(`${__dirname}/../scripts/ios-bundle.mjs`, 'utf8'), /shunt: \['days\.js', 'practice\.js'\]/);
+  // The file is data and nothing else: what the page reads is what the tests read.
+  const text = fs.readFileSync(`${__dirname}/../web/shunt/practice.js`, 'utf8');
+  assert.match(text, /root\.ShuntPractice = data/);
+  assert.ok(!/\u2014/.test(text));
 });
 
 test('blocks are described for a screen reader', () => {
   const p = small();
-  assert.equal(L.describe(p, p.start, 0), 'Marked block, row 3, columns 1 to 2, slides left and right');
-  assert.equal(L.describe(p, p.start, 1), 'Block, 3 long, column 5, rows 2 to 4, slides up and down');
-  assert.equal(L.describe(p, [0, 1, 0], 2), 'Block, 3 long, row 6, columns 1 to 3, slides left and right');
+  assert.equal(L.describe(p, p.start, 0), 'Your car, row 3, columns 1 to 2, slides left and right');
+  assert.equal(L.describe(p, p.start, 1), 'Truck, column 5, rows 2 to 4, slides up and down');
+  assert.equal(L.describe(p, [0, 1, 0], 2), 'Truck, row 6, columns 1 to 3, slides left and right');
+  // Two cells that aren't the marked one: a car.
+  const q = L.parse('Rcaacxb 0');
+  assert.equal(L.describe(q, q.start, 1), 'Car, column 5, rows 2 to 3, slides up and down');
+  // The page says cars and trucks, as they're drawn, and never blocks.
+  const page = require('node:fs').readFileSync(`${__dirname}/../web/shunt/index.html`, 'utf8');
+  const shown = page.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<!--[\s\S]*?-->/g, '');
+  assert.ok(!/blocks?\b/i.test(shown.replace(/class="[^"]*"|id="[^"]*"/g, '')), 'the page still says block');
+  assert.match(shown, /Slide the cars and trucks aside until the yellow car/);
+});
+
+test('a game in play keeps its mode, and the switch is free before it and after', () => {
+  const p = small();
+  // Not begun: free.
+  assert.equal(L.modeFixed({ ...L.fresh(), done: false, hard: false }), false);
+  // A move made: fixed, whichever mode it's in, so Hard can't be dropped to dodge a loss.
+  const g = game(p, [[2, 0]]);
+  assert.equal(L.modeFixed({ ...g, done: false, hard: true }), true);
+  assert.equal(L.modeFixed({ ...g, done: false, hard: false }), true);
+  // Even with every block put back: the move is spent.
+  assert.equal(L.modeFixed({ ...L.restart(g), done: false, hard: true }), true);
+  // The one move slid home again was never made: free once more.
+  assert.equal(L.modeFixed({ ...L.step(p, g, 2, 3), done: false, hard: true }), false);
+  // Over, however it ended: free, for the next game.
+  assert.equal(L.modeFixed({ ...g, done: true, won: false, gaveUp: true, hard: true }), false);
+  assert.equal(L.modeFixed({ moves: [], spent: 13, firm: 0, done: true, won: false, hard: true }), false);
+  // The page asks here and nowhere else, and says one thing for both ways round.
+  const page = require('node:fs').readFileSync(`${__dirname}/../web/shunt/index.html`, 'utf8');
+  assert.match(page, /const inPlay = \(\) => L\.modeFixed\(play\);/);
+  assert.match(page, /if \(inPlay\(\)\) return;/);
+  assert.match(page, /Can only be changed before your first move\./);
+  assert.ok(!/turned on before/.test(page));
 });
 
 test('streaks count days won in a row', () => {

@@ -18,8 +18,8 @@
       const result = JSON.parse(localStorage.getItem('hub.' + id));
       if (result && result.date === day) return;
       localStorage.setItem('hub.' + id, JSON.stringify({ date: day, started: true }));
-      // In the iPhone app: today's reminder is no longer wanted.
-      if (root.ladderRemind) root.ladderRemind();
+      // Today's reminder is no longer wanted/* ios:cut */ (in the iPhone app)/* ios:end */.
+      /* ios:cut */ if (root.ladderRemind) /* ios:end */ root.ladderRemind();
     } catch {}
   };
 
@@ -38,7 +38,7 @@
   // The result's foot reads "streak · next game" on one line. When it won't
   // fit, the parts stack without the dot instead of a line starting with one.
   // Measured unstacked each time, so taking the dot out can't flip it back.
-  if (root.document) for (const foot of root.document.querySelectorAll('.result-foot')) {
+  /* ios:cut */ if (root.document) /* ios:end */ for (const foot of root.document.querySelectorAll('.result-foot')) {
     const fit = () => {
       foot.classList.remove('stack');
       const parts = [...foot.children];

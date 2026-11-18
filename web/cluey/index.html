@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
 <meta name="referrer" content="no-referrer">
+<!-- ios:cut -->
 <meta name="theme-color" content="#F0F1F3" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#171719" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="../manifest.json">
@@ -13,8 +14,11 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Dailies">
 <meta name="description" content="Cluey: a small crossword every day, with clues that get trickier through the week.">
+<!-- ios:end -->
 <title>Cluey</title>
+<!-- ios:cut -->
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect x=%223%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2221.4%22 y=%223%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%223%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%232C53C4%22/><rect x=%2212.2%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23F4C52E%22/><rect x=%2221.4%22 y=%2212.2%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%223%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2212.2%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/><rect x=%2221.4%22 y=%2221.4%22 width=%227.6%22 height=%227.6%22 rx=%221.9%22 fill=%22%23A9B8E6%22/></svg>">
+<!-- ios:end -->
 <link rel="preload" href="../fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../shared.css?v=5">
 <style>
@@ -247,20 +251,26 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
   <div class="sheet-body"><div class="list" id="cluesBody"></div></div>
 </dialog>
 
+<!-- ios:cut -->
 <!-- Bump ?v= when these change, so browsers never pair this page with an old copy. -->
+<!-- ios:end -->
 <script src="puzzles.js?v=2"></script>
 <script src="lib.js?v=3"></script>
 <script src="../clock.js?v=4"></script>
+<!-- ios:cut -->
 <script src="../pwa.js"></script>
+<!-- ios:end -->
 <script src="../next.js?v=11"></script>
 <script>
 (() => {
   const L = window.ClueyLib, D = window.ClueyPuzzles;
   const $ = id => document.getElementById(id);
   const locale = navigator.language || 'en';
+  /* ios:cut */
   // Where the game lives on the web; shared results link here, short, as chat
   // apps make a link of it. The app and the old addresses send people to the new one.
-  const SITE = `${/^appassets\.androidplatform\.net$|\.workers\.dev$/.test(location.hostname) ? 'dailies.teloone.au' : location.host}/cluey`;
+  /* ios:end */
+  const SITE = `${/* ios:cut */ /^appassets\.androidplatform\.net$|\.workers\.dev$/.test(location.hostname) ? /* ios:end */ 'dailies.teloone.au' /* ios:cut */ : location.host /* ios:end */}/cluey`;
 
   const store = {
     get(k) { try { return JSON.parse(localStorage.getItem('cluey.' + k)); } catch { return null; } },
@@ -669,8 +679,10 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
   // Today's game begun: the home screen says Started until it's done.
   function begun() {
     const rec = state.days[today];
+    /* ios:cut */
     // next.js may be an older copy, kept for offline, that hasn't got it.
-    if (typeof markStarted === 'function' && rec && !rec.done && rec.fill !== L.blank(puzzle) && L.dayNumber(Clock.now(), D.epoch) === today) markStarted('cluey');
+    /* ios:end */
+    if (/* ios:cut */ typeof markStarted === 'function' && /* ios:end */ rec && !rec.done && rec.fill !== L.blank(puzzle) && L.dayNumber(Clock.now(), D.epoch) === today) markStarted('cluey');
   }
 
   // Today's result, for the hub's home screen.
@@ -693,9 +705,11 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
 
   function share() {
     const text = `${L.shareText(today, puzzle, play)}\n${SITE}`;
-    if (app) return toApp({ type: 'share', title: 'Cluey', text });
+    /* ios:cut */ if (app) return /* ios:end */ toApp({ type: 'share', title: 'Cluey', text });
+    /* ios:cut */
     if (navigator.share) return navigator.share({ text }).catch(() => {});
     navigator.clipboard.writeText(text).then(() => say('Copied to share'), () => {});
+    /* ios:end */
   }
 
   // ---- keyboard ----
@@ -805,7 +819,9 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
     goTo(gap === undefined ? entry.cells[0] : gap, entry.across);
   });
 
+  /* ios:cut */
   // Android Back: close a sheet. After that the app goes back to the hub.
+  /* ios:end */
   window.ladderBack = () => {
     const d = openDialog();
     if (d) { d.close(); return true; }
@@ -844,10 +860,14 @@ a.brand > .mark { grid-column: 3; grid-row: 1; align-self: end; line-height: 1.2
   setInterval(() => { tick(); }, 1000);
   setInterval(() => { if (!play.done && !document.hidden) save(); }, 5000);
 
+  /* ios:cut */
   // ---- Android app bridge (absent in a browser) ----
-  const app = window.ladderApp || null;
+  /* ios:end */
+  const app = window.ladderApp/* ios:cut */ || null/* ios:end */;
   function toApp(msg) {
+    /* ios:cut */
     if (!app) return;
+    /* ios:end */
     try { app.postMessage(JSON.stringify(msg)); } catch {}
   }
   function haptic(kind = 'tap') { toApp({ type: 'haptic', kind }); }

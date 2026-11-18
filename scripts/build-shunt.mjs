@@ -3,12 +3,18 @@
 //   node scripts/build-shunt.mjs               the first two years and a bit (about 12 min)
 //   node scripts/build-shunt.mjs --more 52     adds that many weeks at the end
 //   node scripts/build-shunt.mjs --replace 596 deals one day again, for a board that has to go
+//   node scripts/build-shunt.mjs --practice 315 the boards for Practice (about 5 min); days.js is left alone
 // Days already in the file are never changed except by --replace, and never once
 // they've been played: players share results by day number.
 //
 // The list as it stands was made in three goes, before anyone had played: the
 // first 112 weeks, then --more 1, then --replace 596, whose first board had its
 // blocks in the same places as day 279's, with another of them marked.
+//
+// Practice has boards of its own, in web/shunt/practice.js, so it gives no day away:
+// as many for each weekday's par as for any other, made the same way and held to the
+// same rules, and none like a day's or like another of its own. They have no numbers
+// and no one shares them by place, so the whole file may be dealt again.
 //
 // A board starts as blocks dropped at random. Then one block at a time is swapped,
 // added, taken away, lengthened, shifted or turned, keeping a change when the hardest
@@ -26,23 +32,29 @@ const R = require('./shunt-rules.cjs');
 const EPOCH = '2026-11-11';
 const WEEKS = 112;   // in whole weeks, so a day keeps its weekday when the list goes round
 const FILE = new URL('../web/shunt/days.js', import.meta.url);
+const PRACTICE = new URL('../web/shunt/practice.js', import.meta.url);
 const N = L.SIZE;
 
-const more = process.argv.indexOf('--more'), again = process.argv.indexOf('--replace');
+const more = process.argv.indexOf('--more'), again = process.argv.indexOf('--replace'), spare = process.argv.indexOf('--practice');
 const kept = fs.existsSync(FILE) ? require('../web/shunt/days.js').days : [];
-if (kept.length && more < 0 && again < 0) {
+// How many boards to make for Practice, or 0 when it's days being made.
+const pool = spare < 0 ? 0 : Number(process.argv[spare + 1]);
+if (spare >= 0 && (!Number.isInteger(pool) || pool < 7 || pool % 7)) throw new Error('--practice needs a number of boards, in sevens: each weekday gets as many');
+if (pool && (more >= 0 || again >= 0)) throw new Error('--practice goes by itself');
+if (pool && !kept.length) throw new Error('the days come first: practice boards are kept unlike them');
+if (kept.length && more < 0 && again < 0 && !pool) {
   console.log(`${kept.length} days are already there. Add to them with --more <weeks>.`);
   process.exit(0);
 }
-const weeks = more < 0 ? WEEKS : Number(process.argv[more + 1]);
-if (again < 0 && (!Number.isInteger(weeks) || weeks < 1)) throw new Error('--more needs a number of weeks');
+const weeks = pool ? pool / 7 : more < 0 ? WEEKS : Number(process.argv[more + 1]);
+if (again < 0 && !pool && (!Number.isInteger(weeks) || weeks < 1)) throw new Error('--more needs a number of weeks');
 if (kept.length % 7) throw new Error('the list has to be whole weeks long');
 // The one day to deal again, or 0.
 const redo = again < 0 ? 0 : Number(process.argv[again + 1]);
 if (again >= 0 && (!Number.isInteger(redo) || redo < 1 || redo > kept.length)) throw new Error('--replace needs a day that is in the list');
 
 // The same list so far always gives the same days next.
-const random = L.rng(20261118 + kept.length + redo * 7919);
+const random = L.rng(20261118 + kept.length + redo * 7919 + (pool ? 104729 : 0));
 const int = n => Math.floor(random() * n);
 const pick = list => list[int(list.length)];
 const shuffled = list => { const out = [...list]; for (let i = out.length - 1; i > 0; i--) { const j = int(i + 1); [out[i], out[j]] = [out[j], out[i]]; } return out; };
@@ -195,6 +207,35 @@ while (need.some(n => n > 0)) {
 // ---- the days ----
 // Each is turned one of the eight ways at random, so the gap moves from wall to
 // wall, and gets the weekday it was made for.
+if (pool) {
+  // Easiest first, Monday's to Sunday's: the page takes them in any order it likes.
+  const boards = [];
+  for (const weekday of [1, 2, 3, 4, 5, 6, 0]) {
+    for (const made of found[weekday]) {
+      const puzzle = R.turned(made, int(8));
+      const faults = R.problems(puzzle, weekday);
+      if (faults.length) throw new Error(`practice board ${boards.length + 1}: ${faults.join(', ')}`);
+      boards.push(L.format(puzzle));
+    }
+  }
+  fs.writeFileSync(PRACTICE, `// Written by scripts/build-shunt.mjs --practice. Don't edit by hand.
+// The boards Practice plays, written as the days are in days.js and easiest first.
+// None is a day's board, nor like one.
+(function (root) {
+  const data = {
+    boards: ${JSON.stringify(boards)},
+  };
+  if (typeof module === 'object' && module.exports) module.exports = data;
+  else root.ShuntPractice = data;
+})(this);
+`);
+  const spread = {};
+  for (const b of boards) { const par = L.parse(b).par; spread[par] = (spread[par] || 0) + 1; }
+  console.log(`${boards.length} practice boards in ${Math.round((Date.now() - began) / 1000)} s`);
+  console.log('par:', Object.entries(spread).map(([k, v]) => `${k}×${v}`).join(' '));
+  process.exit(0);
+}
+
 const days = [...kept];
 if (redo) {
   const weekday = L.weekdayOf(redo, EPOCH);

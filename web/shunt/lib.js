@@ -11,7 +11,7 @@
 // along its line each block's first cell is.
 (function (root) {
   const SIZE = 6;
-  // Moves to spare over par before the day is lost.
+  // Hard mode: moves to spare over par before the game is lost.
   const SPARE = 10;
   // How a block is written in days.js after its first cell (0-9a-z, row by row):
   // across or down, and its length.
@@ -79,6 +79,20 @@
     next[i] = to;
     return next;
   }
+
+  // ---- modes ----
+  // Normal has no limit: the moves are counted against par and that's all. Hard
+  // allows par and SPARE, and running out loses. A puzzle is read with Hard's limit
+  // on it; this is the same puzzle as the mode it's played in has it.
+  const inMode = (puzzle, hard) => ({ ...puzzle, budget: hard ? puzzle.par + SPARE : Infinity });
+  // The mode a saved game was played in. One from before there were modes says
+  // nothing: finished, it was played under the limit, the only way there was, so
+  // it's Hard and a day lost by running out stays lost. Unfinished, it's Normal.
+  const wasHard = rec => (typeof rec.hard === 'boolean' ? rec.hard : !!rec.done);
+  // A game in play, a move made and not yet over, keeps the mode it began in: the
+  // limit can't be put on it part way, nor taken off it to dodge a loss. Before
+  // the first move and after the end the mode is free to change, for the next game.
+  const modeFixed = rec => !rec.done && rec.spent > 0;
 
   // Boards as numbers, kept in the order they were first met: add() says whether
   // one is new, indexOf() where it came. Each block's place is a digit in base
@@ -173,7 +187,7 @@
   // ---- a game ----
   // A game is { moves: [[block, from, to]...], spent, firm }. `moves` is what
   // stands on the board, and `spent` is the moves paid for. Undo and Restart put
-  // blocks back but don't give a move back, or the limit would mean nothing.
+  // blocks back but don't give a move back, or the count would mean nothing.
   //
   // The block that moved last is still in hand: sliding it again is the same move
   // going on, however many times it's let go, so a finger and the arrow keys count
@@ -256,8 +270,9 @@
   }
 
   // How a solve measures up, for the stats: on par, then by how many moves over.
-  const BANDS = ['On par', '1 to 3 over', '4 to 6 over', `7 to ${SPARE} over`];
-  const band = over => (over <= 0 ? 0 : over <= 3 ? 1 : over <= 6 ? 2 : 3);
+  // The last band is Normal's alone: Hard is lost before it.
+  const BANDS = ['On par', '1 to 3 over', '4 to 6 over', `7 to ${SPARE} over`, `Over ${SPARE}`];
+  const band = over => (over <= 0 ? 0 : over <= 3 ? 1 : over <= 6 ? 2 : over <= SPARE ? 3 : 4);
 
   // ---- days ----
   // Days count in the player's own calendar, so a new puzzle arrives at their
@@ -293,32 +308,51 @@
     return best;
   }
 
-  // What a block is and where, for a screen reader.
+  // What a block is and where, for a screen reader: two cells is a car, three a
+  // truck, and the marked one is the player's own car.
   function describe(puzzle, state, i) {
     const b = puzzle.blocks[i], p = state[i];
     const span = `${p + 1} to ${p + b.len}`;
     const where = b.across ? `row ${b.line + 1}, columns ${span}` : `column ${b.line + 1}, rows ${span}`;
-    return `${i === 0 ? 'Marked block' : `Block, ${b.len} long`}, ${where}, slides ${b.across ? 'left and right' : 'up and down'}`;
+    return `${i === 0 ? 'Your car' : b.len > 2 ? 'Truck' : 'Car'}, ${where}, slides ${b.across ? 'left and right' : 'up and down'}`;
   }
 
   const movesText = n => (n === 1 ? '1 move' : `${n} moves`);
   // Its line on the home screen, which hasn't room for more.
   const scoreText = (used, par, { won, gaveUp }) => (won ? `${movesText(used)}, par ${par}` : gaveUp ? 'Gave up' : 'Out of moves');
 
-  // Sharing: the moves against par, and a square for each move there was to spare:
-  // green for one kept, blank for one spent. Nothing about the board.
-  function shareText(day, used, par, { won, gaveUp }, blank = '⬜') {
-    const head = `Shunt ${day}`;
-    if (gaveUp) return `${head} · Gave up · par ${par}`;
-    const kept = won ? Math.max(0, SPARE - Math.max(0, used - par)) : 0;
-    return `${head} · ${won ? movesText(used) : 'Out of moves'} · par ${par}\n${'🟩'.repeat(kept)}${blank.repeat(SPARE - kept)}`;
+  // Sharing: the moves against par, and nothing about the board. Hard says so and
+  // adds a square for each move there was to spare: green for one kept, blank for
+  // one spent. Normal has no moves to spare, so it says how far over par it came,
+  // behind one square: green on par, yellow over it. Day 0 is a practice game.
+  function shareText(day, used, par, { won, gaveUp, hard }, blank = '⬜') {
+    const head = day ? `Shunt ${day}` : 'Shunt practice';
+    const mode = hard ? ' · Hard' : '';
+    if (gaveUp) return `${head} · Gave up · par ${par}${mode}`;
+    const top = `${head} · ${won ? movesText(used) : 'Out of moves'} · par ${par}${mode}`;
+    const over = Math.max(0, used - par);
+    if (!hard) return `${top}\n${over ? `🟨 ${over} over par` : '🟩 On par'}`;
+    const kept = won ? Math.max(0, SPARE - over) : 0;
+    return `${top}\n${'🟩'.repeat(kept)}${blank.repeat(SPARE - kept)}`;
   }
 
   // A line for the home screen's Share today: one square, green on par, yellow
   // for solved over it and red for not.
-  function cardText(used, par, { won, gaveUp }) {
-    if (!won) return gaveUp ? `Shunt gave up · par ${par} 🟥` : `Shunt out of moves · par ${par} 🟥`;
-    return `Shunt ${used} · par ${par} ${used <= par ? '🟩' : '🟨'}`;
+  function cardText(used, par, { won, gaveUp, hard }) {
+    const mode = hard ? ' · Hard' : '';
+    if (!won) return gaveUp ? `Shunt gave up · par ${par}${mode} 🟥` : `Shunt out of moves · par ${par}${mode} 🟥`;
+    return `Shunt ${used} · par ${par}${mode} ${used <= par ? '🟩' : '🟨'}`;
+  }
+
+  // ---- practice ----
+  // Which of `count` practice boards comes next, given those played so far, oldest
+  // first: one not played yet, by chance. Once they all have been, any but the last.
+  function nextBoard(count, seen, random = Math.random) {
+    const played = new Set(seen), last = seen[seen.length - 1];
+    let open = [];
+    for (let i = 0; i < count; i++) if (!played.has(i)) open.push(i);
+    if (!open.length) for (let i = 0; i < count; i++) if (i !== last || count === 1) open.push(i);
+    return open[Math.floor(random() * open.length)];
   }
 
   function rng(seed) {
@@ -332,7 +366,7 @@
     };
   }
 
-  const lib = { SIZE, SPARE, KINDS, SIDES, BANDS, parse, format, cells, reach, goal, solved, slide, boards, around, powers, keyOf, solve, fresh, boardOf, inHand, step, undo, restart, status, clean, band, dayNumber, weekdayOf, daily, streak, bestStreak, describe, movesText, scoreText, shareText, cardText, rng };
+  const lib = { SIZE, SPARE, KINDS, SIDES, BANDS, inMode, wasHard, modeFixed, nextBoard, parse, format, cells, reach, goal, solved, slide, boards, around, powers, keyOf, solve, fresh, boardOf, inHand, step, undo, restart, status, clean, band, dayNumber, weekdayOf, daily, streak, bestStreak, describe, movesText, scoreText, shareText, cardText, rng };
   if (typeof module === 'object' && module.exports) module.exports = lib;
   else root.ShuntLib = lib;
 })(this);

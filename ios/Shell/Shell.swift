@@ -1,9 +1,8 @@
 import UIKit
 import WebKit
 import UserNotifications
-import UniformTypeIdentifiers
 
-/// What differs between the apps. Each app's App.swift fills one in.
+/// Where the app's pages live and how they talk to it. App.swift fills one in.
 struct ShellConfig {
     /// The object pages talk to: `window.<bridge>.postMessage(json)`.
     let bridge: String
@@ -13,8 +12,6 @@ struct ShellConfig {
     /// The first page.
     let start: String
     let background: UIColor
-    /// For single-page apps: addresses with no file behind them that still show the app.
-    var isAppPath: (String) -> Bool = { _ in false }
 }
 
 /// Shows the app's own bundled pages in a web view and gives them a few things
@@ -25,16 +22,8 @@ final class Shell: UIViewController, WKNavigationDelegate, WKUIDelegate, WKScrip
 
     let config: ShellConfig
     private(set) var web: WKWebView!
-    /// Messages only this app knows. Return true when one is dealt with.
-    var onMessage: (String, [String: Any]) -> Bool = { _, _ in false }
-    /// More to tell a page when it says hello.
-    var info: () -> [String: Any] = { [:] }
-    /// A page has said hello and can take messages.
-    var onReady: () -> Void = {}
     /// The app is in front again.
     var onActive: () -> Void = {}
-    /// iOS ended the page's process and the page is starting again: it can't take messages until it says hello.
-    var onRestart: () -> Void = {}
     /// Scripts to run before each page's own.
     var scripts: [String] = []
     /// Answers a page needs before it can carry on: `prompt('shell:<what>')`.
@@ -67,8 +56,6 @@ final class Shell: UIViewController, WKNavigationDelegate, WKUIDelegate, WKScrip
 
         let setup = WKWebViewConfiguration()
         setup.setURLSchemeHandler(Pages(config: config), forURLScheme: Shell.scheme)
-        setup.allowsInlineMediaPlayback = true
-        setup.mediaTypesRequiringUserActionForPlayback = []
         setup.dataDetectorTypes = []
         let content = setup.userContentController
         content.add(self, name: "shell")
@@ -152,21 +139,15 @@ final class Shell: UIViewController, WKNavigationDelegate, WKUIDelegate, WKScrip
               let text = message.body as? String, let data = text.data(using: .utf8),
               let msg = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any],
               let type = msg["type"] as? String else { return }
-        if onMessage(type, msg) { return }
         switch type {
         case "hello":
+            // The version is for the About page; whether notifications are allowed is for the reminder.
             Notices.allowed { [weak self] allowed in
-                guard let self else { return }
-                var reply: [String: Any] = [
+                self?.send([
                     "type": "info",
                     "version": Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "",
-                    "updates": false,
-                    "platform": "ios",
                     "notifications": allowed,
-                ]
-                reply.merge(self.info()) { _, new in new }
-                self.send(reply)
-                self.onReady()
+                ])
             }
         case "share":
             let sheet = UIActivityViewController(activityItems: [msg["text"] as? String ?? ""], applicationActivities: nil)
@@ -191,7 +172,7 @@ final class Shell: UIViewController, WKNavigationDelegate, WKUIDelegate, WKScrip
 
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         guard let url = navigationAction.request.url else { return decisionHandler(.cancel) }
-        if url.scheme == Shell.scheme || url.scheme == "about" || url.scheme == "blob" { return decisionHandler(.allow) }
+        if url.scheme == Shell.scheme || url.scheme == "about" { return decisionHandler(.allow) }
         if let frame = navigationAction.targetFrame, !frame.isMainFrame { return decisionHandler(.allow) }
         leave(to: url)
         decisionHandler(.cancel)
@@ -211,36 +192,12 @@ final class Shell: UIViewController, WKNavigationDelegate, WKUIDelegate, WKScrip
         }
     }
 
-    func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
-        if let url = navigationAction.request.url {
-            if url.scheme == Shell.scheme { webView.load(navigationAction.request) } else { leave(to: url) }
-        }
-        return nil
-    }
-
     /// iOS ended the page's process to free memory: start the page again.
     func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
-        onRestart()
         if webView.url == nil { webView.load(URLRequest(url: url(config.start))) } else { webView.reload() }
     }
 
-    // MARK: Page dialogs
-
-    func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping () -> Void) {
-        // WebKit must get its answer even when nothing can be shown.
-        guard viewIfLoaded?.window != nil, presentedViewController == nil else { return completionHandler() }
-        let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in completionHandler() })
-        present(alert, animated: true)
-    }
-
-    func webView(_ webView: WKWebView, runJavaScriptConfirmPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping (Bool) -> Void) {
-        guard viewIfLoaded?.window != nil, presentedViewController == nil else { return completionHandler(false) }
-        let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in completionHandler(false) })
-        alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in completionHandler(true) })
-        present(alert, animated: true)
-    }
+    // MARK: Answers for a page
 
     // The pages never ask for typed text this way, so prompt() is how one gets
     // an answer from the app without waiting for a message back.
@@ -277,6 +234,8 @@ final class Shell: UIViewController, WKNavigationDelegate, WKUIDelegate, WKScrip
         guard isViewLoaded, web.url?.scheme == Shell.scheme else { return }
         web.evaluateJavaScript("JSON.stringify(localStorage)") { value, _ in
             guard let text = value as? String, text.hasPrefix("{"), let data = text.data(using: .utf8) else { return }
+            // Empty storage never replaces a copy that has something in it.
+            if text.count <= 2, Shell.kept() != nil { return }
             try? data.write(to: Shell.storageFile, options: .atomic)
         }
     }
@@ -286,11 +245,10 @@ final class Shell: UIViewController, WKNavigationDelegate, WKUIDelegate, WKScrip
 final class Pages: NSObject, WKURLSchemeHandler {
     private let config: ShellConfig
     private let folder: URL
+    // The kinds of file in the bundled folder (see scripts/ios-bundle.mjs).
     private static let types = [
-        "html": "text/html; charset=utf-8", "js": "text/javascript; charset=utf-8", "mjs": "text/javascript; charset=utf-8",
-        "css": "text/css; charset=utf-8", "json": "application/json", "webmanifest": "application/manifest+json",
-        "svg": "image/svg+xml", "png": "image/png", "jpg": "image/jpeg", "webp": "image/webp", "ico": "image/x-icon",
-        "woff2": "font/woff2", "woff": "font/woff", "txt": "text/plain; charset=utf-8", "wasm": "application/wasm",
+        "html": "text/html; charset=utf-8", "js": "text/javascript; charset=utf-8", "css": "text/css; charset=utf-8",
+        "png": "image/png", "woff2": "font/woff2", "txt": "text/plain; charset=utf-8",
     ]
 
     init(config: ShellConfig) {
@@ -302,8 +260,7 @@ final class Pages: NSObject, WKURLSchemeHandler {
         guard let url = task.request.url, let file = file(for: url.path), let data = try? Data(contentsOf: file) else {
             return task.didFailWithError(URLError(.fileDoesNotExist))
         }
-        let ext = file.pathExtension.lowercased()
-        let type = Pages.types[ext] ?? UTType(filenameExtension: ext)?.preferredMIMEType ?? "application/octet-stream"
+        let type = Pages.types[file.pathExtension.lowercased()] ?? "application/octet-stream"
         let headers = ["Content-Type": type, "Content-Length": String(data.count), "Cache-Control": "no-cache"]
         guard let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: "HTTP/1.1", headerFields: headers) else {
             return task.didFailWithError(URLError(.badServerResponse))
@@ -322,7 +279,7 @@ final class Pages: NSObject, WKURLSchemeHandler {
         let file = folder.appendingPathComponent(rest).standardizedFileURL
         var isFolder: ObjCBool = false
         if file.path.hasPrefix(folder.path + "/"), FileManager.default.fileExists(atPath: file.path, isDirectory: &isFolder), !isFolder.boolValue { return file }
-        return config.isAppPath(path) ? folder.appendingPathComponent("index.html") : nil
+        return nil
     }
 }
 
@@ -341,7 +298,7 @@ enum Notices {
         }
     }
 
-    /// Swaps everything waiting for these: [{ id, at (ms), title, body, open }].
+    /// Swaps everything waiting for these: [{ id, at (ms), title, body }].
     /// iOS keeps at most 64 per app, so only the soonest go in.
     static func replace(_ items: [[String: Any]], limit: Int = 60) {
         let center = UNUserNotificationCenter.current()
@@ -359,7 +316,6 @@ enum Notices {
             content.title = item["title"] as? String ?? ""
             content.body = item["body"] as? String ?? ""
             content.sound = .default
-            if let open = item["open"] as? String { content.userInfo = ["open": open] }
             let when = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: Date(timeIntervalSince1970: at / 1000))
             let id = item["id"] as? String ?? String(Int(at))
             center.add(UNNotificationRequest(identifier: id, content: content, trigger: UNCalendarNotificationTrigger(dateMatching: when, repeats: false)))
@@ -387,8 +343,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationC
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        let info = response.notification.request.content.userInfo
-        DispatchQueue.main.async { App.opened(notification: info) }
+        DispatchQueue.main.async { App.openedReminder() }
         completionHandler()
     }
 }
@@ -405,20 +360,5 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.rootViewController = shell
         window.makeKeyAndVisible()
         self.window = window
-        let web = connectionOptions.userActivities.first { $0.activityType == NSUserActivityTypeBrowsingWeb }?.webpageURL
-        if let link = web ?? connectionOptions.urlContexts.first?.url { App.opened(link: link) }
-        #if DEBUG
-        // For checks in the simulator: `simctl launch <device> <bundle> -link <url>`.
-        let args = ProcessInfo.processInfo.arguments
-        if let at = args.firstIndex(of: "-link"), at + 1 < args.count, let link = URL(string: args[at + 1]) { App.opened(link: link) }
-        #endif
-    }
-
-    func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
-        if userActivity.activityType == NSUserActivityTypeBrowsingWeb, let link = userActivity.webpageURL { App.opened(link: link) }
-    }
-
-    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        if let link = URLContexts.first?.url { App.opened(link: link) }
     }
 }

@@ -166,16 +166,29 @@ moved last is still in hand: sliding it again is the same move going on, so a fi
 and the arrow keys count alike. Slid back to where that move began, the move was never
 made and comes off the count, as it would had the finger never left the block. That is
 the only way the count goes down, and it only reaches the move in hand. Undo and
-Restart put blocks back but never give a move back, or the limit would mean nothing,
+Restart put blocks back but never give a move back, or the count would mean nothing,
 and a move Undo has laid bare is settled, not in hand, so moves can't be walked back
 one at a time for nothing (`step` and `undo` in `web/shunt/lib.js`).
 
 Par is the fewest moves possible, found by trying every board in order of how far it
-is from the start. The day allows par and ten more (`SPARE` in `web/shunt/lib.js`):
-room for a few wrong turns, not for feeling the way out. Out of moves, Give up, or
-over par, the best way can be watched on the board. Par climbs through the week: 18 or
-19 on Monday, two more each day, and 30 to 40 on Sunday. No Practice. A day that's
-finished stays as it was first recorded, however many tabs the game is open in.
+is from the start. Normal has no limit: the moves are counted against par and that's
+all. Hard mode (in How to play) allows par and ten more (`SPARE` in
+`web/shunt/lib.js`): room for a few wrong turns, not for feeling the way out. The switch is free until a
+game's first move and again once it ends; in between the game keeps the mode it began
+in, either way (`modeFixed`, and `hard` on its record). Today and Practice each lock
+by their own game. A day saved before there were modes is Hard if it
+was finished and Normal if not (`wasHard`). Out of moves, Give up, or over par, the
+best way can be watched on the board. Par climbs through the week: 18 or 19 on Monday,
+two more each day, and 30 to 40 on Sunday. A day that's finished stays as it was first
+recorded, however many tabs the game is open in.
+
+Practice plays boards of its own, from `web/shunt/practice.js`: 315 of them, 45 for
+each weekday's par, made by `node scripts/build-shunt.mjs --practice 315` (about 5 min)
+to the same rules as the days and kept as unlike every day, and each other, as the days
+are kept unlike one another. So Practice gives no day away. Each board is played once
+before any comes round again. Practice goes by the Hard mode switch, and counts for
+nothing: no stats, no streak, nothing on the home screen. `--practice` never touches
+`days.js`, and since practice boards have no numbers the whole file may be dealt again.
 
 Every board is made by `node scripts/build-shunt.mjs` (about 12 min) and none comes
 from anywhere else: blocks are dropped at random, then changed one at a time for as long
@@ -274,6 +287,24 @@ but only a copy of the same `?v=`, so an old file never meets a new page; a real
 takes whatever copy there is. A page that opened from its copy has its own files from theirs without
 waiting; a new page, or another tab, always gives the network its 3 seconds. It strips the `serverClock` reading from pages it keeps, since an old
 reading would hold the games on an old day; `/now` and `/app` pass through.
+
+### The iPhone app
+
+The iPhone app (`ios/`) does not bundle `web/` as it is. `node scripts/ios-bundle.mjs` makes
+`ios/bundle/web` (not in git): `web/` without the files only the website uses (`manifest.json`,
+`pwa.js`, `sw.js`, the home-screen icons) and without the parts of the pages marked for the website
+or the Android app:
+
+    /* ios:cut */ ... /* ios:end */        in scripts and styles
+    <!-- ios:cut --> ... <!-- ios:end -->  in markup
+
+The marks are comments, so the website and the Android app are unchanged by them. Anything new that
+the iPhone app does not have (an Android bridge message, a website fallback, a link to another
+edition) goes between marks. The script then checks the copy and stops the build if a script does
+not parse, a file is one no page leads to, an address or a forbidden word (its `FORBIDDEN` lists)
+is found, or `web/` has a file that is on neither its `KEEP` nor its `LEAVE` list: a new file, or a
+new game folder, has to be added there. Both iOS workflows run it before XcodeGen, and
+`tests/ios-bundle.test.js` runs it with the other tests.
 
 ## Layout
 
